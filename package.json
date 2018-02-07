@@ -1,0 +1,19 @@
+{
+  "name": "unnamed-wallet-library",
+  "version": "0.0.1",
+  "description": "A set of utilities to interface with ethereum addresses and wallets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoinColony/unnamed-wallet-library.git"
+  },
+  "author": "Raul Glogovetan (raul@colony.io)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JoinColony/unnamed-wallet-library/issues"
+  },
+  "homepage": "https://github.com/JoinColony/unnamed-wallet-library#readme"
+}
