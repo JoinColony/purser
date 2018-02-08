@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/JoinColony/unnamed-wallet-library/issues"
   },
-  "homepage": "https://github.com/JoinColony/unnamed-wallet-library#readme"
+  "homepage": "https://github.com/JoinColony/unnamed-wallet-library#readme",
+  "devDependencies": {
+    "babel-register": "^6.26.0"
+  }
 }
