@@ -1,1 +1,1 @@
-console.log('Hello this Colony Wallet');
+console.warn('Hello this Colony Wallet');

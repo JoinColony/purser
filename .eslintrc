@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "@colony/eslint-config-colony",
+    "./scripts/eslint.js"
+  ]
+}
