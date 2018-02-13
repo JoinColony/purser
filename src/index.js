@@ -1,3 +1,1 @@
-import { dep } from './dependency';
-
-dep();
+console.log('Hello this Colony Wallet');

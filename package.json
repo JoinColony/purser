@@ -1,32 +1,35 @@
 {
-  "name": "unnamed-wallet-library",
-  "version": "0.0.1",
-  "description": "A set of utilities to interface with ethereum addresses and wallets",
+  "name": "colony-wallet",
+  "version": "0.1.0",
+  "description": "A set of utilities to interface with ethereum addresses",
   "main": "dist/index.js",
-  "module": "dist/index.js",
-  "browser": "dist/index.js",
+  "module": "dist/es/index.js",
+  "browser": "dist/umd/index.min.js",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "webpack"
+    "build": "node scripts/build.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JoinColony/unnamed-wallet-library.git"
+    "url": "git+https://github.com/JoinColony/colony-wallet.git"
   },
-  "author": "Raul Glogovetan (raul@colony.io)",
+  "author": "Raul Glogovetan <raul@colony.io>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JoinColony/unnamed-wallet-library/issues"
+    "url": "https://github.com/JoinColony/colony-wallet/issues"
   },
-  "homepage": "https://github.com/JoinColony/unnamed-wallet-library#readme",
+  "homepage": "https://github.com/JoinColony/colony-wallet",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
+    "chalk": "^2.3.1",
+    "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^3.11.0"
   }
 }

@@ -1,14 +1,3 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {
-        "chrome": "59",
-        "firefox": "55",
-        "safari": "9",
-        "edge": "15",
-        "node": "current"
-      },
-	  "modules": false
-    }]
-  ]
+  "presets": ["./scripts/babel"]
 }
