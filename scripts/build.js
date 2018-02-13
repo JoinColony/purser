@@ -8,4 +8,6 @@ run('webpack --optimize-minimize', {}, 'Built minified UMD package for browsers'
 
 run('babel --out-dir lib/es src', { BABEL_ENV: 'es' }, 'Built ES6 modules');
 
+run('flow-copy-source src lib/es', {}, 'Exported Raw Flow types');
+
 run('babel --out-dir lib src', { BABEL_ENV: 'cjs' }, 'Built CommonJS modules');
