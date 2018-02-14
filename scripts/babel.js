@@ -13,8 +13,5 @@ module.exports = {
       presets: ['env', { modules: 'commonjs' }, 'flow'],
       plugins: ['dynamic-import-node']
     }
-  },
-  ignore: [
-    '__tests__'
-  ]
+  }
 };
