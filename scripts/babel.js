@@ -10,7 +10,7 @@ module.exports = {
   ],
   env: {
     test: {
-      presets: ['env', 'flow'],
+      presets: ['env', { modules: 'commonjs' }, 'flow'],
       plugins: ['dynamic-import-node']
     }
   },
