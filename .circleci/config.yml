@@ -16,13 +16,19 @@ jobs:
             - node_modules
           key: node-modules-{{ checksum "package.json" }}
       - run:
+          name: "Flow"
+          command: yarn flow
+      - run:
           name: "Eslint"
           command: yarn lint:ci
       - run:
           name: "Jest"
           command: yarn test:ci
           environment:
-            JEST_JUNIT_OUTPUT: "reports/jest-results.xml"
+            JEST_JUNIT_OUTPUT: "reports/jest/jest-results.xml"
+      - run:
+          name: "Build it!"
+          command: yarn build
       - store_test_results:
           path: reports
       - store_artifacts:
