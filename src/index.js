@@ -1,5 +1,7 @@
-/* @flow */
+import add from './add';
 
-const add = (first: number, second: number): number => first + second;
+const colonyWallet = {
+  add,
+};
 
-add(1, 2);
+export default colonyWallet;

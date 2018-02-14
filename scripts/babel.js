@@ -7,5 +7,13 @@ module.exports = {
   ],
   plugins: [
     ['transform-runtime', { polyfill: false, regenerator: true }]
+  ],
+  env: {
+    test: {
+      presets: ['env', 'flow']
+    }
+  },
+  ignore: [
+    '__tests__'
   ]
-}
+};
