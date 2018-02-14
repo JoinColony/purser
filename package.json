@@ -12,7 +12,7 @@
     "build": "node scripts/build.js",
     "flow": "flow check src",
     "lint": "eslint src",
-    "lint:ci": "eslint --format junit -o reports/eslint-results.xml",
+    "lint:ci": "eslint --format junit -o reports/eslint-results.xml src",
     "test": "jest",
     "test:watch": "jest --watchAll",
     "test:coverage": "jest --coverage",
