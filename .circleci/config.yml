@@ -25,7 +25,7 @@ jobs:
           name: "Jest"
           command: yarn test:ci
           environment:
-            JEST_JUNIT_OUTPUT: "reports/jest-results.xml"
+            JEST_JUNIT_OUTPUT: "reports/jest/jest-results.xml"
       - run:
           name: "Build it!"
           command: yarn build

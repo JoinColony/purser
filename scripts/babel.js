@@ -8,10 +8,14 @@ module.exports = {
   plugins: [
     ['transform-runtime', { polyfill: false, regenerator: true }]
   ],
+  ignore: [
+    '__tests__'
+  ],
   env: {
     test: {
-      presets: ['env', { modules: 'commonjs' }, 'flow'],
-      plugins: ['dynamic-import-node']
+      presets: ['env', 'flow'],
+      plugins: ['dynamic-import-node'],
+      ignore: []
     }
   }
 };
