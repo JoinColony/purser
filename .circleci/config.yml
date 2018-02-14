@@ -1,0 +1,29 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8.9.4
+    working_directory: ~/colony-wallet
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - node-modules-{{ checksum "package.json" }}
+          - node-modules-
+      - run: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node-modules-{{ checksum "package.json" }}
+      - run:
+          name: "Eslint"
+          command: yarn lint:ci
+      - run:
+          name: "Jest"
+          command: yarn test:ci
+          environment:
+            JEST_JUNIT_OUTPUT: "reports/jest-results.xml"
+      - store_test_results:
+          path: reports
+      - store_artifacts:
+          path: reports
