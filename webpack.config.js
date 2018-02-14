@@ -1,8 +1,7 @@
 const path = require('path');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const minimize = process.argv.indexOf('--optimize-minimize') !== -1;
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-console.log('are we minimizing?', minimize);
+const minimize = process.argv.indexOf('--optimize-minimize') !== -1;
 
 const plugins = minimize ? [new UglifyJsPlugin()] : [];
 
