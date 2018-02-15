@@ -1,5 +1,7 @@
 ## Colony Wallet
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/JoinColony/colony-wallet.svg?token=114044dbcad9f33395dffb9087c3e665bf5862cf49f66dd9d03d808663aa72bc&ts=1518703816619)](https://greenkeeper.io/)
+
 A set of utilities to interface with ethereum addresses
 
 ### Developing
