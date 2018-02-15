@@ -25,8 +25,9 @@ const run = (
       return console.log(chalk.red(errorMsg), err);
     }
     if (!!successMsg) {
-      return console.log(chalk.green(successMsg));
+      console.log(chalk.green(successMsg));
     }
+    return stdout;
   }
 );
 
