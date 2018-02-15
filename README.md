@@ -2,6 +2,16 @@
 
 A set of utilities to interface with ethereum addresses
 
+### Developing
+
+If you want to actively work on the modules, there's a `yarn` task that will watch the `src` folder and rebuild files if they were changed:
+
+```bash
+yarn watch
+```
+
+This will just rebuild files, but not run any dev suites on them _(eg: jest, eslint, flow)_. That responsibility falls on you and your editor.
+
 ### Testing
 
 `jest` is set up as the default test runner for this project.
@@ -14,11 +24,13 @@ You can run the following test commands that were set up as `npm` scripts:
 #### Jest
 
 You may run into trouble running `yarn test:watch`, which will throw and error along the lines of:
+
 ```bash
 ENOSPC
 ```
 This should mean that there's no space left on the target, but it this case it actually means your system is using too many file watchers.
 This can be fixed by increasing that number _(warning: `sudo` permissions required for this, as we change system settings)_:
+
 ```bash
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 ```
