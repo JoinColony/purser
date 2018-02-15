@@ -1,15 +1,14 @@
-const path = require('path');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const paths = require('./scripts/paths');
 
 const minimize = process.argv.indexOf('--optimize-minimize') !== -1;
-
 const plugins = minimize ? [new UglifyJsPlugin()] : [];
 
 module.exports = {
   entry: './src/index.js',
   output: {
     filename: minimize ? 'colonyWallet.min.js' : 'colonyWallet.js',
-    path: path.resolve(__dirname, 'lib/umd'),
+    path: paths.umd,
     library: 'colonyWallet',
     libraryTarget: 'umd',
   },

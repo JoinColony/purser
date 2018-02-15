@@ -1,5 +1,6 @@
 const exec = require('child_process').exec;
 const chalk = require('chalk');
+const crypto = require('crypto');
 
 /**
  * Simple wrapper method for node's exec() to help reduce boilerplate code
@@ -23,10 +24,27 @@ const run = (
     if (err || stderr) {
       return console.log(chalk.red(errorMsg), err);
     }
-    return console.log(chalk.green(successMsg));
+    if (!!successMsg) {
+      console.log(chalk.green(successMsg));
+    }
+    return stdout;
   }
 );
 
+/**
+ * Create a hash checksum of string of data
+ *
+ * @method checksum
+ *
+ * @param {string} data String of data (can also take in data from `fs.readFile`)
+ * @param {string} algorithm Algorithm to use for hashing. (Get all available hashing methods using `crypto.getHashes()`)
+ * @param {string} encoding Encoding type
+ *
+ * @return {string} String of the hashed data
+ */
+const checksum = (data, algorithm, encoding) => crypto.createHash(algorithm || 'sha256').update(data, 'utf8').digest(encoding || 'hex');
+
 module.exports = {
   run,
+  checksum,
 };
