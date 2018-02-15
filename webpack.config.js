@@ -9,7 +9,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: minimize ? 'colonyWallet.min.js' : 'colonyWallet.js',
-    path: path.resolve(__dirname, 'lib/umd'),
+    path: path.resolve(__dirname, 'lib', 'umd'),
     library: 'colonyWallet',
     libraryTarget: 'umd',
   },
