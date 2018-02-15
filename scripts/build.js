@@ -1,18 +1,14 @@
 const run = require('./utils').run;
-const path = require('path');
+const paths = require('./paths');
 
-const source = path.resolve('.', 'src');
-const lib = path.resolve('.', 'lib');
-const libModules = path.resolve('.', 'lib', 'es');
-
-run(`rm -rf ${lib}`, {}, 'Removed the \'lib\' folder for a clean build');
+run(`rm -rf ${paths.lib}`, {}, 'Removed the \'lib\' folder for a clean build');
 
 run('webpack', {}, 'Built UMD package for browsers');
 
 run('webpack --optimize-minimize', {}, 'Built minified UMD package for browsers');
 
-run(`babel --out-dir ${libModules} ${source}`, { BABEL_ENV: 'es' }, 'Built ES6 modules');
+run(`babel --out-dir ${paths.modules} ${paths.source}`, { BABEL_ENV: 'es' }, 'Built ES6 modules');
 
-run(`flow-copy-source --ignore "**/__tests__/**" ${source} ${libModules}`, {}, 'Exported Raw Flow types');
+run(`flow-copy-source --ignore "**/__tests__/**" ${paths.source} ${paths.modules}`, {}, 'Exported Raw Flow types');
 
-run(`babel --out-dir ${lib} ${source}`, { BABEL_ENV: 'cjs' }, 'Built CommonJS modules');
+run(`babel --out-dir ${paths.lib} ${paths.source}`, { BABEL_ENV: 'cjs' }, 'Built CommonJS modules');
