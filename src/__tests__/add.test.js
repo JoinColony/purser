@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 import add from '../add';
 
 describe('Add() module test (a test to test the test)', () => {
