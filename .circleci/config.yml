@@ -1,4 +1,5 @@
-version: 2
+version: 2.0
+
 jobs:
   build:
     docker:
@@ -35,3 +36,19 @@ jobs:
           path: reports
       - store_artifacts:
           path: reports
+
+workflows:
+  version: 2
+  commit-workflow:
+    jobs:
+      - build
+  nightly-workflow:
+    triggers:
+      - schedule:
+          cron: "0 4 * * *"
+          filters:
+            branches:
+              only: master
+
+    jobs:
+      - build
