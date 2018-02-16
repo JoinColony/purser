@@ -1,0 +1,8 @@
+{
+  "env": {
+    "jest": true,
+  },
+  "rules": {
+    "flowtype/require-valid-file-annotation": ["never"],
+  },
+}

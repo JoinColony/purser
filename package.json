@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/JoinColony/colony-wallet",
   "devDependencies": {
-    "@colony/eslint-config-colony": "^3.0.1",
+    "@colony/eslint-config-colony": "^4.0.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",
