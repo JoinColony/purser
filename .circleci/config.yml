@@ -16,6 +16,11 @@ jobs:
             - node_modules
           key: node-modules-{{ checksum "package.json" }}
       - run:
+          name: "Flow"
+          command: |
+            mkdir -p reports/flow
+            yarn flow:ci
+      - run:
           name: "Eslint"
           command: yarn lint:ci
       - run:
