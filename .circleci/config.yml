@@ -19,13 +19,13 @@ jobs:
           name: "Flow"
           command: |
             mkdir -p reports/flow
-            yarn --silent flow:ci | tee reports/flow/flow-results.xml
+            yarn flow:ci | tee reports/flow/flow-results.xml
       - run:
           name: "Eslint"
-          command: yarn --silent lint:ci
+          command: yarn lint:ci
       - run:
           name: "Jest"
-          command: yarn --silent test:ci
+          command: yarn test:ci
           environment:
             JEST_JUNIT_OUTPUT: "reports/jest/jest-results.xml"
       - run:
