@@ -15,6 +15,7 @@
     "flow": "flow",
     "glow": "glow",
     "flow:check": "flow check",
+    "flow:ci": "flow --json | flow-junit-transformer",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "lint:ci": "eslint --format junit -o reports/eslint/eslint-results.xml src",
@@ -35,6 +36,7 @@
   "homepage": "https://github.com/JoinColony/colony-wallet",
   "devDependencies": {
     "@colony/eslint-config-colony": "^4.0.0",
+    "@kironeducation/flow-junit-transformer": "^0.3.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.2",

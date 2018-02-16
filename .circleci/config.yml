@@ -17,13 +17,15 @@ jobs:
           key: node-modules-{{ checksum "package.json" }}
       - run:
           name: "Flow"
-          command: yarn flow
+          command: |
+            mkdir -p reports/flow
+            yarn --silent flow:ci | tee reports/flow/flow-results.xml
       - run:
           name: "Eslint"
-          command: yarn lint:ci
+          command: yarn --silent lint:ci
       - run:
           name: "Jest"
-          command: yarn test:ci
+          command: yarn --silent test:ci
           environment:
             JEST_JUNIT_OUTPUT: "reports/jest/jest-results.xml"
       - run:
