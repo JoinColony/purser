@@ -35,3 +35,15 @@ jobs:
           path: reports
       - store_artifacts:
           path: reports
+workflows:
+  version: 2
+    nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - build
