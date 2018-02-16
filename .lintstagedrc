@@ -1,0 +1,7 @@
+{
+  "src/**/*.js": [
+    "yarn lint:fix",
+    "yarn flow:check",
+    "git add"
+  ]
+}
