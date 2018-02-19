@@ -1,9 +1,9 @@
 /* @flow */
 
-import add from './add';
+import providers from './providers';
 
 const colonyWallet = {
-  add,
+  providers,
 };
 
 export default colonyWallet;
