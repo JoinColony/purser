@@ -4,6 +4,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:8.9.4
+    parallelism: 3
     working_directory: ~/colony-wallet
     steps:
       - checkout
