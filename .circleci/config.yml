@@ -1,10 +1,10 @@
 version: 2.0
 
 jobs:
-  build:
+  build-with-lockfile:
     docker:
       - image: circleci/node:8.9.4
-    parallelism: 3
+    parallelism: 2
     working_directory: ~/colony-wallet
     steps:
       - checkout
@@ -12,44 +12,89 @@ jobs:
           keys:
           - node-modules-{{ checksum "package.json" }}
           - node-modules-
-      - run: yarn install
+      - run:
+          name: "Installing modules"
+          command: yarn install
       - save_cache:
           paths:
             - node_modules
           key: node-modules-{{ checksum "package.json" }}
       - run:
-          name: "Flow"
+          name: "Updating lockfile"
+          command: yarn lockfile:update
+      - run:
+          name: "Checking correct types"
           command: |
             mkdir -p reports/flow
             yarn flow:ci
       - run:
-          name: "Eslint"
+          name: "Linting code"
           command: yarn lint:ci
       - run:
-          name: "Jest"
+          name: "Running unit tests"
           command: yarn test:ci
           environment:
             JEST_JUNIT_OUTPUT: "reports/jest/jest-results.xml"
-      - run:
-          name: "Build it!"
-          command: yarn build
       - store_test_results:
           path: reports
       - store_artifacts:
           path: reports
+      - run:
+          name: "Building library"
+          command: yarn build
+      - run:
+          name: "Uploading updated lockfile"
+          command: yarn lockfile:upload
+  build:
+    docker:
+      - image: circleci/node:8.9.4
+    parallelism: 2
+    working_directory: ~/colony-wallet
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - node-modules-{{ checksum "package.json" }}
+          - node-modules-
+      - run:
+          name: "Installing modules"
+          command: yarn install
+      - save_cache:
+          paths:
+            - node_modules
+          key: node-modules-{{ checksum "package.json" }}
+      - run:
+          name: "Checking correct types"
+          command: |
+            mkdir -p reports/flow
+            yarn flow:ci
+      - run:
+          name: "Linting code"
+          command: yarn lint:ci
+      - run:
+          name: "Running unit tests"
+          command: yarn test:ci
+          environment:
+            JEST_JUNIT_OUTPUT: "reports/jest/jest-results.xml"
+      - store_test_results:
+          path: reports
+      - store_artifacts:
+          path: reports
+      - run:
+          name: "Building library"
+          command: yarn build
 
 workflows:
   version: 2
-  commit-workflow:
+  triggered-by-commit:
     jobs:
-      - build
-  nightly-workflow:
+      - build-with-lockfile
+  nightly-build:
     triggers:
       - schedule:
           cron: "0 4 * * *"
           filters:
             branches:
               only: master
-
     jobs:
       - build
