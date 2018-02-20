@@ -56,6 +56,14 @@ yarn flow:check
 
 This is left in as a legacy, in case `flow status` doesn't work on your system. This is slower and will not work with `glow` but you can be certain that it will parse all your files.
 
+#### Commit Hooks
+
+Committing changes to `git` will trigger two commit hooks that will ensure your code follows the coding style guidelines set forth by `eslint` and `prettier`.
+
+First check will run `eslint` with the `fix` instruction, second check will be `flow`, but using the `glow` output formatting.
+
+After these two steps, the project will auto-run the `git add` command.
+
 ### Testing
 
 `jest` is set up as the default test runner for this project.
