@@ -12,7 +12,25 @@ If you want to actively work on the modules, there's a `yarn` task that will wat
 yarn watch
 ```
 
-This will just rebuild files, but not run any dev suites on them _(eg: jest, eslint, flow)_. That responsibility falls on you and your editor.
+This will just rebuild files, but not run any dev suites on them _(eg: `jest`, `eslint`, `flow`)_. That responsibility falls on you and your editor.
+
+#### Eslint
+
+It's most likely that you'll use `eslint` via your editor / IDE, but just in case you don't, there are a couple of scripts set up to do this manually:
+
+```bash
+yarn lint
+```
+
+This will lint all the files inside the `src` folder and log any errors or warnings.
+
+```bash
+yarn lint:fix
+```
+
+This will also lint files in the `src`, but in addition it will also try to fix any problems it encounters. _(Makes use of `prettier`)_
+
+If there's a error it cannot fix, it will log it to the console.
 
 ### Testing
 
