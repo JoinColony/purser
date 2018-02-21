@@ -1,4 +1,5 @@
 node_modules
 scripts
+flow-typed
 jest.config.js
 webpack.config.js
