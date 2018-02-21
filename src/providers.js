@@ -2,29 +2,43 @@
 
 import { providers } from 'ethers';
 
-const defaultNetwork = 'homestead';
+import { warn, error } from './utils';
+import { warnings, errors } from './messages';
 
-const etherscan = (network: string = defaultNetwork): void => {
-  const provider = new providers.EtherscanProvider(network);
-  return provider;
-};
+import { DEFAULT_NETWORK } from './defaults';
 
-const infura = (network: string = defaultNetwork): void => {
-  const provider = new providers.InfuraProvider(network);
-  return provider;
-};
-
-const metamask = (network: string = defaultNetwork): void => {
-  if (window.web3 && window.web3.currentProvider) {
-    return new providers.Web3Provider(window.web3.currentProvider, network);
+/**
+ * Etherscan provider generator method.
+ * This wraps the `ethers` `EtherscanProvider` method and provides defaults, error catching and warnings.
+ *
+ * @method etherscan
+ *
+ * @param {string} network The network name to connect to (defaults to `homestead`)
+ * @param {string} apiKey Optional (but recommended) api key to use when connecting
+ *
+ * @return {object} The provider connection object or an empty one if the connection failed.
+ */
+export const etherscan = (
+  network: string = DEFAULT_NETWORK,
+  apiKey: string,
+) => {
+  let provider;
+  try {
+    if (apiKey) {
+      provider = new providers.EtherscanProvider(network, apiKey);
+      return provider;
+    }
+    warn(warnings.providers.etherscan.apiKey);
+    provider = new providers.EtherscanProvider(network);
+    return provider;
+  } catch (err) {
+    error(errors.providers.etherscan.connect, network, apiKey, err);
   }
-  return undefined;
+  return {};
 };
 
 const colonyWallet = {
   etherscan,
-  infura,
-  metamask,
 };
 
 export default colonyWallet;

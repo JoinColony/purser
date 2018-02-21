@@ -5,7 +5,7 @@ export const warnings = {
   providers: {
     etherscan: {
       apiKey:
-        "You are using the Etherscan provider without an API key. This way limits the number of requests and it's not a good practice. You can generate a new API key here: https://etherscan.io/myapikey",
+        "You are using the Etherscan provider without an API key. This may limit the number of requests you're allowed to make. You can generate a new API key here: https://etherscan.io/myapikey",
     },
   },
 };
