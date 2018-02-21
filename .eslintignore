@@ -1,2 +1,4 @@
 node_modules
 scripts
+jest.config.js
+webpack.config.js
