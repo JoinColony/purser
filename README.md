@@ -115,4 +115,12 @@ Circle CI handles this project's builds. It has two workflows set up: one for co
 
 The commit workflow will trigger every time you push to a branch. If that branch push was triggered by `greenkeeper` it will build it, and if it succeeds it will re-push with the updated `yarn` lockfile and build again.
 
-The nighly build workflow will run every night at 4 AM and will build the latest changes added to the `master` branch.
+The nightly build workflow will run every night at 4 AM and will build the latest changes added to the `master` branch.
+
+### Dependency Management
+
+This project makes use of `greenkeeper` for dependency management.
+
+If a new version of a package is found _(either public or private scoped)_ it will create a new branch with the package change and try to build it. If the build succeeds it will push changes to the `yarn` lockfile and re-build again.
+
+When the builds succeeds one of two things will happen: if the package update was to a in-range version, the branch will be deleted _(this is by design, as the package will be updated to this version when you reinstall `node_modules`)_. If the package update was out of range _(or one of the two previous builds failed)_ than a PR will be created so that it can be reviewed and fixed.
