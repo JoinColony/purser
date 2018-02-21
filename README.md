@@ -4,6 +4,18 @@
 
 A set of utilities to interface with ethereum addresses
 
+### Builds
+
+Building the project will output three versions of the library:
+
+```bash
+yarn Build
+```
+
+A UMD build to be used directly inside the browser as a script source _(both minified and un-minified versions)_. A `commonjs` modules build and an `es6` modules build.
+
+The `es6` version will also bring over the `flow` types used for this project.
+
 ### Developing
 
 If you want to actively work on the modules, there's a `yarn` task that will watch the `src` folder and rebuild files if they were changed:
