@@ -4,6 +4,14 @@
 
 A set of utilities to interface with ethereum addresses
 
+### Usage
+
+_To be added_
+
+#### Quick start
+
+_To be added_
+
 ### Builds
 
 Building the project will output three versions of the library:
@@ -100,3 +108,11 @@ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo s
 ```
 
 [More info on the fix from jest#3254](https://github.com/facebook/jest/issues/3254#issuecomment-297214395)
+
+### Continuous Integration
+
+Circle CI handles this project's builds. It has two workflows set up: one for commit pushed, and one that it scheduled to run during the night.
+
+The commit workflow will trigger every time you push to a branch. If that branch push was triggered by `greenkeeper` it will build it, and if it succeeds it will re-push with the updated `yarn` lockfile and build again.
+
+The nighly build workflow will run every night at 4 AM and will build the latest changes added to the `master` branch.
