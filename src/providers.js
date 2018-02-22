@@ -22,19 +22,17 @@ export const etherscan = (
   network: string = DEFAULT_NETWORK,
   apiKey: string,
 ) => {
-  let provider;
+  let provider = {};
   try {
     if (apiKey) {
       provider = new providers.EtherscanProvider(network, apiKey);
-      return provider;
     }
     warn(warnings.providers.etherscan.apiKey);
     provider = new providers.EtherscanProvider(network);
-    return provider;
   } catch (err) {
     error(errors.providers.etherscan.connect, network, apiKey, err);
   }
-  return {};
+  return provider;
 };
 
 /**
@@ -49,24 +47,46 @@ export const etherscan = (
  * @return {object} The provider connection object or an empty one if the connection failed.
  */
 export const infura = (network: string = DEFAULT_NETWORK, apiKey: string) => {
-  let provider;
+  let provider = {};
   try {
     if (apiKey) {
       provider = new providers.InfuraProvider(network, apiKey);
-      return provider;
     }
     warn(warnings.providers.infura.apiKey);
     provider = new providers.InfuraProvider(network);
-    return provider;
   } catch (err) {
     error(errors.providers.infura.connect, network, apiKey, err);
   }
-  return {};
+  return provider;
+};
+
+/**
+ * Metamask provider generator method.
+ * This wraps the `ethers` `Web3Provider` method and provides defaults, error catching and warnings.
+ *
+ * @method metamask
+ *
+ * @param {string} network The network name to connect to (defaults to `homestead`)
+ *
+ * @return {object} The provider connection object or an empty one if the connection failed.
+ */
+export const metamask = (network: string = DEFAULT_NETWORK) => {
+  let provider = {};
+  try {
+    if (!global.web3 || !global.web3.currentProvider) {
+      return warn(warnings.providers.metamask.notAvailable);
+    }
+    provider = new providers.Web3Provider(global.web3.currentProvider, network);
+  } catch (err) {
+    error(errors.providers.metamask.connect, network, err);
+  }
+  return provider;
 };
 
 const colonyWallet = {
   etherscan,
   infura,
+  metamask,
 };
 
 export default colonyWallet;
