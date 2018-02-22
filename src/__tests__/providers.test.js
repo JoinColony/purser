@@ -1,7 +1,12 @@
 import { providers } from 'ethers';
 
-import { etherscan, infura, metamask } from '../providers';
-import { DEFAULT_NETWORK } from '../defaults';
+import { etherscan, infura, metamask, localhost } from '../providers';
+import {
+  DEFAULT_NETWORK,
+  LOCALPROVIDER_HOST as HOST,
+  LOCALPROVIDER_PORT as PORT,
+  LOCALPROVIDER_PROTOCOL as PROTOCOL,
+} from '../defaults';
 import * as utils from '../utils';
 
 describe('`providers` module', () => {
@@ -103,6 +108,38 @@ describe('`providers` module', () => {
       const provider = metamask(testNetworkName);
       expect(providers.Web3Provider).toHaveBeenCalled();
       expect(providers.Web3Provider).toThrow();
+      expect(provider).toEqual({});
+    });
+  });
+  describe('`localhost` provider', () => {
+    test('Connects with defaults', () => {
+      providers.JsonRpcProvider = jest.fn();
+      localhost();
+      expect(providers.JsonRpcProvider).toHaveBeenCalled();
+      expect(providers.JsonRpcProvider).toHaveBeenCalledWith(
+        `${PROTOCOL}://${HOST}:${PORT}`,
+        DEFAULT_NETWORK,
+      );
+    });
+    test('Connects with custom url and network', () => {
+      providers.JsonRpcProvider = jest.fn();
+      const testUrl = 'http://127.0.0.1';
+      const testNetworkName = 'skynet';
+      localhost(testUrl, testNetworkName);
+      expect(providers.JsonRpcProvider).toHaveBeenCalled();
+      expect(providers.JsonRpcProvider).toHaveBeenCalledWith(
+        testUrl,
+        testNetworkName,
+      );
+    });
+    test('Catch the connection error if something goes wrong', () => {
+      providers.JsonRpcProvider = jest.fn(() => {
+        throw new Error();
+      });
+      const testNetworkName = 'network-name-does-not-exist';
+      const provider = localhost(testNetworkName);
+      expect(providers.JsonRpcProvider).toHaveBeenCalled();
+      expect(providers.JsonRpcProvider).toThrow();
       expect(provider).toEqual({});
     });
   });
