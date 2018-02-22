@@ -1,7 +1,7 @@
 /* @flow */
 
 export const DEFAULT_NETWORK = 'homestead';
-export const TEST_NETWORK = 'rinkeby';
+export const TEST_NETWORK = 'ropsten';
 
 const defaults = {
   DEFAULT_NETWORK,

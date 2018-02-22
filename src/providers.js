@@ -37,8 +37,36 @@ export const etherscan = (
   return {};
 };
 
+/**
+ * Infura provider generator method.
+ * This wraps the `ethers` `InfuraProvider` method and provides defaults, error catching and warnings.
+ *
+ * @method infura
+ *
+ * @param {string} network The network name to connect to (defaults to `homestead`)
+ * @param {string} apiKey Optional (but recommended) api key to use when connecting
+ *
+ * @return {object} The provider connection object or an empty one if the connection failed.
+ */
+export const infura = (network: string = DEFAULT_NETWORK, apiKey: string) => {
+  let provider;
+  try {
+    if (apiKey) {
+      provider = new providers.InfuraProvider(network, apiKey);
+      return provider;
+    }
+    warn(warnings.providers.infura.apiKey);
+    provider = new providers.InfuraProvider(network);
+    return provider;
+  } catch (err) {
+    error(errors.providers.infura.connect, network, apiKey, err);
+  }
+  return {};
+};
+
 const colonyWallet = {
   etherscan,
+  infura,
 };
 
 export default colonyWallet;
