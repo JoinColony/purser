@@ -137,6 +137,10 @@ export const autoselect = (
       if (provider && provider.chainId) {
         return provider;
       }
+      /*
+       * Reset the provider back to an empty object if it wasn't the right format
+       */
+      provider = {};
     }
   }
   error(errors.providers.autoselect.noProvider);

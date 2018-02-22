@@ -1,6 +1,12 @@
 import { providers } from 'ethers';
 
-import { etherscan, infura, metamask, localhost } from '../providers';
+import {
+  etherscan,
+  infura,
+  metamask,
+  localhost,
+  autoselect,
+} from '../providers';
 import {
   DEFAULT_NETWORK,
   LOCALPROVIDER_HOST as HOST,
@@ -140,6 +146,38 @@ describe('`providers` module', () => {
       const provider = localhost(testNetworkName);
       expect(providers.JsonRpcProvider).toHaveBeenCalled();
       expect(providers.JsonRpcProvider).toThrow();
+      expect(provider).toEqual({});
+    });
+  });
+  describe('autoselect providers from a list', () => {
+    test('Try to connect to function providers', () => {
+      const mockedProvider1 = jest.fn();
+      const mockedProvider2 = jest.fn();
+      autoselect([mockedProvider1, mockedProvider2]);
+      expect(mockedProvider1).toHaveBeenCalled();
+      expect(mockedProvider2).toHaveBeenCalled();
+    });
+    test('Try to connect to object providers', () => {
+      const mockedProvider1 = { chainId: 1 };
+      const mockedProvider2 = jest.fn();
+      const mockedProvider3 = { chainId: 3 };
+      const provider = autoselect([
+        mockedProvider1,
+        mockedProvider2,
+        mockedProvider3,
+      ]);
+      expect(provider).toEqual(mockedProvider1);
+    });
+    test('Show an error if the providers array is empty', () => {
+      utils.error = jest.fn();
+      const provider = autoselect([]);
+      expect(utils.error).toHaveBeenCalled();
+      expect(provider).toEqual({});
+    });
+    test('Show an error if it could not connect to any providers', () => {
+      utils.error = jest.fn();
+      const provider = autoselect([{ chainId: false }, {}, () => {}]);
+      expect(utils.error).toHaveBeenCalled();
       expect(provider).toEqual({});
     });
   });
