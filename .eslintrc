@@ -5,10 +5,6 @@
     "commonjs": true,
     "es6": true,
   },
-  "globals": {
-    "web3": true,
-    "ENV": true,
-  },
   "rules": {
     "array-bracket-newline": ["warn", "consistent"],
     "no-console": ["warn", { "allow": ["warn", "error"]}],

@@ -21,7 +21,7 @@ const sourceWatch = chokidar.watch(paths.source, { ignored: '**/__tests__', awai
  * Build the `lib` folder after we read all the content
  */
 sourceWatch.on('ready', () => {
-  utils.run(`yarn build`, {}, 'Built initially...');
+  utils.run(`yarn build:dev`, {}, 'Built initially...');
   initialRun = false;
 });
 
@@ -36,7 +36,6 @@ sourceWatch.on('all', (event, path) => {
       console.log(chalk.white(contentHash), chalk.yellow(fileName), chalk.green('changed. Building...'));
       files[fileName] = contentHash;
       jobs.umd(false);
-      jobs.umdMinified(false);
       jobs.esModules(false);
       jobs.flowTypes(false);
       jobs.cjsModules(false);

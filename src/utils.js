@@ -1,5 +1,7 @@
 /* @flow */
 
+import { ENV } from './defaults';
+
 /**
  * Simple helper to determine if we should output messages to the console
  * based on the environment the modules have been built in
