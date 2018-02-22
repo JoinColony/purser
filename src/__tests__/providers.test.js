@@ -1,7 +1,8 @@
 import { providers } from 'ethers';
 
-import { etherscan, infura } from '../providers';
+import { etherscan, infura, metamask } from '../providers';
 import { DEFAULT_NETWORK } from '../defaults';
+import * as utils from '../utils';
 
 describe('`providers` module', () => {
   describe('`etherscan` provider', () => {
@@ -59,6 +60,49 @@ describe('`providers` module', () => {
       const provider = infura(testNetworkName);
       expect(providers.InfuraProvider).toHaveBeenCalled();
       expect(providers.InfuraProvider).toThrow();
+      expect(provider).toEqual({});
+    });
+  });
+  describe('`metamask/web3` provider', () => {
+    test('Connects with defaults', () => {
+      global.web3 = { currentProvider: { mockProvider: true } };
+      providers.Web3Provider = jest.fn();
+      metamask();
+      expect(providers.Web3Provider).toHaveBeenCalled();
+      expect(providers.Web3Provider).toHaveBeenCalledWith(
+        global.web3.currentProvider,
+        DEFAULT_NETWORK,
+      );
+    });
+    test('Connects with custom network', () => {
+      global.web3 = { currentProvider: { mockProvider: true } };
+      providers.Web3Provider = jest.fn();
+      const testNetworkName = 'skynet';
+      metamask(testNetworkName);
+      expect(providers.Web3Provider).toHaveBeenCalled();
+      expect(providers.Web3Provider).toHaveBeenCalledWith(
+        global.web3.currentProvider,
+        testNetworkName,
+      );
+    });
+    test('Detects if the metamask in-page provider is not available', () => {
+      global.web3 = undefined;
+      providers.Web3Provider = jest.fn();
+      utils.warn = jest.fn();
+      const provider = metamask();
+      expect(providers.Web3Provider).not.toHaveBeenCalled();
+      expect(utils.warn).toHaveBeenCalled();
+      expect(provider).toEqual({});
+    });
+    test('Catch the connection error if something goes wrong', () => {
+      global.web3 = { currentProvider: { mockProvider: true } };
+      providers.Web3Provider = jest.fn(() => {
+        throw new Error();
+      });
+      const testNetworkName = 'network-name-does-not-exist';
+      const provider = metamask(testNetworkName);
+      expect(providers.Web3Provider).toHaveBeenCalled();
+      expect(providers.Web3Provider).toThrow();
       expect(provider).toEqual({});
     });
   });

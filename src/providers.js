@@ -74,7 +74,8 @@ export const metamask = (network: string = DEFAULT_NETWORK) => {
   let provider = {};
   try {
     if (!global.web3 || !global.web3.currentProvider) {
-      return warn(warnings.providers.metamask.notAvailable);
+      warn(warnings.providers.metamask.notAvailable);
+      return provider;
     }
     provider = new providers.Web3Provider(global.web3.currentProvider, network);
   } catch (err) {

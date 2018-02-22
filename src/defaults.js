@@ -9,7 +9,7 @@ export const TEST_NETWORK = 'ropsten';
 /*
  * Build environment
  */
-export const ENV = (process && process.env.NODE_ENV) || undefined;
+export const ENV = (process && process.env.NODE_ENV) || 'development';
 
 const defaults = {
   DEFAULT_NETWORK,
