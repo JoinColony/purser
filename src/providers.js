@@ -5,7 +5,12 @@ import { providers } from 'ethers';
 import { warn, error } from './utils';
 import { warnings, errors } from './messages';
 
-import { DEFAULT_NETWORK } from './defaults';
+import {
+  DEFAULT_NETWORK,
+  LOCALPROVIDER_PROTOCOL as PROTOCOL,
+  LOCALPROVIDER_HOST as HOST,
+  LOCALPROVIDER_PORT as PORT,
+} from './defaults';
 
 /**
  * Etherscan provider generator method.
@@ -84,9 +89,34 @@ export const metamask = (network: string = DEFAULT_NETWORK) => {
   return provider;
 };
 
+/**
+ * Local provider generator method. Useful to connect to a local instance of geth / parity / testrpc.
+ * This wraps the `ethers` `JsonRpcProvider` method and provides defaults, error catching and warnings.
+ *
+ * @method localhost
+ *
+ * @param {string} url The Json Rpc url of the localhost provider (defaults to `http://localhost:8545`)
+ * @param {string} network The network name to connect to (defaults to `homestead`)
+ *
+ * @return {object} The provider connection object or an empty one if the connection failed.
+ */
+export const localhost = (
+  url: string = `${PROTOCOL}://${HOST}:${PORT}`,
+  network: string = DEFAULT_NETWORK,
+) => {
+  let provider = {};
+  try {
+    provider = new providers.JsonRpcProvider(url, network);
+  } catch (err) {
+    error(errors.providers.localhost.connect, url, network, err);
+  }
+  return provider;
+};
+
 const colonyWallet = {
   etherscan,
   infura,
+  localhost,
   metamask,
 };
 

@@ -32,6 +32,10 @@ export const errors = {
       connect:
         'Metamask provider failed to connect. Please verify the provided network name (%s). %s',
     },
+    localhost: {
+      connect:
+        'Local provider failed to connect. Please verify the provided rpc url (%s) and network name (%s). %s',
+    },
   },
 };
 
