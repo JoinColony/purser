@@ -27,7 +27,7 @@ export const verbose = (): boolean => {
  *
  * @param {any} args Arguments array that will be passed down to `console.warn`
  */
-export const warn = (...args: Array<any>): void => {
+export const warn = (...args: Array<*>): void => {
   if (verbose()) {
     return console.warn(...args);
   }
@@ -41,7 +41,7 @@ export const warn = (...args: Array<any>): void => {
  *
  * @param {any} args Arguments array that will be passed down to `console.warn`
  */
-export const error = (...args: Array<any>): void => {
+export const error = (...args: Array<*>): void => {
   if (verbose()) {
     return console.error(...args);
   }
