@@ -106,10 +106,40 @@ export const localhost = (
 ) => {
   let provider = {};
   try {
+    /*
+     * @TODO
+     * Instantly check for a connection to see if a local provider is up.
+     * Currently it will create the provider regardless, and only check if it's up when sending a transaction.
+     * If we check for it upfront, we can add this provider to the start of the array.
+     */
     provider = new providers.JsonRpcProvider(url, network);
   } catch (err) {
     error(errors.providers.localhost.connect, url, network, err);
   }
+  return provider;
+};
+
+export const autoselect = (
+  providersList: Array<any> = [metamask, etherscan, infura, localhost],
+) => {
+  let provider = {};
+  if (!providersList.length) {
+    error(errors.providers.autoselect.empty);
+    return provider;
+  }
+  for (let i = 0, l = providersList.length; i < l; i += 1) {
+    if (typeof providersList[i] === 'object' && providersList[i].chainId) {
+      provider = providersList[i];
+      return provider;
+    }
+    if (typeof providersList[i] === 'function') {
+      provider = providersList[i]();
+      if (provider && provider.chainId) {
+        return provider;
+      }
+    }
+  }
+  error(errors.providers.autoselect.noProvider);
   return provider;
 };
 
@@ -118,6 +148,7 @@ const colonyWallet = {
   infura,
   localhost,
   metamask,
+  autoselect,
 };
 
 export default colonyWallet;

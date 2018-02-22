@@ -36,6 +36,12 @@ export const errors = {
       connect:
         'Local provider failed to connect. Please verify the provided rpc url (%s) and network name (%s). %s',
     },
+    autoselect: {
+      empty:
+        'The providers array seems to be empty. Please add at least one provider to the selection pool.',
+      noProvider:
+        'No provider could be selected. This most likely happens when all providers in the selection pool fail to connect. Check the error messages leading up to this.',
+    },
   },
 };
 
