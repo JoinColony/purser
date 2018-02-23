@@ -19,23 +19,20 @@ import {
  * @method etherscan
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
- * @param {string} apiKey Optional (but recommended) api key to use when connecting
+ * @param {string} token Optional (but recommended) api key to use when connecting
  *
  * @return {object} The provider connection object or an empty one if the connection failed.
  */
-export const etherscan = (
-  network: string = DEFAULT_NETWORK,
-  apiKey: string,
-) => {
+export const etherscan = (network: string = DEFAULT_NETWORK, token: string) => {
   let provider = {};
   try {
-    if (apiKey) {
-      provider = new providers.EtherscanProvider(network, apiKey);
+    if (token) {
+      provider = new providers.EtherscanProvider(network, token);
     }
-    warn(warnings.providers.etherscan.apiKey);
+    warn(warnings.providers.etherscan.token);
     provider = new providers.EtherscanProvider(network);
   } catch (err) {
-    error(errors.providers.etherscan.connect, network, apiKey, err);
+    error(errors.providers.etherscan.connect, network, token, err);
   }
   return provider;
 };
@@ -47,20 +44,20 @@ export const etherscan = (
  * @method infura
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
- * @param {string} apiKey Optional (but recommended) api key to use when connecting
+ * @param {string} token Optional (but recommended) api key to use when connecting
  *
  * @return {object} The provider connection object or an empty one if the connection failed.
  */
-export const infura = (network: string = DEFAULT_NETWORK, apiKey: string) => {
+export const infura = (network: string = DEFAULT_NETWORK, token: string) => {
   let provider = {};
   try {
-    if (apiKey) {
-      provider = new providers.InfuraProvider(network, apiKey);
+    if (token) {
+      provider = new providers.InfuraProvider(network, token);
     }
-    warn(warnings.providers.infura.apiKey);
+    warn(warnings.providers.infura.token);
     provider = new providers.InfuraProvider(network);
   } catch (err) {
-    error(errors.providers.infura.connect, network, apiKey, err);
+    error(errors.providers.infura.connect, network, token, err);
   }
   return provider;
 };
