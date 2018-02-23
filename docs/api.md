@@ -1,6 +1,6 @@
 # API
 
-This docs serve to outline the API format and methods provided by `colony-wallet`.
+These docs serve to outline the API format and methods provided by `colony-wallet`.
 
 #### Console output
 
@@ -15,6 +15,7 @@ When building with `NODE_ENV=production` all output will be silenced.
   * [`etherscan`](#etherscan)
   * [`infura`](#infura)
   * [`localhost`](#localhost)
+  * [`autoselect`](#autoselect)
 
 ## Providers
 
@@ -88,4 +89,30 @@ To be able to connect to them locally you'll have to add `--rpccorsdomain "<your
 import { localhost } from 'colony-wallet/providers';
 
 const provider = localhost('http://localhost:8545', 'homestead'); // { chainId: '', ensAddress: '', ... }
+```
+
+### `autoselect`
+
+```js
+autoselect([providersList: Array<function|Object>])
+```
+
+This is just a helper method that goes through a list of providers _(both generator methods and already instantiated provider objects)_ and selects the first one available.
+
+By default it goes through the following provider list, in order: `[metamask, etherscan, infura, localhost]`, so if this works for you, just call it directly without any arguments:
+
+```js
+import { autoselect } from 'colony-wallet/providers';
+
+const provider = autoselect(); // This will return the first available, instantiated provider
+```
+
+Because it takes both generator methods and already-instantiated providers you can mix and match them:
+
+```js
+import { autoselect, metamask, localhost } from 'colony-wallet/providers';
+
+const localFallback = localhost('http://localhost:8545', 'ropsten');
+
+const provider = autoselect([() => metamask('ropsten'), localFallback]);
 ```
