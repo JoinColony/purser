@@ -111,6 +111,7 @@ export const localhost = (
      * Instantly check for a connection to see if a local provider is up.
      * Currently it will create the provider regardless, and only check if it's up when sending a transaction.
      * If we check for it upfront, we can add this provider to the start of the array.
+     * To implement this, we need to switch this (and maybe all) provider methods to `async`s, the tradeoff in this case might not be worth it.
      */
     provider = new providers.JsonRpcProvider(url, network);
   } catch (err) {
