@@ -4,11 +4,14 @@ This docs serve to outline the API format and methods provided by `colony-wallet
 
 #### Console output
 
-In `development` mode there will be a number of warnings or errors outputted verbosely to the console. When building with `NODE_ENV=production` all output will be silenced.
+In `development` mode there will be a number of warnings or errors outputted verbosely to the console.
+
+When building with `NODE_ENV=production` all output will be silenced.
 
 ## Contents
 
 * [Providers](#Providers)
+  * [`metamask`](#metamask)
   * [`etherscan`](#etherscan)
   * [`infura`](#infura)
 
@@ -17,6 +20,23 @@ In `development` mode there will be a number of warnings or errors outputted ver
 Create a connection to an Ethereum blockchain. This is achieved differently by the various providers.
 
 HTTP API endpoint for _etherscan_ and _infura_, injected into the webpage in the case of _metamask_, or local RPC connection in the case of _localhost_.
+
+### `metamask`
+
+```js
+metamask([network: string])
+```
+
+This provider method takes just an optional `network` name as string _(defaults to 'homestead')_ and will use the in-page `Web3` provider injected by the [Metamask extension](https://github.com/MetaMask/metamask-extension), if available.
+
+```js
+import { metamask } from 'colony-wallet/providers';
+
+const provider = metamask('homestead'); // { chainId: '', ensAddress: '', ... }
+
+// Or just use the defaults if you just want to go on mainnet.
+const providerDefaults = metamask();
+```
 
 ### `etherscan`
 
