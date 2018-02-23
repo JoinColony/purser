@@ -14,6 +14,7 @@ When building with `NODE_ENV=production` all output will be silenced.
   * [`metamask`](#metamask)
   * [`etherscan`](#etherscan)
   * [`infura`](#infura)
+  * [`localhost`](#localhost)
 
 ## Providers
 
@@ -65,4 +66,26 @@ This provider method takes an optional `network` name as string _(defaults to 'h
 import { infura } from 'colony-wallet/providers';
 
 const provider = infura('homestead', '<your-token-key>'); // { chainId: '', ensAddress: '', ... }
+```
+
+### `localhost`
+
+```js
+localhost([url: string], [network: string])
+```
+
+This provider method takes an optional `url` as string _(defaults to 'http://localhost:8545')_ and an optional `network` name as string _(defaults to 'homestead')_.
+
+As opposed to the previous methods, this will just instantiate the provider but not actually connect to your local [`JSON-RPC`](http://www.jsonrpc.org/specification) server. It will only do that once you try sending a transaction. This also means that calling this method will never result in an error state, as any `url` string you provide will be initially instantiated -- when you try to communicate with it, than it will fail.
+
+**Note:**
+
+Most blockchain clients _(Parity, Geth)_ will restrict `JSON-RPC` connections by default via the `Access-Control-Allow-Origin` request header, or in the case of _Geth_, won't even start it by default.
+
+To be able to connect to them locally you'll have to add `--rpccorsdomain "<your-domain>"` _(in the case of Parity)_ or `--jsonrpc-cors "<your-domain>"` _(in the case of Geth)_ to your startup command. You can also use `*` as the domain name for both of them _(allowing connections from all domains)_ but that is less secure.
+
+```js
+import { localhost } from 'colony-wallet/providers';
+
+const provider = localhost('http://localhost:8545', 'homestead'); // { chainId: '', ensAddress: '', ... }
 ```
