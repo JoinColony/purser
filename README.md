@@ -28,6 +28,10 @@ A UMD build to be used directly inside the browser as a script source _(both min
 
 The `es6` version will also bring over the `flow` types used for this project.
 
+### Documnetation
+
+You can find the API docs [here](docs/api.md).
+
 ### Developing
 
 If you want to actively work on the modules, there's a `yarn` task that will watch the `src` folder and rebuild files if they were changed:
