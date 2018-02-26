@@ -1,9 +1,18 @@
 /* @flow */
 
-import add from './add';
+import providers from './providers';
+import utils from './utils';
+import { ENV } from './defaults';
+import { name, version } from '../package.json';
 
 const colonyWallet = {
-  add,
+  utils,
+  providers,
+  about: {
+    name,
+    version,
+    environment: ENV,
+  },
 };
 
 export default colonyWallet;

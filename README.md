@@ -14,15 +14,23 @@ _To be added_
 
 ### Builds
 
-Building the project will output three versions of the library:
+Building the project will output three versions of the library. You can either build it in _dev_ or _prod_ mode, the difference between then being with setting the `NODE_ENV` variable. This will determine the verbosity of the output and if the UMD build should have a minified version:
 
 ```bash
-yarn Build
+yarn build:dev
+```
+
+```bash
+yarn build:prod
 ```
 
 A UMD build to be used directly inside the browser as a script source _(both minified and un-minified versions)_. A `commonjs` modules build and an `es6` modules build.
 
 The `es6` version will also bring over the `flow` types used for this project.
+
+### Documnetation
+
+You can find the API docs [here](docs/api.md).
 
 ### Developing
 

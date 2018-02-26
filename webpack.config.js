@@ -17,6 +17,7 @@ module.exports = {
     path: paths.umd,
     library: 'colonyWallet',
     libraryTarget: 'umd',
+    libraryExport: "default",
   },
   module: {
     rules: [

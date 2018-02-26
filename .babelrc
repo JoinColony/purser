@@ -1,7 +1,12 @@
 {
   "presets": ["env", "flow"],
   "plugins": [
-    ["transform-runtime", { "polyfill": false, "regenerator": true }]
+    ["transform-runtime", { "polyfill": false, "regenerator": true }],
+    ["transform-inline-environment-variables", {
+      "include": [
+        "NODE_ENV"
+      ]
+    }]
   ],
   "ignore": [
     "__tests__"

@@ -4,7 +4,9 @@ jobs.clean('Removed the \'lib\' folder for a clean build');
 
 jobs.umd('Built UMD package for browsers');
 
-jobs.umdMinified('Built minified UMD package for browsers');
+if (process && process.env.NODE_ENV === 'production') {
+  jobs.umdMinified('Built minified UMD package for browsers');
+}
 
 jobs.esModules('Built ES6 modules');
 

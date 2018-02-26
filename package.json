@@ -12,6 +12,9 @@
     "precommit": "lint-staged",
     "watch": "node scripts/watch.js",
     "build": "node scripts/build.js",
+    "build:dev": "NODE_ENV=development yarn build",
+    "build:prod": "NODE_ENV=production yarn build",
+    "build:ci": "NODE_ENV=test yarn build",
     "flow": "flow",
     "glow": "glow",
     "flow:check": "flow check",
@@ -19,10 +22,10 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "lint:ci": "eslint --format junit -o reports/eslint/eslint-results.xml src",
-    "test": "jest",
-    "test:watch": "jest --watchAll",
-    "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --coverage --testResultsProcessor='jest-junit'",
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watchAll",
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "test:ci": "NODE_ENV=test jest --ci --coverage --testResultsProcessor='jest-junit'",
     "lockfile:update": "greenkeeper-lockfile-update",
     "lockfile:upload": "greenkeeper-lockfile-upload"
   },
@@ -45,6 +48,7 @@
     "babel-jest": "^22.2.2",
     "babel-loader": "^7.1.2",
     "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.3.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
@@ -68,5 +72,8 @@
     "prettier": "^1.10.2",
     "webpack": "^4.0.0",
     "webpack-cli": "^2.0.9"
+  },
+  "dependencies": {
+    "ethers": "^2.2.6"
   }
 }
