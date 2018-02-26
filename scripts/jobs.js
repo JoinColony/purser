@@ -11,7 +11,7 @@ const esModules = message => run(`babel --out-dir ${paths.modules} ${paths.sourc
 
 const cjsModules = message => run(`babel --out-dir ${paths.lib} ${paths.source}`, { BABEL_ENV: 'cjs' }, message);
 
-const flowTypes = message => run(`flow-copy-source --ignore "**/__tests__/**" ${paths.source} ${paths.modules}`, {}, message);
+const flowTypes = message => run(`flow-copy-source --ignore "${paths.globs.tests}" --ignore "${paths.files.defaults}" --ignore "${paths.files.messages}" ${paths.source} ${paths.modules}`, {}, message);
 
 module.exports = {
   clean,
