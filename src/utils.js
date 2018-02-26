@@ -69,7 +69,7 @@ export const getRandomValues = (typedArray: Uint8Array) => {
     return window.crypto.getRandomValues(typedArray);
   }
   /*
-   * Check if `webCrypto` is available (Microsoft based brosers, most likely Edge)
+   * Check if `webCrypto` is available (Microsoft based browsers, most likely Edge)
    */
   if (
     typeof window.msCrypto === 'object' &&
