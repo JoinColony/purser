@@ -116,13 +116,6 @@ acorn@^5.0.0, acorn@^5.3.0, acorn@^5.4.0:
 aes-js@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/aes-js/-/aes-js-3.0.0.tgz#e21df10ad6c2053295bcbb8dab40b09dbea87e4d"
-<<<<<<< HEAD
-=======
-
-ajv-keywords@^2.1.0:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-2.1.1.tgz#617997fc5f60576894c435f940d819e135b80762"
->>>>>>> Add: create a random basic wallet
 
 ajv-keywords@^3.0.0, ajv-keywords@^3.1.0:
   version "3.1.0"
@@ -2269,18 +2262,6 @@ ethers@^3.0.2:
 ethers@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-2.2.6.tgz#d1081c3e132930686fa7a3b508ae4d0ef8bd986a"
-<<<<<<< HEAD
-=======
-  dependencies:
-    ethers-contracts "2.2.1"
-    ethers-providers "2.1.19"
-    ethers-utils "2.1.11"
-    ethers-wallet "2.1.8"
-
-event-emitter@~0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/event-emitter/-/event-emitter-0.3.5.tgz#df8c69eef1647923c7157b9ce83840610b02cc39"
->>>>>>> Add: create a random basic wallet
   dependencies:
     ethers-contracts "2.2.1"
     ethers-providers "2.1.19"
@@ -3860,10 +3841,6 @@ jest@^22.3.0:
   dependencies:
     import-local "^1.0.0"
     jest-cli "^22.4.2"
-
-js-sha3@0.5.7:
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.5.7.tgz#0d4ffd8002d5333aabaf4a23eed2f6374c9f28e7"
 
 js-sha3@0.5.7:
   version "0.5.7"
@@ -5615,13 +5592,10 @@ schema-utils@^0.4.2:
     ajv "^6.1.0"
     ajv-keywords "^3.1.0"
 
-<<<<<<< HEAD
 scoped-regex@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/scoped-regex/-/scoped-regex-1.0.0.tgz#a346bb1acd4207ae70bd7c0c7ca9e566b6baddb8"
 
-=======
->>>>>>> Add: create a random basic wallet
 scrypt-js@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-2.0.3.tgz#bb0040be03043da9a012a2cea9fc9f852cfc87d4"
@@ -6681,11 +6655,7 @@ xmlhttprequest@1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/xmlhttprequest/-/xmlhttprequest-1.8.0.tgz#67fe075c5c24fef39f9d65f5f7b7fe75171968fc"
 
-<<<<<<< HEAD
 xtend@^4.0.0, xtend@~4.0.0, xtend@~4.0.1:
-=======
-xtend@^4.0.0, xtend@^4.0.1, xtend@~4.0.1:
->>>>>>> Add: create a random basic wallet
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
 
