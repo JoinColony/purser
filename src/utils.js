@@ -61,7 +61,7 @@ export const error = (...args: Array<*>): void => {
  *
  * @return {Uint8Array} A new 8-bit unsigned integer array filled with random bytes
  */
-export const getRandomValues = (typedArray: Uint8Array) => {
+export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   /*
    * Check if `webCrypto` is available (Chrome and Firefox browsers)
    */
