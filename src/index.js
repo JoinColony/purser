@@ -2,8 +2,11 @@
 
 import ethers from 'ethers';
 
+import wallet from './wallet';
 import providers from './providers';
+
 import utils from './utils';
+
 import { ENV } from './defaults';
 import { name, version } from '../package.json';
 
@@ -16,8 +19,9 @@ const debug = {
 const colonyWallet = Object.assign(
   {},
   {
-    utils,
+    wallet,
     providers,
+    utils,
     about: {
       name,
       version,

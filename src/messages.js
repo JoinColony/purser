@@ -16,6 +16,12 @@ export const warnings = {
         'The Metamask in-page provider is not available. Make sure that the Metamask extension is installed and enabled in your browser: https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn',
     },
   },
+  utils: {
+    getRandomValues: {
+      nodeCryptoFallback:
+        "Your browser doesn't have the `webcrypto` API implemented, falling back to the `cryto` library provided by `node`",
+    },
+  },
 };
 
 export const errors = {
@@ -41,6 +47,14 @@ export const errors = {
         'The providers array seems to be empty. Please add at least one provider to the selection pool.',
       noProvider:
         'No provider could be selected. This most likely happens when all providers in the selection pool fail to connect. Check the error messages leading up to this.',
+    },
+  },
+  utils: {
+    getRandomValues: {
+      wrongArgumentType:
+        'Expected the argument to be an instance of an Uint8Array typed array.',
+      noCryptoLib:
+        'Could not find any `crypto` libraries. Cannot proceed further as we cannot generate randomness',
     },
   },
 };
