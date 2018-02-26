@@ -1,11 +1,17 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const paths = require('./scripts/paths');
 
+let mode = 'development';
+
+if (process.env.NODE_ENV === 'production') {
+  mode = 'production';
+}
+
 const minimize = process.argv.indexOf('--optimize-minimize') !== -1;
-const plugins = minimize ? [new UglifyJsPlugin()] : [];
 
 module.exports = {
   entry: './src/index.js',
+  mode,
   output: {
     filename: minimize ? 'colonyWallet.min.js' : 'colonyWallet.js',
     path: paths.umd,
@@ -23,5 +29,7 @@ module.exports = {
       },
     ],
   },
-  plugins,
+  optimization: {
+    minimize: minimize ? true : false,
+  },
 };

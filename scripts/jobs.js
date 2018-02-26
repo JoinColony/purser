@@ -3,9 +3,9 @@ const paths = require('./paths');
 
 const clean = message => run(`rm -rf ${paths.lib}`, {}, message);
 
-const umd = message => run('webpack', {}, message);
+const umd = message => run('webpack-cli', {}, message);
 
-const umdMinified = message => run('webpack --optimize-minimize', {}, message);
+const umdMinified = message => run('webpack-cli --optimize-minimize', {}, message);
 
 const esModules = message => run(`babel --out-dir ${paths.modules} ${paths.source}`, { BABEL_ENV: 'es' }, message);
 
