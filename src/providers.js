@@ -144,7 +144,6 @@ export const localhost = (
  *
  * @param {Array} providersList An array of providers to select from. Can be either a provider
  * object (ProviderType) or an provider generator method (ProviderGeneratorType)
- *
  * @return {ProviderType} The selected provider connection object
  */
 export const autoselect = (

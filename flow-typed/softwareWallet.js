@@ -4,10 +4,10 @@ declare type WalletType = {
   mnemonic: string,
   path: string,
   privateKey: string,
-  provider: *,
+  provider: ProviderType,
+  /*
+   * @TODO
+   * Create transaction types
+   */
   sign: (transaction: *) => string,
-  get defaultGasLimit (): number,
-  set defaultGasLimit (value: number): number,
-  get provider (): *,
-  set provider (value: *): *,
 };
