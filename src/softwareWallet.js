@@ -11,8 +11,7 @@ import { getRandomValues } from './utils';
  * This is the legacy version, as the final object will not contain any extra
  * helper values (QR codes, blockies).
  *
- * @TODO
- * Add API documentation
+ * @TODO Add API documentation
  *
  * @param {ProviderType} provider An available provider to add to the wallet
  * (for use in transactions and signing)

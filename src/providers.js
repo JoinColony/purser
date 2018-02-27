@@ -121,8 +121,7 @@ export const localhost = (
   let provider = providerPrototype;
   try {
     /*
-     * @TODO
-     * Instantly check for a connection to see if a local provider is up.
+     * @TODO Instantly check the connection to see if the provider is up
      * Currently it will create the provider regardless, and only check if it's up when
      * sending a transaction.
      * If we check for it upfront, we can add this provider to the start of the array.

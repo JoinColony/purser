@@ -6,8 +6,7 @@ declare type WalletType = {
   privateKey: string,
   provider: ProviderType,
   /*
-   * @TODO
-   * Create transaction types
+   * @TODO Create Flow transaction types
    */
   sign: (transaction: *) => string,
 };
