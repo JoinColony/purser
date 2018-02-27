@@ -6,6 +6,7 @@ import {
   metamask,
   localhost,
   autoselect,
+  providerPrototype,
 } from '../providers';
 import {
   DEFAULT_NETWORK,
@@ -42,7 +43,7 @@ describe('`providers` module', () => {
       const provider = etherscan(testNetworkName);
       expect(providers.EtherscanProvider).toHaveBeenCalled();
       expect(providers.EtherscanProvider).toThrow();
-      expect(provider).toEqual({});
+      expect(provider).toEqual(providerPrototype);
     });
   });
   describe('`infura` provider', () => {
@@ -71,7 +72,7 @@ describe('`providers` module', () => {
       const provider = infura(testNetworkName);
       expect(providers.InfuraProvider).toHaveBeenCalled();
       expect(providers.InfuraProvider).toThrow();
-      expect(provider).toEqual({});
+      expect(provider).toEqual(providerPrototype);
     });
   });
   describe('`metamask/web3` provider', () => {
@@ -103,7 +104,7 @@ describe('`providers` module', () => {
       const provider = metamask();
       expect(providers.Web3Provider).not.toHaveBeenCalled();
       expect(utils.warn).toHaveBeenCalled();
-      expect(provider).toEqual({});
+      expect(provider).toEqual(providerPrototype);
     });
     test('Catch the connection error if something goes wrong', () => {
       global.web3 = { currentProvider: { mockProvider: true } };
@@ -114,7 +115,7 @@ describe('`providers` module', () => {
       const provider = metamask(testNetworkName);
       expect(providers.Web3Provider).toHaveBeenCalled();
       expect(providers.Web3Provider).toThrow();
-      expect(provider).toEqual({});
+      expect(provider).toEqual(providerPrototype);
     });
   });
   describe('`localhost` provider', () => {
@@ -146,7 +147,7 @@ describe('`providers` module', () => {
       const provider = localhost(testNetworkName);
       expect(providers.JsonRpcProvider).toHaveBeenCalled();
       expect(providers.JsonRpcProvider).toThrow();
-      expect(provider).toEqual({});
+      expect(provider).toEqual(providerPrototype);
     });
   });
   describe('autoselect providers from a list', () => {
@@ -172,13 +173,13 @@ describe('`providers` module', () => {
       utils.error = jest.fn();
       const provider = autoselect([]);
       expect(utils.error).toHaveBeenCalled();
-      expect(provider).toEqual({});
+      expect(provider).toEqual(providerPrototype);
     });
     test('Show an error if it could not connect to any providers', () => {
       utils.error = jest.fn();
       const provider = autoselect([{ chainId: false }, {}, () => {}]);
       expect(utils.error).toHaveBeenCalled();
-      expect(provider).toEqual({});
+      expect(provider).toEqual(providerPrototype);
     });
   });
 });

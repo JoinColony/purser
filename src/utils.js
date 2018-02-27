@@ -55,6 +55,9 @@ export const error = (...args: Array<*>): void => {
  * A very basic polyfill method to generate randomness for use in wallet entropy.
  * This will fall back to nodejs's `crypto` library if the browser that's using this doesn't have the `webcrypto` API implemented yet.
  *
+ * @TODO
+ * Add API documentation for this util
+ *
  * @method getRandomValues
  *
  * @param {Uint8Array} typedArray An initial unsigned 8-bit integer array to generate randomness from
