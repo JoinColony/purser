@@ -30,7 +30,7 @@ export const providerPrototype: ProviderType = {
  * @param {string} network The network name to connect to (defaults to `homestead`)
  * @param {string} token Optional (but recommended) api key to use when connecting
  *
- * @return {object} The provider connection object or an empty one if the connection failed.
+ * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const etherscan = (
   network: string = DEFAULT_NETWORK,
@@ -59,7 +59,7 @@ export const etherscan = (
  * @param {string} network The network name to connect to (defaults to `homestead`)
  * @param {string} token Optional (but recommended) api key to use when connecting
  *
- * @return {object} The provider connection object or an empty one if the connection failed.
+ * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const infura = (
   network: string = DEFAULT_NETWORK,
@@ -87,7 +87,7 @@ export const infura = (
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
  *
- * @return {object} The provider connection object or an empty one if the connection failed.
+ * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
   let provider = providerPrototype;
@@ -112,7 +112,7 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
  * @param {string} url The Json Rpc url of the localhost provider (defaults to `http://localhost:8545`)
  * @param {string} network The network name to connect to (defaults to `homestead`)
  *
- * @return {object} The provider connection object or an empty one if the connection failed.
+ * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const localhost = (
   url: string = `${PROTOCOL}://${HOST}:${PORT}`,
