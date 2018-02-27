@@ -12,6 +12,15 @@ import {
   LOCALPROVIDER_PORT as PORT,
 } from './defaults';
 
+const providerPrototype: ProviderType = {
+  chainId: 0,
+  ensAddress: '',
+  name: DEFAULT_NETWORK,
+  testnet: false,
+  url: '',
+  _events: {},
+};
+
 /**
  * Etherscan provider generator method.
  * This wraps the `ethers` `EtherscanProvider` method and provides defaults, error catching and warnings.
@@ -23,11 +32,15 @@ import {
  *
  * @return {object} The provider connection object or an empty one if the connection failed.
  */
-export const etherscan = (network: string = DEFAULT_NETWORK, token: string) => {
-  let provider = {};
+export const etherscan = (
+  network: string = DEFAULT_NETWORK,
+  token: string,
+): ProviderType => {
+  let provider = providerPrototype;
   try {
     if (token) {
       provider = new providers.EtherscanProvider(network, token);
+      return provider;
     }
     warn(warnings.providers.etherscan.token);
     provider = new providers.EtherscanProvider(network);
@@ -48,11 +61,15 @@ export const etherscan = (network: string = DEFAULT_NETWORK, token: string) => {
  *
  * @return {object} The provider connection object or an empty one if the connection failed.
  */
-export const infura = (network: string = DEFAULT_NETWORK, token: string) => {
-  let provider = {};
+export const infura = (
+  network: string = DEFAULT_NETWORK,
+  token: string,
+): ProviderType => {
+  let provider = providerPrototype;
   try {
     if (token) {
       provider = new providers.InfuraProvider(network, token);
+      return provider;
     }
     warn(warnings.providers.infura.token);
     provider = new providers.InfuraProvider(network);
@@ -72,8 +89,8 @@ export const infura = (network: string = DEFAULT_NETWORK, token: string) => {
  *
  * @return {object} The provider connection object or an empty one if the connection failed.
  */
-export const metamask = (network: string = DEFAULT_NETWORK) => {
-  let provider = {};
+export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
+  let provider = providerPrototype;
   try {
     if (!global.web3 || !global.web3.currentProvider) {
       warn(warnings.providers.metamask.notAvailable);
@@ -100,8 +117,8 @@ export const metamask = (network: string = DEFAULT_NETWORK) => {
 export const localhost = (
   url: string = `${PROTOCOL}://${HOST}:${PORT}`,
   network: string = DEFAULT_NETWORK,
-) => {
-  let provider = {};
+): ProviderType => {
+  let provider = providerPrototype;
   try {
     /*
      * @TODO
@@ -118,9 +135,14 @@ export const localhost = (
 };
 
 export const autoselect = (
-  providersList: Array<any> = [metamask, etherscan, infura, localhost],
+  providersList: Array<ProviderGeneratorType> = [
+    metamask,
+    etherscan,
+    infura,
+    localhost,
+  ],
 ) => {
-  let provider = {};
+  let provider = providerPrototype;
   if (!providersList.length) {
     error(errors.providers.autoselect.empty);
     return provider;
@@ -138,7 +160,7 @@ export const autoselect = (
       /*
        * Reset the provider back to an empty object if it wasn't the right format
        */
-      provider = {};
+      provider = providerPrototype;
     }
   }
   error(errors.providers.autoselect.noProvider);
