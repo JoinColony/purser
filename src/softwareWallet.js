@@ -5,7 +5,8 @@ import { Wallet } from 'ethers';
 import type { ProviderType, WalletType } from './flowtypes';
 
 import { autoselect } from './providers';
-import { getRandomValues } from './utils';
+import { getRandomValues, warn, error } from './utils';
+import { warnings, errors } from './messages';
 
 /**
  * Create a new wallet.
@@ -26,10 +27,30 @@ export const legacyCreate = (
   provider: ProviderType = autoselect(),
   entrophy: Uint8Array = getRandomValues(new Uint8Array(65536)),
 ): WalletType => {
-  const wallet = Wallet.createRandom({ extraEntrophy: entrophy });
-  wallet.provider = provider;
-  return wallet;
+  let wallet;
+  try {
+    if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
+      warn(warnings.softwareWallet.noEntrophy);
+      wallet = Wallet.createRandom();
+    } else {
+      wallet = Wallet.createRandom({ extraEntrophy: entrophy });
+    }
+    if (!provider || (provider && typeof provider !== 'object')) {
+      warn(warnings.softwareWallet.noProvider);
+      return wallet;
+    }
+    wallet.provider = provider;
+    return wallet;
+  } catch (err) {
+    error(errors.softwareWallet.walletCreation, provider, entrophy, err);
+    return Wallet.createRandom();
+  }
 };
+
+/*
+ * @TODO Add software wallet async `create()` method
+ * This will provide extra props like QR codes and blockies via getters
+ */
 
 const softwareWallet = {
   legacyCreate,
