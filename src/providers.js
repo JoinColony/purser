@@ -2,6 +2,8 @@
 
 import { providers } from 'ethers';
 
+import type { ProviderType, ProviderGeneratorType } from './flowtypes';
+
 import { warn, error } from './utils';
 import { warnings, errors } from './messages';
 

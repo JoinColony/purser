@@ -2,6 +2,8 @@
 
 import { Wallet } from 'ethers';
 
+import type { ProviderType, WalletType } from './flowtypes';
+
 import { autoselect } from './providers';
 import { getRandomValues } from './utils';
 

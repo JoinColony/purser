@@ -2,6 +2,8 @@
 
 import ethers from 'ethers';
 
+import type { ColonyWalletExportType } from './flowtypes';
+
 import wallet from './wallet';
 import providers from './providers';
 
@@ -16,7 +18,7 @@ const debug = {
   },
 };
 
-const colonyWallet = Object.assign(
+const colonyWallet: ColonyWalletExportType = Object.assign(
   {},
   {
     wallet,
