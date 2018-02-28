@@ -33,7 +33,7 @@ sourceWatch.on('all', (event, path) => {
     const fileName = path.replace(`${paths.source}/`, '');
     const contentHash = utils.checksum(fs.readFileSync(path));
     if (!files[fileName] || files[fileName] !== contentHash) {
-      console.log(chalk.white(contentHash), chalk.yellow(fileName), chalk.green('changed. Building...'));
+      console.log(chalk.yellow(contentHash.substring(0, 7)), chalk.white(fileName), chalk.green('changed. Building...'));
       files[fileName] = contentHash;
       jobs.umd(false);
       jobs.esModules(false);
