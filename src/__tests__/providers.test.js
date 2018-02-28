@@ -16,7 +16,12 @@ import {
 } from '../defaults';
 import * as utils from '../utils';
 
+jest.mock('../utils');
+
 describe('`providers` module', () => {
+  beforeEach(() => {
+    utils.warn.mockReset();
+  });
   describe('`etherscan` provider', () => {
     test('Connects with defaults', () => {
       providers.EtherscanProvider = jest.fn();
@@ -100,7 +105,6 @@ describe('`providers` module', () => {
     test('Detects if the metamask in-page provider is not available', () => {
       global.web3 = undefined;
       providers.Web3Provider = jest.fn();
-      utils.warn = jest.fn();
       const provider = metamask();
       expect(providers.Web3Provider).not.toHaveBeenCalled();
       expect(utils.warn).toHaveBeenCalled();
