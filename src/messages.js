@@ -23,10 +23,12 @@ export const warnings = {
     },
   },
   softwareWallet: {
-    noProvider:
-      "You did not set a provider. While this is not required for wallet creation, it's highly recommended as it will easier to use later. If you do not need a custom provider, just remove the argument and it will auto-select the first one available.",
-    noEntrophy:
-      "You did not provide entrophy to help with randomness when generating the wallet. While this can be omitted, it's highly recommended. You could omiy this argument and it will provide it for you automatically",
+    legacyCreate: {
+      noProvider:
+        "You did not set a provider. While this is not required for wallet creation, it's highly recommended as it will easier to use later. If you do not need a custom provider, just remove the argument and it will auto-select the first one available.",
+      noEntrophy:
+        "You did not provide entrophy to help with randomness when generating the wallet. While this can be omitted, it's highly recommended. You could omiy this argument and it will provide it for you automatically",
+    },
   },
 };
 
@@ -64,8 +66,14 @@ export const errors = {
     },
   },
   softwareWallet: {
-    walletCreation:
-      'There was an error in creating the wallet, check the provider (%s) and entropy (%s) arguments. We reverted back and generated a wallet with the only defaults. Be careful when using it. %s',
+    legacyCreate: {
+      walletCreation:
+        'There was an error in creating the wallet, check the provider (%s) and entropy (%s) arguments. We reverted back and generated a wallet with the only defaults. Be careful when using it. %s',
+    },
+    openWithPrivateKey: {
+      cannotOpenWallet:
+        'There was a problem opening your wallet. Check the if the private key (%s) or the provider (%s) are valid. %s',
+    },
   },
 };
 

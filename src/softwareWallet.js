@@ -16,8 +16,9 @@ import { warnings, errors } from './messages';
  *
  * @TODO Add API documentation
  *
+ * @method etherscan
+ *
  * @param {ProviderType} provider An available provider to add to the wallet
- * (for use in transactions and signing)
  * @param {Uint8Array} entrophy An unsigned 8bit integer Array to provide
  * extra randomness
  *
@@ -30,19 +31,24 @@ export const legacyCreate = (
   let wallet;
   try {
     if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
-      warn(warnings.softwareWallet.noEntrophy);
+      warn(warnings.softwareWallet.legacyCreate.noEntrophy);
       wallet = Wallet.createRandom();
     } else {
       wallet = Wallet.createRandom({ extraEntrophy: entrophy });
     }
     if (!provider || (provider && typeof provider !== 'object')) {
-      warn(warnings.softwareWallet.noProvider);
+      warn(warnings.softwareWallet.legacyCreate.noProvider);
       return wallet;
     }
     wallet.provider = provider;
     return wallet;
   } catch (err) {
-    error(errors.softwareWallet.walletCreation, provider, entrophy, err);
+    error(
+      errors.softwareWallet.legacyCreate.walletCreation,
+      provider,
+      entrophy,
+      err,
+    );
     return Wallet.createRandom();
   }
 };
@@ -52,8 +58,42 @@ export const legacyCreate = (
  * This will provide extra props like QR codes and blockies via getters
  */
 
+/**
+ * Create a new instance of a wallet using the privatekey
+ *
+ * @TODO Add API documentation
+ *
+ * @method openWithPrivateKey
+ *
+ * @param {string} privatekey The private key to instanciate the wallet (it will
+ * be checked for validity)
+ * @param {ProviderType} provider An available provider to add to the wallet
+ *
+ * @return {WalletType} A new instance of the wallet
+ */
+export const openWithPrivateKey = (
+  privateKey: string,
+  provider: ProviderType = autoselect(),
+): ?WalletType => {
+  try {
+    if (!provider || (provider && typeof provider !== 'object')) {
+      warn(warnings.softwareWallet.legacyCreate.noProvider);
+      return new Wallet(privateKey);
+    }
+    return new Wallet(privateKey, provider);
+  } catch (err) {
+    return error(
+      errors.softwareWallet.openWithPrivateKey.cannotOpenWallet,
+      privateKey,
+      provider,
+      err,
+    );
+  }
+};
+
 const softwareWallet = {
   legacyCreate,
+  openWithPrivateKey,
 };
 
 export default softwareWallet;
