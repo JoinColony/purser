@@ -1,6 +1,6 @@
 import ethers from 'ethers';
 
-import { legacyCreate, openWithPrivateKey } from '../softwareWallet';
+import { create, openWithPrivateKey } from '../softwareWallet';
 import { localhost } from '../providers';
 import * as utils from '../utils';
 
@@ -24,30 +24,30 @@ describe('`software` wallet module', () => {
   });
   describe('`createLegacy` method', () => {
     test('Creates a new wallet by default', () => {
-      legacyCreate();
+      create();
       expect(ethers.Wallet.createRandom).toHaveBeenCalled();
     });
     test('Creates a new wallet with a manual provider', () => {
-      const wallet = legacyCreate(localhost());
+      const wallet = create(localhost());
       expect(ethers.Wallet.createRandom).toHaveBeenCalled();
       expect(wallet).toHaveProperty('provider');
     });
     test('Creates a new wallet when provider is set to a falsy value', () => {
-      const wallet = legacyCreate(null);
+      const wallet = create(null);
       expect(ethers.Wallet.createRandom).toHaveBeenCalled();
       expect(utils.warn).toHaveBeenCalled();
       expect(wallet).not.toHaveProperty('provider');
     });
     test('Creates a new wallet with manual entrophy', () => {
       const entrophy = new Uint8Array(100);
-      legacyCreate(localhost(), entrophy);
+      create(localhost(), entrophy);
       expect(ethers.Wallet.createRandom).toHaveBeenCalled();
       expect(ethers.Wallet.createRandom).toHaveBeenCalledWith({
         extraEntrophy: entrophy,
       });
     });
     test('Creates a new wallet when entrophy is set to a falsy value', () => {
-      legacyCreate(localhost(), null);
+      create(localhost(), null);
       expect(utils.warn).toHaveBeenCalled();
       expect(ethers.Wallet.createRandom).toHaveBeenCalled();
       expect(ethers.Wallet.createRandom).toHaveBeenCalledWith();
@@ -60,7 +60,7 @@ describe('`software` wallet module', () => {
         throw new Error();
       });
       utils.error = jest.fn();
-      const wallet = legacyCreate(null);
+      const wallet = create(null);
       expect(utils.warn).toHaveBeenCalled();
       expect(utils.error).toHaveBeenCalled();
       expect(ethers.Wallet.createRandom).toHaveBeenCalled();

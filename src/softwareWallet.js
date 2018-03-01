@@ -19,7 +19,7 @@ import { warnings, errors } from './messages';
  * @TODO Add privatekey QR generator
  * @TODO Add address blockie generator
  *
- * @method legacyCreate
+ * @method create
  *
  * @param {ProviderType} provider An available provider to add to the wallet
  * @param {Uint8Array} entrophy An unsigned 8bit integer Array to provide extra randomness
@@ -27,7 +27,7 @@ import { warnings, errors } from './messages';
  *
  * @return {WalletType} A new wallet object
  */
-export const legacyCreate = (
+export const create = (
   provider: ProviderType = autoselect(),
   entrophy: Uint8Array = getRandomValues(new Uint8Array(65536)),
   password: string,
@@ -113,7 +113,7 @@ export const openWithPrivateKey = (
 };
 
 const softwareWallet = {
-  legacyCreate,
+  create,
   openWithPrivateKey,
 };
 
