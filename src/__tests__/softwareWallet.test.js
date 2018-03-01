@@ -54,7 +54,7 @@ describe('`software` wallet module', () => {
     });
     test("Returns new wallet even when there's and error", () => {
       /*
-       * A little try to simulate an error during creation
+       * A little trick to simulate an error during creation
        */
       utils.warn = jest.fn(() => {
         throw new Error();

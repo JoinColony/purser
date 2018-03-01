@@ -8,6 +8,74 @@ import { autoselect } from './providers';
 import { getRandomValues, warn, error } from './utils';
 import { warnings, errors } from './messages';
 
+/*
+ * The wrapped IIFE allows us to have "private" variables
+ */
+const WalletConstructor = (() => {
+  /*
+   * "Private" variables previously mentioned
+   */
+  let encryptionPassword;
+  /**
+   * We extend Ethers's Wallet Object so we can add extra functionality
+   *
+   * @extends Wallet
+   *
+   * @TODO Add address QR generator
+   * @TODO Add privatekey QR generator
+   * @TODO Add address blockie generator
+   */
+  class SoftwareWallet extends Wallet {
+    constructor(
+      privateKey: string,
+      provider: ProviderType = autoselect(),
+      password: string,
+    ) {
+      super(privateKey, provider);
+      encryptionPassword = password;
+    }
+    keystore: string;
+    get keystore(): Promise<string | void> {
+      if (encryptionPassword) {
+        /*
+         * Memoizing the getter, so next it won't re-calculate the value
+         */
+        Object.defineProperty(this, 'keystore', {
+          value: this.encrypt(encryptionPassword),
+          writable: false,
+          configurable: true,
+        });
+        return this.encrypt(encryptionPassword);
+      }
+      return new Promise((resolve, reject) => reject()).catch(() =>
+        /*
+         * @TODO Add decriptor message
+         */
+        warn('no password'),
+      );
+    }
+    /* eslint-disable-next-line class-methods-use-this */
+    set keystore(newEncryptionPassword: string): void {
+      encryptionPassword = newEncryptionPassword;
+    }
+  }
+  return SoftwareWallet;
+})();
+
+/*
+ * We need to use `defineProperty` to make the prop enumerable.
+ * A standard `Class` getter/setter doesn't make it so :(
+ *
+ * Since we're dealing again with `defineProperty` we need to quiet down Flow.
+ *
+ * @FIXME Remove `Flow` error suppression when it gets fixed
+ * See: https://github.com/facebook/flow/issues/285
+ */
+/* $FlowFixMe */
+Object.defineProperty(WalletConstructor.prototype, 'keystore', {
+  enumerable: true,
+});
+
 /**
  * Create a new wallet.
  *
@@ -15,9 +83,6 @@ import { warnings, errors } from './messages';
  * helper values (QR codes, blockies).
  *
  * @TODO Add API documentation
- * @TODO Add address QR generator
- * @TODO Add privatekey QR generator
- * @TODO Add address blockie generator
  *
  * @method create
  *
@@ -30,38 +95,15 @@ import { warnings, errors } from './messages';
 export const create = (
   provider: ProviderType = autoselect(),
   entrophy: Uint8Array = getRandomValues(new Uint8Array(65536)),
-  password: string,
 ): WalletType => {
   let wallet: Object;
-  let encryptionPassword: string = password;
   try {
     if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
       warn(warnings.softwareWallet.legacyCreate.noEntrophy);
-      wallet = Wallet.createRandom();
+      wallet = WalletConstructor.createRandom();
     } else {
-      wallet = Wallet.createRandom({ extraEntrophy: entrophy });
+      wallet = WalletConstructor.createRandom({ extraEntrophy: entrophy });
     }
-    /*
-     * We're have to suppress the flow error here since apparently it doesn't
-     * play well with getters and setters :(
-     *
-     * See: https://github.com/facebook/flow/issues/285
-     */
-    /* $FlowFixMe */
-    Object.defineProperty(wallet, 'keystore', {
-      enumerable: true,
-      get(): Promise<string | void> {
-        if (encryptionPassword) {
-          return wallet.encrypt(encryptionPassword);
-        }
-        return new Promise((resolve, reject) => reject()).catch(() =>
-          warn('no password'),
-        );
-      },
-      set(newEncryptionPassword): void {
-        encryptionPassword = newEncryptionPassword;
-      },
-    });
     if (!provider || (provider && typeof provider !== 'object')) {
       warn(warnings.softwareWallet.legacyCreate.noProvider);
       return wallet;
@@ -75,7 +117,7 @@ export const create = (
       entrophy,
       err,
     );
-    return Wallet.createRandom();
+    return WalletConstructor.createRandom();
   }
 };
 
