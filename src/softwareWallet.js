@@ -9,70 +9,73 @@ import { getRandomValues, warn, error } from './utils';
 import { warnings, errors } from './messages';
 
 /*
- * The wrapped IIFE allows us to have "private" variables
+ * "Private" variables
  */
-const WalletConstructor = (() => {
-  /*
-   * "Private" variables previously mentioned
-   */
-  let encryptionPassword;
-  /**
-   * We extend Ethers's Wallet Object so we can add extra functionality
-   *
-   * @extends Wallet
-   *
-   * @TODO Add address QR generator
-   * @TODO Add privatekey QR generator
-   * @TODO Add address blockie generator
-   */
-  class SoftwareWallet extends Wallet {
-    constructor(
-      privateKey: string,
-      provider: ProviderType = autoselect(),
-      password: string,
-    ) {
-      super(privateKey, provider);
-      encryptionPassword = password;
-    }
-    keystore: string;
-    get keystore(): Promise<string | void> {
-      if (encryptionPassword) {
-        /*
-         * Memoizing the getter, so next it won't re-calculate the value
-         */
-        Object.defineProperty(this, 'keystore', {
-          value: this.encrypt(encryptionPassword),
-          writable: false,
-          configurable: true,
-        });
-        return this.encrypt(encryptionPassword);
-      }
-      return new Promise((resolve, reject) => reject()).catch(() =>
-        /*
-         * @TODO Add decriptor message
-         */
-        warn('no password'),
-      );
-    }
-    /* eslint-disable-next-line class-methods-use-this */
-    set keystore(newEncryptionPassword: string): void {
-      encryptionPassword = newEncryptionPassword;
-    }
+let encryptionPassword: string;
+/**
+ * We extend Ethers's Wallet Object so we can add extra functionality
+ *
+ * @extends Wallet
+ *
+ * @TODO Add address QR generator
+ * @TODO Add privatekey QR generator
+ * @TODO Add address blockie generator
+ */
+class SoftwareWallet extends Wallet {
+  constructor(
+    privateKey: string,
+    provider: ProviderType = autoselect(),
+    password: string,
+  ) {
+    super(privateKey, provider);
+    encryptionPassword = password;
   }
-  return SoftwareWallet;
-})();
+  keystore: string;
+  get keystore(): Promise<string | void> {
+    if (encryptionPassword) {
+      /*
+       * Memoizing the getter, so next it won't re-calculate the value
+       */
+      Object.defineProperty(this, 'keystore', {
+        value: this.encrypt(encryptionPassword),
+        writable: false,
+        configurable: true,
+      });
+      return this.encrypt(encryptionPassword);
+    }
+    return new Promise((resolve, reject) => reject()).catch(() =>
+      /*
+       * @TODO Add decriptor message
+       */
+      warn('no password'),
+    );
+  }
+  /*
+   * Just set the encryption password, we don't return anything from here,
+   * hence we don't have a need for `this`.
+   *
+   * This is just an convenince to allow us to set the encryption password
+   * after the wallet has be created / instantiated.
+   */
+  /* eslint-disable-next-line class-methods-use-this */
+  set keystore(newEncryptionPassword: string): void {
+    encryptionPassword = newEncryptionPassword;
+  }
+}
 
 /*
  * We need to use `defineProperty` to make the prop enumerable.
  * A standard `Class` getter/setter doesn't make it so :(
  *
- * Since we're dealing again with `defineProperty` we need to quiet down Flow.
+ * We're dealing with `defineProperty` so we need to quiet down Flow.
+ * This is becuase of Flow, and how it doesn't play well (at all, really)
+ * with getters and setters. See the bellow issue for more info.
  *
  * @FIXME Remove `Flow` error suppression when it gets fixed
  * See: https://github.com/facebook/flow/issues/285
  */
 /* $FlowFixMe */
-Object.defineProperty(WalletConstructor.prototype, 'keystore', {
+Object.defineProperty(SoftwareWallet.prototype, 'keystore', {
   enumerable: true,
 });
 
@@ -100,9 +103,9 @@ export const create = (
   try {
     if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
       warn(warnings.softwareWallet.legacyCreate.noEntrophy);
-      wallet = WalletConstructor.createRandom();
+      wallet = SoftwareWallet.createRandom();
     } else {
-      wallet = WalletConstructor.createRandom({ extraEntrophy: entrophy });
+      wallet = SoftwareWallet.createRandom({ extraEntrophy: entrophy });
     }
     if (!provider || (provider && typeof provider !== 'object')) {
       warn(warnings.softwareWallet.legacyCreate.noProvider);
@@ -117,7 +120,7 @@ export const create = (
       entrophy,
       err,
     );
-    return WalletConstructor.createRandom();
+    return SoftwareWallet.createRandom();
   }
 };
 
@@ -157,6 +160,7 @@ export const openWithPrivateKey = (
 const softwareWallet = {
   create,
   openWithPrivateKey,
+  SoftwareWallet,
 };
 
 export default softwareWallet;
