@@ -11,8 +11,8 @@ export type ProviderType = {
   resetEventsBlock?: (blockNumber: number) => void,
   testnet: boolean,
   url: string,
-  _events: {},
-  _web3Provider?: {},
+  _events: Object,
+  _web3Provider?: Object,
 };
 
 export type ProviderGeneratorType = (...*) => ProviderType;
@@ -20,6 +20,7 @@ export type ProviderGeneratorType = (...*) => ProviderType;
 export type WalletType = {
   address: string,
   defaultGasLimit: number,
+  keystore?: Promise<string>,
   mnemonic: string,
   path: string,
   privateKey: string,
@@ -31,13 +32,13 @@ export type WalletType = {
 };
 
 export type ColonyWalletExportType = {
-  wallet: {},
+  wallet: Object,
   about: {
     name: string,
     version: string,
     environment: string,
   },
-  providers: {},
-  utils: {},
-  debug?: {},
+  providers: Object,
+  utils: Object,
+  debug?: Object,
 };

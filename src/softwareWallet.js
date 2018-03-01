@@ -15,20 +15,25 @@ import { warnings, errors } from './messages';
  * helper values (QR codes, blockies).
  *
  * @TODO Add API documentation
+ * @TODO Add address QR generator
+ * @TODO Add privatekey QR generator
+ * @TODO Add address blockie generator
  *
- * @method etherscan
+ * @method legacyCreate
  *
  * @param {ProviderType} provider An available provider to add to the wallet
- * @param {Uint8Array} entrophy An unsigned 8bit integer Array to provide
- * extra randomness
+ * @param {Uint8Array} entrophy An unsigned 8bit integer Array to provide extra randomness
+ * @param {string} password Optional password used to generate an encrypted keystore
  *
  * @return {WalletType} A new wallet object
  */
 export const legacyCreate = (
   provider: ProviderType = autoselect(),
   entrophy: Uint8Array = getRandomValues(new Uint8Array(65536)),
+  password: string,
 ): WalletType => {
-  let wallet;
+  let wallet: Object;
+  let encryptionPassword: string = password;
   try {
     if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
       warn(warnings.softwareWallet.legacyCreate.noEntrophy);
@@ -36,6 +41,27 @@ export const legacyCreate = (
     } else {
       wallet = Wallet.createRandom({ extraEntrophy: entrophy });
     }
+    /*
+     * We're have to suppress the flow error here since apparently it doesn't
+     * play well with getters and setters :(
+     *
+     * See: https://github.com/facebook/flow/issues/285
+     */
+    /* $FlowFixMe */
+    Object.defineProperty(wallet, 'keystore', {
+      enumerable: true,
+      get(): Promise<string | void> {
+        if (encryptionPassword) {
+          return wallet.encrypt(encryptionPassword);
+        }
+        return new Promise((resolve, reject) => reject()).catch(() =>
+          warn('no password'),
+        );
+      },
+      set(newEncryptionPassword): void {
+        encryptionPassword = newEncryptionPassword;
+      },
+    });
     if (!provider || (provider && typeof provider !== 'object')) {
       warn(warnings.softwareWallet.legacyCreate.noProvider);
       return wallet;
@@ -52,11 +78,6 @@ export const legacyCreate = (
     return Wallet.createRandom();
   }
 };
-
-/*
- * @TODO Add software wallet async `create()` method
- * This will provide extra props like QR codes and blockies via getters
- */
 
 /**
  * Create a new instance of a wallet using the privatekey
