@@ -8,13 +8,14 @@ import { warn, error } from './utils';
 import { warnings, errors } from './messages';
 
 import {
+  ENV,
   DEFAULT_NETWORK,
   LOCALPROVIDER_PROTOCOL as PROTOCOL,
   LOCALPROVIDER_HOST as HOST,
   LOCALPROVIDER_PORT as PORT,
 } from './defaults';
 
-export const providerPrototype: ProviderType = {
+const providerPrototype: ProviderType = {
   chainId: 0,
   ensAddress: '',
   name: DEFAULT_NETWORK,
@@ -180,12 +181,20 @@ export const autoselect = (
   return provider;
 };
 
-const colonyWallet = {
-  etherscan,
-  infura,
-  localhost,
-  metamask,
-  autoselect,
-};
+/*
+ * If we're in test mode, also export the `providerPrototype` object so we
+ * can test against it
+ */
+const colonyWallet: Object = Object.assign(
+  {},
+  {
+    etherscan,
+    infura,
+    localhost,
+    metamask,
+    autoselect,
+  },
+  ENV === 'test' ? { providerPrototype } : {},
+);
 
 export default colonyWallet;

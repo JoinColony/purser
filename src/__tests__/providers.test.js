@@ -1,12 +1,11 @@
-import { providers } from 'ethers';
+import { providers as ethersProviders } from 'ethers';
 
-import {
+import providers, {
   etherscan,
   infura,
   metamask,
   localhost,
   autoselect,
-  providerPrototype,
 } from '../providers';
 import {
   DEFAULT_NETWORK,
@@ -24,134 +23,138 @@ describe('`providers` module', () => {
   });
   describe('`etherscan` provider', () => {
     test('Connects with defaults', () => {
-      providers.EtherscanProvider = jest.fn();
+      ethersProviders.EtherscanProvider = jest.fn();
       etherscan();
-      expect(providers.EtherscanProvider).toHaveBeenCalled();
-      expect(providers.EtherscanProvider).toHaveBeenCalledWith(DEFAULT_NETWORK);
+      expect(ethersProviders.EtherscanProvider).toHaveBeenCalled();
+      expect(ethersProviders.EtherscanProvider).toHaveBeenCalledWith(
+        DEFAULT_NETWORK,
+      );
     });
     test('Connects with custom network and api key', () => {
-      providers.EtherscanProvider = jest.fn();
+      ethersProviders.EtherscanProvider = jest.fn();
       const testNetworkName = 'skynet';
       const testApiKey = '159346284575888';
       etherscan(testNetworkName, testApiKey);
-      expect(providers.EtherscanProvider).toHaveBeenCalled();
-      expect(providers.EtherscanProvider).toHaveBeenCalledWith(
+      expect(ethersProviders.EtherscanProvider).toHaveBeenCalled();
+      expect(ethersProviders.EtherscanProvider).toHaveBeenCalledWith(
         testNetworkName,
         testApiKey,
       );
     });
     test('Catch the connection error if something goes wrong', () => {
-      providers.EtherscanProvider = jest.fn(() => {
+      ethersProviders.EtherscanProvider = jest.fn(() => {
         throw new Error();
       });
       const testNetworkName = 'network-name-does-not-exist';
       const provider = etherscan(testNetworkName);
-      expect(providers.EtherscanProvider).toHaveBeenCalled();
-      expect(providers.EtherscanProvider).toThrow();
-      expect(provider).toEqual(providerPrototype);
+      expect(ethersProviders.EtherscanProvider).toHaveBeenCalled();
+      expect(ethersProviders.EtherscanProvider).toThrow();
+      expect(provider).toEqual(providers.providerPrototype);
     });
   });
   describe('`infura` provider', () => {
     test('Connects with defaults', () => {
-      providers.InfuraProvider = jest.fn();
+      ethersProviders.InfuraProvider = jest.fn();
       infura();
-      expect(providers.InfuraProvider).toHaveBeenCalled();
-      expect(providers.InfuraProvider).toHaveBeenCalledWith(DEFAULT_NETWORK);
+      expect(ethersProviders.InfuraProvider).toHaveBeenCalled();
+      expect(ethersProviders.InfuraProvider).toHaveBeenCalledWith(
+        DEFAULT_NETWORK,
+      );
     });
     test('Connects with custom network and api key', () => {
-      providers.InfuraProvider = jest.fn();
+      ethersProviders.InfuraProvider = jest.fn();
       const testNetworkName = 'skynet';
       const testApiKey = '159346284575888';
       infura(testNetworkName, testApiKey);
-      expect(providers.InfuraProvider).toHaveBeenCalled();
-      expect(providers.InfuraProvider).toHaveBeenCalledWith(
+      expect(ethersProviders.InfuraProvider).toHaveBeenCalled();
+      expect(ethersProviders.InfuraProvider).toHaveBeenCalledWith(
         testNetworkName,
         testApiKey,
       );
     });
     test('Catch the connection error if something goes wrong', () => {
-      providers.InfuraProvider = jest.fn(() => {
+      ethersProviders.InfuraProvider = jest.fn(() => {
         throw new Error();
       });
       const testNetworkName = 'network-name-does-not-exist';
       const provider = infura(testNetworkName);
-      expect(providers.InfuraProvider).toHaveBeenCalled();
-      expect(providers.InfuraProvider).toThrow();
-      expect(provider).toEqual(providerPrototype);
+      expect(ethersProviders.InfuraProvider).toHaveBeenCalled();
+      expect(ethersProviders.InfuraProvider).toThrow();
+      expect(provider).toEqual(providers.providerPrototype);
     });
   });
   describe('`metamask/web3` provider', () => {
     test('Connects with defaults', () => {
       global.web3 = { currentProvider: { mockProvider: true } };
-      providers.Web3Provider = jest.fn();
+      ethersProviders.Web3Provider = jest.fn();
       metamask();
-      expect(providers.Web3Provider).toHaveBeenCalled();
-      expect(providers.Web3Provider).toHaveBeenCalledWith(
+      expect(ethersProviders.Web3Provider).toHaveBeenCalled();
+      expect(ethersProviders.Web3Provider).toHaveBeenCalledWith(
         global.web3.currentProvider,
         DEFAULT_NETWORK,
       );
     });
     test('Connects with custom network', () => {
       global.web3 = { currentProvider: { mockProvider: true } };
-      providers.Web3Provider = jest.fn();
+      ethersProviders.Web3Provider = jest.fn();
       const testNetworkName = 'skynet';
       metamask(testNetworkName);
-      expect(providers.Web3Provider).toHaveBeenCalled();
-      expect(providers.Web3Provider).toHaveBeenCalledWith(
+      expect(ethersProviders.Web3Provider).toHaveBeenCalled();
+      expect(ethersProviders.Web3Provider).toHaveBeenCalledWith(
         global.web3.currentProvider,
         testNetworkName,
       );
     });
     test('Detects if the metamask in-page provider is not available', () => {
       global.web3 = undefined;
-      providers.Web3Provider = jest.fn();
+      ethersProviders.Web3Provider = jest.fn();
       const provider = metamask();
-      expect(providers.Web3Provider).not.toHaveBeenCalled();
+      expect(ethersProviders.Web3Provider).not.toHaveBeenCalled();
       expect(utils.warn).toHaveBeenCalled();
-      expect(provider).toEqual(providerPrototype);
+      expect(provider).toEqual(providers.providerPrototype);
     });
     test('Catch the connection error if something goes wrong', () => {
       global.web3 = { currentProvider: { mockProvider: true } };
-      providers.Web3Provider = jest.fn(() => {
+      ethersProviders.Web3Provider = jest.fn(() => {
         throw new Error();
       });
       const testNetworkName = 'network-name-does-not-exist';
       const provider = metamask(testNetworkName);
-      expect(providers.Web3Provider).toHaveBeenCalled();
-      expect(providers.Web3Provider).toThrow();
-      expect(provider).toEqual(providerPrototype);
+      expect(ethersProviders.Web3Provider).toHaveBeenCalled();
+      expect(ethersProviders.Web3Provider).toThrow();
+      expect(provider).toEqual(providers.providerPrototype);
     });
   });
   describe('`localhost` provider', () => {
     test('Connects with defaults', () => {
-      providers.JsonRpcProvider = jest.fn();
+      ethersProviders.JsonRpcProvider = jest.fn();
       localhost();
-      expect(providers.JsonRpcProvider).toHaveBeenCalled();
-      expect(providers.JsonRpcProvider).toHaveBeenCalledWith(
+      expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
+      expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         `${PROTOCOL}://${HOST}:${PORT}`,
         DEFAULT_NETWORK,
       );
     });
     test('Connects with custom url and network', () => {
-      providers.JsonRpcProvider = jest.fn();
+      ethersProviders.JsonRpcProvider = jest.fn();
       const testUrl = 'http://127.0.0.1';
       const testNetworkName = 'skynet';
       localhost(testUrl, testNetworkName);
-      expect(providers.JsonRpcProvider).toHaveBeenCalled();
-      expect(providers.JsonRpcProvider).toHaveBeenCalledWith(
+      expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
+      expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         testUrl,
         testNetworkName,
       );
     });
     test('Catch the connection error if something goes wrong', () => {
-      providers.JsonRpcProvider = jest.fn(() => {
+      ethersProviders.JsonRpcProvider = jest.fn(() => {
         throw new Error();
       });
       const testNetworkName = 'network-name-does-not-exist';
       const provider = localhost(testNetworkName);
-      expect(providers.JsonRpcProvider).toHaveBeenCalled();
-      expect(providers.JsonRpcProvider).toThrow();
-      expect(provider).toEqual(providerPrototype);
+      expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
+      expect(ethersProviders.JsonRpcProvider).toThrow();
+      expect(provider).toEqual(providers.providerPrototype);
     });
   });
   describe('autoselect providers from a list', () => {
@@ -177,13 +180,13 @@ describe('`providers` module', () => {
       utils.error = jest.fn();
       const provider = autoselect([]);
       expect(utils.error).toHaveBeenCalled();
-      expect(provider).toEqual(providerPrototype);
+      expect(provider).toEqual(providers.providerPrototype);
     });
     test('Show an error if it could not connect to any providers', () => {
       utils.error = jest.fn();
       const provider = autoselect([{ chainId: false }, {}, () => {}]);
       expect(utils.error).toHaveBeenCalled();
-      expect(provider).toEqual(providerPrototype);
+      expect(provider).toEqual(providers.providerPrototype);
     });
   });
 });
