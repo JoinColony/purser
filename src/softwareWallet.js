@@ -29,7 +29,7 @@ let encryptionPassword: string;
 class SoftwareWallet extends Wallet {
   constructor(
     privateKey: string,
-    provider: ProviderType = autoselect(),
+    provider: ProviderType | void,
     password: string,
   ) {
     super(privateKey, provider);

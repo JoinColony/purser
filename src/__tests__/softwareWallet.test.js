@@ -1,4 +1,4 @@
-/* import ethers from 'ethers'; */
+import ethers from 'ethers';
 
 import wallet, { create } from '../softwareWallet';
 import { localhost } from '../providers';
@@ -12,6 +12,15 @@ jest.mock('ethers', () => {
     return this;
   });
   Wallet.createRandom = jest.fn(() => ({}));
+  Wallet.prototype.encrypt = jest.fn(
+    password =>
+      new Promise((resolve, reject) => {
+        if (password) {
+          return resolve(`{}`);
+        }
+        return reject();
+      }),
+  );
   return { Wallet };
 });
 
@@ -29,7 +38,101 @@ describe('`software` wallet module', () => {
     SoftwareWalletCreateSpy.mockReset();
     SoftwareWalletCreateSpy.mockRestore();
   });
-  describe('`createLegacy` method', () => {
+  describe('`SoftwareWallet` Class', () => {
+    test('Creates a new wallet', () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      expect(ethers.Wallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalled();
+      expect(testWallet).toBeInstanceOf(wallet.SoftwareWallet);
+      expect(testWallet).toBeInstanceOf(ethers.Wallet);
+    });
+    test('Creates a new wallet with a manual provider', () => {
+      const provider = localhost();
+      wallet.SoftwareWallet.create({ provider });
+      expect(wallet.SoftwareWallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalledWith(undefined, provider);
+    });
+    test('Creates a new wallet when provider is set to a falsy value', () => {
+      wallet.SoftwareWallet.create({ provider: false });
+      expect(utils.warn).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalledWith(undefined, undefined);
+    });
+    test('Creates a new wallet with manual entrophy', () => {
+      const entrophy = new Uint8Array(100);
+      wallet.SoftwareWallet.create({ entrophy });
+      expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalledWith({
+        extraEntrophy: entrophy,
+      });
+    });
+    test('Creates a new wallet when entrophy is set to a falsy value', () => {
+      wallet.SoftwareWallet.create({ entrophy: false });
+      expect(utils.warn).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalledWith();
+    });
+    test("Returns new wallet even when there's and error", () => {
+      /*
+       * A little trick to simulate an error during creation
+       */
+      utils.warn = jest.fn(() => {
+        throw new Error();
+      });
+      utils.error = jest.fn();
+      wallet.SoftwareWallet.create({ provider: null });
+      expect(utils.warn).toHaveBeenCalled();
+      expect(utils.error).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalledWith();
+    });
+    test('Add the keystore prop to the wallet instance', () => {
+      const testWallet = wallet.SoftwareWallet.create({
+        password: 'encrypt-me-baby',
+      });
+      const keystoreGetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'keystore',
+        'get',
+      );
+      expect(testWallet).toHaveProperty('keystore');
+      expect(testWallet.keystore).resolves.toEqual('{}');
+      expect(keystoreGetterSpy).toHaveBeenCalled();
+      keystoreGetterSpy.mockReset();
+      keystoreGetterSpy.mockRestore();
+    });
+    test("Can't get the keystore if no password was provided", () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      const keystoreGetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'keystore',
+        'get',
+      );
+      expect(testWallet).toHaveProperty('keystore');
+      expect(testWallet.keystore).resolves.toEqual(undefined);
+      expect(keystoreGetterSpy).toHaveBeenCalled();
+      expect(utils.warn).toHaveBeenCalled();
+      keystoreGetterSpy.mockReset();
+      keystoreGetterSpy.mockRestore();
+    });
+    test('Can set the keystore after the wallet was instantiated', () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      const keystoreSetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'keystore',
+        'set',
+      );
+      expect(testWallet).toHaveProperty('keystore');
+      expect(testWallet.keystore).resolves.toEqual(undefined);
+      expect(utils.warn).toHaveBeenCalled();
+      testWallet.keystore = 'a-new-encryption-password';
+      expect(keystoreSetterSpy).toHaveBeenCalled();
+      expect(testWallet.keystore).resolves.toEqual(`{}`);
+      keystoreSetterSpy.mockReset();
+      keystoreSetterSpy.mockRestore();
+    });
+  });
+  describe('`create` method', () => {
     test('Creates a new wallet by default', () => {
       create();
       expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
