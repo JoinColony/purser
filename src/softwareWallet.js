@@ -50,10 +50,7 @@ class SoftwareWallet extends Wallet {
       return this.encrypt(encryptionPassword);
     }
     return new Promise((resolve, reject) => reject()).catch(() =>
-      /*
-       * @TODO Add decriptor message
-       */
-      warn('no password'),
+      warn(warnings.softwareWallet.Class.noPassword),
     );
   }
   /*
@@ -89,10 +86,7 @@ class SoftwareWallet extends Wallet {
     let basicWallet: WalletType;
     try {
       if (!password) {
-        /*
-         * @TODO Add decriptor message
-         */
-        warn('no password');
+        warn(warnings.softwareWallet.Class.noPassword);
       }
       if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
         warn(warnings.softwareWallet.Class.noEntrophy);

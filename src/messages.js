@@ -28,6 +28,8 @@ export const warnings = {
         "You did not set a provider. While this is not required for wallet creation, it's highly recommended as it will easier to use later. If you do not need a custom provider, just remove the argument and it will auto-select the first one available.",
       noEntrophy:
         "You did not provide entrophy to help with randomness when generating the wallet. While this can be omitted, it's highly recommended. You could omiy this argument and it will provide it for you automatically",
+      noPassword:
+        'You did not provide a password for encryption. This can be added at a later stage using the `keystore` property setter',
     },
   },
 };
