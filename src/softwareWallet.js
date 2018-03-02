@@ -85,9 +85,6 @@ class SoftwareWallet extends Wallet {
   }: WalletArgumentsType): () => WalletType {
     let basicWallet: WalletType;
     try {
-      if (!password) {
-        warn(warnings.softwareWallet.Class.noPassword);
-      }
       if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
         warn(warnings.softwareWallet.Class.noEntrophy);
         basicWallet = this.createRandom();
