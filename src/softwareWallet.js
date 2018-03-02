@@ -5,6 +5,7 @@ import { Wallet } from 'ethers';
 import type { ProviderType, WalletType } from './flowtypes';
 
 import { autoselect } from './providers';
+import { ENV } from './defaults';
 import { getRandomValues, warn, error } from './utils';
 import { warnings, errors } from './messages';
 
@@ -157,10 +158,17 @@ export const openWithPrivateKey = (
   }
 };
 
-const softwareWallet = {
-  create,
-  openWithPrivateKey,
-  SoftwareWallet,
-};
+/*
+ * If we're in dev mode, also export the SoftwareWallet class so it's available
+ * to us directly for debugging.
+ */
+const softwareWallet: Object = Object.assign(
+  {},
+  {
+    create,
+    openWithPrivateKey,
+  },
+  ENV === 'development' ? { SoftwareWallet } : {},
+);
 
 export default softwareWallet;

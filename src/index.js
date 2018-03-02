@@ -4,7 +4,7 @@ import ethers from 'ethers';
 
 import type { ColonyWalletExportType } from './flowtypes';
 
-import wallet from './wallet';
+import wallet, { software } from './wallet';
 import providers from './providers';
 
 import utils from './utils';
@@ -15,6 +15,7 @@ import { name, version } from '../package.json';
 const debug = {
   debug: {
     ethers,
+    SoftwareWallet: software.SoftwareWallet,
   },
 };
 
