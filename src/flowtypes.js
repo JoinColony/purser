@@ -42,3 +42,10 @@ export type ColonyWalletExportType = {
   utils: Object,
   debug?: Object,
 };
+
+export type WalletArgumentsType = {
+  privatekey?: string,
+  provider?: ProviderType,
+  entrophy?: Uint8Array,
+  password?: string,
+};

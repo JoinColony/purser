@@ -2,7 +2,11 @@
 
 import { Wallet } from 'ethers';
 
-import type { ProviderType, WalletType } from './flowtypes';
+import type {
+  ProviderType,
+  WalletType,
+  WalletArgumentsType,
+} from './flowtypes';
 
 import { autoselect } from './providers';
 import { ENV } from './defaults';
@@ -40,6 +44,7 @@ class SoftwareWallet extends Wallet {
       Object.defineProperty(this, 'keystore', {
         value: this.encrypt(encryptionPassword),
         writable: false,
+        enumerable: true,
         configurable: true,
       });
       return this.encrypt(encryptionPassword);
@@ -62,14 +67,62 @@ class SoftwareWallet extends Wallet {
   set keystore(newEncryptionPassword: string): void {
     encryptionPassword = newEncryptionPassword;
   }
+  /**
+   * Create a new wallet.
+   *
+   * This is a wrapper around `ethers` Wallet createRandom that sets defaults,
+   * catches errrors and sets additional helper props
+   *
+   * @method create
+   *
+   * @param {ProviderType} provider An available provider to add to the wallet
+   * @param {Uint8Array} entrophy An unsigned 8bit integer Array to provide extra randomness
+   * @param {string} password Optional password used to generate an encrypted keystore
+   *
+   * @return {WalletType} A new wallet object
+   */
+  static create({
+    provider = autoselect(),
+    password = '',
+    entrophy = getRandomValues(new Uint8Array(65536)),
+  }: WalletArgumentsType): () => WalletType {
+    let basicWallet: WalletType;
+    try {
+      if (!password) {
+        /*
+         * @TODO Add decriptor message
+         */
+        warn('no password');
+      }
+      if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
+        warn(warnings.softwareWallet.legacyCreate.noEntrophy);
+        basicWallet = this.createRandom();
+      } else {
+        basicWallet = this.createRandom({ extraEntrophy: entrophy });
+      }
+      if (!provider || (provider && typeof provider !== 'object')) {
+        warn(warnings.softwareWallet.legacyCreate.noProvider);
+        return new this(basicWallet.privateKey, undefined, password);
+      }
+      return new this(basicWallet.privateKey, provider, password);
+    } catch (err) {
+      error(
+        errors.softwareWallet.legacyCreate.walletCreation,
+        provider,
+        entrophy,
+        err,
+      );
+      return this.createRandom();
+    }
+  }
 }
 
 /*
  * We need to use `defineProperty` to make the prop enumerable.
- * A standard `Class` getter/setter doesn't make it so :(
+ * When adding a `Class` getter/setter it will prevent that by default
  *
  * We're dealing with `defineProperty` so we need to quiet down Flow.
- * This is becuase of Flow, and how it doesn't play well (at all, really)
+ * This is because Flow, and how it doesn't play well (at all, really...)
  * with getters and setters. See the bellow issue for more info.
  *
  * @FIXME Remove `Flow` error suppression when it gets fixed
@@ -82,53 +135,27 @@ Object.defineProperty(SoftwareWallet.prototype, 'keystore', {
 
 /**
  * Create a new wallet.
- *
- * This is the legacy version, as the final object will not contain any extra
- * helper values (QR codes, blockies).
+ * This method is the one that's actually exposed outside the module.
  *
  * @TODO Add API documentation
  *
  * @method create
  *
- * @param {ProviderType} provider An available provider to add to the wallet
- * @param {Uint8Array} entrophy An unsigned 8bit integer Array to provide extra randomness
- * @param {string} password Optional password used to generate an encrypted keystore
+ * @param {WalletArgumentsType} walletArguments The wallet arguments object
+ * This way you can pass in arguments in any order you'd like.
+ * Details about it's types can be found inside `flowtypes`
  *
  * @return {WalletType} A new wallet object
  */
 export const create = (
-  provider: ProviderType = autoselect(),
-  entrophy: Uint8Array = getRandomValues(new Uint8Array(65536)),
-): WalletType => {
-  let wallet: Object;
-  try {
-    if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
-      warn(warnings.softwareWallet.legacyCreate.noEntrophy);
-      wallet = SoftwareWallet.createRandom();
-    } else {
-      wallet = SoftwareWallet.createRandom({ extraEntrophy: entrophy });
-    }
-    if (!provider || (provider && typeof provider !== 'object')) {
-      warn(warnings.softwareWallet.legacyCreate.noProvider);
-      return wallet;
-    }
-    wallet.provider = provider;
-    return wallet;
-  } catch (err) {
-    error(
-      errors.softwareWallet.legacyCreate.walletCreation,
-      provider,
-      entrophy,
-      err,
-    );
-    return SoftwareWallet.createRandom();
-  }
-};
+  walletArguments: WalletArgumentsType = {},
+): (() => WalletType) => SoftwareWallet.create(walletArguments);
 
 /**
  * Create a new instance of a wallet using the privatekey
  *
  * @TODO Add API documentation
+ * @TODO Refactor method to use the new `SoftwareWallet` class
  *
  * @method openWithPrivateKey
  *
@@ -159,7 +186,7 @@ export const openWithPrivateKey = (
 };
 
 /*
- * If we're in dev mode, also export the SoftwareWallet class so it's available
+ * If we're in dev mode, also export the `SoftwareWallet` class so it's available
  * to us directly for debugging.
  */
 const softwareWallet: Object = Object.assign(
