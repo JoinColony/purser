@@ -95,23 +95,18 @@ class SoftwareWallet extends Wallet {
         warn('no password');
       }
       if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
-        warn(warnings.softwareWallet.legacyCreate.noEntrophy);
+        warn(warnings.softwareWallet.Class.noEntrophy);
         basicWallet = this.createRandom();
       } else {
         basicWallet = this.createRandom({ extraEntrophy: entrophy });
       }
       if (!provider || (provider && typeof provider !== 'object')) {
-        warn(warnings.softwareWallet.legacyCreate.noProvider);
+        warn(warnings.softwareWallet.Class.noProvider);
         return new this(basicWallet.privateKey, undefined, password);
       }
       return new this(basicWallet.privateKey, provider, password);
     } catch (err) {
-      error(
-        errors.softwareWallet.legacyCreate.walletCreation,
-        provider,
-        entrophy,
-        err,
-      );
+      error(errors.softwareWallet.Class.create, provider, entrophy, err);
       return this.createRandom();
     }
   }
@@ -171,7 +166,7 @@ export const openWithPrivateKey = (
 ): ?WalletType => {
   try {
     if (!provider || (provider && typeof provider !== 'object')) {
-      warn(warnings.softwareWallet.legacyCreate.noProvider);
+      warn(warnings.softwareWallet.Class.noProvider);
       return new Wallet(privateKey);
     }
     return new Wallet(privateKey, provider);

@@ -23,7 +23,7 @@ export const warnings = {
     },
   },
   softwareWallet: {
-    legacyCreate: {
+    Class: {
       noProvider:
         "You did not set a provider. While this is not required for wallet creation, it's highly recommended as it will easier to use later. If you do not need a custom provider, just remove the argument and it will auto-select the first one available.",
       noEntrophy:
@@ -66,8 +66,8 @@ export const errors = {
     },
   },
   softwareWallet: {
-    legacyCreate: {
-      walletCreation:
+    Class: {
+      create:
         'There was an error in creating the wallet, check the provider (%s) and entropy (%s) arguments. We reverted back and generated a wallet with the only defaults. Be careful when using it. %s',
     },
     openWithPrivateKey: {
