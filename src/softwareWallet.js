@@ -76,6 +76,8 @@ class SoftwareWallet extends Wallet {
    * @param {Uint8Array} entrophy An unsigned 8bit integer Array to provide extra randomness
    * @param {string} password Optional password used to generate an encrypted keystore
    *
+   * All the above params are sent in as props of an {WalletArgumentsType} object.
+   *
    * @return {WalletType} A new wallet object
    */
   static create({
@@ -181,7 +183,7 @@ const softwareWallet: Object = Object.assign(
     create,
     openWithPrivateKey,
   },
-  ENV === 'development' ? { SoftwareWallet } : {},
+  ENV === 'development' || ENV === 'test' ? { SoftwareWallet } : {},
 );
 
 export default softwareWallet;
