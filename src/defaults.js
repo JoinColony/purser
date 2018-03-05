@@ -50,6 +50,7 @@ export const CLASS_GETTER: Object = {
 export const QR_CODE_OPTS: Object = {
   margin: 0,
   errorCorrectionLevel: 'H',
+  width: 200,
 };
 
 const defaults: Object = {
