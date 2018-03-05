@@ -43,6 +43,15 @@ export const CLASS_GETTER: Object = {
   configurable: true,
 };
 
+/*
+ * Default options used to pass down to the QR code generator.
+ * Note: they are specific to the `qrcode` library.
+ */
+export const QR_CODE_OPTS: Object = {
+  margin: 0,
+  errorCorrectionLevel: 'H',
+};
+
 const defaults: Object = {
   CLASS_GETTER,
   DEFAULT_NETWORK,
@@ -51,6 +60,7 @@ const defaults: Object = {
   LOCALPROVIDER_PORT,
   LOCALPROVIDER_PROTOCOL,
   PROVIDER_PROTO,
+  QR_CODE_OPTS,
   TEST_NETWORK,
 };
 

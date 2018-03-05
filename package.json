@@ -75,6 +75,7 @@
     "webpack-cli": "^2.0.9"
   },
   "dependencies": {
-    "ethers": "^3.0.2"
+    "ethers": "^3.0.2",
+    "qrcode": "^1.2.0"
   }
 }

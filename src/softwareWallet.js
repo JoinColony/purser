@@ -1,6 +1,7 @@
 /* @flow */
 
 import { Wallet as EtherWallet } from 'ethers/wallet';
+import qrcode from 'qrcode';
 
 import type {
   ProviderType,
@@ -9,7 +10,7 @@ import type {
 } from './flowtypes';
 
 import { autoselect } from './providers';
-import { ENV, CLASS_GETTER } from './defaults';
+import { ENV, CLASS_GETTER, QR_CODE_OPTS } from './defaults';
 import { getRandomValues, warn, error } from './utils';
 import { warnings, errors } from './messages';
 
@@ -35,6 +36,9 @@ class SoftwareWallet extends EtherWallet {
     super(privateKey, provider);
     encryptionPassword = password;
   }
+  /*
+   * Encrypted JSON Keystore
+   */
   keystore: string;
   get keystore(): Promise<string | void> {
     if (encryptionPassword) {
@@ -70,6 +74,34 @@ class SoftwareWallet extends EtherWallet {
   /* eslint-disable-next-line class-methods-use-this */
   set keystore(newEncryptionPassword: string): void {
     encryptionPassword = newEncryptionPassword;
+  }
+  /*
+   * Address QR Code
+   */
+  addressQR: string;
+  get addressQR(): Promise<string | void> {
+    if (this.address) {
+      /*
+       * While this is not a particularly expensive operation (it is, but it's
+       * small potatoes compared to the others), it's still a good approach
+       * to memoize the getter, so we're doing that here as well.
+       */
+      Object.defineProperty(
+        this,
+        /*
+         * Flow also doesn't like getter-only props
+         */
+        /* $FlowFixMe */
+        'addressQR',
+        Object.assign({}, CLASS_GETTER, {
+          value: qrcode.toDataURL(this.address, QR_CODE_OPTS),
+        }),
+      );
+      return qrcode.toDataURL(this.address, QR_CODE_OPTS);
+    }
+    return new Promise((resolve, reject) => reject()).catch(() =>
+      error('No adddress for some reason'),
+    );
   }
   /**
    * Create a new wallet.
@@ -127,6 +159,15 @@ class SoftwareWallet extends EtherWallet {
 Object.defineProperty(
   SoftwareWallet.prototype,
   'keystore',
+  Object.assign({}, CLASS_GETTER),
+);
+Object.defineProperty(
+  SoftwareWallet.prototype,
+  /*
+   * Flow also doesn't like getter-only props
+   */
+  /* $FlowFixMe */
+  'addressQR',
   Object.assign({}, CLASS_GETTER),
 );
 
