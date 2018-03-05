@@ -1,10 +1,15 @@
 import { Wallet as EthersWallet } from 'ethers/wallet';
 import qrcode from 'qrcode';
+import blockies from 'ethereum-blockies';
 
 import wallet, { create } from '../softwareWallet';
 import { localhost } from '../providers';
 import * as utils from '../utils';
 
+/*
+ * @TODO Move all mocks to separate files / folder
+ * They are kind of getting out of hand already, and it will only get worse
+ */
 jest.mock('ethers/wallet', () => {
   const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
     if (privatekey === '0x0') {
@@ -43,6 +48,12 @@ jest.mock('qrcode', () => ({
   ),
 }));
 
+jest.mock('ethereum-blockies', () => ({
+  create: jest.fn(() => ({
+    toDataURL: jest.fn(() => 'base64'),
+  })),
+}));
+
 jest.mock('../utils');
 
 let SoftwareWalletCreateSpy;
@@ -55,6 +66,7 @@ describe('`software` wallet module', () => {
     SoftwareWalletCreateSpy.mockReset();
     SoftwareWalletCreateSpy.mockRestore();
     qrcode.toDataURL.mockClear();
+    blockies.create.mockClear();
   });
   /*
    * @TODO Split this tests file into a more manageable format
@@ -154,7 +166,7 @@ describe('`software` wallet module', () => {
     /*
      * Address QR
      */
-    test('Add the addressQR prop to the wallet instance', () => {
+    test('Add the `addressQR` prop to the wallet instance', () => {
       const testWallet = wallet.SoftwareWallet.create({});
       testWallet.address = '0x123';
       const addressQRGetterSpy = jest.spyOn(
@@ -185,9 +197,42 @@ describe('`software` wallet module', () => {
       addressQRGetterSpy.mockRestore();
     });
     /*
+     * Blockie
+     */
+    test('Add the `blockie` prop to the wallet instance', () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      testWallet.address = '0x123';
+      const blockieGetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'blockie',
+        'get',
+      );
+      expect(testWallet).toHaveProperty('blockie');
+      expect(testWallet.blockie).resolves.toEqual('base64');
+      expect(blockieGetterSpy).toHaveBeenCalled();
+      expect(blockies.create).toHaveBeenCalled();
+      blockieGetterSpy.mockReset();
+      blockieGetterSpy.mockRestore();
+    });
+    test("Can't get the blockie if no address is available", () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      const blockieGetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'blockie',
+        'get',
+      );
+      expect(testWallet).toHaveProperty('blockie');
+      expect(testWallet.blockie).resolves.toEqual(undefined);
+      expect(blockieGetterSpy).toHaveBeenCalled();
+      expect(utils.error).toHaveBeenCalled();
+      expect(blockies.create).not.toHaveBeenCalled();
+      blockieGetterSpy.mockReset();
+      blockieGetterSpy.mockRestore();
+    });
+    /*
      * Private Key QR
      */
-    test('Add the privateKeyQR prop to the wallet instance', () => {
+    test('Add the `privateKeyQR` prop to the wallet instance', () => {
       const testWallet = wallet.SoftwareWallet.create({});
       testWallet.privateKey = '0x321';
       const privateKeyQRGetterSpy = jest.spyOn(
