@@ -6,8 +6,14 @@ import { localhost } from '../providers';
 import * as utils from '../utils';
 
 jest.mock('ethers/wallet', () => {
-  const Wallet = jest.fn().mockImplementation(privatekey => {
+  const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
     if (privatekey === '0x0') {
+      throw new Error();
+    }
+    /*
+     * A little trick to simulate an error during wallet creation
+     */
+    if (provider && provider.error) {
       throw new Error();
     }
     return this;
@@ -27,9 +33,9 @@ jest.mock('ethers/wallet', () => {
 
 jest.mock('qrcode', () => ({
   toDataURL: jest.fn(
-    address =>
+    value =>
       new Promise((resolve, reject) => {
-        if (address) {
+        if (value) {
           return resolve('base64');
         }
         return reject();
@@ -43,13 +49,12 @@ let SoftwareWalletCreateSpy;
 
 describe('`software` wallet module', () => {
   beforeEach(() => {
-    utils.warn.mockReset();
-    utils.error.mockReset();
     SoftwareWalletCreateSpy = jest.spyOn(wallet.SoftwareWallet, 'create');
   });
   afterEach(() => {
     SoftwareWalletCreateSpy.mockReset();
     SoftwareWalletCreateSpy.mockRestore();
+    qrcode.toDataURL.mockClear();
   });
   /*
    * @TODO Split this tests file into a more manageable format
@@ -93,15 +98,7 @@ describe('`software` wallet module', () => {
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalledWith();
     });
     test("Returns new wallet even when there's and error", () => {
-      /*
-       * A little trick to simulate an error during creation
-       */
-      utils.warn = jest.fn(() => {
-        throw new Error();
-      });
-      utils.error = jest.fn();
-      wallet.SoftwareWallet.create({ provider: null });
-      expect(utils.warn).toHaveBeenCalled();
+      wallet.SoftwareWallet.create({ provider: { error: true } });
       expect(utils.error).toHaveBeenCalled();
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalledWith();
@@ -171,10 +168,8 @@ describe('`software` wallet module', () => {
       expect(qrcode.toDataURL).toHaveBeenCalled();
       addressQRGetterSpy.mockReset();
       addressQRGetterSpy.mockRestore();
-      qrcode.toDataURL.mockReset();
-      qrcode.toDataURL.mockRestore();
     });
-    test("Can't get the address qr code if no address is available", () => {
+    test("Can't get the QR code if no address is available", () => {
       const testWallet = wallet.SoftwareWallet.create({});
       const addressQRGetterSpy = jest.spyOn(
         wallet.SoftwareWallet.prototype,
@@ -184,12 +179,43 @@ describe('`software` wallet module', () => {
       expect(testWallet).toHaveProperty('addressQR');
       expect(testWallet.addressQR).resolves.toEqual(undefined);
       expect(addressQRGetterSpy).toHaveBeenCalled();
-      expect(utils.warn).toHaveBeenCalled();
+      expect(utils.error).toHaveBeenCalled();
       expect(qrcode.toDataURL).not.toHaveBeenCalled();
       addressQRGetterSpy.mockReset();
       addressQRGetterSpy.mockRestore();
-      qrcode.toDataURL.mockReset();
-      qrcode.toDataURL.mockRestore();
+    });
+    /*
+     * Private Key QR
+     */
+    test('Add the privateKeyQR prop to the wallet instance', () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      testWallet.privateKey = '0x321';
+      const privateKeyQRGetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'privateKeyQR',
+        'get',
+      );
+      expect(testWallet).toHaveProperty('privateKeyQR');
+      expect(testWallet.privateKeyQR).resolves.toEqual('base64');
+      expect(privateKeyQRGetterSpy).toHaveBeenCalled();
+      expect(qrcode.toDataURL).toHaveBeenCalled();
+      privateKeyQRGetterSpy.mockReset();
+      privateKeyQRGetterSpy.mockRestore();
+    });
+    test("Can't get the QR code if no private key is available", () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      const privateKeyQRGetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'privateKeyQR',
+        'get',
+      );
+      expect(testWallet).toHaveProperty('privateKeyQR');
+      expect(testWallet.privateKeyQR).resolves.toEqual(undefined);
+      expect(privateKeyQRGetterSpy).toHaveBeenCalled();
+      expect(utils.error).toHaveBeenCalled();
+      expect(qrcode.toDataURL).not.toHaveBeenCalled();
+      privateKeyQRGetterSpy.mockReset();
+      privateKeyQRGetterSpy.mockRestore();
     });
   });
   /*
