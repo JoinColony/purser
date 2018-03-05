@@ -1,4 +1,5 @@
 import { Wallet as EthersWallet } from 'ethers/wallet';
+import qrcode from 'qrcode';
 
 import wallet, { create } from '../softwareWallet';
 import { localhost } from '../providers';
@@ -24,6 +25,18 @@ jest.mock('ethers/wallet', () => {
   return { Wallet };
 });
 
+jest.mock('qrcode', () => ({
+  toDataURL: jest.fn(
+    address =>
+      new Promise((resolve, reject) => {
+        if (address) {
+          return resolve('base64');
+        }
+        return reject();
+      }),
+  ),
+}));
+
 jest.mock('../utils');
 
 let SoftwareWalletCreateSpy;
@@ -38,6 +51,13 @@ describe('`software` wallet module', () => {
     SoftwareWalletCreateSpy.mockReset();
     SoftwareWalletCreateSpy.mockRestore();
   });
+  /*
+   * @TODO Split this tests file into a more manageable format
+   * This will only get bigger and harder to find stuff into with time...
+   */
+  /*
+   * Main class
+   */
   describe('`SoftwareWallet` Class', () => {
     test('Creates a new wallet', () => {
       const testWallet = wallet.SoftwareWallet.create({});
@@ -86,6 +106,9 @@ describe('`software` wallet module', () => {
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalledWith();
     });
+    /*
+     * Keystore
+     */
     test('Add the keystore prop to the wallet instance', () => {
       const testWallet = wallet.SoftwareWallet.create({
         password: 'encrypt-me-baby',
@@ -131,7 +154,47 @@ describe('`software` wallet module', () => {
       keystoreSetterSpy.mockReset();
       keystoreSetterSpy.mockRestore();
     });
+    /*
+     * Address QR
+     */
+    test('Add the addressQR prop to the wallet instance', () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      testWallet.address = '0x123';
+      const addressQRGetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'addressQR',
+        'get',
+      );
+      expect(testWallet).toHaveProperty('addressQR');
+      expect(testWallet.addressQR).resolves.toEqual('base64');
+      expect(addressQRGetterSpy).toHaveBeenCalled();
+      expect(qrcode.toDataURL).toHaveBeenCalled();
+      addressQRGetterSpy.mockReset();
+      addressQRGetterSpy.mockRestore();
+      qrcode.toDataURL.mockReset();
+      qrcode.toDataURL.mockRestore();
+    });
+    test("Can't get the address qr code if no address is available", () => {
+      const testWallet = wallet.SoftwareWallet.create({});
+      const addressQRGetterSpy = jest.spyOn(
+        wallet.SoftwareWallet.prototype,
+        'addressQR',
+        'get',
+      );
+      expect(testWallet).toHaveProperty('addressQR');
+      expect(testWallet.addressQR).resolves.toEqual(undefined);
+      expect(addressQRGetterSpy).toHaveBeenCalled();
+      expect(utils.warn).toHaveBeenCalled();
+      expect(qrcode.toDataURL).not.toHaveBeenCalled();
+      addressQRGetterSpy.mockReset();
+      addressQRGetterSpy.mockRestore();
+      qrcode.toDataURL.mockReset();
+      qrcode.toDataURL.mockRestore();
+    });
   });
+  /*
+   * Create
+   */
   describe('`create` method', () => {
     test('Creates a new wallet by default', () => {
       create();
