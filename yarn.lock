@@ -2255,19 +2255,7 @@ ethers@^3.0.2:
     scrypt-js "2.0.3"
     setimmediate "1.0.4"
     uuid "2.0.1"
-<<<<<<< HEAD
     xmlhttprequest "1.8.0"
-=======
-
-ethers@^2.2.6:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-2.2.6.tgz#d1081c3e132930686fa7a3b508ae4d0ef8bd986a"
-  dependencies:
-    ethers-contracts "2.2.1"
-    ethers-providers "2.1.19"
-    ethers-utils "2.1.11"
-    ethers-wallet "2.1.8"
->>>>>>> Add: create a random basic wallet
 
 events@^1.0.0:
   version "1.1.1"
