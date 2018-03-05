@@ -1,6 +1,8 @@
 /* @flow */
 
 import ethers from 'ethers';
+import qrcode from 'qrcode';
+import blockies from 'ethereum-blockies';
 
 import type { ColonyWalletExportType } from './flowtypes';
 
@@ -15,6 +17,8 @@ import { name, version } from '../package.json';
 const debug = {
   debug: {
     ethers,
+    qrcode,
+    blockies,
     SoftwareWallet: software.SoftwareWallet,
   },
 };

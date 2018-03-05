@@ -75,6 +75,7 @@
     "webpack-cli": "^2.0.9"
   },
   "dependencies": {
+    "ethereum-blockies": "https://github.com/ethereum/blockies.git",
     "ethers": "^3.0.2",
     "qrcode": "^1.2.0"
   }

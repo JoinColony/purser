@@ -2,6 +2,7 @@
 
 import { Wallet as EtherWallet } from 'ethers/wallet';
 import qrcode from 'qrcode';
+import blockies from 'ethereum-blockies';
 
 import type {
   ProviderType,
@@ -10,7 +11,7 @@ import type {
 } from './flowtypes';
 
 import { autoselect } from './providers';
-import { ENV, CLASS_GETTER, QR_CODE_OPTS } from './defaults';
+import { ENV, CLASS_GETTER, QR_CODE_OPTS, BLOCKIE_OPTS } from './defaults';
 import { getRandomValues, warn, error } from './utils';
 import { warnings, errors } from './messages';
 
@@ -98,6 +99,38 @@ class SoftwareWallet extends EtherWallet {
         }),
       );
       return qrcode.toDataURL(this.address, QR_CODE_OPTS);
+    }
+    return new Promise((resolve, reject) => reject()).catch(() =>
+      error(errors.softwareWallet.Class.noAddress, this.address),
+    );
+  }
+  /*
+   * Address Identicon (Blockie)
+   */
+  blockie: string;
+  get blockie(): Promise<string | void> {
+    if (this.address) {
+      const blockiePromise = new Promise(resolve => {
+        const blockie = blockies.create(
+          Object.assign({}, BLOCKIE_OPTS, { seed: this.address }),
+        );
+        resolve(blockie.toDataURL());
+      });
+      /*
+       * While this is not a particularly expensive operation (it is, but it's
+       * small potatoes compared to the others), it's still a good approach
+       * to memoize the getter, so we're doing that here as well.
+       */
+      Object.defineProperty(
+        this,
+        /*
+         * Flow also doesn't like getter-only props
+         */
+        /* $FlowFixMe */
+        'blockie',
+        Object.assign({}, CLASS_GETTER, { value: blockiePromise }),
+      );
+      return blockiePromise;
     }
     return new Promise((resolve, reject) => reject()).catch(() =>
       error(errors.softwareWallet.Class.noAddress, this.address),
@@ -196,6 +229,15 @@ Object.defineProperty(
    */
   /* $FlowFixMe */
   'addressQR',
+  Object.assign({}, CLASS_GETTER),
+);
+Object.defineProperty(
+  SoftwareWallet.prototype,
+  /*
+   * Flow also doesn't like getter-only props
+   */
+  /* $FlowFixMe */
+  'blockie',
   Object.assign({}, CLASS_GETTER),
 );
 Object.defineProperty(

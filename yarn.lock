@@ -2252,6 +2252,10 @@ esutils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
 
+"ethereum-blockies@https://github.com/ethereum/blockies.git":
+  version "0.1.1"
+  resolved "https://github.com/ethereum/blockies.git#a275390407dec41ebd581250dc31ebabeba5a78d"
+
 ethers@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-3.0.2.tgz#c12877e025abac43dca6b58c3b01d952519bdd62"
