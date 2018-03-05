@@ -100,7 +100,7 @@ class SoftwareWallet extends EtherWallet {
       return qrcode.toDataURL(this.address, QR_CODE_OPTS);
     }
     return new Promise((resolve, reject) => reject()).catch(() =>
-      error('No adddress for some reason'),
+      error(errors.softwareWallet.Class.noAddress, this.address),
     );
   }
   /**

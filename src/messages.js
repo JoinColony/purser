@@ -71,6 +71,8 @@ export const errors = {
     Class: {
       create:
         'There was an error in creating the wallet, check the provider (%s) and entropy (%s) arguments. We reverted back and generated a wallet with the only defaults. Be careful when using it. %s',
+      noAddress:
+        'Could not find an address value (%s) in the wallet object. If you see this, the library has already crashed.',
     },
     openWithPrivateKey: {
       cannotOpenWallet:
