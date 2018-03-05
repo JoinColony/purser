@@ -1,5 +1,7 @@
 /* eslint-disable flowtype/require-valid-file-annotation */
 
+import type { ProviderType } from './flowtypes';
+
 /*
  * Networks
  */
@@ -19,12 +21,26 @@ export const LOCALPROVIDER_PROTOCOL: string = 'http';
 export const LOCALPROVIDER_HOST: string = 'localhost';
 export const LOCALPROVIDER_PORT: string = '8545';
 
+/*
+ * Used to supland the provider object when a connection to a provider could
+ * not be established
+ */
+export const PROVIDER_PROTO: ProviderType = {
+  chainId: 0,
+  ensAddress: '',
+  name: DEFAULT_NETWORK,
+  testnet: false,
+  url: '',
+  _events: {},
+};
+
 const defaults = {
   DEFAULT_NETWORK,
   ENV,
   LOCALPROVIDER_HOST,
   LOCALPROVIDER_PORT,
   LOCALPROVIDER_PROTOCOL,
+  PROVIDER_PROTO,
   TEST_NETWORK,
 };
 

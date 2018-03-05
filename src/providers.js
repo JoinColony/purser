@@ -8,21 +8,12 @@ import { warn, error } from './utils';
 import { warnings, errors } from './messages';
 
 import {
-  ENV,
   DEFAULT_NETWORK,
   LOCALPROVIDER_PROTOCOL as PROTOCOL,
   LOCALPROVIDER_HOST as HOST,
   LOCALPROVIDER_PORT as PORT,
+  PROVIDER_PROTO,
 } from './defaults';
-
-const providerPrototype: ProviderType = {
-  chainId: 0,
-  ensAddress: '',
-  name: DEFAULT_NETWORK,
-  testnet: false,
-  url: '',
-  _events: {},
-};
 
 /**
  * Etherscan provider generator method.
@@ -39,7 +30,7 @@ export const etherscan = (
   network: string = DEFAULT_NETWORK,
   token: string,
 ): ProviderType => {
-  let provider = providerPrototype;
+  let provider = PROVIDER_PROTO;
   try {
     if (token) {
       provider = new ethersProviders.EtherscanProvider(network, token);
@@ -68,7 +59,7 @@ export const infura = (
   network: string = DEFAULT_NETWORK,
   token: string,
 ): ProviderType => {
-  let provider = providerPrototype;
+  let provider = PROVIDER_PROTO;
   try {
     if (token) {
       provider = new ethersProviders.InfuraProvider(network, token);
@@ -93,7 +84,7 @@ export const infura = (
  * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
-  let provider = providerPrototype;
+  let provider = PROVIDER_PROTO;
   try {
     if (!global.web3 || !global.web3.currentProvider) {
       warn(warnings.providers.metamask.notAvailable);
@@ -124,7 +115,7 @@ export const localhost = (
   url: string = `${PROTOCOL}://${HOST}:${PORT}`,
   network: string = DEFAULT_NETWORK,
 ): ProviderType => {
-  let provider = providerPrototype;
+  let provider = PROVIDER_PROTO;
   try {
     /*
      * @TODO Instantly check the connection to see if the provider is up
@@ -159,7 +150,7 @@ export const autoselect = (
     localhost,
   ],
 ) => {
-  let provider = providerPrototype;
+  let provider = PROVIDER_PROTO;
   if (!providersList.length) {
     error(errors.providers.autoselect.empty);
     return provider;
@@ -177,27 +168,19 @@ export const autoselect = (
       /*
        * Reset the provider back to an empty object if it wasn't the right format
        */
-      provider = providerPrototype;
+      provider = PROVIDER_PROTO;
     }
   }
   error(errors.providers.autoselect.noProvider);
   return provider;
 };
 
-/*
- * If we're in test mode, also export the `providerPrototype` object so we
- * can test against it
- */
-const colonyWallet: Object = Object.assign(
-  {},
-  {
-    etherscan,
-    infura,
-    localhost,
-    metamask,
-    autoselect,
-  },
-  ENV === 'test' ? { providerPrototype } : {},
-);
+const colonyWallet: Object = {
+  etherscan,
+  infura,
+  localhost,
+  metamask,
+  autoselect,
+};
 
 export default colonyWallet;
