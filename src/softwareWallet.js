@@ -1,6 +1,6 @@
 /* @flow */
 
-import { Wallet } from 'ethers';
+import { Wallet as EtherWallet } from 'ethers/wallet';
 
 import type {
   ProviderType,
@@ -20,13 +20,13 @@ let encryptionPassword: string;
 /**
  * We extend Ethers's Wallet Object so we can add extra functionality
  *
- * @extends Wallet
+ * @extends EtherWallet
  *
  * @TODO Add address QR generator
  * @TODO Add privatekey QR generator
  * @TODO Add address blockie generator
  */
-class SoftwareWallet extends Wallet {
+class SoftwareWallet extends EtherWallet {
   constructor(
     privateKey: string,
     provider: ProviderType | void,
@@ -160,9 +160,9 @@ export const openWithPrivateKey = (
   try {
     if (!provider || (provider && typeof provider !== 'object')) {
       warn(warnings.softwareWallet.Class.noProvider);
-      return new Wallet(privateKey);
+      return new EtherWallet(privateKey);
     }
-    return new Wallet(privateKey, provider);
+    return new EtherWallet(privateKey, provider);
   } catch (err) {
     return error(
       errors.softwareWallet.openWithPrivateKey.cannotOpenWallet,

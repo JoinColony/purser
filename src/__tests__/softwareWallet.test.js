@@ -1,10 +1,10 @@
-import ethers from 'ethers';
+import { Wallet as EthersWallet } from 'ethers/wallet';
 
 import wallet, { create } from '../softwareWallet';
 import { localhost } from '../providers';
 import * as utils from '../utils';
 
-jest.mock('ethers', () => {
+jest.mock('ethers/wallet', () => {
   const Wallet = jest.fn().mockImplementation(privatekey => {
     if (privatekey === '0x0') {
       throw new Error();
@@ -41,10 +41,10 @@ describe('`software` wallet module', () => {
   describe('`SoftwareWallet` Class', () => {
     test('Creates a new wallet', () => {
       const testWallet = wallet.SoftwareWallet.create({});
-      expect(ethers.Wallet).toHaveBeenCalled();
+      expect(EthersWallet).toHaveBeenCalled();
       expect(wallet.SoftwareWallet).toHaveBeenCalled();
       expect(testWallet).toBeInstanceOf(wallet.SoftwareWallet);
-      expect(testWallet).toBeInstanceOf(ethers.Wallet);
+      expect(testWallet).toBeInstanceOf(EthersWallet);
     });
     test('Creates a new wallet with a manual provider', () => {
       const provider = localhost();

@@ -1,6 +1,6 @@
 /* @flow */
 
-import { providers } from 'ethers';
+import ethersProviders from 'ethers/providers';
 
 import type { ProviderType, ProviderGeneratorType } from './flowtypes';
 
@@ -42,11 +42,11 @@ export const etherscan = (
   let provider = providerPrototype;
   try {
     if (token) {
-      provider = new providers.EtherscanProvider(network, token);
+      provider = new ethersProviders.EtherscanProvider(network, token);
       return provider;
     }
     warn(warnings.providers.etherscan.token);
-    provider = new providers.EtherscanProvider(network);
+    provider = new ethersProviders.EtherscanProvider(network);
   } catch (err) {
     error(errors.providers.etherscan.connect, network, token, err);
   }
@@ -71,11 +71,11 @@ export const infura = (
   let provider = providerPrototype;
   try {
     if (token) {
-      provider = new providers.InfuraProvider(network, token);
+      provider = new ethersProviders.InfuraProvider(network, token);
       return provider;
     }
     warn(warnings.providers.infura.token);
-    provider = new providers.InfuraProvider(network);
+    provider = new ethersProviders.InfuraProvider(network);
   } catch (err) {
     error(errors.providers.infura.connect, network, token, err);
   }
@@ -99,7 +99,10 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
       warn(warnings.providers.metamask.notAvailable);
       return provider;
     }
-    provider = new providers.Web3Provider(global.web3.currentProvider, network);
+    provider = new ethersProviders.Web3Provider(
+      global.web3.currentProvider,
+      network,
+    );
   } catch (err) {
     error(errors.providers.metamask.connect, network, err);
   }
@@ -131,7 +134,7 @@ export const localhost = (
      * To implement this, we need to switch this (and maybe all) provider methods to
      * `async`s, the tradeoff in this case might not be worth it.
      */
-    provider = new providers.JsonRpcProvider(url, network);
+    provider = new ethersProviders.JsonRpcProvider(url, network);
   } catch (err) {
     error(errors.providers.localhost.connect, url, network, err);
   }

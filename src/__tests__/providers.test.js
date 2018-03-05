@@ -1,4 +1,4 @@
-import { providers as ethersProviders } from 'ethers';
+import ethersProviders from 'ethers/providers';
 
 import providers, {
   etherscan,
