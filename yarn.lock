@@ -2242,48 +2242,20 @@ esutils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
 
-ethers-contracts@2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/ethers-contracts/-/ethers-contracts-2.2.1.tgz#e2bf5dd5e157313ba454b50c646c8472fcd0a8b3"
-  dependencies:
-    ethers-utils "^2.1.0"
-
-ethers-providers@2.1.19:
-  version "2.1.19"
-  resolved "https://registry.yarnpkg.com/ethers-providers/-/ethers-providers-2.1.19.tgz#d597e298f70cfbf8da207c303af0a5cbed5b4cd2"
-  dependencies:
-    ethers-utils "^2.1.0"
-    inherits "2.0.1"
-    xmlhttprequest "1.8.0"
-
-ethers-utils@2.1.11, ethers-utils@^2.1.0:
-  version "2.1.11"
-  resolved "https://registry.yarnpkg.com/ethers-utils/-/ethers-utils-2.1.11.tgz#b27535ca3226118be300211c39c896b1e5e21641"
-  dependencies:
-    bn.js "^4.4.0"
-    hash.js "^1.0.0"
-    js-sha3 "0.5.7"
-    xmlhttprequest "1.8.0"
-
-ethers-wallet@2.1.8:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/ethers-wallet/-/ethers-wallet-2.1.8.tgz#2819a51d439525ddedeec84992b0b83f59da3cef"
+ethers@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-3.0.2.tgz#c12877e025abac43dca6b58c3b01d952519bdd62"
   dependencies:
     aes-js "3.0.0"
+    bn.js "^4.4.0"
     elliptic "6.3.3"
-    ethers-utils "^2.1.0"
+    hash.js "^1.0.0"
+    inherits "2.0.1"
+    js-sha3 "0.5.7"
     scrypt-js "2.0.3"
     setimmediate "1.0.4"
     uuid "2.0.1"
-
-ethers@^2.2.6:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-2.2.6.tgz#d1081c3e132930686fa7a3b508ae4d0ef8bd986a"
-  dependencies:
-    ethers-contracts "2.2.1"
-    ethers-providers "2.1.19"
-    ethers-utils "2.1.11"
-    ethers-wallet "2.1.8"
+    xmlhttprequest "1.8.0"
 
 events@^1.0.0:
   version "1.1.1"
