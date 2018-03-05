@@ -103,6 +103,34 @@ class SoftwareWallet extends EtherWallet {
       error(errors.softwareWallet.Class.noAddress, this.address),
     );
   }
+  /*
+   * Private Key QR Code
+   */
+  privateKeyQR: string;
+  get privateKeyQR(): Promise<string | void> {
+    if (this.privateKey) {
+      /*
+       * While this is not a particularly expensive operation (it is, but it's
+       * small potatoes compared to the others), it's still a good approach
+       * to memoize the getter, so we're doing that here as well.
+       */
+      Object.defineProperty(
+        this,
+        /*
+         * Flow also doesn't like getter-only props
+         */
+        /* $FlowFixMe */
+        'privateKeyQR',
+        Object.assign({}, CLASS_GETTER, {
+          value: qrcode.toDataURL(this.privateKey, QR_CODE_OPTS),
+        }),
+      );
+      return qrcode.toDataURL(this.privateKey, QR_CODE_OPTS);
+    }
+    return new Promise((resolve, reject) => reject()).catch(() =>
+      error(errors.softwareWallet.Class.noPrivateKey, this.privateKey),
+    );
+  }
   /**
    * Create a new wallet.
    *
@@ -168,6 +196,15 @@ Object.defineProperty(
    */
   /* $FlowFixMe */
   'addressQR',
+  Object.assign({}, CLASS_GETTER),
+);
+Object.defineProperty(
+  SoftwareWallet.prototype,
+  /*
+   * Flow also doesn't like getter-only props
+   */
+  /* $FlowFixMe */
+  'privateKeyQR',
   Object.assign({}, CLASS_GETTER),
 );
 
