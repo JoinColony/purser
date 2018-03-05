@@ -34,7 +34,17 @@ export const PROVIDER_PROTO: ProviderType = {
   _events: {},
 };
 
-const defaults = {
+/*
+ * Default class getter props to set on the resultin's object property.
+ * Most likely to be used with `Object.defineProperty()`
+ */
+export const CLASS_GETTER: Object = {
+  enumerable: true,
+  configurable: true,
+};
+
+const defaults: Object = {
+  CLASS_GETTER,
   DEFAULT_NETWORK,
   ENV,
   LOCALPROVIDER_HOST,

@@ -9,7 +9,7 @@ import type {
 } from './flowtypes';
 
 import { autoselect } from './providers';
-import { ENV } from './defaults';
+import { ENV, CLASS_GETTER } from './defaults';
 import { getRandomValues, warn, error } from './utils';
 import { warnings, errors } from './messages';
 
@@ -39,14 +39,21 @@ class SoftwareWallet extends EtherWallet {
   get keystore(): Promise<string | void> {
     if (encryptionPassword) {
       /*
-       * Memoizing the getter, so next it won't re-calculate the value
+       * Memoizing the getter
+       *
+       * This is quite an expensive operation, so we're memoizing it that
+       * on the next call (an the others after that) it won't re-calculate
+       * the value again.
        */
-      Object.defineProperty(this, 'keystore', {
-        value: this.encrypt(encryptionPassword),
-        writable: false,
-        enumerable: true,
-        configurable: true,
-      });
+      Object.defineProperty(
+        this,
+        'keystore',
+        Object.assign(
+          {},
+          { value: this.encrypt(encryptionPassword) },
+          CLASS_GETTER,
+        ),
+      );
       return this.encrypt(encryptionPassword);
     }
     return new Promise((resolve, reject) => reject()).catch(() =>
@@ -117,9 +124,11 @@ class SoftwareWallet extends EtherWallet {
  * See: https://github.com/facebook/flow/issues/285
  */
 /* $FlowFixMe */
-Object.defineProperty(SoftwareWallet.prototype, 'keystore', {
-  enumerable: true,
-});
+Object.defineProperty(
+  SoftwareWallet.prototype,
+  'keystore',
+  Object.assign({}, CLASS_GETTER),
+);
 
 /**
  * Create a new wallet.
