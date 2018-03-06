@@ -7,4 +7,7 @@ module.exports = {
       branches: 80,
     },
   },
+  moduleNameMapper: {
+    'ethers': '<rootDir>/src/__mocks__/ethers',
+  },
 };

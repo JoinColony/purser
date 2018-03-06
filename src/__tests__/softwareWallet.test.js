@@ -10,31 +10,7 @@ import * as utils from '../utils';
  * @TODO Move all mocks to separate files / folder
  * They are kind of getting out of hand already, and it will only get worse
  */
-jest.mock('ethers/wallet', () => {
-  const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
-    if (privatekey === '0x0') {
-      throw new Error();
-    }
-    /*
-     * A little trick to simulate an error during wallet creation
-     */
-    if (provider && provider.error) {
-      throw new Error();
-    }
-    return this;
-  });
-  Wallet.createRandom = jest.fn(() => ({}));
-  Wallet.prototype.encrypt = jest.fn(
-    password =>
-      new Promise((resolve, reject) => {
-        if (password) {
-          return resolve(`{}`);
-        }
-        return reject();
-      }),
-  );
-  return { Wallet };
-});
+jest.mock('ethers/wallet');
 
 jest.mock('qrcode', () => ({
   toDataURL: jest.fn(
