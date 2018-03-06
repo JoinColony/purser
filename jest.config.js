@@ -9,5 +9,6 @@ module.exports = {
   },
   moduleNameMapper: {
     'ethers': '<rootDir>/src/__mocks__/ethers',
+    'qrcode': '<rootDir>/src/__mocks__/qrcode.js',
   },
 };

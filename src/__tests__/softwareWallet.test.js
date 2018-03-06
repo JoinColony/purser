@@ -12,17 +12,19 @@ import * as utils from '../utils';
  */
 jest.mock('ethers/wallet');
 
-jest.mock('qrcode', () => ({
-  toDataURL: jest.fn(
-    value =>
-      new Promise((resolve, reject) => {
-        if (value) {
-          return resolve('base64');
-        }
-        return reject();
-      }),
-  ),
-}));
+// jest.mock('qrcode', () => ({
+//   toDataURL: jest.fn(
+//     value =>
+//       new Promise((resolve, reject) => {
+//         if (value) {
+//           return resolve('base64');
+//         }
+//         return reject();
+//       }),
+//   ),
+// }));
+
+jest.mock('qrcode');
 
 jest.mock('ethereum-blockies', () => ({
   create: jest.fn(() => ({
