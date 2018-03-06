@@ -10,5 +10,6 @@ module.exports = {
   moduleNameMapper: {
     'ethers': '<rootDir>/src/__mocks__/ethers',
     'qrcode': '<rootDir>/src/__mocks__/qrcode.js',
+    'ethereum-blockies': '<rootDir>/src/__mocks__/ethereum-blockies.js',
   },
 };
