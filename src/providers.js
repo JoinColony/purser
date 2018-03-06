@@ -2,7 +2,11 @@
 
 import ethersProviders from 'ethers/providers';
 
-import type { ProviderType, ProviderGeneratorType } from './flowtypes';
+import type {
+  ProviderType,
+  ProviderGeneratorType,
+  ProvidersExportType,
+} from './flowtypes';
 
 import { warn, error } from './utils';
 import { warnings, errors } from './messages';
@@ -175,7 +179,7 @@ export const autoselect = (
   return provider;
 };
 
-const colonyWallet: Object = {
+const colonyWallet: ProvidersExportType = {
   etherscan,
   infura,
   localhost,

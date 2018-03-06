@@ -1,7 +1,9 @@
 /* eslint-disable flowtype/require-valid-file-annotation */
 /* eslint-disable max-len */
 
-export const warnings = {
+import { MessagesExportType } from './flowtypes';
+
+export const warnings: Object = {
   providers: {
     etherscan: {
       token:
@@ -34,7 +36,7 @@ export const warnings = {
   },
 };
 
-export const errors = {
+export const errors: Object = {
   providers: {
     etherscan: {
       connect:
@@ -83,7 +85,7 @@ export const errors = {
   },
 };
 
-const messages = {
+const messages: MessagesExportType = {
   warnings,
   errors,
 };

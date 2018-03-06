@@ -1,10 +1,12 @@
 /* @flow */
 
+import type { WalletIndexExportType } from './flowtypes';
+
 import software from './softwareWallet';
 
 export { software };
 
-const wallet = {
+const wallet: WalletIndexExportType = {
   software,
 };
 

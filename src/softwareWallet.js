@@ -8,6 +8,7 @@ import type {
   ProviderType,
   WalletType,
   WalletArgumentsType,
+  SoftwareWalletExportType,
 } from './flowtypes';
 
 import { autoselect } from './providers';
@@ -306,7 +307,7 @@ export const openWithPrivateKey = (
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
  * to us directly for debugging.
  */
-const softwareWallet: Object = Object.assign(
+const softwareWallet: SoftwareWalletExportType = Object.assign(
   {},
   {
     create,

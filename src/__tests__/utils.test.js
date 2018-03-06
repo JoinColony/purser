@@ -1,11 +1,13 @@
 import crypto from 'crypto';
 
-import { verbose, warn, error, getRandomValues } from '../utils';
+import utils, { warn, error, getRandomValues } from '../utils';
 import * as defaults from '../defaults';
 
 jest.mock('crypto', () => ({}));
 
 const message = 'This is a test message';
+
+const { verbose } = utils;
 
 describe('`utils` module', () => {
   describe('`verbose()` helper method', () => {

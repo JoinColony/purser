@@ -2,6 +2,8 @@
 
 import crypto from 'crypto';
 
+import type { UtilsExportType } from './flowtypes';
+
 import { ENV } from './defaults';
 import { errors, warnings } from './messages';
 
@@ -13,7 +15,7 @@ import { errors, warnings } from './messages';
  *
  * @return {boolean} Do we output to the console, or not?
  */
-export const verbose = (): boolean => {
+const verbose = (): boolean => {
   if (typeof ENV === 'undefined') {
     return true;
   }
@@ -100,10 +102,17 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   throw new Error(errors.utils.getRandomValues.noCryptoLib);
 };
 
-const utils = {
-  warn,
-  error,
-  getRandomValues,
-};
+const utils: UtilsExportType = Object.assign(
+  {},
+  {
+    warn,
+    error,
+    getRandomValues,
+  },
+  /*
+   * Only export the `verbose` method for testing purpouses
+   */
+  ENV === 'test' ? { verbose } : {},
+);
 
 export default utils;

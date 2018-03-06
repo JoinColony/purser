@@ -57,3 +57,33 @@ export type ColonyWalletExportType = {
 export type DebugExportType = {
   debug: Object,
 };
+
+export type ProvidersExportType = {
+  etherscan: ProviderGeneratorType,
+  infura: ProviderGeneratorType,
+  metamask: ProviderGeneratorType,
+  localhost: ProviderGeneratorType,
+  autoselect: ProviderGeneratorType,
+};
+
+export type SoftwareWalletExportType = {
+  create: (...*) => () => WalletType,
+  openWithPrivateKey?: (...*) => ?WalletType,
+  SoftwareWallet?: Class<*>,
+};
+
+export type UtilsExportType = {
+  warn: (...*) => void,
+  error: (...*) => void,
+  getRandomValues: (...*) => Uint8Array,
+  verbose?: () => boolean,
+};
+
+export type WalletIndexExportType = {
+  software: SoftwareWalletExportType,
+};
+
+export type MessagesExportType = {
+  warnings: Object,
+  errors: Object,
+};
