@@ -31,6 +31,17 @@ export type WalletType = {
   sign: (transaction: *) => string,
 };
 
+export type WalletArgumentsType = {
+  privatekey?: string,
+  provider?: ProviderType,
+  entrophy?: Uint8Array,
+  password?: string,
+};
+
+/*
+ * Types used for modules exports
+ */
+
 export type ColonyWalletExportType = {
   wallet: Object,
   about: {
@@ -43,9 +54,6 @@ export type ColonyWalletExportType = {
   debug?: Object,
 };
 
-export type WalletArgumentsType = {
-  privatekey?: string,
-  provider?: ProviderType,
-  entrophy?: Uint8Array,
-  password?: string,
+export type DebugExportType = {
+  debug: Object,
 };
