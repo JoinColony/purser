@@ -68,14 +68,25 @@ export const error = (...args: Array<*>): void => {
 export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   /*
    * Check if `webCrypto` is available (Chrome and Firefox browsers)
+   *
+   * Also check if the `window` global variable is avaiable if this library
+   * is being used in a `node` environment
    */
-  if (window.crypto && window.crypto.getRandomValues) {
+  if (
+    typeof window !== 'undefined' &&
+    window.crypto &&
+    window.crypto.getRandomValues
+  ) {
     return window.crypto.getRandomValues(typedArray);
   }
   /*
    * Check if `webCrypto` is available (Microsoft based browsers, most likely Edge)
+   *
+   * Also check if the `window` global variable is avaiable if this library
+   * is being used in a `node` environment
    */
   if (
+    typeof window !== 'undefined' &&
     typeof window.msCrypto === 'object' &&
     typeof window.msCrypto.getRandomValues === 'function'
   ) {
