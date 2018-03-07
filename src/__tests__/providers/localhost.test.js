@@ -9,10 +9,14 @@ import {
   PROVIDER_PROTO,
 } from '../../defaults';
 
+jest.mock('ethers/providers');
+
 describe('`providers` module', () => {
+  afterEach(() => {
+    ethersProviders.JsonRpcProvider.mockClear();
+  });
   describe('`localhost` provider', () => {
     test('Connects with defaults', () => {
-      ethersProviders.JsonRpcProvider = jest.fn();
       localhost();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
@@ -21,7 +25,6 @@ describe('`providers` module', () => {
       );
     });
     test('Connects with custom url and network', () => {
-      ethersProviders.JsonRpcProvider = jest.fn();
       const testUrl = 'http://127.0.0.1';
       const testNetworkName = 'skynet';
       localhost(testUrl, testNetworkName);
@@ -32,13 +35,10 @@ describe('`providers` module', () => {
       );
     });
     test('Catch the connection error if something goes wrong', () => {
-      ethersProviders.JsonRpcProvider = jest.fn(() => {
-        throw new Error();
-      });
-      const testNetworkName = 'network-name-does-not-exist';
+      const testNetworkName = 'error';
       const provider = localhost(testNetworkName);
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
-      expect(ethersProviders.JsonRpcProvider).toThrow();
+      expect(() => ethersProviders.JsonRpcProvider(testNetworkName)).toThrow();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
   });

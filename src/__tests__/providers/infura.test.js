@@ -3,10 +3,14 @@ import ethersProviders from 'ethers/providers';
 import { infura } from '../../providers';
 import { DEFAULT_NETWORK, PROVIDER_PROTO } from '../../defaults';
 
+jest.mock('ethers/providers');
+
 describe('`providers` module', () => {
+  afterEach(() => {
+    ethersProviders.InfuraProvider.mockClear();
+  });
   describe('`infura` provider', () => {
     test('Connects with defaults', () => {
-      ethersProviders.InfuraProvider = jest.fn();
       infura();
       expect(ethersProviders.InfuraProvider).toHaveBeenCalled();
       expect(ethersProviders.InfuraProvider).toHaveBeenCalledWith(
@@ -14,7 +18,6 @@ describe('`providers` module', () => {
       );
     });
     test('Connects with custom network and api key', () => {
-      ethersProviders.InfuraProvider = jest.fn();
       const testNetworkName = 'skynet';
       const testApiKey = '159346284575888';
       infura(testNetworkName, testApiKey);
@@ -25,13 +28,10 @@ describe('`providers` module', () => {
       );
     });
     test('Catch the connection error if something goes wrong', () => {
-      ethersProviders.InfuraProvider = jest.fn(() => {
-        throw new Error();
-      });
-      const testNetworkName = 'network-name-does-not-exist';
+      const testNetworkName = 'error';
       const provider = infura(testNetworkName);
       expect(ethersProviders.InfuraProvider).toHaveBeenCalled();
-      expect(ethersProviders.InfuraProvider).toThrow();
+      expect(() => ethersProviders.InfuraProvider(testNetworkName)).toThrow();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
   });
