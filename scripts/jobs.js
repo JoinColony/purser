@@ -32,7 +32,13 @@ const cjsModules = message => run(
 );
 
 const flowTypes = message => run(
-  `flow-copy-source --ignore "${paths.globs.tests}" --ignore "${paths.globs.mocks}" --ignore "${paths.files.defaults}" --ignore "${paths.files.messages}" ${paths.source} ${paths.modules}`,
+  'flow-copy-source ' +
+  `--ignore "${paths.globs.tests}" ` +
+  `--ignore "${paths.globs.mocks}" ` +
+  `--ignore "${paths.files.defaults}" ` +
+  `--ignore "${paths.files.messages}" ` +
+  `${paths.source} ` +
+  `${paths.modules}`,
   {},
   message
 );

@@ -16,7 +16,10 @@ const files = {};
  * Initialize watcher
  */
 const sourceWatch = chokidar.watch(paths.source, {
-  ignored: ['**/__tests__', '**/__mocks__'],
+  ignored: [
+    paths.globs.tests,
+    paths.globs.mocks,
+  ],
   awaitWriteFinish: true
 });
 
