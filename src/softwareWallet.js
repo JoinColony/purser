@@ -12,9 +12,15 @@ import type {
 } from './flowtypes';
 
 import { autoselect } from './providers';
-import { ENV, CLASS_GETTER, QR_CODE_OPTS, BLOCKIE_OPTS } from './defaults';
 import { getRandomValues, warn, error } from './utils';
 import { warnings, errors } from './messages';
+import {
+  ENV,
+  CLASS_GETTER,
+  QR_CODE_OPTS,
+  BLOCKIE_OPTS,
+  WALLET_PROP,
+} from './defaults';
 
 /*
  * "Private" variables
@@ -187,6 +193,7 @@ class SoftwareWallet extends EtherWallet {
     entrophy = new Uint8Array(65536),
   }: WalletArgumentsType): () => WalletType {
     let basicWallet: WalletType;
+    let walletInstance: () => WalletType;
     try {
       if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
         warn(warnings.softwareWallet.Class.noEntrophy);
@@ -198,9 +205,26 @@ class SoftwareWallet extends EtherWallet {
       }
       if (!provider || (provider && typeof provider !== 'object')) {
         warn(warnings.softwareWallet.Class.noProvider);
-        return new this(basicWallet.privateKey, undefined, password);
+        walletInstance = new this(basicWallet.privateKey, undefined, password);
+      } else {
+        walletInstance = new this(basicWallet.privateKey, provider, password);
       }
-      return new this(basicWallet.privateKey, provider, password);
+      /*
+       * Re-set `mnemonic` and `path` on the Wallet Instance Object
+       * Not doing so will loose the two props, since a new Wallet instance
+       * only returns the `privateKey` prop.
+       */
+      Object.defineProperty(
+        walletInstance,
+        'mnemonic',
+        Object.assign({}, WALLET_PROP, { value: basicWallet.mnemonic }),
+      );
+      Object.defineProperty(
+        walletInstance,
+        'path',
+        Object.assign({}, WALLET_PROP, { value: basicWallet.path }),
+      );
+      return walletInstance;
     } catch (err) {
       error(errors.softwareWallet.Class.create, provider, entrophy, err);
       return this.createRandom();

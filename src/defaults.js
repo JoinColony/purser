@@ -35,12 +35,21 @@ export const PROVIDER_PROTO: ProviderType = {
 };
 
 /*
- * Default class getter props to set on the resultin's object property.
+ * Default class getter props to set on the resulting's object property.
  * Most likely to be used with `Object.defineProperty()`
  */
 export const CLASS_GETTER: Object = {
   enumerable: true,
   configurable: true,
+};
+
+/*
+ * Default wallet instance object props
+ * Most likely to be used with `Object.defineProperty()`
+ */
+export const WALLET_PROP: Object = {
+  enumerable: true,
+  writable: false,
 };
 
 /*
@@ -76,6 +85,7 @@ const defaults: Object = {
   PROVIDER_PROTO,
   QR_CODE_OPTS,
   TEST_NETWORK,
+  WALLET_PROP,
 };
 
 export default defaults;
