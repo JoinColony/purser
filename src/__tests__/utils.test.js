@@ -4,6 +4,7 @@ import utils, { warn, error, getRandomValues } from '../utils';
 import * as defaults from '../defaults';
 
 jest.mock('crypto', () => ({}));
+jest.dontMock('../utils');
 
 const message = 'This is a test message';
 

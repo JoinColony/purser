@@ -25,13 +25,11 @@ describe('`providers` module', () => {
       expect(provider).toEqual(mockedProvider1);
     });
     test('Show an error if the providers array is empty', () => {
-      utils.error = jest.fn();
       const provider = autoselect([]);
       expect(utils.error).toHaveBeenCalled();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
     test('Show an error if it could not connect to any providers', () => {
-      utils.error = jest.fn();
       const provider = autoselect([{ chainId: false }, {}, () => {}]);
       expect(utils.error).toHaveBeenCalled();
       expect(provider).toEqual(PROVIDER_PROTO);
