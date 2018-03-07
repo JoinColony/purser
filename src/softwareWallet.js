@@ -184,7 +184,7 @@ class SoftwareWallet extends EtherWallet {
   static create({
     provider = autoselect(),
     password = '',
-    entrophy = getRandomValues(new Uint8Array(65536)),
+    entrophy = new Uint8Array(65536),
   }: WalletArgumentsType): () => WalletType {
     let basicWallet: WalletType;
     try {
@@ -192,7 +192,9 @@ class SoftwareWallet extends EtherWallet {
         warn(warnings.softwareWallet.Class.noEntrophy);
         basicWallet = this.createRandom();
       } else {
-        basicWallet = this.createRandom({ extraEntrophy: entrophy });
+        basicWallet = this.createRandom({
+          extraEntrophy: getRandomValues(entrophy),
+        });
       }
       if (!provider || (provider && typeof provider !== 'object')) {
         warn(warnings.softwareWallet.Class.noProvider);

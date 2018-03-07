@@ -29,12 +29,14 @@ describe('`software` wallet module', () => {
       expect(wallet.SoftwareWallet).toHaveBeenCalledWith(undefined, undefined);
     });
     test('Creates a new wallet with manual entrophy', () => {
+      utils.getRandomValues = jest.fn(value => value);
       const entrophy = new Uint8Array(100);
       wallet.SoftwareWallet.create({ entrophy });
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalledWith({
         extraEntrophy: entrophy,
       });
+      utils.getRandomValues.mockClear();
     });
     test('Creates a new wallet when entrophy is set to a falsy value', () => {
       wallet.SoftwareWallet.create({ entrophy: false });
