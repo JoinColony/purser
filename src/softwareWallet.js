@@ -1,6 +1,6 @@
 /* @flow */
 
-import { Wallet as EtherWallet } from 'ethers/wallet';
+import { Wallet as EtherWallet, HDNode } from 'ethers/wallet';
 import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
 
@@ -20,27 +20,30 @@ import {
   QR_CODE_OPTS,
   BLOCKIE_OPTS,
   WALLET_PROP,
+  MNEMONIC_PATH,
 } from './defaults';
 
 /*
  * "Private" variables
  */
-let encryptionPassword: string;
+let encryptionPassword: string | void;
 /**
  * We extend Ethers's Wallet Object so we can add extra functionality
  *
  * @extends EtherWallet
- *
- * @TODO Add address QR generator
- * @TODO Add privatekey QR generator
- * @TODO Add address blockie generator
  */
 class SoftwareWallet extends EtherWallet {
   constructor(
     privateKey: string,
     provider: ProviderType | void,
-    password: string,
+    password: string | void,
   ) {
+    /*
+     * @TODO Check if the provider is a generator and execute it
+     * If the provider is a generator method (not it's result), it will be
+     * set directly and not executed internally by the EtherWallet class.
+     * Check if it's a function and execute it.
+     */
     super(privateKey, provider);
     encryptionPassword = password;
   }
@@ -174,8 +177,8 @@ class SoftwareWallet extends EtherWallet {
   /**
    * Create a new wallet.
    *
-   * This is a wrapper around `ethers` Wallet createRandom that sets defaults,
-   * catches errrors and sets additional helper props
+   * This will use EtherWallet's `createRandom()` (with defaults and entrophy)
+   * and use the resulting private key to instantiate a new SoftwareWallet.
    *
    * @method create
    *
@@ -189,7 +192,7 @@ class SoftwareWallet extends EtherWallet {
    */
   static create({
     provider = autoselect(),
-    password = '',
+    password,
     entrophy = new Uint8Array(65536),
   }: WalletArgumentsType): () => WalletType {
     let basicWallet: WalletType;
@@ -203,6 +206,9 @@ class SoftwareWallet extends EtherWallet {
           extraEntrophy: getRandomValues(entrophy),
         });
       }
+      /*
+       * @TODO Refactor this for less code repetition
+       */
       if (!provider || (provider && typeof provider !== 'object')) {
         warn(warnings.softwareWallet.Class.noProvider);
         walletInstance = new this(basicWallet.privateKey, undefined, password);
@@ -210,6 +216,9 @@ class SoftwareWallet extends EtherWallet {
         walletInstance = new this(basicWallet.privateKey, provider, password);
       }
       /*
+       * @TODO Refactor this into the Class contructor
+       * So we don't ending up needing to set it up on both open and create
+       *
        * Re-set `mnemonic` and `path` on the Wallet Instance Object
        * Not doing so will loose the two props, since a new Wallet instance
        * only returns the `privateKey` prop.
@@ -229,6 +238,72 @@ class SoftwareWallet extends EtherWallet {
       error(errors.softwareWallet.Class.create, provider, entrophy, err);
       return this.createRandom();
     }
+  }
+  /**
+   * Open an existing wallet
+   * Using either `mnemonic`, `private key` or `encrypted keystore`
+   *
+   * This will try to extract the private key from a mnemonic (if available),
+   * and create a new SoftwareWallet instance using whichever key is available.
+   * (the on passed in or the one extracted from the mnemonic).
+   *
+   * @method open
+   *
+   * @param {ProviderType} provider An available provider to add to the wallet
+   * @param {string} password Optional password used to generate an encrypted keystore
+   * @param {string} privateKey Optional (in case you pass another type)
+   * @param {string} mnemonic Optional (in case you pass another type)
+   * @param {string} path Optional path for the mnemonic (set by default)
+   *
+   * All the above params are sent in as props of an {WalletArgumentsType} object.
+   *
+   * @return {WalletType} A new wallet object (or undefined) if somehwere along
+   * the line an error is thrown.
+   */
+  static open({
+    provider = autoselect(),
+    password,
+    privateKey,
+    mnemonic,
+    path = MNEMONIC_PATH,
+  }: WalletArgumentsType): (() => WalletType) | void {
+    try {
+      let extractedPrivateKey: string = '';
+      if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
+        extractedPrivateKey = HDNode.fromMnemonic(mnemonic).derivePath(path)
+          .privateKey;
+      }
+      const walletInstance = new this(
+        privateKey || extractedPrivateKey,
+        provider,
+        password,
+      );
+      /*
+       * @TODO Refactor this into the Class contructor
+       * So we don't ending up needing to set it up on both open and create
+       *
+       * Re-set `mnemonic` and `path` on the Wallet Instance Object
+       * Not doing so will loose the two props, since a new Wallet instance
+       * only returns the `privateKey` prop.
+       */
+      Object.defineProperty(
+        walletInstance,
+        'mnemonic',
+        Object.assign({}, WALLET_PROP, { value: mnemonic }),
+      );
+      Object.defineProperty(
+        walletInstance,
+        'path',
+        Object.assign({}, WALLET_PROP, { value: path }),
+      );
+      return walletInstance;
+    } catch (err) {
+      /*
+       * @TODO Add error message descriptor
+       */
+      error('could not open wallet', err);
+    }
+    return undefined;
   }
 }
 

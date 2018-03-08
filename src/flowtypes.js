@@ -32,7 +32,10 @@ export type WalletType = {
 };
 
 export type WalletArgumentsType = {
-  privatekey?: string,
+  privateKey?: string,
+  mnemonic?: string,
+  path?: string,
+  keystore?: string,
   provider?: ProviderType,
   entrophy?: Uint8Array,
   password?: string,
