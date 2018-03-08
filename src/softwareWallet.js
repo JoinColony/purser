@@ -318,9 +318,9 @@ class SoftwareWallet extends EtherWallet {
  * @FIXME Remove `Flow` error suppression when it gets fixed
  * See: https://github.com/facebook/flow/issues/285
  */
-/* $FlowFixMe */
 Object.defineProperty(
   SoftwareWallet.prototype,
+  /* $FlowFixMe */
   'keystore',
   Object.assign({}, CLASS_GETTER),
 );

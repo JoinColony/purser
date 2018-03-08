@@ -1,5 +1,5 @@
-const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
-  if (privatekey === '0x0') {
+export const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
+  if (privatekey === '0x0' || privatekey === '') {
     throw new Error();
   }
   /*
@@ -23,10 +23,26 @@ Wallet.prototype.encrypt = jest.fn(
     }),
 );
 
+export const HDNode = {
+  fromMnemonic: jest.fn(mnemonic => ({
+    derivePath: jest.fn(() => {
+      if (mnemonic === 'romeo delta india golf') {
+        return { privateKey: '0x1' };
+      }
+      return { privateKey: '0x0' };
+    }),
+  })),
+  isValidMnemonic: jest.fn(mnemonic => {
+    if (mnemonic === 'romeo delta india golf') {
+      return true;
+    }
+    return false;
+  }),
+};
+
 const ethersWallet = {
   Wallet,
+  HDNode,
 };
 
 export default ethersWallet;
-
-export { Wallet };

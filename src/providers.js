@@ -23,6 +23,8 @@ import {
  * Etherscan provider generator method.
  * This wraps the `ethers` `EtherscanProvider` method and provides defaults, error catching and warnings.
  *
+ * @TODO Refactor method to accept arguments as object props
+ *
  * @method etherscan
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
@@ -51,6 +53,8 @@ export const etherscan = (
 /**
  * Infura provider generator method.
  * This wraps the `ethers` `InfuraProvider` method and provides defaults, error catching and warnings.
+ *
+ * @TODO Refactor method to accept arguments as object props
  *
  * @method infura
  *
@@ -81,6 +85,8 @@ export const infura = (
  * Metamask provider generator method.
  * This wraps the `ethers` `Web3Provider` method and provides defaults, error catching and warnings.
  *
+ * @TODO Refactor method to accept arguments as object props
+ *
  * @method metamask
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
@@ -107,6 +113,8 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
 /**
  * Local provider generator method. Useful to connect to a local instance of geth / parity / testrpc.
  * This wraps the `ethers` `JsonRpcProvider` method and provides defaults, error catching and warnings.
+ *
+ * @TODO Refactor method to accept arguments as object props
  *
  * @method localhost
  *

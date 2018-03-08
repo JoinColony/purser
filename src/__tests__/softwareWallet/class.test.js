@@ -1,14 +1,22 @@
-import { Wallet as EthersWallet } from 'ethers/wallet';
+import { Wallet as EthersWallet, HDNode } from 'ethers/wallet';
 
 import wallet from '../../softwareWallet';
 import { localhost } from '../../providers';
 import * as utils from '../../utils';
+import { PROVIDER_PROTO, MNEMONIC_PATH } from '../../defaults';
 
 jest.mock('ethers/wallet');
 jest.mock('../../utils');
 
 describe('`software` wallet module', () => {
+  afterEach(() => {
+    EthersWallet.mockClear();
+    HDNode.fromMnemonic.mockClear();
+  });
   describe('`SoftwareWallet` Class', () => {
+    /*
+     * Create
+     */
     test('Creates a new wallet', () => {
       const testWallet = wallet.SoftwareWallet.create({});
       expect(EthersWallet).toHaveBeenCalled();
@@ -47,6 +55,54 @@ describe('`software` wallet module', () => {
       expect(utils.error).toHaveBeenCalled();
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(wallet.SoftwareWallet.createRandom).toHaveBeenCalledWith();
+    });
+    /*
+     * Open
+     */
+    test('Opens wallet using a private key', () => {
+      const privateKey = '0x1';
+      const testWallet = wallet.SoftwareWallet.open({ privateKey });
+      expect(EthersWallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalledWith(
+        privateKey,
+        PROVIDER_PROTO,
+      );
+      expect(testWallet).toBeInstanceOf(wallet.SoftwareWallet);
+      expect(testWallet).toBeInstanceOf(EthersWallet);
+    });
+    test('Opens wallet using a mnemonic', () => {
+      const mnemonic = 'romeo delta india golf';
+      const privateKey = '0x1';
+      wallet.SoftwareWallet.open({ mnemonic });
+      expect(HDNode.fromMnemonic).toHaveBeenCalled();
+      expect(HDNode.fromMnemonic).toHaveBeenCalledWith(mnemonic);
+      expect(EthersWallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalledWith(
+        privateKey,
+        PROVIDER_PROTO,
+      );
+    });
+    test('Return undefined when no suitable open method provided', () => {
+      const testWallet = wallet.SoftwareWallet.open({});
+      expect(HDNode.fromMnemonic).not.toHaveBeenCalled();
+      expect(EthersWallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalled();
+      expect(wallet.SoftwareWallet).toHaveBeenCalledWith('', PROVIDER_PROTO);
+      expect(utils.error).toHaveBeenCalled();
+      expect(testWallet).toEqual(undefined);
+    });
+    test('After opening the wallet should have the `mnemonic` prop', () => {
+      const mnemonic = 'romeo delta india golf';
+      const testWalletKey = wallet.SoftwareWallet.open({ privateKey: '0x1' });
+      const testWalletMnemonic = wallet.SoftwareWallet.open({ mnemonic });
+      expect(testWalletKey).toBeInstanceOf(wallet.SoftwareWallet);
+      expect(testWalletMnemonic).toBeInstanceOf(wallet.SoftwareWallet);
+      expect(testWalletKey).toHaveProperty('mnemonic', undefined);
+      expect(testWalletKey).toHaveProperty('path', MNEMONIC_PATH);
+      expect(testWalletMnemonic).toHaveProperty('mnemonic', mnemonic);
+      expect(testWalletMnemonic).toHaveProperty('path', MNEMONIC_PATH);
     });
   });
 });
