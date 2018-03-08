@@ -68,3 +68,9 @@ lib
 
 # CI JUnit Reporst
 reports
+
+# Git patches and diffs
+*.diff
+*.patch
+.diff/
+.patch/

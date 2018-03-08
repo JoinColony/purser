@@ -44,6 +44,12 @@ class SoftwareWallet extends EtherWallet {
      * set directly and not executed internally by the EtherWallet class.
      * Check if it's a function and execute it.
      */
+    /*
+     * @TODO Check for similar prop names
+     * Eg: paSword vs. paSSword vs. passWRD, maybe find a fuzzy search lib
+     * Alternatively take a look at React's code base and see how they've
+     * implemented this.
+     */
     super(privateKey, provider);
     encryptionPassword = password;
   }
@@ -273,6 +279,11 @@ class SoftwareWallet extends EtherWallet {
         extractedPrivateKey = HDNode.fromMnemonic(mnemonic).derivePath(path)
           .privateKey;
       }
+      /*
+       * @TODO Add open with keystore functionality
+       * But because this relies on async data, we must either make the whole
+       * `open()` method async or even the whole wallet library.
+       */
       const walletInstance = new this(
         privateKey || extractedPrivateKey,
         provider,
