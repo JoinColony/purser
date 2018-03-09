@@ -39,18 +39,12 @@ class SoftwareWallet extends EtherWallet {
     password: string | void,
   ) {
     /*
-     * @TODO Check if the provider is a generator and execute it
-     * If the provider is a generator method (not it's result), it will be
-     * set directly and not executed internally by the EtherWallet class.
-     * Check if it's a function and execute it.
-     */
-    /*
      * @TODO Check for similar prop names
      * Eg: paSword vs. paSSword vs. passWRD, maybe find a fuzzy search lib
      * Alternatively take a look at React's code base and see how they've
      * implemented this.
      */
-    super(privateKey, provider);
+    super(privateKey, typeof provider === 'function' ? provider() : provider);
     encryptionPassword = password;
   }
   /*
@@ -215,11 +209,11 @@ class SoftwareWallet extends EtherWallet {
       /*
        * @TODO Refactor this for less code repetition
        */
-      if (!provider || (provider && typeof provider !== 'object')) {
+      if (typeof provider === 'object' || typeof provider === 'function') {
+        walletInstance = new this(basicWallet.privateKey, provider, password);
+      } else {
         warn(warnings.softwareWallet.Class.noProvider);
         walletInstance = new this(basicWallet.privateKey, undefined, password);
-      } else {
-        walletInstance = new this(basicWallet.privateKey, provider, password);
       }
       /*
        * @TODO Refactor this into the Class contructor

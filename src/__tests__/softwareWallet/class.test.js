@@ -30,6 +30,12 @@ describe('`software` wallet module', () => {
       expect(wallet.SoftwareWallet).toHaveBeenCalled();
       expect(wallet.SoftwareWallet).toHaveBeenCalledWith(undefined, provider);
     });
+    test('Creates a new wallet with a provider generator function', () => {
+      const providerMock = jest.fn(() => () => ({ mocked: true }));
+      wallet.SoftwareWallet.create({ provider: providerMock });
+      expect(wallet.SoftwareWallet).toHaveBeenCalled();
+      expect(providerMock).toHaveBeenCalled();
+    });
     test('Creates a new wallet when provider is set to a falsy value', () => {
       wallet.SoftwareWallet.create({ provider: false });
       expect(utils.warn).toHaveBeenCalled();
