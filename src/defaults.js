@@ -38,7 +38,7 @@ export const PROVIDER_PROTO: ProviderType = {
  * Default class getter props to set on the resulting's object property.
  * Most likely to be used with `Object.defineProperty()`
  */
-export const CLASS_GETTER: Object = {
+export const GETTER_PROP_DESCRIPTORS: Object = {
   enumerable: true,
   configurable: true,
 };
@@ -47,7 +47,7 @@ export const CLASS_GETTER: Object = {
  * Default wallet instance object props
  * Most likely to be used with `Object.defineProperty()`
  */
-export const WALLET_PROP: Object = {
+export const WALLET_PROP_DESCRIPTORS: Object = {
   enumerable: true,
   writable: false,
 };
@@ -78,9 +78,9 @@ export const BLOCKIE_OPTS: Object = {
 
 const defaults: Object = {
   BLOCKIE_OPTS,
-  CLASS_GETTER,
   DEFAULT_NETWORK,
   ENV,
+  GETTER_PROP_DESCRIPTORS,
   LOCALPROVIDER_HOST,
   LOCALPROVIDER_PORT,
   LOCALPROVIDER_PROTOCOL,
@@ -88,7 +88,7 @@ const defaults: Object = {
   PROVIDER_PROTO,
   QR_CODE_OPTS,
   TEST_NETWORK,
-  WALLET_PROP,
+  WALLET_PROP_DESCRIPTORS,
 };
 
 export default defaults;

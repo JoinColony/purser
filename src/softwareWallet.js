@@ -16,10 +16,10 @@ import { getRandomValues, warn, error } from './utils';
 import { warnings, errors } from './messages';
 import {
   ENV,
-  CLASS_GETTER,
+  GETTER_PROP_DESCRIPTORS,
   QR_CODE_OPTS,
   BLOCKIE_OPTS,
-  WALLET_PROP,
+  WALLET_PROP_DESCRIPTORS,
   MNEMONIC_PATH,
 } from './defaults';
 
@@ -62,12 +62,12 @@ class SoftwareWallet extends EtherWallet {
     Object.defineProperty(
       this,
       'mnemonic',
-      Object.assign({}, { value: mnemonic }, WALLET_PROP),
+      Object.assign({}, { value: mnemonic }, WALLET_PROP_DESCRIPTORS),
     );
     Object.defineProperty(
       this,
       'path',
-      Object.assign({}, { value: path }, WALLET_PROP),
+      Object.assign({}, { value: path }, WALLET_PROP_DESCRIPTORS),
     );
   }
   /*
@@ -89,7 +89,7 @@ class SoftwareWallet extends EtherWallet {
         Object.assign(
           {},
           { value: this.encrypt(encryptionPassword) },
-          CLASS_GETTER,
+          GETTER_PROP_DESCRIPTORS,
         ),
       );
       return this.encrypt(encryptionPassword);
@@ -127,7 +127,7 @@ class SoftwareWallet extends EtherWallet {
          */
         /* $FlowFixMe */
         'addressQR',
-        Object.assign({}, CLASS_GETTER, {
+        Object.assign({}, GETTER_PROP_DESCRIPTORS, {
           value: qrcode.toDataURL(this.address, QR_CODE_OPTS),
         }),
       );
@@ -161,7 +161,7 @@ class SoftwareWallet extends EtherWallet {
          */
         /* $FlowFixMe */
         'blockie',
-        Object.assign({}, CLASS_GETTER, { value: blockiePromise }),
+        Object.assign({}, GETTER_PROP_DESCRIPTORS, { value: blockiePromise }),
       );
       return blockiePromise;
     }
@@ -187,7 +187,7 @@ class SoftwareWallet extends EtherWallet {
          */
         /* $FlowFixMe */
         'privateKeyQR',
-        Object.assign({}, CLASS_GETTER, {
+        Object.assign({}, GETTER_PROP_DESCRIPTORS, {
           value: qrcode.toDataURL(this.privateKey, QR_CODE_OPTS),
         }),
       );
@@ -323,7 +323,7 @@ Object.defineProperty(
   SoftwareWallet.prototype,
   /* $FlowFixMe */
   'keystore',
-  Object.assign({}, CLASS_GETTER),
+  Object.assign({}, GETTER_PROP_DESCRIPTORS),
 );
 Object.defineProperty(
   SoftwareWallet.prototype,
@@ -332,7 +332,7 @@ Object.defineProperty(
    */
   /* $FlowFixMe */
   'addressQR',
-  Object.assign({}, CLASS_GETTER),
+  Object.assign({}, GETTER_PROP_DESCRIPTORS),
 );
 Object.defineProperty(
   SoftwareWallet.prototype,
@@ -341,7 +341,7 @@ Object.defineProperty(
    */
   /* $FlowFixMe */
   'blockie',
-  Object.assign({}, CLASS_GETTER),
+  Object.assign({}, GETTER_PROP_DESCRIPTORS),
 );
 Object.defineProperty(
   SoftwareWallet.prototype,
@@ -350,7 +350,7 @@ Object.defineProperty(
    */
   /* $FlowFixMe */
   'privateKeyQR',
-  Object.assign({}, CLASS_GETTER),
+  Object.assign({}, GETTER_PROP_DESCRIPTORS),
 );
 
 /**
