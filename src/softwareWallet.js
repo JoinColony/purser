@@ -37,6 +37,8 @@ class SoftwareWallet extends EtherWallet {
     privateKey: string,
     provider: ProviderType | void,
     password: string | void,
+    mnemonic: string | void,
+    path: string | void = MNEMONIC_PATH,
   ) {
     let providerMode = typeof provider === 'function' ? provider() : provider;
     encryptionPassword = password;
@@ -51,6 +53,22 @@ class SoftwareWallet extends EtherWallet {
       providerMode = undefined;
     }
     super(privateKey, providerMode);
+    /*
+     * @TODO Use `Object.defineProperties()` to define multiple props at once
+     *
+     * We're using `defineProperty` instead of strait up assignment, so that
+     * we can customize the prop's descriptors
+     */
+    Object.defineProperty(
+      this,
+      'mnemonic',
+      Object.assign({}, { value: mnemonic }, WALLET_PROP),
+    );
+    Object.defineProperty(
+      this,
+      'path',
+      Object.assign({}, { value: path }, WALLET_PROP),
+    );
   }
   /*
    * Encrypted JSON Keystore
@@ -201,7 +219,6 @@ class SoftwareWallet extends EtherWallet {
     entrophy = new Uint8Array(65536),
   }: WalletArgumentsType): () => WalletType {
     let basicWallet: WalletType;
-    let walletInstance: () => WalletType;
     try {
       if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
         warn(warnings.softwareWallet.Class.noEntrophy);
@@ -211,26 +228,13 @@ class SoftwareWallet extends EtherWallet {
           extraEntrophy: getRandomValues(entrophy),
         });
       }
-      walletInstance = new this(basicWallet.privateKey, provider, password);
-      /*
-       * @TODO Refactor this into the Class contructor
-       * So we don't ending up needing to set it up on both open and create
-       *
-       * Re-set `mnemonic` and `path` on the Wallet Instance Object
-       * Not doing so will loose the two props, since a new Wallet instance
-       * only returns the `privateKey` prop.
-       */
-      Object.defineProperty(
-        walletInstance,
-        'mnemonic',
-        Object.assign({}, WALLET_PROP, { value: basicWallet.mnemonic }),
+      return new this(
+        basicWallet.privateKey,
+        provider,
+        password,
+        basicWallet.mnemonic,
+        basicWallet.path,
       );
-      Object.defineProperty(
-        walletInstance,
-        'path',
-        Object.assign({}, WALLET_PROP, { value: basicWallet.path }),
-      );
-      return walletInstance;
     } catch (err) {
       error(errors.softwareWallet.Class.create, provider, entrophy, err);
       return this.createRandom();
@@ -280,30 +284,13 @@ class SoftwareWallet extends EtherWallet {
        * But because this relies on async data, we must either make the whole
        * `open()` method async or even the whole wallet library.
        */
-      const walletInstance = new this(
+      return new this(
         privateKey || extractedPrivateKey,
         provider,
         password,
+        mnemonic,
+        path,
       );
-      /*
-       * @TODO Refactor this into the Class contructor
-       * So we don't ending up needing to set it up on both open and create
-       *
-       * Re-set `mnemonic` and `path` on the Wallet Instance Object
-       * Not doing so will loose the two props, since a new Wallet instance
-       * only returns the `privateKey` prop.
-       */
-      Object.defineProperty(
-        walletInstance,
-        'mnemonic',
-        Object.assign({}, WALLET_PROP, { value: mnemonic }),
-      );
-      Object.defineProperty(
-        walletInstance,
-        'path',
-        Object.assign({}, WALLET_PROP, { value: path }),
-      );
-      return walletInstance;
     } catch (err) {
       error(
         errors.softwareWallet.Class.open,
@@ -320,6 +307,8 @@ class SoftwareWallet extends EtherWallet {
 }
 
 /*
+ * @TODO Use `Object.defineProperties()` to define multiple props at once
+ *
  * We need to use `defineProperty` to make the prop enumerable.
  * When adding a `Class` getter/setter it will prevent that by default
  *
