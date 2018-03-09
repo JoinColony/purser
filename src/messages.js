@@ -77,6 +77,8 @@ export const errors: Object = {
         'Could not find an address value (%s) in the wallet object. If you see this, the library has already crashed.',
       noPrivateKey:
         'Could not find a private key value (%s) in the wallet object. If you see this, the library has already crashed.',
+      open:
+        'Could not open the wallet with the method you provided. Please check the arguments you passed in: %s %s',
     },
     openWithPrivateKey: {
       cannotOpenWallet:

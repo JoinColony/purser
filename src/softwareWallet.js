@@ -266,13 +266,18 @@ class SoftwareWallet extends EtherWallet {
    * @return {WalletType} A new wallet object (or undefined) if somehwere along
    * the line an error is thrown.
    */
-  static open({
-    provider = autoselect(),
-    password,
-    privateKey,
-    mnemonic,
-    path = MNEMONIC_PATH,
-  }: WalletArgumentsType): (() => WalletType) | void {
+  static open(walletArguments: WalletArgumentsType): (() => WalletType) | void {
+    /*
+     * We can't destructure the arguments in the function signature, since we
+     * need to iterate through them in case of an error.
+     */
+    const {
+      provider = autoselect(),
+      password,
+      privateKey,
+      mnemonic,
+      path = MNEMONIC_PATH,
+    } = walletArguments;
     try {
       let extractedPrivateKey: string = '';
       if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
@@ -309,10 +314,15 @@ class SoftwareWallet extends EtherWallet {
       );
       return walletInstance;
     } catch (err) {
-      /*
-       * @TODO Add error message descriptor
-       */
-      error('could not open wallet', err);
+      error(
+        errors.softwareWallet.Class.open,
+        Object.keys(walletArguments).reduce(
+          (allArgs, key) =>
+            `${allArgs}${key} (${String(walletArguments[key])}), `,
+          '',
+        ),
+        err,
+      );
     }
     return undefined;
   }
