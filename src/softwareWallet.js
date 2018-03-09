@@ -38,14 +38,19 @@ class SoftwareWallet extends EtherWallet {
     provider: ProviderType | void,
     password: string | void,
   ) {
+    let providerMode = typeof provider === 'function' ? provider() : provider;
+    encryptionPassword = password;
     /*
      * @TODO Check for similar prop names
      * Eg: paSword vs. paSSword vs. passWRD, maybe find a fuzzy search lib
      * Alternatively take a look at React's code base and see how they've
      * implemented this.
      */
-    super(privateKey, typeof provider === 'function' ? provider() : provider);
-    encryptionPassword = password;
+    if (typeof provider !== 'object' && typeof provider !== 'function') {
+      warn(warnings.softwareWallet.Class.noProvider);
+      providerMode = undefined;
+    }
+    super(privateKey, providerMode);
   }
   /*
    * Encrypted JSON Keystore
@@ -206,15 +211,7 @@ class SoftwareWallet extends EtherWallet {
           extraEntrophy: getRandomValues(entrophy),
         });
       }
-      /*
-       * @TODO Refactor this for less code repetition
-       */
-      if (typeof provider === 'object' || typeof provider === 'function') {
-        walletInstance = new this(basicWallet.privateKey, provider, password);
-      } else {
-        warn(warnings.softwareWallet.Class.noProvider);
-        walletInstance = new this(basicWallet.privateKey, undefined, password);
-      }
+      walletInstance = new this(basicWallet.privateKey, provider, password);
       /*
        * @TODO Refactor this into the Class contructor
        * So we don't ending up needing to set it up on both open and create
@@ -272,8 +269,8 @@ class SoftwareWallet extends EtherWallet {
       mnemonic,
       path = MNEMONIC_PATH,
     } = walletArguments;
+    let extractedPrivateKey: string = '';
     try {
-      let extractedPrivateKey: string = '';
       if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
         extractedPrivateKey = HDNode.fromMnemonic(mnemonic).derivePath(path)
           .privateKey;
