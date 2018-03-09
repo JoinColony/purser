@@ -385,40 +385,6 @@ export const create = (
   walletArguments: WalletArgumentsType = {},
 ): (() => WalletType) => SoftwareWallet.create(walletArguments);
 
-/**
- * Create a new instance of a wallet using the privatekey
- *
- * @TODO Add API documentation
- * @TODO Refactor method to use the new `SoftwareWallet` class
- *
- * @method openWithPrivateKey
- *
- * @param {string} privatekey The private key to instanciate the wallet (it will
- * be checked for validity)
- * @param {ProviderType} provider An available provider to add to the wallet
- *
- * @return {WalletType} A new instance of the wallet
- */
-export const openWithPrivateKey = (
-  privateKey: string,
-  provider: ProviderType = autoselect(),
-): ?WalletType => {
-  try {
-    if (!provider || (provider && typeof provider !== 'object')) {
-      warn(warnings.softwareWallet.Class.noProvider);
-      return new EtherWallet(privateKey);
-    }
-    return new EtherWallet(privateKey, provider);
-  } catch (err) {
-    return error(
-      errors.softwareWallet.openWithPrivateKey.cannotOpenWallet,
-      privateKey,
-      provider,
-      err,
-    );
-  }
-};
-
 /*
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
  * to us directly for debugging.
@@ -427,7 +393,6 @@ const softwareWallet: SoftwareWalletExportType = Object.assign(
   {},
   {
     create,
-    openWithPrivateKey,
   },
   ENV === 'development' || ENV === 'test' ? { SoftwareWallet } : {},
 );
