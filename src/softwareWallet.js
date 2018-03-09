@@ -24,7 +24,7 @@ import {
 } from './defaults';
 
 /*
- * "Private" variables
+ * "Private" variable(s)
  */
 let encryptionPassword: string | void;
 /**
@@ -34,7 +34,7 @@ let encryptionPassword: string | void;
  */
 class SoftwareWallet extends EtherWallet {
   constructor(
-    privateKey: string,
+    privateKey: string | void,
     provider: ProviderType | void,
     password: string | void,
     mnemonic: string | void,
@@ -42,8 +42,10 @@ class SoftwareWallet extends EtherWallet {
   ) {
     let providerMode = typeof provider === 'function' ? provider() : provider;
     encryptionPassword = password;
+
     /*
      * @TODO Check for similar prop names
+     *
      * Eg: paSword vs. paSSword vs. passWRD, maybe find a fuzzy search lib
      * Alternatively take a look at React's code base and see how they've
      * implemented this.
@@ -53,22 +55,15 @@ class SoftwareWallet extends EtherWallet {
       providerMode = undefined;
     }
     super(privateKey, providerMode);
+
     /*
-     * @TODO Use `Object.defineProperties()` to define multiple props at once
-     *
-     * We're using `defineProperty` instead of strait up assignment, so that
+     * We're using `defineProperties` instead of strait up assignment, so that
      * we can customize the prop's descriptors
      */
-    Object.defineProperty(
-      this,
-      'mnemonic',
-      Object.assign({}, { value: mnemonic }, WALLET_PROP_DESCRIPTORS),
-    );
-    Object.defineProperty(
-      this,
-      'path',
-      Object.assign({}, { value: path }, WALLET_PROP_DESCRIPTORS),
-    );
+    Object.defineProperties(this, {
+      mnemonic: Object.assign({}, { value: mnemonic }, WALLET_PROP_DESCRIPTORS),
+      path: Object.assign({}, { value: path }, WALLET_PROP_DESCRIPTORS),
+    });
   }
   /*
    * Encrypted JSON Keystore
@@ -307,10 +302,8 @@ class SoftwareWallet extends EtherWallet {
 }
 
 /*
- * @TODO Use `Object.defineProperties()` to define multiple props at once
- *
- * We need to use `defineProperty` to make the prop enumerable.
- * When adding a `Class` getter/setter it will prevent that by default
+ * We need to use `defineProperties` to make props enumerable.
+ * When adding them via a `Class` getter/setter it will prevent that by default
  *
  * We're dealing with `defineProperty` so we need to quiet down Flow.
  * This is because Flow, and how it doesn't play well (at all, really...)
@@ -318,40 +311,15 @@ class SoftwareWallet extends EtherWallet {
  *
  * @FIXME Remove `Flow` error suppression when it gets fixed
  * See: https://github.com/facebook/flow/issues/285
+ *
+ * $FlowFixMe
  */
-Object.defineProperty(
-  SoftwareWallet.prototype,
-  /* $FlowFixMe */
-  'keystore',
-  Object.assign({}, GETTER_PROP_DESCRIPTORS),
-);
-Object.defineProperty(
-  SoftwareWallet.prototype,
-  /*
-   * Flow also doesn't like getter-only props
-   */
-  /* $FlowFixMe */
-  'addressQR',
-  Object.assign({}, GETTER_PROP_DESCRIPTORS),
-);
-Object.defineProperty(
-  SoftwareWallet.prototype,
-  /*
-   * Flow also doesn't like getter-only props
-   */
-  /* $FlowFixMe */
-  'blockie',
-  Object.assign({}, GETTER_PROP_DESCRIPTORS),
-);
-Object.defineProperty(
-  SoftwareWallet.prototype,
-  /*
-   * Flow also doesn't like getter-only props
-   */
-  /* $FlowFixMe */
-  'privateKeyQR',
-  Object.assign({}, GETTER_PROP_DESCRIPTORS),
-);
+Object.defineProperties(SoftwareWallet.prototype, {
+  keystore: GETTER_PROP_DESCRIPTORS,
+  addressQR: GETTER_PROP_DESCRIPTORS,
+  blockie: GETTER_PROP_DESCRIPTORS,
+  privateKeyQR: GETTER_PROP_DESCRIPTORS,
+});
 
 /**
  * Create a new wallet.
