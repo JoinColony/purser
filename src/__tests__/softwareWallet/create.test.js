@@ -24,7 +24,7 @@ describe('`software` wallet module', () => {
       expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({ provider });
     });
     test('Creates a new wallet with an encryption password', () => {
-      const password = localhost();
+      const password = 'encryyyyyypt';
       create({ password });
       expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
       expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({ password });
