@@ -2,7 +2,7 @@
 
 import type { ColonyWalletExportType } from './flowtypes';
 
-import wallet from './wallet';
+import wallets from './wallets';
 import providers from './providers';
 import utils from './utils';
 import debug from './debug';
@@ -13,7 +13,7 @@ import { name, version } from '../package.json';
 const colonyWallet: ColonyWalletExportType = Object.assign(
   {},
   {
-    wallet,
+    wallets,
     providers,
     utils,
     about: {

@@ -136,7 +136,7 @@ It checks for both implementations _(`webkit` or `ms`)_, and if it can't find an
 This method is used to provide randomness when creating a new wallet:
 ```js
 
-import { software as wallet } from 'colony-wallet/wallet';
+import wallet from 'colony-wallet/software';
 import { getRandomValues } from 'colony-wallet/utils';
 
 // a bigger array is better, up to a max. of 65536 (the limit of the 8 bit unsigned array)

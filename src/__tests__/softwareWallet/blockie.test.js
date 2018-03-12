@@ -1,6 +1,6 @@
 import blockies from 'ethereum-blockies';
 
-import wallet from '../../softwareWallet';
+import software from '../../software';
 import * as utils from '../../utils';
 
 jest.mock('ethereum-blockies');
@@ -12,10 +12,10 @@ describe('`software` wallet module', () => {
   });
   describe('`SoftwareWallet` Blockie', () => {
     test('Add the `blockie` prop to the wallet instance', () => {
-      const testWallet = wallet.SoftwareWallet.create({});
+      const testWallet = software.SoftwareWallet.create({});
       testWallet.address = '0x123';
       const blockieGetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'blockie',
         'get',
       );
@@ -27,9 +27,9 @@ describe('`software` wallet module', () => {
       blockieGetterSpy.mockRestore();
     });
     test("Can't get the blockie if no address is available", () => {
-      const testWallet = wallet.SoftwareWallet.create({});
+      const testWallet = software.SoftwareWallet.create({});
       const blockieGetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'blockie',
         'get',
       );

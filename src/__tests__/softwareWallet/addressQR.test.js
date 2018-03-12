@@ -1,6 +1,6 @@
 import qrcode from 'qrcode';
 
-import wallet from '../../softwareWallet';
+import software from '../../software';
 import * as utils from '../../utils';
 
 jest.mock('qrcode');
@@ -12,10 +12,10 @@ describe('`software` wallet module', () => {
   });
   describe('`SoftwareWallet` Address QR', () => {
     test('Add the `addressQR` prop to the wallet instance', () => {
-      const testWallet = wallet.SoftwareWallet.create({});
+      const testWallet = software.SoftwareWallet.create({});
       testWallet.address = '0x123';
       const addressQRGetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'addressQR',
         'get',
       );
@@ -27,9 +27,9 @@ describe('`software` wallet module', () => {
       addressQRGetterSpy.mockRestore();
     });
     test("Can't get the QR code if no address is available", () => {
-      const testWallet = wallet.SoftwareWallet.create({});
+      const testWallet = software.SoftwareWallet.create({});
       const addressQRGetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'addressQR',
         'get',
       );

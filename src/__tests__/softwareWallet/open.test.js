@@ -1,11 +1,11 @@
-import wallet, { open } from '../../softwareWallet';
+import software, { open } from '../../software';
 import { localhost } from '../../providers';
 
 let SoftwareWalletOpenSpy;
 
 describe('`software` wallet module', () => {
   beforeEach(() => {
-    SoftwareWalletOpenSpy = jest.spyOn(wallet.SoftwareWallet, 'open');
+    SoftwareWalletOpenSpy = jest.spyOn(software.SoftwareWallet, 'open');
   });
   afterEach(() => {
     SoftwareWalletOpenSpy.mockReset();

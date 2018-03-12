@@ -6,7 +6,7 @@ import blockies from 'ethereum-blockies';
 
 import type { DebugExportType } from './flowtypes';
 
-import { software } from './wallet';
+import { software } from './wallets';
 
 const { SoftwareWallet } = software;
 

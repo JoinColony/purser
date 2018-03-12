@@ -1,4 +1,4 @@
-import wallet from '../../softwareWallet';
+import software from '../../software';
 import * as utils from '../../utils';
 
 jest.mock('../../utils');
@@ -6,11 +6,11 @@ jest.mock('../../utils');
 describe('`software` wallet module', () => {
   describe('`SoftwareWallet` Keystore', () => {
     test('Add the keystore prop to the wallet instance', () => {
-      const testWallet = wallet.SoftwareWallet.create({
+      const testWallet = software.SoftwareWallet.create({
         password: 'encrypt-me-baby',
       });
       const keystoreGetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'keystore',
         'get',
       );
@@ -21,9 +21,9 @@ describe('`software` wallet module', () => {
       keystoreGetterSpy.mockRestore();
     });
     test("Can't get the keystore if no password was provided", () => {
-      const testWallet = wallet.SoftwareWallet.create({});
+      const testWallet = software.SoftwareWallet.create({});
       const keystoreGetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'keystore',
         'get',
       );
@@ -35,9 +35,9 @@ describe('`software` wallet module', () => {
       keystoreGetterSpy.mockRestore();
     });
     test('Can set the keystore after the wallet was instantiated', () => {
-      const testWallet = wallet.SoftwareWallet.create({});
+      const testWallet = software.SoftwareWallet.create({});
       const keystoreSetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'keystore',
         'set',
       );

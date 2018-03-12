@@ -46,7 +46,7 @@ export type WalletArgumentsType = {
  */
 
 export type ColonyWalletExportType = {
-  wallet: Object,
+  wallets: Object,
   about: {
     name: string,
     version: string,

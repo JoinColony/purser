@@ -2,7 +2,7 @@
 
 import type { WalletIndexExportType } from './flowtypes';
 
-import software from './softwareWallet';
+import software from './software';
 
 export { software };
 

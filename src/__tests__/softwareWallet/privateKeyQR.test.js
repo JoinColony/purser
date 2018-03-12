@@ -1,6 +1,6 @@
 import qrcode from 'qrcode';
 
-import wallet from '../../softwareWallet';
+import software from '../../software';
 import * as utils from '../../utils';
 
 jest.mock('qrcode');
@@ -12,10 +12,10 @@ describe('`software` wallet module', () => {
   });
   describe('`SoftwareWallet` Private Key QR', () => {
     test('Add the `privateKeyQR` prop to the wallet instance', () => {
-      const testWallet = wallet.SoftwareWallet.create({});
+      const testWallet = software.SoftwareWallet.create({});
       testWallet.privateKey = '0x321';
       const privateKeyQRGetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'privateKeyQR',
         'get',
       );
@@ -27,9 +27,9 @@ describe('`software` wallet module', () => {
       privateKeyQRGetterSpy.mockRestore();
     });
     test("Can't get the QR code if no private key is available", () => {
-      const testWallet = wallet.SoftwareWallet.create({});
+      const testWallet = software.SoftwareWallet.create({});
       const privateKeyQRGetterSpy = jest.spyOn(
-        wallet.SoftwareWallet.prototype,
+        software.SoftwareWallet.prototype,
         'privateKeyQR',
         'get',
       );
