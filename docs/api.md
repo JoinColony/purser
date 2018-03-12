@@ -257,6 +257,24 @@ const provider = autoselect([() => metamask('ropsten'), localFallback]);
 
 A set of utility methods that are used throughout the library, but that are also exposed via the `utils` export for independent use.
 
+#### Imports:
+
+There are different ways in which you can import the library in your project _(as a module)_, but in the end they all bring in the same thing:
+
+Using `ES5` `require()` statements:
+```js
+var utils = require('colony-wallet/utils'); // utils.getRandomValues();
+
+var getRandomValues = require('colony-wallet/utils').getRandomValues; // getRandomValues();
+```
+
+Using `ES6` `import` statements:
+```js
+import utils from 'colony-wallet/utils'; // utils.getRandomValues();
+
+import { getRandomValues } from 'colony-wallet/utils'; // getRandomValues();
+```
+
 ### `getRandomValues`
 
 ```js
