@@ -326,6 +326,7 @@ Object.defineProperties(SoftwareWallet.prototype, {
  * This method is the one that's actually exposed outside the module.
  *
  * @TODO Add API documentation
+ * @TODO Add Readme quick-start instructions
  *
  * @method create
  *
@@ -344,6 +345,7 @@ export const create = (
  * This method is the one that's actually exposed outside the module.
  *
  * @TODO Add API documentation
+ * @TODO Add Readme quick-start instructions
  *
  * @method open
  *

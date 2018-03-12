@@ -16,6 +16,8 @@ When building with `NODE_ENV=production` all output will be silenced.
   * [`infura`](#infura)
   * [`localhost`](#localhost)
   * [`autoselect`](#autoselect)
+* [Utils](#Utils)
+  * [`getRandomValues`](#getRandomValues)
 
 ## Providers
 
@@ -115,4 +117,33 @@ import { autoselect, metamask, localhost } from 'colony-wallet/providers';
 const localFallback = localhost('http://localhost:8545', 'ropsten');
 
 const provider = autoselect([() => metamask('ropsten'), localFallback]);
+```
+
+## Utils
+
+A set of utility methods that are used throughout the library, but that are also exposed via the `utils` export for independent use.
+
+### `getRandomValues`
+
+```js
+getRandomValues(typedArray: Uint8Array<>)
+```
+
+A polyfill for the [`Web Crypto API`s](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) [`getRandomValues()`](https://developer.mozilla.org/en-US/docs/Web/API/RandomSource/getRandomValues) method.
+
+It checks for both implementations _(`webkit` or `ms`)_, and if it can't find any, it will try to polyfill it using node's [`crypto`](https://nodejs.org/api/crypto.html) [`randomBytes`](https://nodejs.org/api/crypto.html#crypto_crypto_randombytes_size_callback) method.
+
+This method is used to provide randomness when creating a new wallet:
+```js
+
+import { software as wallet } from 'colony-wallet/wallet';
+import { getRandomValues } from 'colony-wallet/utils';
+
+// a bigger array is better, up to a max. of 65536 (the limit of the 8 bit unsigned array)
+
+const uintArray = new Uint8Array(10); // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+const entrophy = getRandomValues(uintArray); // [236, 157, 149, 236, 109, 233, 113, 151, 27, 93]
+
+const newWallet = wallet.create({ entrophy });
 ```
