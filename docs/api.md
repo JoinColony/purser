@@ -10,17 +10,17 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 ## Contents
 
-* [Wallets](#Wallets)
-  * [`Software`](#Software)
+* [Wallets](#wallets)
+  * [`Software`](#software)
     * [`create`](#create)
-* [Providers](#Providers)
+* [Providers](#providers)
   * [`metamask`](#metamask)
   * [`etherscan`](#etherscan)
   * [`infura`](#infura)
   * [`localhost`](#localhost)
   * [`autoselect`](#autoselect)
 * [Utils](#Utils)
-  * [`getRandomValues`](#getRandomValues)
+  * [`getRandomValues`](#getrandomvalues)
 
 
 ## Wallets
@@ -89,6 +89,14 @@ The provider `prop` can be either a provider object, or a provider generator met
 
 See [`ProviderType`](./src/flowtypes.js#L3-L16) and [`ProviderGeneratorType`](./src/flowtypes.js#L18) in [`flowtypes.js`](../src/flowtypes.js) for how the provider object and generator functions look like.
 
+```js
+walletArguments.password: String
+```
+
+Set an encryption password when creating the wallet. This way you can just call up the `keystore` getter and get the `JSON` string.
+
+As with the others, this is optional, since it can be set after the wallet creation using the `keystore` setter.
+
 **Usage examples:**
 
 Create a new wallet:
@@ -115,6 +123,17 @@ const provider = localhost('http://localhost:8545', 'kovan');
 
 const newWallet = create({ provider });
 ```
+
+Create a new wallet and set the encryption password:
+```js
+import { create } from 'colony-wallet/software';
+
+const newWallet = create({ password: '0fbfd56c94dc9d2578a6' });
+
+const newWalletKeystore = await newWallet.keystore;
+```
+
+See the [Wallet Object](wallet-object.md) documentation for all the props available to you after the wallet's instantiation.
 
 ## Providers
 
