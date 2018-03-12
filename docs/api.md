@@ -1,6 +1,6 @@
 # API
 
-These docs serve to outline the API format and methods provided by `colony-wallet`.
+These docs serve to outline the `API` format and methods provided by `colony-wallet`.
 
 #### Console output
 
@@ -10,6 +10,9 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 ## Contents
 
+* [Wallets](#Wallets)
+  * [`Software`](#Software)
+    * [`create`](#create)
 * [Providers](#Providers)
   * [`metamask`](#metamask)
   * [`etherscan`](#etherscan)
@@ -19,11 +22,123 @@ When building with `NODE_ENV=production` all output will be silenced.
 * [Utils](#Utils)
   * [`getRandomValues`](#getRandomValues)
 
+
+## Wallets
+
+Create or open a new wallet via software, hardware or browser extension.
+
+Contrary to other wallet libraries out there, this one is fully `async`.
+
+### Software
+
+A standard wallet working in it's entirety via a software environment. This means that it give you access to sensitive data _(`private key`, `mnemonic`, etc...)_ via it's API.
+
+For a more in-depth look at how the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
+
+#### Imports:
+
+There are different ways in which you can import the library in your project _(as a module)_, but in the end they all bring in the same thing:
+
+Using `ES5` `require()` statements:
+```js
+var wallet = require('colony-wallet/software'); // wallet.create();
+
+var wallets = require('colony-wallet/wallets'); // wallets.software.create();
+
+var wallet = require('colony-wallet/wallets').software; // wallet.create();
+
+var create = require('colony-wallet/software').create; // create();
+```
+
+Using `ES6` `import` statements:
+```js
+import wallet from 'colony-wallet/software'; // wallet.create();
+
+import wallets from 'colony-wallet/wallets'; // wallets.software.create();
+
+import { software as wallet } from 'colony-wallet/wallets'; // wallet.create();
+
+import { create } from 'colony-wallet/software'; // create();
+```
+
+### `create`
+
+```js
+create([walletArguments: Object]);
+```
+
+This method creates a new software wallet instance _(see: [Wallet Object](wallet-object.md))_. By default is will generate the maximum possible `entrophy` _(see: [`getRandomValues`](#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
+
+Even though it will work out of the box, you can however, pass in custom arguments via the `walletArguments` object.
+
+See [`WalletArgumentsType`](../src/flowtypes.js#L34-L42) in [`flowtypes.js`](../src/flowtypes.js) for how the options object looks like.
+
+```js
+walletArguments.entrophy: Uint8Array<>
+```
+
+Provide custom randomness when creating the wallet. By default it will use a `8`-bit unsigned array of `65536` length on which it will generate random values _(see: [`getRandomValues`](#getRandomValues))_.
+
+```js
+walletArguments.provider: Object | function
+```
+
+Override the default auto-selector _(see: [`autoselect`](#autoselect))_ and provide a manual, custom provider when creating the new wallet instance.
+
+The provider `prop` can be either a provider object, or a provider generator method.
+
+See [`ProviderType`](./src/flowtypes.js#L3-L16) and [`ProviderGeneratorType`](./src/flowtypes.js#L18) in [`flowtypes.js`](../src/flowtypes.js) for how the provider object and generator functions look like.
+
+**Usage examples:**
+
+Create a new wallet:
+```js
+import { create } from 'colony-wallet/software';
+
+const newWallet = create();
+```
+
+Create a new wallet with manual entrophy:
+```js
+import { create } from 'colony-wallet/software';
+import { getRandomValues } from 'colony-wallet/utils';
+
+const newWallet = create({ entrophy: getRandomValues(new Uint8Array(65536)) });
+```
+
+Create a new wallet and give it a provider:
+```js
+import { create } from 'colony-wallet/software';
+import { localhost } from 'colony-wallet/providers';
+
+const provider = localhost('http://localhost:8545', 'kovan');
+
+const newWallet = create({ provider });
+```
+
 ## Providers
 
 Create a connection to an Ethereum blockchain. This is achieved differently by the various providers.
 
 HTTP API endpoint for _etherscan_ and _infura_, injected into the webpage in the case of _metamask_, or local RPC connection in the case of _localhost_.
+
+#### Imports:
+
+There are different ways in which you can import the library in your project _(as a module)_, but in the end they all bring in the same thing:
+
+Using `ES5` `require()` statements:
+```js
+var providers = require('colony-wallet/providers'); // providers.metamask();
+
+var metamask = require('colony-wallet/providers').metamask; // metamask();
+```
+
+Using `ES6` `import` statements:
+```js
+import providers from 'colony-wallet/providers'; // providers.metamask();
+
+import { metamask } from 'colony-wallet/providers'; // metamask();
+```
 
 ### `metamask`
 
@@ -45,7 +160,7 @@ const providerDefaults = metamask();
 ### `etherscan`
 
 ```js
-etherscan([network: string], [token: string])
+etherscan([network: String], [token: String])
 ```
 
 This provider method takes an optional `network` name as string _(defaults to 'homestead')_ and an optional, but very recommended `token` -- without it the connection will still work but will be very limited. A new token for the Etherscan API can be generated [here](https://etherscan.io/myapikey).
@@ -60,7 +175,7 @@ const provider = etherscan('homestead', '<your-token-key>'); // { chainId: '', e
 ### `infura`
 
 ```js
-infura([network: string], [token: string])
+infura([network: String], [token: String])
 ```
 
 This provider method takes an optional `network` name as string _(defaults to 'homestead')_ and an optional, but very recommended `token` -- without it the connection will still work but will be very limited. A new token for the Infura API can be generated by [signing up for the service](https://infura.io/signup).
@@ -74,7 +189,7 @@ const provider = infura('homestead', '<your-token-key>'); // { chainId: '', ensA
 ### `localhost`
 
 ```js
-localhost([url: string], [network: string])
+localhost([url: String], [network: String])
 ```
 
 This provider method takes an optional `url` as string _(defaults to 'http://localhost:8545')_ and an optional `network` name as string _(defaults to 'homestead')_.
