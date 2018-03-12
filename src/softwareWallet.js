@@ -118,7 +118,7 @@ class SoftwareWallet extends EtherWallet {
       Object.defineProperty(
         this,
         /*
-         * Flow also doesn't like getter-only props
+         * Flow doesn't like getter-only props
          */
         /* $FlowFixMe */
         'addressQR',
@@ -152,7 +152,7 @@ class SoftwareWallet extends EtherWallet {
       Object.defineProperty(
         this,
         /*
-         * Flow also doesn't like getter-only props
+         * Flow doesn't like getter-only props
          */
         /* $FlowFixMe */
         'blockie',
@@ -178,7 +178,7 @@ class SoftwareWallet extends EtherWallet {
       Object.defineProperty(
         this,
         /*
-         * Flow also doesn't like getter-only props
+         * Flow doesn't like getter-only props
          */
         /* $FlowFixMe */
         'privateKeyQR',
@@ -339,6 +339,25 @@ export const create = (
   walletArguments: WalletArgumentsType = {},
 ): (() => WalletType) => SoftwareWallet.create(walletArguments);
 
+/**
+ * Open (instantiate) a wallet.
+ * This method is the one that's actually exposed outside the module.
+ *
+ * @TODO Add API documentation
+ *
+ * @method open
+ *
+ * @param {WalletArgumentsType} walletArguments The wallet arguments object
+ * This way you can pass in arguments in any order you'd like.
+ * Details about it's types can be found inside `flowtypes`
+ *
+ * @return {WalletType} A new wallet object
+ * Will return `undefined` if no suitable method for ooening it was found.
+ */
+export const open = (
+  walletArguments: WalletArgumentsType = {},
+): (() => WalletType) | void => SoftwareWallet.open(walletArguments);
+
 /*
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
  * to us directly for debugging.
@@ -347,6 +366,7 @@ const softwareWallet: SoftwareWalletExportType = Object.assign(
   {},
   {
     create,
+    open,
   },
   ENV === 'development' || ENV === 'test' ? { SoftwareWallet } : {},
 );
