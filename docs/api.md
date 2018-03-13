@@ -13,6 +13,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 * [Wallets](#wallets)
   * [`Software`](#software)
     * [`create`](#create)
+    * [`open`](#open)
 * [Providers](#providers)
   * [`metamask`](#metamask)
   * [`etherscan`](#etherscan)
@@ -67,7 +68,7 @@ import { create } from 'colony-wallet/software'; // create();
 create([walletArguments: Object]);
 ```
 
-This method creates a new software wallet instance _(see: [Wallet Object](wallet-object.md))_. By default is will generate the maximum possible `entrophy` _(see: [`getRandomValues`](#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
+This method returns a new software wallet instance _(see: [Wallet Object](wallet-object.md))_. By default it will generate the maximum possible `entrophy` _(see: [`getRandomValues`](#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
 
 Even though it will work out of the box, you can however, pass in custom arguments via the `walletArguments` object.
 
@@ -131,6 +132,94 @@ import { create } from 'colony-wallet/software';
 const newWallet = create({ password: '0fbfd56c94dc9d2578a6' });
 
 const newWalletKeystore = await newWallet.keystore;
+```
+
+See the [Wallet Object](wallet-object.md) documentation for all the props available to you after the wallet's instantiation.
+
+### `open`
+
+```js
+open(walletArguments: Object);
+```
+
+This method returns a new software wallet instance _(see: [Wallet Object](wallet-object.md))_ after unlocking it via one of the available methods. By default it will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
+
+It will not work without any arguments so you must specify at least one method of opening the wallet.
+
+See [`WalletArgumentsType`](../src/flowtypes.js#L34-L42) in [`flowtypes.js`](../src/flowtypes.js) for how the options object looks like.
+
+```js
+walletArguments.privateKey: String
+```
+
+Create a new wallet instance using an existing `private key`. This can be optional if another method of opening the wallet is provided.
+
+Using this method, the returned [Wallet Object](wallet-object.md) will have all of the props with exception of `mnemonic` and `path`, since the `mnemonic` can't be reversed from the `private key`.
+
+```js
+walletArguments.mnemonic: String
+```
+
+Create a new wallet instance using an existing `mnemonic` phrase. This can be optional if another method of opening the wallet is provided.
+
+Using this method, the returned [Wallet Object](wallet-object.md) will have all of the props available. _(the `private key` can be reversed from the `mnemonic`)_
+
+```js
+walletArguments.path: String
+```
+
+Optional, in case you want to specify a custom `mnemonic` `path` when instantiating a wallet, you can do so by providing it via this prop.
+
+This defaults to `m/44'/60'/0'/0/0`.
+
+```js
+walletArguments.provider: Object | function
+```
+
+Override the default auto-selector _(see: [`autoselect`](#autoselect))_ and provide a manual, custom provider when creating the wallet instance.
+
+The provider `prop` can be either a provider object, or a provider generator method.
+
+See [`ProviderType`](./src/flowtypes.js#L3-L16) and [`ProviderGeneratorType`](./src/flowtypes.js#L18) in [`flowtypes.js`](../src/flowtypes.js) for how the provider object and generator functions look like.
+
+```js
+walletArguments.password: String
+```
+
+Set an encryption password when instantiating the wallet. This way you can just call up the `keystore` getter and get the `JSON` string.
+
+As with the others, this is optional, since it can be set after the wallet creation using the `keystore` setter.
+
+**Usage examples:**
+
+Open a wallet using a private key:
+```js
+import { open } from 'colony-wallet/software';
+
+const privateKey = '0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447';
+
+const existingWallet = open({ privateKey });
+```
+
+Open a wallet using a mnemonic phrase:
+```js
+import { open } from 'colony-wallet/software';
+
+const mnemonic = 'load blush spray dirt random cash pear illness pulse sketch sheriff surge';
+
+const existingWallet = open({ mnemonic });
+```
+
+Open a new wallet, and give it a provider and encryption password:
+```js
+import { open } from 'colony-wallet/software';
+import { etherscan } from 'colony-wallet/providers';
+
+const existingWallet = open({
+  privateKey: '0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447'
+  provider: etherscan,
+  password: '6a8752d9cd49c65dfbf0',
+});
 ```
 
 See the [Wallet Object](wallet-object.md) documentation for all the props available to you after the wallet's instantiation.

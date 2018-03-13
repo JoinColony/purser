@@ -343,7 +343,6 @@ export const create = (
  * Open (instantiate) a wallet.
  * This method is the one that's actually exposed outside the module.
  *
- * @TODO Add API documentation
  * @TODO Add Readme quick-start instructions
  *
  * @method open
