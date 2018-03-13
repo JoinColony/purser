@@ -4,13 +4,40 @@
 
 A set of utilities to interface with ethereum addresses
 
-### Usage
-
-_To be added_
-
 #### Quick start
 
-_To be added_
+#### Via a browser `<script>` tag _(using the [unpkg.com](http://unpkg.com) CDN)_:
+```html
+<script type="text/javascript" src="https://unpkg.com/colony-wallet/umd/colonyWallet.min.js"></script>
+```
+
+#### Importing it as an ES5 module:
+```js
+var wallet = require('colony-wallet/software');
+```
+
+#### Importing it as an ES6 module:
+```js
+import { software as wallet } from 'colony-wallet/wallets';
+```
+
+### Usage
+
+#### Create a new wallet:
+```js
+import { create } from 'colony-wallet/software';
+
+const newWallet = create();
+```
+
+#### Open an existing wallet:
+```js
+import { open } from 'colony-wallet/software';
+
+const existingWallet = open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
+```
+
+For a more complete explanation of the available features and more usage examples please check out the [**API docs**](docs/api.md).
 
 ### Builds
 
@@ -28,7 +55,7 @@ A UMD build to be used directly inside the browser as a script source _(both min
 
 The `es6` version will also bring over the `flow` types used for this project.
 
-### Documnetation
+### Documentation
 
 You can find the API docs [here](docs/api.md).
 

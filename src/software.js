@@ -325,8 +325,6 @@ Object.defineProperties(SoftwareWallet.prototype, {
  * Create a new wallet.
  * This method is the one that's actually exposed outside the module.
  *
- * @TODO Add Readme quick-start instructions
- *
  * @method create
  *
  * @param {WalletArgumentsType} walletArguments The wallet arguments object
@@ -342,8 +340,6 @@ export const create = (
 /**
  * Open (instantiate) a wallet.
  * This method is the one that's actually exposed outside the module.
- *
- * @TODO Add Readme quick-start instructions
  *
  * @method open
  *

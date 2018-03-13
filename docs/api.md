@@ -11,7 +11,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 ## Contents
 
 * [Wallets](#wallets)
-  * [`Software`](#software)
+  * [Software](#software)
     * [`create`](#create)
     * [`open`](#open)
 * [Providers](#providers)
