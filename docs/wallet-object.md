@@ -230,7 +230,7 @@ SoftwareWallet.provider: Object | Function | undefined
 
 This is an optional prop that will contain a [provider](api.md#providers) for the wallet to use. It can be set during instantiation _(both `open()` and `create()`)_ and can even be set to `null` or `undefined` if you don't want to have one.
 
-As a value, it can be both a [provider `Object`](../flowtypes.js#L3-L16) or a [provider generator method](api.md#providers).
+As a value, it can be both a [provider `Object`](../src/flowtypes.js#L3-L16) or a [provider generator method](api.md#providers).
 
 If one is not set via the argument prop, it defaults to [`autoselect()`](api.md#autoselect), setting the first one available.
 
