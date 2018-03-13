@@ -30,6 +30,10 @@ let encryptionPassword: string | void;
 /**
  * We extend Ethers's Wallet Object so we can add extra functionality
  *
+ * @TODO Expose (enumerate) prototype methods (getTransactionCount, getBalance, ...)
+ * @TODO Add Wallet Object documentation for the newly exposed methods
+ * @TODO Add Wallet Object documentation for the `sign()` wallet method
+ *
  * @extends EtherWallet
  */
 class SoftwareWallet extends EtherWallet {
