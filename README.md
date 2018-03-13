@@ -10,14 +10,14 @@ A set of utilities to interface with ethereum addresses
 <script type="text/javascript" src="https://unpkg.com/colony-wallet/umd/colonyWallet.min.js"></script>
 ```
 
-#### Importing it as an ES5 module:
-```js
-var wallet = require('colony-wallet/software');
+#### As a module
+Using `yarn`:
+```bash
+yarn add colony-wallet
 ```
-
-#### Importing it as an ES6 module:
-```js
-import { software as wallet } from 'colony-wallet/wallets';
+Or using `npm`:
+```bash
+npm install colony-wallet
 ```
 
 ### Usage
@@ -161,4 +161,4 @@ When the builds succeeds one of two things will happen: if the package update wa
 
 ### License
 
-`colony-wallet` is [MIT licensed](./LICENSE).
+`colony-wallet` is [MIT licensed](LICENSE).
