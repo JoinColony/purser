@@ -93,9 +93,10 @@ class SoftwareWallet extends EtherWallet {
       );
       return this.encrypt(encryptionPassword);
     }
-    return new Promise((resolve, reject) => reject()).catch(() =>
-      warn(warnings.softwareWallet.Class.noPassword),
-    );
+    return new Promise((resolve, reject) => {
+      warn(warnings.softwareWallet.Class.noPassword);
+      reject();
+    });
   }
   /*
    * Just set the encryption password, we don't return anything from here,
@@ -132,9 +133,10 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.address, QR_CODE_OPTS);
     }
-    return new Promise((resolve, reject) => reject()).catch(() =>
-      error(errors.softwareWallet.Class.noAddress, this.address),
-    );
+    return new Promise((resolve, reject) => {
+      error(errors.softwareWallet.Class.noAddress, this.address);
+      reject();
+    });
   }
   /*
    * Address Identicon (Blockie)
@@ -164,9 +166,10 @@ class SoftwareWallet extends EtherWallet {
       );
       return blockiePromise;
     }
-    return new Promise((resolve, reject) => reject()).catch(() =>
-      error(errors.softwareWallet.Class.noAddress, this.address),
-    );
+    return new Promise((resolve, reject) => {
+      error(errors.softwareWallet.Class.noAddress, this.address);
+      reject();
+    });
   }
   /*
    * Private Key QR Code
@@ -192,9 +195,10 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.privateKey, QR_CODE_OPTS);
     }
-    return new Promise((resolve, reject) => reject()).catch(() =>
-      error(errors.softwareWallet.Class.noPrivateKey, this.privateKey),
-    );
+    return new Promise((resolve, reject) => {
+      error(errors.softwareWallet.Class.noPrivateKey, this.privateKey);
+      reject();
+    });
   }
   /**
    * Create a new wallet.
