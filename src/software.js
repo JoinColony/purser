@@ -264,7 +264,9 @@ class SoftwareWallet extends EtherWallet {
    * @return {WalletType} A new wallet object (or undefined) if somehwere along
    * the line an error is thrown.
    */
-  static open(walletArguments: WalletArgumentsType): (() => WalletType) | void {
+  static async open(
+    walletArguments: WalletArgumentsType,
+  ): Promise<WalletType | void> {
     /*
      * We can't destructure the arguments in the function signature, since we
      * need to iterate through them in case of an error.
@@ -295,7 +297,7 @@ class SoftwareWallet extends EtherWallet {
         path,
       );
     } catch (err) {
-      error(
+      throw error(
         errors.softwareWallet.Class.open,
         Object.keys(walletArguments).reduce(
           (allArgs, key) =>
@@ -305,7 +307,6 @@ class SoftwareWallet extends EtherWallet {
         err,
       );
     }
-    return undefined;
   }
 }
 
@@ -360,8 +361,7 @@ export const create = (
  */
 export const open = (
   walletArguments: WalletArgumentsType = {},
-): (WalletArgumentsType => WalletType) | void =>
-  SoftwareWallet.open(walletArguments);
+): Promise<WalletType | void> => SoftwareWallet.open(walletArguments);
 
 /*
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available

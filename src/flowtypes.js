@@ -71,7 +71,7 @@ export type ProvidersExportType = {
 
 export type SoftwareWalletExportType = {
   create: WalletArgumentsType => Promise<WalletType>,
-  open: WalletArgumentsType => (WalletArgumentsType => WalletType) | void,
+  open: WalletArgumentsType => Promise<WalletType | void>,
   SoftwareWallet?: Class<*>,
 };
 
