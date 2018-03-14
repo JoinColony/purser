@@ -202,6 +202,8 @@ class SoftwareWallet extends EtherWallet {
    * This will use EtherWallet's `createRandom()` (with defaults and entrophy)
    * and use the resulting private key to instantiate a new SoftwareWallet.
    *
+   * @TODO Update API docs (to reflec the new async functionality)
+   *
    * @method create
    *
    * @param {ProviderType} provider An available provider to add to the wallet
@@ -212,11 +214,11 @@ class SoftwareWallet extends EtherWallet {
    *
    * @return {WalletType} A new wallet object
    */
-  static create({
+  static async create({
     provider = autoselect(),
     password,
     entrophy = new Uint8Array(65536),
-  }: WalletArgumentsType): () => WalletType {
+  }: WalletArgumentsType): Promise<WalletType> {
     let basicWallet: WalletType;
     try {
       if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
@@ -246,6 +248,8 @@ class SoftwareWallet extends EtherWallet {
    * This will try to extract the private key from a mnemonic (if available),
    * and create a new SoftwareWallet instance using whichever key is available.
    * (the on passed in or the one extracted from the mnemonic).
+   *
+   * @TODO Convert to an `async` method
    *
    * @method open
    *
@@ -339,7 +343,7 @@ Object.defineProperties(SoftwareWallet.prototype, {
  */
 export const create = (
   walletArguments: WalletArgumentsType = {},
-): (() => WalletType) => SoftwareWallet.create(walletArguments);
+): Promise<WalletType> => SoftwareWallet.create(walletArguments);
 
 /**
  * Open (instantiate) a wallet.
@@ -356,7 +360,8 @@ export const create = (
  */
 export const open = (
   walletArguments: WalletArgumentsType = {},
-): (() => WalletType) | void => SoftwareWallet.open(walletArguments);
+): (WalletArgumentsType => WalletType) | void =>
+  SoftwareWallet.open(walletArguments);
 
 /*
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available

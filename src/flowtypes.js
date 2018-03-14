@@ -70,8 +70,8 @@ export type ProvidersExportType = {
 };
 
 export type SoftwareWalletExportType = {
-  create: (...*) => () => WalletType,
-  openWithPrivateKey?: (...*) => ?WalletType,
+  create: WalletArgumentsType => Promise<WalletType>,
+  open: WalletArgumentsType => (WalletArgumentsType => WalletType) | void,
   SoftwareWallet?: Class<*>,
 };
 

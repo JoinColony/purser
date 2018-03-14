@@ -24,6 +24,7 @@ import {
  * This wraps the `ethers` `EtherscanProvider` method and provides defaults, error catching and warnings.
  *
  * @TODO Refactor method to accept arguments as object props
+ * @TODO Convert to an `async` method
  *
  * @method etherscan
  *
@@ -55,6 +56,7 @@ export const etherscan = (
  * This wraps the `ethers` `InfuraProvider` method and provides defaults, error catching and warnings.
  *
  * @TODO Refactor method to accept arguments as object props
+ * @TODO Convert to an `async` method
  *
  * @method infura
  *
@@ -86,6 +88,7 @@ export const infura = (
  * This wraps the `ethers` `Web3Provider` method and provides defaults, error catching and warnings.
  *
  * @TODO Refactor method to accept arguments as object props
+ * @TODO Convert to an `async` method
  *
  * @method metamask
  *
@@ -115,6 +118,7 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
  * This wraps the `ethers` `JsonRpcProvider` method and provides defaults, error catching and warnings.
  *
  * @TODO Refactor method to accept arguments as object props
+ * @TODO Convert to an `async` method
  *
  * @method localhost
  *
@@ -147,6 +151,8 @@ export const localhost = (
 /**
  * Helper method to autoselect from a pre-determined list of providers.
  * It will select the first one that's available.
+ *
+ * @TODO Convert to an `async` method
  *
  * @method autoselect
  *
