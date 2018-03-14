@@ -17,8 +17,8 @@ describe('`software` wallet module', () => {
     /*
      * Create
      */
-    test('Creates a new wallet', () => {
-      const testWallet = software.SoftwareWallet.create({});
+    test('Creates a new wallet', async () => {
+      const testWallet = await software.SoftwareWallet.create({});
       expect(EthersWallet).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalled();
       expect(testWallet).toBeInstanceOf(software.SoftwareWallet);

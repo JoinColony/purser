@@ -35,8 +35,8 @@ describe('`software` wallet module', () => {
       expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
       expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({ entrophy });
     });
-    test('The new wallet to have the mnemonic and path props', () => {
-      const testWallet = create();
+    test('The new wallet to have the mnemonic and path props', async () => {
+      const testWallet = await create();
       expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
       expect(testWallet).toHaveProperty('mnemonic');
       expect(testWallet).toHaveProperty('path');
