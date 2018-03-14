@@ -68,9 +68,9 @@ describe('`software` wallet module', () => {
     /*
      * Open
      */
-    test('Opens wallet using a private key', () => {
+    test('Opens wallet using a private key', async () => {
       const privateKey = '0x1';
-      const testWallet = software.SoftwareWallet.open({ privateKey });
+      const testWallet = await software.SoftwareWallet.open({ privateKey });
       expect(EthersWallet).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalledWith(
@@ -93,19 +93,24 @@ describe('`software` wallet module', () => {
         PROVIDER_PROTO,
       );
     });
-    test('Return undefined when no suitable open method provided', () => {
+    test('Return undefined when no suitable open method provided', async () => {
       const testWallet = software.SoftwareWallet.open({});
+      // console.log('123');
       expect(HDNode.fromMnemonic).not.toHaveBeenCalled();
       expect(EthersWallet).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalledWith('', PROVIDER_PROTO);
       expect(utils.error).toHaveBeenCalled();
-      expect(testWallet).toEqual(undefined);
+      expect(testWallet).rejects.toEqual(new Error());
     });
-    test('After opening the wallet should have the `mnemonic` prop', () => {
+    test('After open, the wallet should have the `mnemonic` prop', async () => {
       const mnemonic = 'romeo delta india golf';
-      const testWalletKey = software.SoftwareWallet.open({ privateKey: '0x1' });
-      const testWalletMnemonic = software.SoftwareWallet.open({ mnemonic });
+      const testWalletKey = await software.SoftwareWallet.open({
+        privateKey: '0x1',
+      });
+      const testWalletMnemonic = await software.SoftwareWallet.open({
+        mnemonic,
+      });
       expect(testWalletKey).toBeInstanceOf(software.SoftwareWallet);
       expect(testWalletMnemonic).toBeInstanceOf(software.SoftwareWallet);
       expect(testWalletKey).toHaveProperty('mnemonic', undefined);

@@ -202,8 +202,6 @@ class SoftwareWallet extends EtherWallet {
    * This will use EtherWallet's `createRandom()` (with defaults and entrophy)
    * and use the resulting private key to instantiate a new SoftwareWallet.
    *
-   * @TODO Update API docs (to reflec the new async functionality)
-   *
    * @method create
    *
    * @param {ProviderType} provider An available provider to add to the wallet
@@ -249,7 +247,7 @@ class SoftwareWallet extends EtherWallet {
    * and create a new SoftwareWallet instance using whichever key is available.
    * (the on passed in or the one extracted from the mnemonic).
    *
-   * @TODO Convert to an `async` method
+   * @TODO Update API docs (to reflec the new async functionality)
    *
    * @method open
    *
@@ -297,7 +295,7 @@ class SoftwareWallet extends EtherWallet {
         path,
       );
     } catch (err) {
-      throw error(
+      error(
         errors.softwareWallet.Class.open,
         Object.keys(walletArguments).reduce(
           (allArgs, key) =>
@@ -306,6 +304,7 @@ class SoftwareWallet extends EtherWallet {
         ),
         err,
       );
+      throw new Error();
     }
   }
 }
