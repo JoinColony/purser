@@ -2,6 +2,8 @@
 
 These docs serve to outline the `API` format and methods provided by `colony-wallet`.
 
+Unlike other wallet libraries, this one works entirely in `async` mode, meaning every `return` will be a `Promise` that must `resolve` _(or `reject`, if something goes wrong...)_.
+
 #### Console output
 
 In `development` mode there will be a number of warnings or errors outputted verbosely to the console.
@@ -32,7 +34,7 @@ Contrary to other wallet libraries out there, this one is fully `async`.
 
 ### Software
 
-A standard wallet working in it's entirety via a software environment. This means that it give you access to sensitive data _(`private key`, `mnemonic`, etc...)_ via it's API.
+A standard wallet working in it's entirety in a software environment. This means that it give you access to sensitive data _(`private key`, `mnemonic`, etc...)_ via it's API.
 
 For a more in-depth look at how the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
 
@@ -65,10 +67,12 @@ import { create } from 'colony-wallet/software'; // create();
 ### `create`
 
 ```js
-create([walletArguments: Object]);
+await create([walletArguments: Object]);
 ```
 
-This method returns a new software wallet instance _(see: [Wallet Object](wallet-object.md))_. By default it will generate the maximum possible `entrophy` _(see: [`getRandomValues`](#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
+This method returns a `Promise` which, upon resolving, will return new software wallet instance _(see: [Wallet Object](wallet-object.md))_.
+
+By default it will generate the maximum possible `entrophy` _(see: [`getRandomValues`](#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
 
 Even though it will work out of the box, you can however, pass in custom arguments via the `walletArguments` object.
 
@@ -104,7 +108,7 @@ Create a new wallet:
 ```js
 import { create } from 'colony-wallet/software';
 
-const newWallet = create();
+const newWallet = await create();
 ```
 
 Create a new wallet with manual entrophy:
@@ -112,7 +116,7 @@ Create a new wallet with manual entrophy:
 import { create } from 'colony-wallet/software';
 import { getRandomValues } from 'colony-wallet/utils';
 
-const newWallet = create({ entrophy: getRandomValues(new Uint8Array(65536)) });
+const newWallet = await create({ entrophy: getRandomValues(new Uint8Array(65536)) });
 ```
 
 Create a new wallet and give it a provider:
@@ -122,14 +126,14 @@ import { localhost } from 'colony-wallet/providers';
 
 const provider = localhost('http://localhost:8545', 'kovan');
 
-const newWallet = create({ provider });
+const newWallet = await create({ provider });
 ```
 
 Create a new wallet and set the encryption password:
 ```js
 import { create } from 'colony-wallet/software';
 
-const newWallet = create({ password: '0fbfd56c94dc9d2578a6' });
+const newWallet = await create({ password: '0fbfd56c94dc9d2578a6' });
 
 const newWalletKeystore = await newWallet.keystore;
 ```
