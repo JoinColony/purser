@@ -33,8 +33,7 @@ describe('`software` wallet module', () => {
         'addressQR',
         'get',
       );
-      expect(testWallet).toHaveProperty('addressQR');
-      expect(await testWallet.addressQR).toEqual(undefined);
+      expect(testWallet.addressQR).rejects.toEqual(undefined);
       expect(addressQRGetterSpy).toHaveBeenCalled();
       expect(utils.error).toHaveBeenCalled();
       expect(qrcode.toDataURL).not.toHaveBeenCalled();

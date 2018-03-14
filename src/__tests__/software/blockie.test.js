@@ -33,8 +33,7 @@ describe('`software` wallet module', () => {
         'blockie',
         'get',
       );
-      expect(testWallet).toHaveProperty('blockie');
-      expect(await testWallet.blockie).toEqual(undefined);
+      expect(testWallet.blockie).rejects.toEqual(undefined);
       expect(blockieGetterSpy).toHaveBeenCalled();
       expect(utils.error).toHaveBeenCalled();
       expect(blockies.create).not.toHaveBeenCalled();

@@ -27,8 +27,7 @@ describe('`software` wallet module', () => {
         'keystore',
         'get',
       );
-      expect(testWallet).toHaveProperty('keystore');
-      expect(await testWallet.keystore).toEqual(undefined);
+      expect(testWallet.keystore).rejects.toEqual(undefined);
       expect(keystoreGetterSpy).toHaveBeenCalled();
       expect(utils.warn).toHaveBeenCalled();
       keystoreGetterSpy.mockReset();
@@ -41,8 +40,7 @@ describe('`software` wallet module', () => {
         'keystore',
         'set',
       );
-      expect(testWallet).toHaveProperty('keystore');
-      expect(await testWallet.keystore).toEqual(undefined);
+      expect(testWallet.keystore).rejects.toEqual(undefined);
       expect(utils.warn).toHaveBeenCalled();
       testWallet.keystore = 'a-new-encryption-password';
       expect(keystoreSetterSpy).toHaveBeenCalled();
