@@ -30,8 +30,6 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 Create or open a new wallet via software, hardware or browser extension.
 
-Contrary to other wallet libraries out there, this one is fully `async`.
-
 ### Software
 
 A standard wallet working in it's entirety in a software environment. This means that it give you access to sensitive data _(`private key`, `mnemonic`, etc...)_ via it's API.
@@ -44,24 +42,24 @@ There are different ways in which you can import the library in your project _(a
 
 Using `ES5` `require()` statements:
 ```js
-var wallet = require('colony-wallet/software'); // wallet.create();
+var wallet = require('colony-wallet/software'); // wallet.create().then();
 
-var wallets = require('colony-wallet/wallets'); // wallets.software.create();
+var wallets = require('colony-wallet/wallets'); // wallets.software.create().then();
 
-var wallet = require('colony-wallet/wallets').software; // wallet.create();
+var wallet = require('colony-wallet/wallets').software; // wallet.create().then();
 
-var create = require('colony-wallet/software').create; // create();
+var create = require('colony-wallet/software').create; // create().then();
 ```
 
 Using `ES6` `import` statements:
 ```js
-import wallet from 'colony-wallet/software'; // wallet.create();
+import wallet from 'colony-wallet/software'; // await wallet.create();
 
-import wallets from 'colony-wallet/wallets'; // wallets.software.create();
+import wallets from 'colony-wallet/wallets'; // await wallets.software.create();
 
-import { software as wallet } from 'colony-wallet/wallets'; // wallet.create();
+import { software as wallet } from 'colony-wallet/wallets'; // await wallet.create();
 
-import { create } from 'colony-wallet/software'; // create();
+import { create } from 'colony-wallet/software'; // await create();
 ```
 
 ### `create`
@@ -143,12 +141,14 @@ See the [Wallet Object](wallet-object.md) documentation for all the props availa
 ### `open`
 
 ```js
-open(walletArguments: Object);
+await open(walletArguments: Object);
 ```
 
-This method returns a new software wallet instance _(see: [Wallet Object](wallet-object.md))_ after unlocking it via one of the available methods. By default it will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
+This method returns a `Promise`, which after unlocking it via one of the available methods, it will `resolve` and `return` new software wallet instance _(see: [Wallet Object](wallet-object.md))_.
 
-It will not work without any arguments so you must specify at least one method of opening the wallet.
+By default it auto-selects the first available provider _(see: [`autoselect`](#autoselect))_, if one was not provided via the argument prop.
+
+It will not work without any arguments so you must specify at least one method of opening the wallet. If at least one is not provided, the `Promise` will `reject`, throwing an error.
 
 See [`WalletArgumentsType`](../src/flowtypes.js#L34-L42) in [`flowtypes.js`](../src/flowtypes.js) for how the options object looks like.
 
@@ -202,7 +202,7 @@ import { open } from 'colony-wallet/software';
 
 const privateKey = '0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447';
 
-const existingWallet = open({ privateKey });
+const existingWallet = await open({ privateKey });
 ```
 
 Open a wallet using a mnemonic phrase:
@@ -211,7 +211,7 @@ import { open } from 'colony-wallet/software';
 
 const mnemonic = 'load blush spray dirt random cash pear illness pulse sketch sheriff surge';
 
-const existingWallet = open({ mnemonic });
+const existingWallet = await open({ mnemonic });
 ```
 
 Open a new wallet, and give it a provider and encryption password:
@@ -219,7 +219,7 @@ Open a new wallet, and give it a provider and encryption password:
 import { open } from 'colony-wallet/software';
 import { etherscan } from 'colony-wallet/providers';
 
-const existingWallet = open({
+const existingWallet = await open({
   privateKey: '0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447'
   provider: etherscan,
   password: '6a8752d9cd49c65dfbf0',

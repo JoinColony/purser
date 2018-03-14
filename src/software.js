@@ -247,8 +247,6 @@ class SoftwareWallet extends EtherWallet {
    * and create a new SoftwareWallet instance using whichever key is available.
    * (the on passed in or the one extracted from the mnemonic).
    *
-   * @TODO Update API docs (to reflec the new async functionality)
-   *
    * @method open
    *
    * @param {ProviderType} provider An available provider to add to the wallet

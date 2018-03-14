@@ -6,7 +6,7 @@ Instantiating a new wallet:
 ```js
 import { software as wallet } from 'colony-wallet/wallets';
 
-wallet.create();
+await wallet.create();
 ```
 Gives you the following object:
 ```js
@@ -54,7 +54,7 @@ _**Tip:** Across all wallet types and formats this is the only value that you ca
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
 
 console.log(wallet.address); // 0x3953cF4eA75a62c6fCD0b3988b1984265006a4CC
 ```
@@ -73,7 +73,7 @@ The returned image has a size of `200`x`200` pixels.
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
 
 const qr = await wallet.addressQR;
 
@@ -94,7 +94,7 @@ The returned image has a size of `200`x`200` pixels.
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
 
 const blockie = await wallet.blockie;
 
@@ -113,7 +113,7 @@ This value will be used if the transaction you wish to send from the wallet does
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
 
 console.log(wallet.defaultGasLimit); // 1500000
 
@@ -140,7 +140,7 @@ If you need more information about the encrypted `keystore`, you can check out t
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
 
 let keystore = await wallet.keystore; // Promise rejects: You did not provide a password for encryption...
 
@@ -163,7 +163,7 @@ If a _new_ wallet was instantiated, or a new instance was created via a `mnemoni
 ```js
 import { create } from 'colony-wallet/software';
 
-const wallet = create();
+const wallet = await create();
 
 console.log(wallet.mnemonic); // load blush spray dirt random cash pear illness pulse sketch sheriff surge
 ```
@@ -180,7 +180,7 @@ This defaults to `m/44'/60'/0'/0/0`, but can be manually set when creating the w
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
+const wallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
 
 console.log(wallet.path); // m/44'/60'/0'/0/0
 ```
@@ -197,7 +197,7 @@ _**Warning:** As the name suggests, this is private. So treat it with caution an
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
+const wallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
 
 console.log(wallet.privateKey); // 0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447
 ```
@@ -216,7 +216,7 @@ The returned image has a size of `200`x`200` pixels.
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
 
 const qr = await wallet.privateKeyQR;
 
@@ -238,7 +238,7 @@ If one is not set via the argument prop, it defaults to [`autoselect()`](api.md#
 import { create } from 'colony-wallet/software';
 import { localhost } from 'colony-wallet/providers';
 
-const wallet = create({ provider: localhost });
+const wallet = await create({ provider: localhost });
 
 console.log(wallet.provider); // {chainId: 1, ensAddress: "0x314159265dD8dbb310642f98f50C066173C1259b", name: "homestead", _events: {…}, resetEventsBlock: ƒ, …}
 ```

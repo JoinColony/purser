@@ -26,14 +26,14 @@ npm install colony-wallet
 ```js
 import { create } from 'colony-wallet/software';
 
-const newWallet = create();
+const newWallet = await create();
 ```
 
 #### Open an existing wallet:
 ```js
 import { open } from 'colony-wallet/software';
 
-const existingWallet = open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
+const existingWallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
 ```
 
 For a more complete explanation of the available features and more usage examples please check out the [**API docs**](docs/api.md).
