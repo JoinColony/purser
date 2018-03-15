@@ -135,6 +135,8 @@ Upon resolving, the `Promise` will return a `JSON`-formatted `String`. _(Which y
 
 This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
 
+If the wallet was instantiated using an encrypted `keystore`, than this value is already set and memoized, so calling this will return the value instantly,
+
 If you need more information about the encrypted `keystore`, you can check out the [Web3 Secret Storage Definition](https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition).
 
 ```js

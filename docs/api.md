@@ -187,12 +187,22 @@ The provider `prop` can be either a provider object, or a provider generator met
 See [`ProviderType`](./src/flowtypes.js#L3-L16) and [`ProviderGeneratorType`](./src/flowtypes.js#L18) in [`flowtypes.js`](../src/flowtypes.js) for how the provider object and generator functions look like.
 
 ```js
+walletArguments.keystore: String
+```
+
+Open a new wallet instance using an encrypted `keystore`. For this to work, the `password` argument prop must also be set.
+
+Using this method, the returned Wallet Object will have all of the props available.
+
+See the [Wallet Object](wallet-object.md#keystore) for more information on this.
+
+```js
 walletArguments.password: String
 ```
 
 Set an encryption password when instantiating the wallet. This way you can just call up the `keystore` getter and get the `JSON` string.
 
-As with the others, this is optional, since it can be set after the wallet creation using the `keystore` setter.
+This can be set after the wallet creation using the `keystore` setter, but must be included if the wallet is to be instantiated using an encrypted `keystore`.
 
 **Usage examples:**
 
@@ -222,6 +232,18 @@ import { etherscan } from 'colony-wallet/providers';
 const existingWallet = await open({
   privateKey: '0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447'
   provider: etherscan,
+  password: '6a8752d9cd49c65dfbf0',
+});
+```
+
+Open a new wallet using an encrypted keystore:
+```js
+import { open } from 'colony-wallet/software';
+
+const keystore = '{"address":"3953cf4ea75a62c6fcd0b3988b1984265006a4cc","id":"55df8726-b08d-41ce-b9a0-8cb7d4cb7254","version":3,"Crypto":{"cipher":"aes-128-ctr","cipherparams":{"iv":"919afe213cbac6704362f8139a0a3519"},"ciphertext":"d823708436d306b7bc8caf2f8bedf93e86f28c1edbb2bc89bae8e9ad78971682","kdf":"scrypt","kdfparams":{"salt":"0be48e9efbeb26be2e7f68cfc61d1e83c34dd9406cfec3c77e71e637dd01a51b","n":131072,"dklen":32,"p":1,"r":8},"mac":"c9b6cd3173daf1ea6633b2d2848ab96765340bb27a07a203ecf17454c568cc3e"}}';
+
+const existingWallet = await open({
+  keystore,
   password: '6a8752d9cd49c65dfbf0',
 });
 ```

@@ -281,7 +281,6 @@ class SoftwareWallet extends EtherWallet {
     try {
       /*
        * @TODO Detect if existing but not valid keystore, and warn the user
-       * @TODO Add API documentation for opening the wallet w/ a keystore
        */
       if (keystore && this.isEncryptedWallet(keystore) && password) {
         const keystoreWallet: WalletObjectType = await this.fromEncryptedWallet(
