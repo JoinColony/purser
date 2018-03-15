@@ -28,7 +28,10 @@ describe('`software` wallet module', () => {
       const provider = localhost();
       software.SoftwareWallet.create({ provider });
       expect(software.SoftwareWallet).toHaveBeenCalled();
-      expect(software.SoftwareWallet).toHaveBeenCalledWith(undefined, provider);
+      /*
+       * `0x1` is the value the `createRandom()` mock returns
+       */
+      expect(software.SoftwareWallet).toHaveBeenCalledWith('0x1', provider);
     });
     test('Creates a new wallet with a provider generator function', () => {
       const providerMock = jest.fn(() => () => ({ mocked: true }));
@@ -40,10 +43,10 @@ describe('`software` wallet module', () => {
       software.SoftwareWallet.create({ provider: false });
       expect(utils.warn).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalled();
-      expect(software.SoftwareWallet).toHaveBeenCalledWith(
-        undefined,
-        undefined,
-      );
+      /*
+       * `0x1` is the value the `createRandom()` mock returns
+       */
+      expect(software.SoftwareWallet).toHaveBeenCalledWith('0x1', undefined);
     });
     test('Creates a new wallet with manual entrophy', () => {
       const entrophy = new Uint8Array(100);
@@ -95,11 +98,13 @@ describe('`software` wallet module', () => {
     });
     test('Return undefined when no suitable open method provided', async () => {
       const testWallet = software.SoftwareWallet.open({});
-      // console.log('123');
       expect(HDNode.fromMnemonic).not.toHaveBeenCalled();
       expect(EthersWallet).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalled();
-      expect(software.SoftwareWallet).toHaveBeenCalledWith('', PROVIDER_PROTO);
+      expect(software.SoftwareWallet).toHaveBeenCalledWith(
+        undefined,
+        PROVIDER_PROTO,
+      );
       expect(utils.error).toHaveBeenCalled();
       expect(testWallet).rejects.toEqual(new Error());
     });

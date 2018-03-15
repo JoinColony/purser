@@ -1,5 +1,5 @@
 export const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
-  if (privatekey === '0x0' || privatekey === '') {
+  if (privatekey === '0x0' || !privatekey) {
     throw new Error();
   }
   /*
@@ -11,7 +11,7 @@ export const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
   return this;
 });
 
-Wallet.createRandom = jest.fn(() => ({}));
+Wallet.createRandom = jest.fn(() => ({ privateKey: '0x1' }));
 
 Wallet.prototype.encrypt = jest.fn(
   password =>
