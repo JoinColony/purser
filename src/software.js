@@ -6,7 +6,7 @@ import blockies from 'ethereum-blockies';
 
 import type {
   ProviderType,
-  WalletType,
+  WalletObjectType,
   WalletArgumentsType,
   SoftwareWalletExportType,
 } from './flowtypes';
@@ -219,8 +219,8 @@ class SoftwareWallet extends EtherWallet {
     provider = autoselect(),
     password,
     entrophy = new Uint8Array(65536),
-  }: WalletArgumentsType): Promise<WalletType> {
-    let basicWallet: WalletType;
+  }: WalletArgumentsType): Promise<WalletObjectType> {
+    let basicWallet: WalletObjectType;
     try {
       if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
         warn(warnings.softwareWallet.Class.noEntrophy);
@@ -265,7 +265,7 @@ class SoftwareWallet extends EtherWallet {
    */
   static async open(
     walletArguments: WalletArgumentsType,
-  ): Promise<WalletType | void> {
+  ): Promise<WalletObjectType | void> {
     /*
      * We can't destructure the arguments in the function signature, since we
      * need to iterate through them in case of an error.
@@ -288,7 +288,7 @@ class SoftwareWallet extends EtherWallet {
        * @TODO Add unit tests when opening the wallet w/ a keystore
        */
       if (keystore && this.isEncryptedWallet(keystore) && password) {
-        const keystoreWallet: WalletType = await this.fromEncryptedWallet(
+        const keystoreWallet: WalletObjectType = await this.fromEncryptedWallet(
           keystore,
           password,
         );
@@ -300,7 +300,7 @@ class SoftwareWallet extends EtherWallet {
        * @TODO Detect if existing but not valid mnemonic, and warn the user
        */
       if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
-        const mnemonicWallet: WalletType = HDNode.fromMnemonic(
+        const mnemonicWallet: WalletObjectType = HDNode.fromMnemonic(
           mnemonic,
         ).derivePath(path);
         extractedPrivateKey = mnemonicWallet.privateKey;
@@ -365,7 +365,7 @@ Object.defineProperties(SoftwareWallet.prototype, {
  */
 export const create = (
   walletArguments: WalletArgumentsType = {},
-): Promise<WalletType> => SoftwareWallet.create(walletArguments);
+): Promise<WalletObjectType> => SoftwareWallet.create(walletArguments);
 
 /**
  * Open (instantiate) a wallet.
@@ -382,7 +382,7 @@ export const create = (
  */
 export const open = (
   walletArguments: WalletArgumentsType = {},
-): Promise<WalletType | void> => SoftwareWallet.open(walletArguments);
+): Promise<WalletObjectType | void> => SoftwareWallet.open(walletArguments);
 
 /*
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available

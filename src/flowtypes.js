@@ -17,7 +17,7 @@ export type ProviderType = {
 
 export type ProviderGeneratorType = (...*) => ProviderType;
 
-export type WalletType = {
+export type WalletObjectType = {
   address: string,
   defaultGasLimit: number,
   keystore?: Promise<string>,
@@ -70,8 +70,8 @@ export type ProvidersExportType = {
 };
 
 export type SoftwareWalletExportType = {
-  create: WalletArgumentsType => Promise<WalletType>,
-  open: WalletArgumentsType => Promise<WalletType | void>,
+  create: WalletArgumentsType => Promise<WalletObjectType>,
+  open: WalletArgumentsType => Promise<WalletObjectType | void>,
   SoftwareWallet?: Class<*>,
 };
 
