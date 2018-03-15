@@ -89,6 +89,9 @@ class SoftwareWallet extends EtherWallet {
         'keystore',
         Object.assign({}, GETTER_PROP_DESCRIPTORS, {
           value:
+            /*
+             * @TODO Add unit tests for auto-setting the keystore
+             */
             (keystoreJson && Promise.resolve(keystoreJson)) ||
             this.encrypt(encryptionPassword),
         }),
@@ -98,10 +101,8 @@ class SoftwareWallet extends EtherWallet {
         this.encrypt(encryptionPassword)
       );
     }
-    return new Promise((resolve, reject) => {
-      warn(warnings.softwareWallet.Class.noPassword);
-      reject();
-    });
+    warn(warnings.softwareWallet.Class.noPassword);
+    return Promise.reject();
   }
   /*
    * Just set the encryption password, we don't return anything from here,
@@ -138,10 +139,8 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.address, QR_CODE_OPTS);
     }
-    return new Promise((resolve, reject) => {
-      error(errors.softwareWallet.Class.noAddress, this.address);
-      reject();
-    });
+    error(errors.softwareWallet.Class.noAddress, this.address);
+    return Promise.reject();
   }
   /*
    * Address Identicon (Blockie)
@@ -149,12 +148,11 @@ class SoftwareWallet extends EtherWallet {
   blockie: string;
   get blockie(): Promise<string | void> {
     if (this.address) {
-      const blockiePromise = new Promise(resolve => {
-        const blockie = blockies.create(
-          Object.assign({}, BLOCKIE_OPTS, { seed: this.address }),
-        );
-        resolve(blockie.toDataURL());
-      });
+      const blockiePromise = Promise.resolve(
+        blockies
+          .create(Object.assign({}, BLOCKIE_OPTS, { seed: this.address }))
+          .toDataURL(),
+      );
       /*
        * While this is not a particularly expensive operation (it is, but it's
        * small potatoes compared to the others), it's still a good approach
@@ -171,10 +169,8 @@ class SoftwareWallet extends EtherWallet {
       );
       return blockiePromise;
     }
-    return new Promise((resolve, reject) => {
-      error(errors.softwareWallet.Class.noAddress, this.address);
-      reject();
-    });
+    error(errors.softwareWallet.Class.noAddress, this.address);
+    return Promise.reject();
   }
   /*
    * Private Key QR Code
@@ -200,10 +196,8 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.privateKey, QR_CODE_OPTS);
     }
-    return new Promise((resolve, reject) => {
-      error(errors.softwareWallet.Class.noPrivateKey, this.privateKey);
-      reject();
-    });
+    error(errors.softwareWallet.Class.noPrivateKey, this.privateKey);
+    return Promise.reject();
   }
   /**
    * Create a new wallet.
@@ -290,6 +284,8 @@ class SoftwareWallet extends EtherWallet {
     try {
       /*
        * @TODO Detect if existing but not valid keystore, and warn the user
+       * @TODO Add API documentation for opening the wallet w/ a keystore
+       * @TODO Add unit tests when opening the wallet w/ a keystore
        */
       if (keystore && this.isEncryptedWallet(keystore) && password) {
         const keystoreWallet: WalletType = await this.fromEncryptedWallet(
