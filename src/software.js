@@ -276,25 +276,41 @@ class SoftwareWallet extends EtherWallet {
       password,
       privateKey,
       mnemonic,
+      keystore,
       path = MNEMONIC_PATH,
     } = walletArguments;
-    let extractedPrivateKey: string = '';
+    let extractedPrivateKey: string;
+    let extractedMnemonic: string;
+    let extractedPath: string;
     try {
-      if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
-        extractedPrivateKey = HDNode.fromMnemonic(mnemonic).derivePath(path)
-          .privateKey;
+      /*
+       * @TODO Detect if existing but not valid keystore, and warn the user
+       */
+      if (keystore && this.isEncryptedWallet(keystore) && password) {
+        const keystoreWallet = await this.fromEncryptedWallet(
+          keystore,
+          password,
+        );
+        extractedPrivateKey = keystoreWallet.privateKey;
+        extractedMnemonic = keystoreWallet.mnemonic;
+        extractedPath = keystoreWallet.path;
       }
       /*
-       * @TODO Add open with keystore functionality
-       * But because this relies on async data, we must either make the whole
-       * `open()` method async or even the whole wallet library.
+       * @TODO Detect if existing but not valid mnemonic, and warn the user
+       */
+      if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
+        const mnemonicWallet = HDNode.fromMnemonic(mnemonic).derivePath(path);
+        extractedPrivateKey = mnemonicWallet.privateKey;
+      }
+      /*
+       * @TODO Detect if existing but not valid private key, and warn the user
        */
       return new this(
         privateKey || extractedPrivateKey,
         provider,
         password,
-        mnemonic,
-        path,
+        mnemonic || extractedMnemonic,
+        path || extractedPath,
       );
     } catch (err) {
       error(
