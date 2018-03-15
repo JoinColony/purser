@@ -27,6 +27,7 @@ import {
  * "Private" variable(s)
  */
 let encryptionPassword: string | void;
+let keystoreJson: string | void;
 /**
  * We extend Ethers's Wallet Object so we can add extra functionality
  *
@@ -43,10 +44,11 @@ class SoftwareWallet extends EtherWallet {
     password: string | void,
     mnemonic: string | void,
     path: string | void = MNEMONIC_PATH,
+    keystore: string | void,
   ) {
     let providerMode = typeof provider === 'function' ? provider() : provider;
     encryptionPassword = password;
-
+    keystoreJson = keystore;
     /*
      * @TODO Check for similar prop names
      *
@@ -85,13 +87,16 @@ class SoftwareWallet extends EtherWallet {
       Object.defineProperty(
         this,
         'keystore',
-        Object.assign(
-          {},
-          { value: this.encrypt(encryptionPassword) },
-          GETTER_PROP_DESCRIPTORS,
-        ),
+        Object.assign({}, GETTER_PROP_DESCRIPTORS, {
+          value:
+            (keystoreJson && Promise.resolve(keystoreJson)) ||
+            this.encrypt(encryptionPassword),
+        }),
       );
-      return this.encrypt(encryptionPassword);
+      return (
+        (keystoreJson && Promise.resolve(keystoreJson)) ||
+        this.encrypt(encryptionPassword)
+      );
     }
     return new Promise((resolve, reject) => {
       warn(warnings.softwareWallet.Class.noPassword);
@@ -287,7 +292,7 @@ class SoftwareWallet extends EtherWallet {
        * @TODO Detect if existing but not valid keystore, and warn the user
        */
       if (keystore && this.isEncryptedWallet(keystore) && password) {
-        const keystoreWallet = await this.fromEncryptedWallet(
+        const keystoreWallet: WalletType = await this.fromEncryptedWallet(
           keystore,
           password,
         );
@@ -299,7 +304,9 @@ class SoftwareWallet extends EtherWallet {
        * @TODO Detect if existing but not valid mnemonic, and warn the user
        */
       if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
-        const mnemonicWallet = HDNode.fromMnemonic(mnemonic).derivePath(path);
+        const mnemonicWallet: WalletType = HDNode.fromMnemonic(
+          mnemonic,
+        ).derivePath(path);
         extractedPrivateKey = mnemonicWallet.privateKey;
       }
       /*
@@ -311,6 +318,7 @@ class SoftwareWallet extends EtherWallet {
         password,
         mnemonic || extractedMnemonic,
         path || extractedPath,
+        keystore,
       );
     } catch (err) {
       error(
