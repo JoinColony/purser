@@ -89,9 +89,6 @@ class SoftwareWallet extends EtherWallet {
         'keystore',
         Object.assign({}, GETTER_PROP_DESCRIPTORS, {
           value:
-            /*
-             * @TODO Add unit tests for auto-setting the keystore
-             */
             (keystoreJson && Promise.resolve(keystoreJson)) ||
             this.encrypt(encryptionPassword),
         }),
@@ -285,7 +282,6 @@ class SoftwareWallet extends EtherWallet {
       /*
        * @TODO Detect if existing but not valid keystore, and warn the user
        * @TODO Add API documentation for opening the wallet w/ a keystore
-       * @TODO Add unit tests when opening the wallet w/ a keystore
        */
       if (keystore && this.isEncryptedWallet(keystore) && password) {
         const keystoreWallet: WalletObjectType = await this.fromEncryptedWallet(

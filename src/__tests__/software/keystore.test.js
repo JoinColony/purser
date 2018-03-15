@@ -48,5 +48,14 @@ describe('`software` wallet module', () => {
       keystoreSetterSpy.mockReset();
       keystoreSetterSpy.mockRestore();
     });
+    test('Expect value to be set if opening wallet with keystore', async () => {
+      const keystore = '{"address":"123456"}';
+      const password = 'passsword';
+      const testWallet = await software.SoftwareWallet.open({
+        keystore,
+        password,
+      });
+      expect(await testWallet.keystore).toEqual(keystore);
+    });
   });
 });

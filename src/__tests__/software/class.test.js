@@ -7,11 +7,13 @@ import { PROVIDER_PROTO, MNEMONIC_PATH } from '../../defaults';
 
 jest.mock('ethers/wallet');
 jest.mock('../../utils');
+jest.dontMock('../../software');
 
 describe('`software` wallet module', () => {
   afterEach(() => {
     EthersWallet.mockClear();
     HDNode.fromMnemonic.mockClear();
+    software.SoftwareWallet.mockClear();
   });
   describe('`SoftwareWallet` Class', () => {
     /*
@@ -95,6 +97,19 @@ describe('`software` wallet module', () => {
         privateKey,
         PROVIDER_PROTO,
       );
+    });
+    test('Opens wallet using a keystore', async () => {
+      const keystore = '{"address":"123456"}';
+      const password = 'passsword';
+      await software.SoftwareWallet.open({ keystore, password });
+      expect(software.SoftwareWallet.isEncryptedWallet).toHaveBeenCalled();
+      expect(software.SoftwareWallet.fromEncryptedWallet).toHaveBeenCalled();
+      expect(software.SoftwareWallet.fromEncryptedWallet).toHaveBeenCalledWith(
+        keystore,
+        password,
+      );
+      expect(EthersWallet).toHaveBeenCalled();
+      expect(software.SoftwareWallet).toHaveBeenCalled();
     });
     test('Return undefined when no suitable open method provided', async () => {
       const testWallet = software.SoftwareWallet.open({});

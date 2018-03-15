@@ -11,8 +11,6 @@ export const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
   return this;
 });
 
-Wallet.createRandom = jest.fn(() => ({ privateKey: '0x1' }));
-
 Wallet.prototype.encrypt = jest.fn(
   password =>
     new Promise((resolve, reject) => {
@@ -22,6 +20,22 @@ Wallet.prototype.encrypt = jest.fn(
       return reject();
     }),
 );
+
+Wallet.createRandom = jest.fn(() => ({ privateKey: '0x1' }));
+
+Wallet.isEncryptedWallet = jest.fn(jsonString => {
+  const keystoreObject = JSON.parse(jsonString);
+  if (Object.prototype.hasOwnProperty.call(keystoreObject, 'address')) {
+    return true;
+  }
+  return false;
+});
+
+Wallet.fromEncryptedWallet = jest.fn(keystore => ({
+  privateKey: '0x1',
+  address: JSON.parse(keystore).address,
+  mnemonic: 'romeo delta india golf',
+}));
 
 export const HDNode = {
   fromMnemonic: jest.fn(mnemonic => ({
