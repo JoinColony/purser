@@ -9,7 +9,7 @@ import type {
 } from './flowtypes';
 
 import { warn, error } from './utils';
-import { warnings, errors } from './messages';
+import { providers as messages } from './messages';
 
 import {
   DEFAULT_NETWORK,
@@ -43,10 +43,10 @@ export const etherscan = (
       provider = new ethersProviders.EtherscanProvider(network, token);
       return provider;
     }
-    warn(warnings.providers.etherscan.token);
-    provider = new ethersProviders.EtherscanProvider(network);
+    warn(messages.warnings.etherscan.token);
+    provider = new providers.EtherscanProvider(network);
   } catch (err) {
-    error(errors.providers.etherscan.connect, network, token, err);
+    error(messages.errors.etherscan.connect, network, token, err);
   }
   return provider;
 };
@@ -75,10 +75,10 @@ export const infura = (
       provider = new ethersProviders.InfuraProvider(network, token);
       return provider;
     }
-    warn(warnings.providers.infura.token);
-    provider = new ethersProviders.InfuraProvider(network);
+    warn(messages.warnings.infura.token);
+    provider = new providers.InfuraProvider(network);
   } catch (err) {
-    error(errors.providers.infura.connect, network, token, err);
+    error(messages.errors.infura.connect, network, token, err);
   }
   return provider;
 };
@@ -100,7 +100,7 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     if (!global.web3 || !global.web3.currentProvider) {
-      warn(warnings.providers.metamask.notAvailable);
+      warn(messages.warnings.metamask.notAvailable);
       return provider;
     }
     provider = new ethersProviders.Web3Provider(
@@ -108,7 +108,7 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
       network,
     );
   } catch (err) {
-    error(errors.providers.metamask.connect, network, err);
+    error(messages.errors.metamask.connect, network, err);
   }
   return provider;
 };
@@ -143,7 +143,7 @@ export const localhost = (
      */
     provider = new ethersProviders.JsonRpcProvider(url, network);
   } catch (err) {
-    error(errors.providers.localhost.connect, url, network, err);
+    error(messages.errors.localhost.connect, url, network, err);
   }
   return provider;
 };
@@ -170,7 +170,7 @@ export const autoselect = (
 ) => {
   let provider = PROVIDER_PROTO;
   if (!providersList.length) {
-    error(errors.providers.autoselect.empty);
+    error(messages.errors.autoselect.empty);
     return provider;
   }
   for (let i = 0, l = providersList.length; i < l; i += 1) {
@@ -189,7 +189,7 @@ export const autoselect = (
       provider = PROVIDER_PROTO;
     }
   }
-  error(errors.providers.autoselect.noProvider);
+  error(messages.errors.autoselect.noProvider);
   return provider;
 };
 
