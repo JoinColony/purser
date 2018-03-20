@@ -37,7 +37,7 @@ export type WalletArgumentsType = {
   path?: string,
   keystore?: string,
   provider?: ProviderType,
-  entrophy?: Uint8Array,
+  entropy?: Uint8Array,
   password?: string,
 };
 

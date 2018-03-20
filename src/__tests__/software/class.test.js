@@ -50,16 +50,16 @@ describe('`software` wallet module', () => {
        */
       expect(software.SoftwareWallet).toHaveBeenCalledWith('0x1', undefined);
     });
-    test('Creates a new wallet with manual entrophy', () => {
-      const entrophy = new Uint8Array(100);
-      software.SoftwareWallet.create({ entrophy });
+    test('Creates a new wallet with manual entropy', () => {
+      const entropy = new Uint8Array(100);
+      software.SoftwareWallet.create({ entropy });
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith({
-        extraEntrophy: entrophy,
+        extraEntropy: entropy,
       });
     });
-    test('Creates a new wallet when entrophy is set to a falsy value', () => {
-      software.SoftwareWallet.create({ entrophy: false });
+    test('Creates a new wallet when entropy is set to a falsy value', () => {
+      software.SoftwareWallet.create({ entropy: false });
       expect(utils.warn).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith();

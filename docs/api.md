@@ -70,14 +70,14 @@ await create([walletArguments: Object]);
 
 This method returns a `Promise` which, upon resolving, will return new software wallet instance _(see: [Wallet Object](wallet-object.md))_.
 
-By default it will generate the maximum possible `entrophy` _(see: [`getRandomValues`](#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
+By default it will generate the maximum possible `entropy` _(see: [`getRandomValues`](#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
 
 Even though it will work out of the box, you can however, pass in custom arguments via the `walletArguments` object.
 
 See [`WalletArgumentsType`](../src/flowtypes.js#L34-L42) in [`flowtypes.js`](../src/flowtypes.js) for how the options object looks like.
 
 ```js
-walletArguments.entrophy: Uint8Array<>
+walletArguments.entropy: Uint8Array<>
 ```
 
 Provide custom randomness when creating the wallet. By default it will use a `8`-bit unsigned array of `65536` length on which it will generate random values _(see: [`getRandomValues`](#getRandomValues))_.
@@ -109,12 +109,12 @@ import { create } from 'colony-wallet/software';
 const newWallet = await create();
 ```
 
-Create a new wallet with manual entrophy:
+Create a new wallet with manual entropy:
 ```js
 import { create } from 'colony-wallet/software';
 import { getRandomValues } from 'colony-wallet/utils';
 
-const newWallet = await create({ entrophy: getRandomValues(new Uint8Array(65536)) });
+const newWallet = await create({ entropy: getRandomValues(new Uint8Array(65536)) });
 ```
 
 Create a new wallet and give it a provider:
@@ -410,7 +410,7 @@ import { getRandomValues } from 'colony-wallet/utils';
 
 const uintArray = new Uint8Array(10); // [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-const entrophy = getRandomValues(uintArray); // [236, 157, 149, 236, 109, 233, 113, 151, 27, 93]
+const entropy = getRandomValues(uintArray); // [236, 157, 149, 236, 109, 233, 113, 151, 27, 93]
 
-const newWallet = wallet.create({ entrophy });
+const newWallet = wallet.create({ entropy });
 ```

@@ -199,13 +199,13 @@ class SoftwareWallet extends EtherWallet {
   /**
    * Create a new wallet.
    *
-   * This will use EtherWallet's `createRandom()` (with defaults and entrophy)
+   * This will use EtherWallet's `createRandom()` (with defaults and entropy)
    * and use the resulting private key to instantiate a new SoftwareWallet.
    *
    * @method create
    *
    * @param {ProviderType} provider An available provider to add to the wallet
-   * @param {Uint8Array} entrophy An unsigned 8bit integer Array to provide extra randomness
+   * @param {Uint8Array} entropy An unsigned 8bit integer Array to provide extra randomness
    * @param {string} password Optional password used to generate an encrypted keystore
    *
    * All the above params are sent in as props of an {WalletArgumentsType} object.
@@ -215,16 +215,16 @@ class SoftwareWallet extends EtherWallet {
   static async create({
     provider = autoselect(),
     password,
-    entrophy = new Uint8Array(65536),
+    entropy = new Uint8Array(65536),
   }: WalletArgumentsType): Promise<WalletObjectType> {
     let basicWallet: WalletObjectType;
     try {
-      if (!entrophy || (entrophy && !(entrophy instanceof Uint8Array))) {
-        warn(warnings.softwareWallet.Class.noEntrophy);
+      if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
+        warn(warnings.softwareWallet.Class.noentropy);
         basicWallet = this.createRandom();
       } else {
         basicWallet = this.createRandom({
-          extraEntrophy: getRandomValues(entrophy),
+          extraEntropy: getRandomValues(entropy),
         });
       }
       return new this(
@@ -235,7 +235,7 @@ class SoftwareWallet extends EtherWallet {
         basicWallet.path,
       );
     } catch (err) {
-      error(errors.softwareWallet.Class.create, provider, entrophy, err);
+      error(errors.softwareWallet.Class.create, provider, entropy, err);
       return this.createRandom();
     }
   }
