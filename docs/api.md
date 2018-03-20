@@ -32,9 +32,9 @@ Create or open a new wallet via software, hardware or browser extension.
 
 ### Software
 
-A standard wallet working in it's entirety in a software environment. This means that it give you access to sensitive data _(`private key`, `mnemonic`, etc...)_ via it's API.
+A standard wallet working in it's entirety in a software environment. This means that it gives you access to sensitive data _(`private key`, `mnemonic`, etc...)_ via it's API.
 
-For a more in-depth look at how the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
+For a more in-depth look at what the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
 
 #### Imports:
 
