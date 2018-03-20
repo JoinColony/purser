@@ -124,11 +124,7 @@ class SoftwareWallet extends EtherWallet {
        * to memoize the getter, so we're doing that here as well.
        */
       Object.defineProperty(
-        this,
-        /*
-         * Flow doesn't like getter-only props
-         */
-        /* $FlowFixMe */
+        (this: any),
         'addressQR',
         Object.assign({}, GETTER_PROP_DESCRIPTORS, {
           value: qrcode.toDataURL(this.address, QR_CODE_OPTS),
@@ -156,11 +152,7 @@ class SoftwareWallet extends EtherWallet {
        * to memoize the getter, so we're doing that here as well.
        */
       Object.defineProperty(
-        this,
-        /*
-         * Flow doesn't like getter-only props
-         */
-        /* $FlowFixMe */
+        (this: any),
         'blockie',
         Object.assign({}, GETTER_PROP_DESCRIPTORS, { value: blockiePromise }),
       );
@@ -181,11 +173,7 @@ class SoftwareWallet extends EtherWallet {
        * to memoize the getter, so we're doing that here as well.
        */
       Object.defineProperty(
-        this,
-        /*
-         * Flow doesn't like getter-only props
-         */
-        /* $FlowFixMe */
+        (this: any),
         'privateKeyQR',
         Object.assign({}, GETTER_PROP_DESCRIPTORS, {
           value: qrcode.toDataURL(this.privateKey, QR_CODE_OPTS),
@@ -329,17 +317,8 @@ class SoftwareWallet extends EtherWallet {
 /*
  * We need to use `defineProperties` to make props enumerable.
  * When adding them via a `Class` getter/setter it will prevent that by default
- *
- * We're dealing with `defineProperty` so we need to quiet down Flow.
- * This is because Flow, and how it doesn't play well (at all, really...)
- * with getters and setters. See the bellow issue for more info.
- *
- * @FIXME Remove `Flow` error suppression when it gets fixed
- * See: https://github.com/facebook/flow/issues/285
- *
- * $FlowFixMe
  */
-Object.defineProperties(SoftwareWallet.prototype, {
+Object.defineProperties((SoftwareWallet: any).prototype, {
   keystore: GETTER_PROP_DESCRIPTORS,
   addressQR: GETTER_PROP_DESCRIPTORS,
   blockie: GETTER_PROP_DESCRIPTORS,
