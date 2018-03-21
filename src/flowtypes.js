@@ -87,6 +87,7 @@ export type WalletIndexExportType = {
 };
 
 export type MessagesExportType = {
-  warnings: Object,
-  errors: Object,
+  providers: Object,
+  utils: Object,
+  softwareWallet: Object,
 };

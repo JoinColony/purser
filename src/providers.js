@@ -44,7 +44,7 @@ export const etherscan = (
       return provider;
     }
     warn(messages.warnings.etherscan.token);
-    provider = new providers.EtherscanProvider(network);
+    provider = new ethersProviders.EtherscanProvider(network);
   } catch (err) {
     error(messages.errors.etherscan.connect, network, token, err);
   }
@@ -76,7 +76,7 @@ export const infura = (
       return provider;
     }
     warn(messages.warnings.infura.token);
-    provider = new providers.InfuraProvider(network);
+    provider = new ethersProviders.InfuraProvider(network);
   } catch (err) {
     error(messages.errors.infura.connect, network, token, err);
   }

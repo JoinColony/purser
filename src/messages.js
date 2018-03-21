@@ -63,30 +63,22 @@ export const utils = {
 
 export const softwareWallet = {
   warnings: {
-    Class: {
-      noProvider:
-        "You did not set a provider. While this is not required for wallet creation, it's highly recommended as it will easier to use later. If you do not need a custom provider, just remove the argument and it will auto-select the first one available.",
-      noEntrophy:
-        "You did not provide entrophy to help with randomness when generating the wallet. While this can be omitted, it's highly recommended. You could omiy this argument and it will provide it for you automatically",
-      noPassword:
-        'You did not provide a password for encryption. This can be added at a later stage using the `keystore` property setter',
-    },
+    noProvider:
+      "You did not set a provider. While this is not required for wallet creation, it's highly recommended as it will easier to use later. If you do not need a custom provider, just remove the argument and it will auto-select the first one available.",
+    noEntrophy:
+      "You did not provide entrophy to help with randomness when generating the wallet. While this can be omitted, it's highly recommended. You could omiy this argument and it will provide it for you automatically",
+    noPassword:
+      'You did not provide a password for encryption. This can be added at a later stage using the `keystore` property setter',
   },
   errors: {
-    Class: {
-      create:
-        'There was an error in creating the wallet, check the provider (%s) and entropy (%s) arguments. We reverted back and generated a wallet with the only defaults. Be careful when using it. %s',
-      noAddress:
-        'Could not find an address value (%s) in the wallet object. If you see this, the library has already crashed.',
-      noPrivateKey:
-        'Could not find a private key value (%s) in the wallet object. If you see this, the library has already crashed.',
-      open:
-        'Could not open the wallet with the method you provided. Please check the arguments you passed in: %s %s',
-    },
-    openWithPrivateKey: {
-      cannotOpenWallet:
-        'There was a problem opening your wallet. Check the if the private key (%s) or the provider (%s) are valid. %s',
-    },
+    create:
+      'There was an error in creating the wallet, check the provider (%s) and entropy (%s) arguments. We reverted back and generated a wallet with the only defaults. Be careful when using it. %s',
+    noAddress:
+      'Could not find an address value (%s) in the wallet object. If you see this, the library has already crashed.',
+    noPrivateKey:
+      'Could not find a private key value (%s) in the wallet object. If you see this, the library has already crashed.',
+    open:
+      'Could not open the wallet with the method you provided. Please check the arguments you passed in: %s %s',
   },
 };
 

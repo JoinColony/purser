@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import type { UtilsExportType } from './flowtypes';
 
 import { ENV } from './defaults';
-import { errors, warnings } from './messages';
+import { utils as messages } from './messages';
 
 /**
  * Simple helper to determine if we should output messages to the console
@@ -28,6 +28,9 @@ const verbose = (): boolean => {
 /**
  * If we're in `dev` mode, show an warning to the console
  *
+ * @TODO auto detect type of message (warning/error)
+ * This way you won't have to explicitly tell it which message from `messages.js` to show
+ *
  * @method warn
  *
  * @param {any} args Arguments array that will be passed down to `console.warn`
@@ -41,6 +44,9 @@ export const warn = (...args: Array<*>): void => {
 
 /**
  * If we're in `dev` mode, show an error to the console
+ *
+ * @TODO auto detect type of message (warning/error)
+ * This way you won't have to explicitly tell it which message from `messages.js` to show
  *
  * @method warn
  *
@@ -100,9 +106,9 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
       /*
        * Besides our instance check, this also has a an implicit check for array lengths bigger than 65536
        */
-      throw new TypeError(errors.utils.getRandomValues.wrongArgumentType);
+      throw new TypeError(messages.errors.getRandomValues.wrongArgumentType);
     }
-    warn(warnings.utils.getRandomValues.nodeCryptoFallback);
+    warn(messages.warnings.getRandomValues.nodeCryptoFallback);
     const randomBytesArray = crypto.randomBytes(typedArray.length);
     typedArray.set(randomBytesArray);
     return typedArray;
@@ -110,7 +116,7 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   /*
    * We can't find any crypto method, we'll abort.
    */
-  throw new Error(errors.utils.getRandomValues.noCryptoLib);
+  throw new Error(messages.errors.getRandomValues.noCryptoLib);
 };
 
 const utils: UtilsExportType = Object.assign(
