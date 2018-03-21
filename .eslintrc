@@ -8,5 +8,6 @@
   "rules": {
     "array-bracket-newline": ["warn", "consistent"],
     "no-console": ["warn", { "allow": ["warn", "error"]}],
+    "flowtype/define-flow-type": 1,
   },
 }

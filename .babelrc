@@ -9,7 +9,8 @@
     }]
   ],
   "ignore": [
-    "__tests__"
+    "__tests__",
+    "__mocks__"
   ],
   "env": {
     "es": {

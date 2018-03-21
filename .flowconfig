@@ -3,7 +3,9 @@
 
 [ignore]
 .*/__tests__/.*
+.*/__mocks__/.*
 .*/lib/.*
+.*/docs/.*
 
 [libs]
 

@@ -17,6 +17,7 @@
     "build:ci": "NODE_ENV=test yarn build",
     "flow": "flow",
     "glow": "glow",
+    "glow:watch": "glow --watch",
     "flow:check": "flow check",
     "flow:ci": "flow --json | flow-junit-transformer > reports/flow/flow-results.xml",
     "lint": "eslint src",
@@ -25,7 +26,7 @@
     "test": "NODE_ENV=test jest",
     "test:watch": "NODE_ENV=test jest --watchAll",
     "test:coverage": "NODE_ENV=test jest --coverage",
-    "test:ci": "NODE_ENV=test jest --ci --coverage --testResultsProcessor='jest-junit'",
+    "test:ci": "jest --clearCache && NODE_ENV=test jest --ci --coverage --verbose=true --testResultsProcessor='jest-junit'",
     "lockfile:update": "greenkeeper-lockfile-update",
     "lockfile:upload": "greenkeeper-lockfile-upload"
   },
@@ -74,6 +75,8 @@
     "webpack-cli": "^2.0.9"
   },
   "dependencies": {
-    "ethers": "^3.0.2"
+    "ethereum-blockies": "https://github.com/ethereum/blockies.git",
+    "ethers": "^3.0.2",
+    "qrcode": "^1.2.0"
   }
 }

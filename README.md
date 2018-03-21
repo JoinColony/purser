@@ -1,16 +1,42 @@
-## Colony Wallet
+## [Colony](http://colony.io) Wallet &middot; [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE) [![Greenkeeper badge](https://badges.greenkeeper.io/JoinColony/colony-wallet.svg?token=114044dbcad9f33395dffb9087c3e665bf5862cf49f66dd9d03d808663aa72bc&ts=1518703816619)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/JoinColony/colony-wallet/tree/master.svg?style=shield&circle-token=b465d9d46f98d87d322ef5fe438dd3aa4936cc80)](https://circleci.com/gh/JoinColony/colony-wallet/tree/master)
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/JoinColony/colony-wallet.svg?token=114044dbcad9f33395dffb9087c3e665bf5862cf49f66dd9d03d808663aa72bc&ts=1518703816619)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/JoinColony/colony-wallet/tree/master.svg?style=shield&circle-token=b465d9d46f98d87d322ef5fe438dd3aa4936cc80)](https://circleci.com/gh/JoinColony/colony-wallet/tree/master)
 
 A set of utilities to interface with ethereum addresses
 
+### Quick start
+
+#### Via a browser `<script>` tag _(using the [unpkg.com](http://unpkg.com) CDN)_:
+```html
+<script type="text/javascript" src="https://unpkg.com/colony-wallet/umd/colonyWallet.min.js"></script>
+```
+
+#### As a module
+Using `yarn`:
+```bash
+yarn add colony-wallet
+```
+Or using `npm`:
+```bash
+npm install colony-wallet
+```
+
 ### Usage
 
-_To be added_
+#### Create a new wallet:
+```js
+import { create } from 'colony-wallet/software';
 
-#### Quick start
+const newWallet = await create();
+```
 
-_To be added_
+#### Open an existing wallet:
+```js
+import { open } from 'colony-wallet/software';
+
+const existingWallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
+```
+
+For a more complete explanation of the available features and more usage examples please check out the [**API docs**](docs/api.md).
 
 ### Builds
 
@@ -28,7 +54,7 @@ A UMD build to be used directly inside the browser as a script source _(both min
 
 The `es6` version will also bring over the `flow` types used for this project.
 
-### Documnetation
+### Documentation
 
 You can find the API docs [here](docs/api.md).
 
@@ -132,3 +158,7 @@ This project makes use of `greenkeeper` for dependency management.
 If a new version of a package is found _(either public or private scoped)_ it will create a new branch with the package change and try to build it. If the build succeeds it will push changes to the `yarn` lockfile and re-build again.
 
 When the builds succeeds one of two things will happen: if the package update was to a in-range version, the branch will be deleted _(this is by design, as the package will be updated to this version when you reinstall `node_modules`)_. If the package update was out of range _(or one of the two previous builds failed)_ than a PR will be created so that it can be reviewed and fixed.
+
+### License
+
+`colony-wallet` is [MIT licensed](LICENSE).

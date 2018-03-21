@@ -25,6 +25,7 @@ const files = {
  */
 const globs = {
   tests: "**/__tests__/**",
+  mocks: "**/__mocks__/**",
 };
 
 
