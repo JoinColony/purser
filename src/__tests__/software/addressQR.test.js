@@ -35,7 +35,7 @@ describe('`software` wallet module', () => {
       );
       expect(testWallet.addressQR).rejects.toEqual(undefined);
       expect(addressQRGetterSpy).toHaveBeenCalled();
-      expect(utils.warn).toHaveBeenCalled();
+      expect(utils.warning).toHaveBeenCalled();
       expect(qrcode.toDataURL).not.toHaveBeenCalled();
       addressQRGetterSpy.mockReset();
       addressQRGetterSpy.mockRestore();

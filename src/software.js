@@ -12,7 +12,7 @@ import type {
 } from './flowtypes';
 
 import { autoselect } from './providers';
-import { getRandomValues, warn } from './utils';
+import { getRandomValues, warning } from './utils';
 import { softwareWallet as messages } from './messages';
 import {
   ENV,
@@ -57,7 +57,7 @@ class SoftwareWallet extends EtherWallet {
      * implemented this.
      */
     if (typeof provider !== 'object' && typeof provider !== 'function') {
-      warn(messages.noProvider);
+      warning(messages.noProvider);
       providerMode = undefined;
     }
     super(privateKey, providerMode);
@@ -98,7 +98,7 @@ class SoftwareWallet extends EtherWallet {
         this.encrypt(encryptionPassword)
       );
     }
-    warn(messages.noPassword);
+    warning(messages.noPassword);
     return Promise.reject();
   }
   /*
@@ -132,7 +132,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.address, QR_CODE_OPTS);
     }
-    warn(messages.noAddress, this.address);
+    warning(messages.noAddress, this.address);
     return Promise.reject();
   }
   /*
@@ -158,7 +158,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return blockiePromise;
     }
-    warn(messages.noAddress, this.address);
+    warning(messages.noAddress, this.address);
     return Promise.reject();
   }
   /*
@@ -181,7 +181,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.privateKey, QR_CODE_OPTS);
     }
-    warn(messages.noPrivateKey, this.privateKey);
+    warning(messages.noPrivateKey, this.privateKey);
     return Promise.reject();
   }
   /**
@@ -208,7 +208,7 @@ class SoftwareWallet extends EtherWallet {
     let basicWallet: WalletObjectType;
     try {
       if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
-        warn(messages.noentropy);
+        warning(messages.noentropy);
         basicWallet = this.createRandom();
       } else {
         basicWallet = this.createRandom({
@@ -223,7 +223,7 @@ class SoftwareWallet extends EtherWallet {
         basicWallet.path,
       );
     } catch (err) {
-      warn(messages.create, provider, entropy, err);
+      warning(messages.create, provider, entropy, err);
       return this.createRandom();
     }
   }
@@ -300,7 +300,7 @@ class SoftwareWallet extends EtherWallet {
         keystore,
       );
     } catch (err) {
-      warn(
+      warning(
         messages.open,
         Object.keys(walletArguments).reduce(
           (allArgs, key) =>

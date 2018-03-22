@@ -35,11 +35,11 @@ const verbose = (): boolean => {
  *   If the last argument is an object that has only one prop named `level`, it will be interpreted as an option object
  *   (if level equals `low` it will only warn, if the level equals `high`, it will error)
  *
- * @method warn
+ * @method warning
  *
  * @param {any} args Arguments array that will be passed down to `console` methods (see above)
  */
-export const warn = (...args: Array<*>): void => {
+export const warning = (...args: Array<*>): void => {
   /*
    * Stop everything if we're in production mode.
    * No point in doing all the computations and assignments if we don't have to.
@@ -123,7 +123,7 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
        */
       throw new TypeError(messages.getRandomValues.wrongArgumentType);
     }
-    warn(messages.getRandomValues.nodeCryptoFallback);
+    warning(messages.getRandomValues.nodeCryptoFallback);
     const randomBytesArray = crypto.randomBytes(typedArray.length);
     typedArray.set(randomBytesArray);
     return typedArray;
@@ -137,7 +137,7 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
 const utils: UtilsExportType = Object.assign(
   {},
   {
-    warn,
+    warning,
     getRandomValues,
   },
   /*

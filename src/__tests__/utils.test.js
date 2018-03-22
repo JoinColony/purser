@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import utils, { warn, getRandomValues } from '../utils';
+import utils, { warning, getRandomValues } from '../utils';
 import * as defaults from '../defaults';
 
 jest.mock('crypto', () => ({}));
@@ -41,12 +41,12 @@ describe('`utils` module', () => {
       console.warn = jest.fn();
     });
     test('It logs the correct message', () => {
-      warn(message);
+      warning(message);
       expect(console.warn).toHaveBeenCalledWith(message);
     });
     test("It doesn't log a message when in production", () => {
       defaults.ENV = 'production';
-      warn(message);
+      warning(message);
       expect(console.warn).not.toHaveBeenCalled();
     });
   });

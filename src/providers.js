@@ -8,7 +8,7 @@ import type {
   ProvidersExportType,
 } from './flowtypes';
 
-import { warn } from './utils';
+import { warning } from './utils';
 import { providers as messages } from './messages';
 
 import {
@@ -43,10 +43,10 @@ export const etherscan = (
       provider = new ethersProviders.EtherscanProvider(network, token);
       return provider;
     }
-    warn(messages.etherscan.token);
+    warning(messages.etherscan.token);
     provider = new ethersProviders.EtherscanProvider(network);
   } catch (err) {
-    warn(messages.etherscan.connect, network, token, err);
+    warning(messages.etherscan.connect, network, token, err);
   }
   return provider;
 };
@@ -75,10 +75,10 @@ export const infura = (
       provider = new ethersProviders.InfuraProvider(network, token);
       return provider;
     }
-    warn(messages.infura.token);
+    warning(messages.infura.token);
     provider = new ethersProviders.InfuraProvider(network);
   } catch (err) {
-    warn(messages.infura.connect, network, token, err);
+    warning(messages.infura.connect, network, token, err);
   }
   return provider;
 };
@@ -100,7 +100,7 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     if (!global.web3 || !global.web3.currentProvider) {
-      warn(messages.metamask.notAvailable);
+      warning(messages.metamask.notAvailable);
       return provider;
     }
     provider = new ethersProviders.Web3Provider(
@@ -108,7 +108,7 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
       network,
     );
   } catch (err) {
-    warn(messages.metamask.connect, network, err);
+    warning(messages.metamask.connect, network, err);
   }
   return provider;
 };
@@ -143,7 +143,7 @@ export const localhost = (
      */
     provider = new ethersProviders.JsonRpcProvider(url, network);
   } catch (err) {
-    warn(messages.localhost.connect, url, network, err);
+    warning(messages.localhost.connect, url, network, err);
   }
   return provider;
 };
@@ -170,7 +170,7 @@ export const autoselect = (
 ) => {
   let provider = PROVIDER_PROTO;
   if (!providersList.length) {
-    warn(messages.autoselect.empty);
+    warning(messages.autoselect.empty);
     return provider;
   }
   for (let i = 0, l = providersList.length; i < l; i += 1) {
@@ -189,7 +189,7 @@ export const autoselect = (
       provider = PROVIDER_PROTO;
     }
   }
-  warn(messages.autoselect.noProvider);
+  warning(messages.autoselect.noProvider);
   return provider;
 };
 
