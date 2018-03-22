@@ -46,7 +46,7 @@ export const etherscan = (
     warning(messages.etherscan.token);
     provider = new ethersProviders.EtherscanProvider(network);
   } catch (err) {
-    warning(messages.etherscan.connect, network, token, err);
+    warning(messages.etherscan.connect, network, token, err, { level: 'high' });
   }
   return provider;
 };
@@ -78,7 +78,7 @@ export const infura = (
     warning(messages.infura.token);
     provider = new ethersProviders.InfuraProvider(network);
   } catch (err) {
-    warning(messages.infura.connect, network, token, err);
+    warning(messages.infura.connect, network, token, err, { level: 'high' });
   }
   return provider;
 };
@@ -108,7 +108,7 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
       network,
     );
   } catch (err) {
-    warning(messages.metamask.connect, network, err);
+    warning(messages.metamask.connect, network, err, { level: 'high' });
   }
   return provider;
 };
@@ -143,7 +143,7 @@ export const localhost = (
      */
     provider = new ethersProviders.JsonRpcProvider(url, network);
   } catch (err) {
-    warning(messages.localhost.connect, url, network, err);
+    warning(messages.localhost.connect, url, network, err, { level: 'high' });
   }
   return provider;
 };
@@ -170,7 +170,7 @@ export const autoselect = (
 ) => {
   let provider = PROVIDER_PROTO;
   if (!providersList.length) {
-    warning(messages.autoselect.empty);
+    warning(messages.autoselect.empty, { level: 'high' });
     return provider;
   }
   for (let i = 0, l = providersList.length; i < l; i += 1) {
@@ -189,7 +189,7 @@ export const autoselect = (
       provider = PROVIDER_PROTO;
     }
   }
-  warning(messages.autoselect.noProvider);
+  warning(messages.autoselect.noProvider, { level: 'high' });
   return provider;
 };
 

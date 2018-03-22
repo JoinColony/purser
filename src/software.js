@@ -132,7 +132,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.address, QR_CODE_OPTS);
     }
-    warning(messages.noAddress, this.address);
+    warning(messages.noAddress, this.address, { level: 'high' });
     return Promise.reject();
   }
   /*
@@ -158,7 +158,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return blockiePromise;
     }
-    warning(messages.noAddress, this.address);
+    warning(messages.noAddress, this.address, { level: 'high' });
     return Promise.reject();
   }
   /*
@@ -181,7 +181,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.privateKey, QR_CODE_OPTS);
     }
-    warning(messages.noPrivateKey, this.privateKey);
+    warning(messages.noPrivateKey, this.privateKey, { level: 'high' });
     return Promise.reject();
   }
   /**
@@ -223,7 +223,7 @@ class SoftwareWallet extends EtherWallet {
         basicWallet.path,
       );
     } catch (err) {
-      warning(messages.create, provider, entropy, err);
+      warning(messages.create, provider, entropy, err, { level: 'high' });
       return this.createRandom();
     }
   }
@@ -308,6 +308,7 @@ class SoftwareWallet extends EtherWallet {
           '',
         ),
         err,
+        { level: 'high' },
       );
       throw new Error();
     }
