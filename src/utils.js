@@ -65,10 +65,13 @@ export const warning = (...args: Array<*>): void => {
     ({ level } = options);
     literalTemplates.pop();
   }
-  const warningType: string = level === 'low' ? 'warn' : 'error';
+  let warningType: string = 'warn';
+  if (level === 'high') {
+    warningType = 'error';
+  }
   /*
-   * This is actually correct since we're allow to console warn/error by eslint,
-   * it's just that it doesn't know which method we're calling (see above)
+   * This is actually correct since we're allowed to console warn/error by eslint,
+   * it's just that it doesn't know which method we're calling (see above), so it warns by default
    */
   /* eslint-disable-next-line no-console */
   return console[warningType](message, ...literalTemplates);
