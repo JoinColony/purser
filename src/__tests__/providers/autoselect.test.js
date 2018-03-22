@@ -26,12 +26,12 @@ describe('`providers` module', () => {
     });
     test('Show an error if the providers array is empty', () => {
       const provider = autoselect([]);
-      expect(utils.error).toHaveBeenCalled();
+      expect(utils.warn).toHaveBeenCalled();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
     test('Show an error if it could not connect to any providers', () => {
       const provider = autoselect([{ chainId: false }, {}, () => {}]);
-      expect(utils.error).toHaveBeenCalled();
+      expect(utils.warn).toHaveBeenCalled();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
   });

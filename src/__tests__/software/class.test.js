@@ -66,7 +66,7 @@ describe('`software` wallet module', () => {
     });
     test("Returns new wallet even when there's and error", () => {
       software.SoftwareWallet.create({ provider: { error: true } });
-      expect(utils.error).toHaveBeenCalled();
+      expect(utils.warn).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith();
     });
@@ -120,7 +120,7 @@ describe('`software` wallet module', () => {
         undefined,
         PROVIDER_PROTO,
       );
-      expect(utils.error).toHaveBeenCalled();
+      expect(utils.warn).toHaveBeenCalled();
       expect(testWallet).rejects.toEqual(new Error());
     });
     test('After open, the wallet should have the `mnemonic` prop', async () => {

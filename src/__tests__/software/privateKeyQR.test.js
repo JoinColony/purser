@@ -35,7 +35,7 @@ describe('`software` wallet module', () => {
       );
       expect(testWallet.privateKeyQR).rejects.toEqual(undefined);
       expect(privateKeyQRGetterSpy).toHaveBeenCalled();
-      expect(utils.error).toHaveBeenCalled();
+      expect(utils.warn).toHaveBeenCalled();
       expect(qrcode.toDataURL).not.toHaveBeenCalled();
       privateKeyQRGetterSpy.mockReset();
       privateKeyQRGetterSpy.mockRestore();

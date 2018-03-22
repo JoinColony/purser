@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import utils, { warn, error, getRandomValues } from '../utils';
+import utils, { warn, getRandomValues } from '../utils';
 import * as defaults from '../defaults';
 
 jest.mock('crypto', () => ({}));
@@ -48,21 +48,6 @@ describe('`utils` module', () => {
       defaults.ENV = 'production';
       warn(message);
       expect(console.warn).not.toHaveBeenCalled();
-    });
-  });
-  describe('`error()` method', () => {
-    beforeEach(() => {
-      defaults.ENV = 'development';
-      console.error = jest.fn();
-    });
-    test('It logs the correct message', () => {
-      error(message);
-      expect(console.error).toHaveBeenCalledWith(message);
-    });
-    test("It doesn't log a message when in production", () => {
-      defaults.ENV = 'production';
-      error(message);
-      expect(console.error).not.toHaveBeenCalled();
     });
   });
   describe('`getRandomValues()` polyfill method', () => {

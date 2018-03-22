@@ -77,7 +77,6 @@ export type SoftwareWalletExportType = {
 
 export type UtilsExportType = {
   warn: (...*) => void,
-  error: (...*) => void,
   getRandomValues: (...*) => Uint8Array,
   verbose?: () => boolean,
 };

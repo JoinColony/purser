@@ -43,23 +43,6 @@ export const warn = (...args: Array<*>): void => {
 };
 
 /**
- * If we're in `dev` mode, show an error to the console
- *
- * @TODO auto detect type of message (warning/error)
- * This way you won't have to explicitly tell it which message from `messages.js` to show
- *
- * @method warn
- *
- * @param {any} args Arguments array that will be passed down to `console.warn`
- */
-export const error = (...args: Array<*>): void => {
-  if (verbose()) {
-    return console.error(...args);
-  }
-  return undefined;
-};
-
-/**
  * A very basic polyfill method to generate randomness for use in wallet entropy.
  * This will fall back to nodejs's `crypto` library if the browser that's using this doesn't have the `webcrypto` API implemented yet.
  *
@@ -106,9 +89,9 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
       /*
        * Besides our instance check, this also has a an implicit check for array lengths bigger than 65536
        */
-      throw new TypeError(messages.errors.getRandomValues.wrongArgumentType);
+      throw new TypeError(messages.getRandomValues.wrongArgumentType);
     }
-    warn(messages.warnings.getRandomValues.nodeCryptoFallback);
+    warn(messages.getRandomValues.nodeCryptoFallback);
     const randomBytesArray = crypto.randomBytes(typedArray.length);
     typedArray.set(randomBytesArray);
     return typedArray;
@@ -116,14 +99,13 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   /*
    * We can't find any crypto method, we'll abort.
    */
-  throw new Error(messages.errors.getRandomValues.noCryptoLib);
+  throw new Error(messages.getRandomValues.noCryptoLib);
 };
 
 const utils: UtilsExportType = Object.assign(
   {},
   {
     warn,
-    error,
     getRandomValues,
   },
   /*
