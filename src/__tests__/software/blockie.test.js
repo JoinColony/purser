@@ -35,7 +35,7 @@ describe('`software` wallet module', () => {
       );
       expect(testWallet.blockie).rejects.toEqual(undefined);
       expect(blockieGetterSpy).toHaveBeenCalled();
-      expect(utils.error).toHaveBeenCalled();
+      expect(utils.warning).toHaveBeenCalled();
       expect(blockies.create).not.toHaveBeenCalled();
       blockieGetterSpy.mockReset();
       blockieGetterSpy.mockRestore();

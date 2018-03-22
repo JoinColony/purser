@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import type { UtilsExportType } from './flowtypes';
 
 import { ENV } from './defaults';
-import { errors, warnings } from './messages';
+import { utils as messages } from './messages';
 
 /**
  * Simple helper to determine if we should output messages to the console
@@ -28,29 +28,53 @@ const verbose = (): boolean => {
 /**
  * If we're in `dev` mode, show an warning to the console
  *
- * @method warn
+ * This way you won't have to explicitly tell it which message from `messages.js` to show
+ * Arguments will be split into three types:
+ *   First arg will be the message string
+ *   Rest of them will be template literals that will replace %s values in the previous messsage string (with one exception)
+ *   If the last argument is an object that has only one prop named `level`, it will be interpreted as an option object
+ *   (if level equals `low` it will only warn, if the level equals `high`, it will error)
  *
- * @param {any} args Arguments array that will be passed down to `console.warn`
+ * @method warning
+ *
+ * @param {any} args Arguments array that will be passed down to `console` methods (see above)
  */
-export const warn = (...args: Array<*>): void => {
-  if (verbose()) {
-    return console.warn(...args);
+export const warning = (...args: Array<*>): void => {
+  /*
+   * Stop everything if we're in production mode.
+   * No point in doing all the computations and assignments if we don't have to.
+   */
+  if (!verbose()) {
+    return undefined;
   }
-  return undefined;
-};
-
-/**
- * If we're in `dev` mode, show an error to the console
- *
- * @method warn
- *
- * @param {any} args Arguments array that will be passed down to `console.warn`
- */
-export const error = (...args: Array<*>): void => {
-  if (verbose()) {
-    return console.error(...args);
+  let level: string = 'low';
+  const lastArgIndex: number = args.length - 1;
+  const options: * = args[lastArgIndex];
+  const [message: string] = args;
+  const literalTemplates: Array<*> = args.slice(1);
+  /*
+   * We're being very specific with object testing here, since we don't want to
+   * highjack a legitimate object that comes in as a template part (althogh
+   * this is very unlikely)
+   */
+  if (
+    typeof options === 'object' &&
+    typeof options.level === 'string' &&
+    Object.keys(options).length === 1
+  ) {
+    ({ level } = options);
+    literalTemplates.pop();
   }
-  return undefined;
+  let warningType: string = 'warn';
+  if (level === 'high') {
+    warningType = 'error';
+  }
+  /*
+   * This is actually correct since we're allowed to console warn/error by eslint,
+   * it's just that it doesn't know which method we're calling (see above), so it warns by default
+   */
+  /* eslint-disable-next-line no-console */
+  return console[warningType](message, ...literalTemplates);
 };
 
 /**
@@ -100,9 +124,9 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
       /*
        * Besides our instance check, this also has a an implicit check for array lengths bigger than 65536
        */
-      throw new TypeError(errors.utils.getRandomValues.wrongArgumentType);
+      throw new TypeError(messages.getRandomValues.wrongArgumentType);
     }
-    warn(warnings.utils.getRandomValues.nodeCryptoFallback);
+    warning(messages.getRandomValues.nodeCryptoFallback);
     const randomBytesArray = crypto.randomBytes(typedArray.length);
     typedArray.set(randomBytesArray);
     return typedArray;
@@ -110,14 +134,13 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   /*
    * We can't find any crypto method, we'll abort.
    */
-  throw new Error(errors.utils.getRandomValues.noCryptoLib);
+  throw new Error(messages.getRandomValues.noCryptoLib);
 };
 
 const utils: UtilsExportType = Object.assign(
   {},
   {
-    warn,
-    error,
+    warning,
     getRandomValues,
   },
   /*

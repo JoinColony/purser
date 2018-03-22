@@ -36,7 +36,7 @@ describe('`providers` module', () => {
       global.web3 = undefined;
       const provider = metamask('not-called');
       expect(ethersProviders.Web3Provider).not.toHaveBeenCalled();
-      expect(utils.warn).toHaveBeenCalled();
+      expect(utils.warning).toHaveBeenCalled();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
     test('Catch the connection error if something goes wrong', () => {

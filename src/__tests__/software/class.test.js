@@ -43,7 +43,7 @@ describe('`software` wallet module', () => {
     });
     test('Creates a new wallet when provider is set to a falsy value', () => {
       software.SoftwareWallet.create({ provider: false });
-      expect(utils.warn).toHaveBeenCalled();
+      expect(utils.warning).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalled();
       /*
        * `0x1` is the value the `createRandom()` mock returns
@@ -60,13 +60,13 @@ describe('`software` wallet module', () => {
     });
     test('Creates a new wallet when entropy is set to a falsy value', () => {
       software.SoftwareWallet.create({ entropy: false });
-      expect(utils.warn).toHaveBeenCalled();
+      expect(utils.warning).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith();
     });
     test("Returns new wallet even when there's and error", () => {
       software.SoftwareWallet.create({ provider: { error: true } });
-      expect(utils.error).toHaveBeenCalled();
+      expect(utils.warning).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith();
     });
@@ -120,7 +120,7 @@ describe('`software` wallet module', () => {
         undefined,
         PROVIDER_PROTO,
       );
-      expect(utils.error).toHaveBeenCalled();
+      expect(utils.warning).toHaveBeenCalled();
       expect(testWallet).rejects.toEqual(new Error());
     });
     test('After open, the wallet should have the `mnemonic` prop', async () => {

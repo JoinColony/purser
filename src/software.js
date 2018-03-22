@@ -12,8 +12,8 @@ import type {
 } from './flowtypes';
 
 import { autoselect } from './providers';
-import { getRandomValues, warn, error } from './utils';
-import { warnings, errors } from './messages';
+import { getRandomValues, warning } from './utils';
+import { softwareWallet as messages } from './messages';
 import {
   ENV,
   GETTER_PROP_DESCRIPTORS,
@@ -57,7 +57,7 @@ class SoftwareWallet extends EtherWallet {
      * implemented this.
      */
     if (typeof provider !== 'object' && typeof provider !== 'function') {
-      warn(warnings.softwareWallet.Class.noProvider);
+      warning(messages.noProvider);
       providerMode = undefined;
     }
     super(privateKey, providerMode);
@@ -98,7 +98,7 @@ class SoftwareWallet extends EtherWallet {
         this.encrypt(encryptionPassword)
       );
     }
-    warn(warnings.softwareWallet.Class.noPassword);
+    warning(messages.noPassword);
     return Promise.reject();
   }
   /*
@@ -132,7 +132,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.address, QR_CODE_OPTS);
     }
-    error(errors.softwareWallet.Class.noAddress, this.address);
+    warning(messages.noAddress, this.address, { level: 'high' });
     return Promise.reject();
   }
   /*
@@ -158,7 +158,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return blockiePromise;
     }
-    error(errors.softwareWallet.Class.noAddress, this.address);
+    warning(messages.noAddress, this.address, { level: 'high' });
     return Promise.reject();
   }
   /*
@@ -181,7 +181,7 @@ class SoftwareWallet extends EtherWallet {
       );
       return qrcode.toDataURL(this.privateKey, QR_CODE_OPTS);
     }
-    error(errors.softwareWallet.Class.noPrivateKey, this.privateKey);
+    warning(messages.noPrivateKey, this.privateKey, { level: 'high' });
     return Promise.reject();
   }
   /**
@@ -208,7 +208,7 @@ class SoftwareWallet extends EtherWallet {
     let basicWallet: WalletObjectType;
     try {
       if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
-        warn(warnings.softwareWallet.Class.noentropy);
+        warning(messages.noentropy);
         basicWallet = this.createRandom();
       } else {
         basicWallet = this.createRandom({
@@ -223,7 +223,7 @@ class SoftwareWallet extends EtherWallet {
         basicWallet.path,
       );
     } catch (err) {
-      error(errors.softwareWallet.Class.create, provider, entropy, err);
+      warning(messages.create, provider, entropy, err, { level: 'high' });
       return this.createRandom();
     }
   }
@@ -300,14 +300,15 @@ class SoftwareWallet extends EtherWallet {
         keystore,
       );
     } catch (err) {
-      error(
-        errors.softwareWallet.Class.open,
+      warning(
+        messages.open,
         Object.keys(walletArguments).reduce(
           (allArgs, key) =>
             `${allArgs}${key} (${String(walletArguments[key])}), `,
           '',
         ),
         err,
+        { level: 'high' },
       );
       throw new Error();
     }
