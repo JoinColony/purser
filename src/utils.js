@@ -28,18 +28,50 @@ const verbose = (): boolean => {
 /**
  * If we're in `dev` mode, show an warning to the console
  *
- * @TODO auto detect type of message (warning/error)
  * This way you won't have to explicitly tell it which message from `messages.js` to show
+ * Arguments will be split into three types:
+ *   First arg will be the message string
+ *   Rest of them will be template literals that will replace %s values in the previous messsage string (with one exception)
+ *   If the last argument is an object that has only one prop named `level`, it will be interpreted as an option object
+ *   (if level equals `low` it will only warn, if the level equals `high`, it will error)
  *
  * @method warn
  *
- * @param {any} args Arguments array that will be passed down to `console.warn`
+ * @param {any} args Arguments array that will be passed down to `console` methods (see above)
  */
 export const warn = (...args: Array<*>): void => {
-  if (verbose()) {
-    return console.warn(...args);
+  /*
+   * Stop everything if we're in production mode.
+   * No point in doing all the computations and assignments if we don't have to.
+   */
+  if (!verbose()) {
+    return undefined;
   }
-  return undefined;
+  let level: string = 'low';
+  const lastArgIndex: number = args.length - 1;
+  const options: * = args[lastArgIndex];
+  const [message: string] = args;
+  const literalTemplates: Array<*> = args.slice(1);
+  /*
+   * We're being very specific with object testing here, since we don't want to
+   * highjack a legitimate object that comes in as a template part (althogh
+   * this is very unlikely)
+   */
+  if (
+    typeof options === 'object' &&
+    typeof options.level === 'string' &&
+    Object.keys(options).length === 1
+  ) {
+    ({ level } = options);
+    literalTemplates.pop();
+  }
+  const warningType: string = level === 'low' ? 'warn' : 'error';
+  /*
+   * This is actually correct since we're allow to console warn/error by eslint,
+   * it's just that it doesn't know which method we're calling (see above)
+   */
+  /* eslint-disable-next-line no-console */
+  return console[warningType](message, ...literalTemplates);
 };
 
 /**
