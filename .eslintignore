@@ -1,6 +1,7 @@
 node_modules
 scripts
 flow-typed
+lib
 jest.config.js
 jest-perf.config.js
 webpack.config.js
