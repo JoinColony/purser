@@ -64,7 +64,6 @@ package-lock.json
 
 # Build folder
 dist
-lib
 
 # CI JUnit Reporst
 reports
