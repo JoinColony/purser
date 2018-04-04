@@ -313,6 +313,12 @@ class SoftwareWallet extends EtherWallet {
       throw new Error();
     }
   }
+  static async sendTransactionWithConfirmation(transactionArgumentsObject) {
+    if (transactionArgumentsObject.confirmation) {
+      return this.sendTransaction(transactionArgumentsObject.transaction);
+    }
+    throw new Error('Transaction was not confirmed');
+  }
 }
 
 /*
