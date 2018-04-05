@@ -60,6 +60,10 @@ export const softwareWallet = {
     'Could not find a private key value (%s) in the wallet object. If you see this, the library has already crashed.',
   open:
     'Could not open the wallet with the method you provided. Please check the arguments you passed in: %s %s',
+  transactionData:
+    'The transaction data you provided is not in the correct Object format (%s). If the transaction is already signed, make sure you parse it first: https://docs.ethers.io/ethers.js/html/api-wallet.html#parsing-transactions',
+  transactionConfirmationFail:
+    'The confirmation for this transaction (%s) was rejected. The transaction was not sent.',
 };
 
 const messages: MessagesExportType = {
