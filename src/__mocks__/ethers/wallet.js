@@ -37,6 +37,13 @@ Wallet.fromEncryptedWallet = jest.fn(keystore => ({
   mnemonic: 'romeo delta india golf',
 }));
 
+Wallet.prototype.sendTransaction = jest.fn(transactionData => {
+  if (transactionData && transactionData.from && transactionData.nonce) {
+    return Promise.resolve('0x0transactionhash0');
+  }
+  throw new Error();
+});
+
 export const HDNode = {
   fromMnemonic: jest.fn(mnemonic => ({
     derivePath: jest.fn(() => {
