@@ -74,7 +74,15 @@ export const warning = (...args: Array<*>): void => {
    * it's just that it doesn't know which method we're calling (see above), so it warns by default
    */
   /* eslint-disable-next-line no-console */
-  return console[warningType](message, ...literalTemplates);
+  return console[warningType](
+    message,
+    ...literalTemplates.map(value => {
+      if (typeof value === 'object') {
+        return JSON.stringify(value);
+      }
+      return value;
+    }),
+  );
 };
 
 /**
