@@ -21,6 +21,7 @@ SoftwareWallet {
   privateKey: String,
   privateKeyQR: Promise<String>,
   provider: Object | Function | undefined,
+  sendWithConfirmation(transaction: Object, confirmation: Promise<boolean> | boolean): Promise<string>,
 }
 ```
 
@@ -41,6 +42,7 @@ _**Example:** Instantiating a wallet using an existing `private key` will set th
   * [`privateKey`](#privatekey)
   * [`privateKeyQR`](#privatekeyqr)
   * [`provider`](#provider)
+  * [`sendWithConfirmation()`](#sendwithconfirmation)
 
 ### `address`
 ```js
@@ -243,4 +245,32 @@ import { localhost } from 'colony-wallet/providers';
 const wallet = await create({ provider: localhost });
 
 console.log(wallet.provider); // {chainId: 1, ensAddress: "0x314159265dD8dbb310642f98f50C066173C1259b", name: "homestead", _events: {…}, resetEventsBlock: ƒ, …}
+```
+
+### `sendWithConfirmation()`
+```js
+SoftwareWallet.sendWithConfirmation(transaction: Object, confirmation: Promise<boolean> | boolean): Promise<string>
+```
+
+This is a wrapper for the `sendTransaction()` method that adds an extra argument which controls an async transaction confirmation. This is useful for scenarios where you would want to ask a user for approval / acknowledgement before sending a transaction to be mined.
+
+As with `sendTransaction()` it takes a `transaction` object as the first argument, and a `confirmation` as the second one. The `confirmation` must either be a `boolean` type or an method _(sync or async)_ that itself returns a `boolean`. _(Eg: a `Promise`)_.
+
+If the `confirmation` is truthy _(and the `transaction` object format is valid)_ it will return a `Promise`, which will resolve to the transaction hash as a `string` type. If the `confirmation` fails _(is `false`)_, it will return a `reject`ed `Promise`, and, if we're running in `dev` mode, it will log out a warning to the console.
+
+```js
+import { create } from 'colony-wallet/software';
+
+const wallet = await create();
+
+const transaction = {
+  from: wallet.address,
+  nonce: 10,
+};
+
+await wallet.sendWithConfirmation(
+  transaction,
+  window.confirm('Do you want to send this transaction?'),
+);
+
 ```
