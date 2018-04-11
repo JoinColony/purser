@@ -2,11 +2,15 @@
   "name": "colony-wallet",
   "version": "0.1.0",
   "description": "A set of utilities to interface with ethereum addresses",
-  "main": "dist/index.js",
-  "module": "dist/es/index.js",
-  "browser": "dist/umd/index.min.js",
+  "main": "lib/index.js",
+  "module": "lib/es/index.js",
+  "browser": "lib/umd/index.min.js",
   "files": [
-    "dist"
+    "lib",
+    "docs",
+    "package.json",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "precommit": "lint-staged",

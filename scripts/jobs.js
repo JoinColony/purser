@@ -9,13 +9,13 @@ const clean = message => run(
 
 const umd = message => run(
   'webpack-cli',
-  {},
+  { BABEL_ENV: 'cjs' },
   message
 );
 
 const umdMinified = message => run(
   'webpack-cli --optimize-minimize',
-  {},
+  { BABEL_ENV: 'cjs' },
   message
 );
 
