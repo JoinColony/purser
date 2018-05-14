@@ -76,7 +76,7 @@
   },
   "dependencies": {
     "ethereum-blockies": "https://github.com/ethereum/blockies.git",
-    "ethers": "^3.0.2",
+    "ethers": "^3.0.16",
     "qrcode": "^1.2.0"
   }
 }
