@@ -2256,9 +2256,9 @@ esutils@^2.0.2:
   version "0.1.1"
   resolved "https://github.com/ethereum/blockies.git#a275390407dec41ebd581250dc31ebabeba5a78d"
 
-ethers@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/ethers/-/ethers-3.0.2.tgz#c12877e025abac43dca6b58c3b01d952519bdd62"
+ethers@^3.0.16:
+  version "3.0.16"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-3.0.16.tgz#86cd6a01f4ff317eb8f4adb705d6d0df3fdc321b"
   dependencies:
     aes-js "3.0.0"
     bn.js "^4.4.0"
