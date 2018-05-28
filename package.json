@@ -71,7 +71,7 @@
     "jest-sandbox": "^1.1.1",
     "lint-staged": "^7.0.0",
     "prettier": "^1.10.2",
-    "webpack": "^4.0.0",
+    "webpack": "^4.9.1",
     "webpack-cli": "^2.0.9"
   },
   "dependencies": {
