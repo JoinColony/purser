@@ -20,7 +20,7 @@ When building with `NODE_ENV=production` all output will be silenced.
   * [`metamask`](#metamask)
   * [`etherscan`](#etherscan)
   * [`infura`](#infura)
-  * [`localhost`](#localhost)
+  * [`jsonRpc`](#jsonrpc)
   * [`autoselect`](#autoselect)
 * [Utils](#Utils)
   * [`getRandomValues`](#getrandomvalues)
@@ -120,9 +120,9 @@ const newWallet = await create({ entropy: getRandomValues(new Uint8Array(65536))
 Create a new wallet and give it a provider:
 ```js
 import { create } from 'colony-wallet/software';
-import { localhost } from 'colony-wallet/providers';
+import { jsonRpc } from 'colony-wallet/providers';
 
-const provider = localhost('http://localhost:8545', 'kovan');
+const provider = jsonRpc('http://localhost:8545', 'kovan');
 
 const newWallet = await create({ provider });
 ```
@@ -254,7 +254,7 @@ See the [Wallet Object](wallet-object.md) documentation for all the props availa
 
 Create a connection to an Ethereum blockchain. This is achieved differently by the various providers.
 
-HTTP API endpoint for _etherscan_ and _infura_, injected into the webpage in the case of _metamask_, or local RPC connection in the case of _localhost_.
+HTTP API endpoint for _etherscan_ and _infura_, injected into the webpage in the case of _metamask_, or local RPC connection in the case of _jsonRpc_.
 
 #### Imports:
 
@@ -320,10 +320,10 @@ import { infura } from 'colony-wallet/providers';
 const provider = infura('homestead', '<your-token-key>'); // { chainId: '', ensAddress: '', ... }
 ```
 
-### `localhost`
+### `jsonRpc`
 
 ```js
-localhost([url: String], [network: String])
+jsonRpc([url: String], [network: String])
 ```
 
 This provider method takes an optional `url` as string _(defaults to 'http://localhost:8545')_ and an optional `network` name as string _(defaults to 'homestead')_.
@@ -337,9 +337,9 @@ Most blockchain clients _(Parity, Geth)_ will restrict `JSON-RPC` connections by
 To be able to connect to them locally you'll have to add `--rpccorsdomain "<your-domain>"` _(in the case of Parity)_ or `--jsonrpc-cors "<your-domain>"` _(in the case of Geth)_ to your startup command. You can also use `*` as the domain name for both of them _(allowing connections from all domains)_ but that is less secure.
 
 ```js
-import { localhost } from 'colony-wallet/providers';
+import { jsonRpc } from 'colony-wallet/providers';
 
-const provider = localhost('http://localhost:8545', 'homestead'); // { chainId: '', ensAddress: '', ... }
+const provider = jsonRpc('http://localhost:8545', 'homestead'); // { chainId: '', ensAddress: '', ... }
 ```
 
 ### `autoselect`
@@ -350,7 +350,7 @@ autoselect([providersList: Array<function|Object>])
 
 This is just a helper method that goes through a list of providers _(both generator methods and already instantiated provider objects)_ and selects the first one available.
 
-By default it goes through the following provider list, in order: `[metamask, etherscan, infura, localhost]`, so if this works for you, just call it directly without any arguments:
+By default it goes through the following provider list, in order: `[metamask, etherscan, infura, jsonRpc]`, so if this works for you, just call it directly without any arguments:
 
 ```js
 import { autoselect } from 'colony-wallet/providers';
@@ -361,9 +361,9 @@ const provider = autoselect(); // This will return the first available, instanti
 Because it takes both generator methods and already-instantiated providers you can mix and match them:
 
 ```js
-import { autoselect, metamask, localhost } from 'colony-wallet/providers';
+import { autoselect, metamask, jsonRpc } from 'colony-wallet/providers';
 
-const localFallback = localhost('http://localhost:8545', 'ropsten');
+const localFallback = jsonRpc('http://localhost:8545', 'ropsten');
 
 const provider = autoselect([() => metamask('ropsten'), localFallback]);
 ```

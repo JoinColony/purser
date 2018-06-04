@@ -240,9 +240,9 @@ If one is not set via the argument prop, it defaults to [`autoselect()`](api.md#
 
 ```js
 import { create } from 'colony-wallet/software';
-import { localhost } from 'colony-wallet/providers';
+import { jsonRpc } from 'colony-wallet/providers';
 
-const wallet = await create({ provider: localhost });
+const wallet = await create({ provider: jsonRpc });
 
 console.log(wallet.provider); // {chainId: 1, ensAddress: "0x314159265dD8dbb310642f98f50C066173C1259b", name: "homestead", _events: {…}, resetEventsBlock: ƒ, …}
 ```
