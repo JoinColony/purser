@@ -65,7 +65,7 @@ export type ProvidersExportType = {
   etherscan: ProviderGeneratorType,
   infura: ProviderGeneratorType,
   metamask: ProviderGeneratorType,
-  localhost: ProviderGeneratorType,
+  jsonRpc: ProviderGeneratorType,
   autoselect: ProviderGeneratorType,
 };
 

@@ -120,14 +120,14 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
  * @TODO Refactor method to accept arguments as object props
  * @TODO Convert to an `async` method
  *
- * @method localhost
+ * @method jsonRpc
  *
  * @param {string} url The Json Rpc url of the localhost provider (defaults to `http://localhost:8545`)
  * @param {string} network The network name to connect to (defaults to `homestead`)
  *
  * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const localhost = (
+export const jsonRpc = (
   url: string = `${PROTOCOL}://${HOST}:${PORT}`,
   network: string = DEFAULT_NETWORK,
 ): ProviderType => {
@@ -143,7 +143,7 @@ export const localhost = (
      */
     provider = new ethersProviders.JsonRpcProvider(url, network);
   } catch (err) {
-    warning(messages.localhost.connect, url, network, err, { level: 'high' });
+    warning(messages.jsonRpc.connect, url, network, err, { level: 'high' });
   }
   return provider;
 };
@@ -165,7 +165,7 @@ export const autoselect = (
     metamask,
     etherscan,
     infura,
-    localhost,
+    jsonRpc,
   ],
 ) => {
   let provider = PROVIDER_PROTO;
@@ -196,7 +196,7 @@ export const autoselect = (
 const colonyWallet: ProvidersExportType = {
   etherscan,
   infura,
-  localhost,
+  jsonRpc,
   metamask,
   autoselect,
 };

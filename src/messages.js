@@ -22,7 +22,7 @@ export const providers = {
     connect:
       'Metamask provider failed to connect. Please verify the provided network name (%s). %s',
   },
-  localhost: {
+  jsonRpc: {
     connect:
       'Local provider failed to connect. Please verify the provided rpc url (%s) and network name (%s). %s',
   },
