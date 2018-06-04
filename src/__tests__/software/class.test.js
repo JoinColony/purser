@@ -1,7 +1,7 @@
 import { Wallet as EthersWallet, HDNode } from 'ethers/wallet';
 
 import software from '../../software';
-import { localhost } from '../../providers';
+import { jsonRpc } from '../../providers';
 import * as utils from '../../utils';
 import { PROVIDER_PROTO, MNEMONIC_PATH } from '../../defaults';
 
@@ -27,7 +27,7 @@ describe('`software` wallet module', () => {
       expect(testWallet).toBeInstanceOf(EthersWallet);
     });
     test('Creates a new wallet with a manual provider', () => {
-      const provider = localhost();
+      const provider = jsonRpc();
       software.SoftwareWallet.create({ provider });
       expect(software.SoftwareWallet).toHaveBeenCalled();
       /*

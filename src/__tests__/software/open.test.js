@@ -1,5 +1,5 @@
 import software, { open } from '../../software';
-import { localhost } from '../../providers';
+import { jsonRpc } from '../../providers';
 
 let SoftwareWalletOpenSpy;
 
@@ -25,7 +25,7 @@ describe('`software` wallet module', () => {
     test(
       'Open a wallet with a private key while adding a provider',
       async () => {
-        const provider = localhost();
+        const provider = jsonRpc();
         const privateKey = '0x1';
         await open({ provider, privateKey });
         expect(SoftwareWalletOpenSpy).toHaveBeenCalled();

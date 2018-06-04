@@ -1,6 +1,6 @@
 import ethersProviders from 'ethers/providers';
 
-import { localhost } from '../../providers';
+import { jsonRpc } from '../../providers';
 import {
   DEFAULT_NETWORK,
   LOCALPROVIDER_HOST as HOST,
@@ -17,7 +17,7 @@ describe('`providers` module', () => {
   });
   describe('`localhost` provider', () => {
     test('Connects with defaults', () => {
-      localhost();
+      jsonRpc();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         `${PROTOCOL}://${HOST}:${PORT}`,
@@ -27,7 +27,7 @@ describe('`providers` module', () => {
     test('Connects with custom url and network', () => {
       const testUrl = 'http://127.0.0.1';
       const testNetworkName = 'skynet';
-      localhost(testUrl, testNetworkName);
+      jsonRpc(testUrl, testNetworkName);
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         testUrl,
@@ -36,7 +36,7 @@ describe('`providers` module', () => {
     });
     test('Catch the connection error if something goes wrong', () => {
       const testNetworkName = 'error';
-      const provider = localhost(testNetworkName);
+      const provider = jsonRpc(testNetworkName);
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(() => ethersProviders.JsonRpcProvider(testNetworkName)).toThrow();
       expect(provider).toEqual(PROVIDER_PROTO);
