@@ -294,15 +294,24 @@ const providerDefaults = metamask();
 ### `etherscan`
 
 ```js
-etherscan([network: String], [token: String])
+etherscan([ProviderArguments: Object])
 ```
 
-This provider method takes an optional `network` name as string _(defaults to 'homestead')_ and an optional, but very recommended `token` -- without it the connection will still work but will be very limited. A new token for the Etherscan API can be generated [here](https://etherscan.io/myapikey).
+This method returns an provider instance object, instantiated with the necessary prop fields.
+
+Even though it will work out of the box, it is highly recommended that you pass in at least the `apiToken` key via the `walletArguments` object. A new token for the Etherscan API can be generated [here](https://etherscan.io/myapikey).
+
+See [`ProviderArgumentsType`](../src/flowtypes.js#L94-L98) in [`flowtypes.js`](../src/flowtypes.js) for how the arguments object looks like.
+
+The only two _(optional)_ props that this method will take are `netwoork` and `apiToken`.
 
 ```js
 import { etherscan } from 'colony-wallet/providers';
 
-const provider = etherscan('homestead', '<your-token-key>'); // { chainId: '', ensAddress: '', ... }
+const provider = etherscan({
+  network: 'homestead',
+  apiToken: '<your-token-key>',
+}); // { chainId: '', ensAddress: '', ... }
 
 ```
 
