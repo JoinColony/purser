@@ -37,18 +37,20 @@ import {
  */
 export const etherscan = ({
   network = DEFAULT_NETWORK,
-  token,
+  apiToken,
 }: ProviderArgumentsType = {}): ProviderType => {
   let provider: ProviderType = PROVIDER_PROTO;
   try {
-    if (token) {
-      provider = new ethersProviders.EtherscanProvider(network, token);
+    if (apiToken) {
+      provider = new ethersProviders.EtherscanProvider(network, apiToken);
       return provider;
     }
-    warning(messages.etherscan.token);
+    warning(messages.etherscan.apiToken);
     provider = new ethersProviders.EtherscanProvider(network);
   } catch (err) {
-    warning(messages.etherscan.connect, network, token, err, { level: 'high' });
+    warning(messages.etherscan.connect, network, apiToken, err, {
+      level: 'high',
+    });
   }
   return provider;
 };

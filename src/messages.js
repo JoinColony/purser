@@ -5,7 +5,7 @@ import { MessagesExportType } from './flowtypes';
 
 export const providers = {
   etherscan: {
-    token:
+    apiToken:
       "You are using the Etherscan provider without an API key. This may limit the number of requests you're allowed to make. You can generate a new API key here: https://etherscan.io/myapikey",
     connect:
       'Etherscan provider failed to connect. Please verify the provided network name (%s) and api key (%s). %s',

@@ -92,6 +92,7 @@ export type MessagesExportType = {
 };
 
 export type ProviderArgumentsType = {
-  token?: string,
   network?: string,
+  token?: string,
+  apiToken?: string,
 };
