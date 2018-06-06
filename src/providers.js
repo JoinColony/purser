@@ -38,7 +38,7 @@ import {
 export const etherscan = ({
   network = DEFAULT_NETWORK,
   token,
-}: ProviderArgumentsType): ProviderType => {
+}: ProviderArgumentsType = {}): ProviderType => {
   let provider: ProviderType = PROVIDER_PROTO;
   try {
     if (token) {

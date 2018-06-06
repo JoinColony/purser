@@ -20,7 +20,10 @@ describe('`providers` module', () => {
     test('Connects with custom network and api key', () => {
       const testNetworkName = 'skynet';
       const testApiKey = '159346284575888';
-      etherscan(testNetworkName, testApiKey);
+      etherscan({
+        network: testNetworkName,
+        token: testApiKey,
+      });
       expect(ethersProviders.EtherscanProvider).toHaveBeenCalled();
       expect(ethersProviders.EtherscanProvider).toHaveBeenCalledWith(
         testNetworkName,
@@ -29,7 +32,7 @@ describe('`providers` module', () => {
     });
     test('Catch the connection error if something goes wrong', () => {
       const testNetworkName = 'error';
-      const provider = etherscan(testNetworkName);
+      const provider = etherscan({ network: testNetworkName });
       expect(ethersProviders.EtherscanProvider).toHaveBeenCalled();
       expect(() =>
         ethersProviders.EtherscanProvider(testNetworkName),
