@@ -90,3 +90,8 @@ export type MessagesExportType = {
   utils: Object,
   softwareWallet: Object,
 };
+
+export type ProviderArgumentsType = {
+  token?: string,
+  network?: string,
+};

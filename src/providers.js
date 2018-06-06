@@ -4,6 +4,7 @@ import ethersProviders from 'ethers/providers';
 
 import type {
   ProviderType,
+  ProviderArgumentsType,
   ProviderGeneratorType,
   ProvidersExportType,
 } from './flowtypes';
@@ -23,7 +24,6 @@ import {
  * Etherscan provider generator method.
  * This wraps the `ethers` `EtherscanProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Refactor method to accept arguments as object props
  * @TODO Convert to an `async` method
  *
  * @method etherscan
@@ -31,13 +31,15 @@ import {
  * @param {string} network The network name to connect to (defaults to `homestead`)
  * @param {string} token Optional (but recommended) api key to use when connecting
  *
+ * All the above params are sent in as props of an {ProviderArgumentsType} object.
+ *
  * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const etherscan = (
-  network: string = DEFAULT_NETWORK,
-  token: string,
-): ProviderType => {
-  let provider = PROVIDER_PROTO;
+export const etherscan = ({
+  network = DEFAULT_NETWORK,
+  token,
+}: ProviderArgumentsType): ProviderType => {
+  let provider: ProviderType = PROVIDER_PROTO;
   try {
     if (token) {
       provider = new ethersProviders.EtherscanProvider(network, token);
