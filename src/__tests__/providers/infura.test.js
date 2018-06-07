@@ -20,7 +20,10 @@ describe('`providers` module', () => {
     test('Connects with custom network and api key', () => {
       const testNetworkName = 'skynet';
       const testApiKey = '159346284575888';
-      infura(testNetworkName, testApiKey);
+      infura({
+        network: testNetworkName,
+        apiKey: testApiKey,
+      });
       expect(ethersProviders.InfuraProvider).toHaveBeenCalled();
       expect(ethersProviders.InfuraProvider).toHaveBeenCalledWith(
         testNetworkName,
@@ -29,7 +32,7 @@ describe('`providers` module', () => {
     });
     test('Catch the connection error if something goes wrong', () => {
       const testNetworkName = 'error';
-      const provider = infura(testNetworkName);
+      const provider = infura({ network: testNetworkName });
       expect(ethersProviders.InfuraProvider).toHaveBeenCalled();
       expect(() => ethersProviders.InfuraProvider(testNetworkName)).toThrow();
       expect(provider).toEqual(PROVIDER_PROTO);

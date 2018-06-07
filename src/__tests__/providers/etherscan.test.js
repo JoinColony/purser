@@ -22,7 +22,7 @@ describe('`providers` module', () => {
       const testApiKey = '159346284575888';
       etherscan({
         network: testNetworkName,
-        apiToken: testApiKey,
+        apiKey: testApiKey,
       });
       expect(ethersProviders.EtherscanProvider).toHaveBeenCalled();
       expect(ethersProviders.EtherscanProvider).toHaveBeenCalledWith(
