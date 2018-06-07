@@ -37,18 +37,18 @@ import {
  */
 export const etherscan = ({
   network = DEFAULT_NETWORK,
-  apiToken,
+  apiKey,
 }: ProviderArgumentsType = {}): ProviderType => {
   let provider: ProviderType = PROVIDER_PROTO;
   try {
-    if (apiToken) {
-      provider = new ethersProviders.EtherscanProvider(network, apiToken);
+    if (apiKey) {
+      provider = new ethersProviders.EtherscanProvider(network, apiKey);
       return provider;
     }
-    warning(messages.etherscan.apiToken);
+    warning(messages.etherscan.apiKey);
     provider = new ethersProviders.EtherscanProvider(network);
   } catch (err) {
-    warning(messages.etherscan.connect, network, apiToken, err, {
+    warning(messages.etherscan.connect, network, apiKey, err, {
       level: 'high',
     });
   }
@@ -59,7 +59,6 @@ export const etherscan = ({
  * Infura provider generator method.
  * This wraps the `ethers` `InfuraProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Refactor method to accept arguments as object props
  * @TODO Convert to an `async` method
  *
  * @method infura
@@ -67,22 +66,24 @@ export const etherscan = ({
  * @param {string} network The network name to connect to (defaults to `homestead`)
  * @param {string} token Optional (but recommended) api key to use when connecting
  *
+ * All the above params are sent in as props of an {ProviderArgumentsType} object.
+ *
  * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const infura = (
-  network: string = DEFAULT_NETWORK,
-  token: string,
-): ProviderType => {
+export const infura = ({
+  network = DEFAULT_NETWORK,
+  apiKey,
+}: ProviderArgumentsType = {}): ProviderType => {
   let provider = PROVIDER_PROTO;
   try {
-    if (token) {
-      provider = new ethersProviders.InfuraProvider(network, token);
+    if (apiKey) {
+      provider = new ethersProviders.InfuraProvider(network, apiKey);
       return provider;
     }
-    warning(messages.infura.token);
+    warning(messages.infura.apiKey);
     provider = new ethersProviders.InfuraProvider(network);
   } catch (err) {
-    warning(messages.infura.connect, network, token, err, { level: 'high' });
+    warning(messages.infura.connect, network, apiKey, err, { level: 'high' });
   }
   return provider;
 };
