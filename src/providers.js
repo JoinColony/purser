@@ -132,6 +132,8 @@ export const metamask = ({
  * @param {string} url The Json Rpc url of the localhost provider (defaults to `http://localhost:8545`)
  * @param {string} network The network name to connect to (defaults to `homestead`)
  *
+ * All the above params are sent in as props of an {ProviderArgumentsType} object.
+ *
  * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const jsonRpc = ({

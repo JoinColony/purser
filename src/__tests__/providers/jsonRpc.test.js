@@ -27,7 +27,10 @@ describe('`providers` module', () => {
     test('Connects with custom url and network', () => {
       const testUrl = 'http://127.0.0.1';
       const testNetworkName = 'skynet';
-      jsonRpc(testUrl, testNetworkName);
+      jsonRpc({
+        network: testNetworkName,
+        url: testUrl,
+      });
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         testUrl,
@@ -36,9 +39,13 @@ describe('`providers` module', () => {
     });
     test('Catch the connection error if something goes wrong', () => {
       const testNetworkName = 'error';
-      const provider = jsonRpc(testNetworkName);
+      const provider = jsonRpc({
+        network: testNetworkName,
+      });
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
-      expect(() => ethersProviders.JsonRpcProvider(testNetworkName)).toThrow();
+      expect(() =>
+        ethersProviders.JsonRpcProvider('', testNetworkName),
+      ).toThrow();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
   });
