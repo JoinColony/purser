@@ -324,7 +324,6 @@ const provider = etherscan({
 });
 
 // { chainId: '', ensAddress: '', ... }
-
 ```
 
 ### `infura`
@@ -355,12 +354,14 @@ const provider = infura({
 ### `jsonRpc`
 
 ```js
-jsonRpc([url: String], [network: String])
+jsonRpc([ProviderArguments: Object])
 ```
 
-This provider method takes an optional `url` as string _(defaults to 'http://localhost:8545')_ and an optional `network` name as string _(defaults to 'homestead')_.
+This method returns an provider instance object, instantiated with the necessary prop fields, but as opposed to the previous methods, this will not actually connect to your local [`JSON-RPC`](http://www.jsonrpc.org/specification) server. It will only do that once you try sending a transaction. This also means that calling this method will never result in an error state, as any `url` string you provide will be initially instantiated -- when you try to communicate with it, than it will fail.
 
-As opposed to the previous methods, this will just instantiate the provider but not actually connect to your local [`JSON-RPC`](http://www.jsonrpc.org/specification) server. It will only do that once you try sending a transaction. This also means that calling this method will never result in an error state, as any `url` string you provide will be initially instantiated -- when you try to communicate with it, than it will fail.
+This provider method takes an optional `url` as string _(defaults to 'http://localhost:8545')_ and an optional `network` name as string _(defaults to 'homestead')_, which you will pass in as props of the `ProviderArguments` object.
+
+See [`ProviderArgumentsType`](../src/flowtypes.js#L94-L98) in [`flowtypes.js`](../src/flowtypes.js) for how the arguments object looks like.
 
 **Note:**
 
@@ -371,7 +372,12 @@ To be able to connect to them locally you'll have to add `--rpccorsdomain "<your
 ```js
 import { jsonRpc } from 'colony-wallet/providers';
 
-const provider = jsonRpc('http://localhost:8545', 'homestead'); // { chainId: '', ensAddress: '', ... }
+const provider = jsonRpc({
+  url: 'http://localhost:8545',
+  network: 'homestead',
+});
+
+// { chainId: '', ensAddress: '', ... }
 ```
 
 ### `autoselect`
@@ -395,9 +401,15 @@ Because it takes both generator methods and already-instantiated providers you c
 ```js
 import { autoselect, metamask, jsonRpc } from 'colony-wallet/providers';
 
-const localFallback = jsonRpc('http://localhost:8545', 'ropsten');
+const localFallback = jsonRpc({
+  url: 'http://localhost:8545',
+  network: 'ropsten',
+});
 
-const provider = autoselect([() => metamask('ropsten'), localFallback]);
+const provider = autoselect([
+  () => metamask({ network: 'ropsten' }),
+  localFallback,
+]);
 ```
 
 ## Utils
