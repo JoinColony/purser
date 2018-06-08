@@ -277,15 +277,25 @@ import { metamask } from 'colony-wallet/providers'; // metamask();
 ### `metamask`
 
 ```js
-metamask([network: string])
+metamask([ProviderArguments: Object])
 ```
 
-This provider method takes just an optional `network` name as string _(defaults to 'homestead')_ and will use the in-page `Web3` provider injected by the [Metamask extension](https://github.com/MetaMask/metamask-extension), if available.
+This method returns an provider instance object, instantiated with the necessary prop fields.
+
+This provider use the in-page `Web3` provider injected by the [Metamask extension](https://github.com/MetaMask/metamask-extension), if available.
+
+See [`ProviderArgumentsType`](../src/flowtypes.js#L94-L98) in [`flowtypes.js`](../src/flowtypes.js) for how the arguments object looks like.
+
+The only _(optional)_ prop that this method will take is `network`. _(defaults to "homestead")_
 
 ```js
 import { metamask } from 'colony-wallet/providers';
 
-const provider = metamask('homestead'); // { chainId: '', ensAddress: '', ... }
+const provider = metamask({
+  network: 'homestead'
+});
+
+// { chainId: '', ensAddress: '', ... }
 
 // Or just use the defaults if you just want to go on mainnet.
 const providerDefaults = metamask();
