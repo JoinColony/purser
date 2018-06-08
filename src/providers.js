@@ -92,16 +92,19 @@ export const infura = ({
  * Metamask provider generator method.
  * This wraps the `ethers` `Web3Provider` method and provides defaults, error catching and warnings.
  *
- * @TODO Refactor method to accept arguments as object props
  * @TODO Convert to an `async` method
  *
  * @method metamask
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
  *
+ * The above param are sent in as props of an {ProviderArgumentsType} object.
+ *
  * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
+export const metamask = ({
+  network = DEFAULT_NETWORK,
+}: ProviderArgumentsType = {}): ProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     if (!global.web3 || !global.web3.currentProvider) {
