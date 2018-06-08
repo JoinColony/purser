@@ -125,7 +125,6 @@ export const metamask = ({
  * Local provider generator method. Useful to connect to a local instance of geth / parity / testrpc.
  * This wraps the `ethers` `JsonRpcProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Refactor method to accept arguments as object props
  * @TODO Convert to an `async` method
  *
  * @method jsonRpc
@@ -135,16 +134,18 @@ export const metamask = ({
  *
  * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const jsonRpc = (
-  url: string = `${PROTOCOL}://${HOST}:${PORT}`,
-  network: string = DEFAULT_NETWORK,
-): ProviderType => {
+export const jsonRpc = ({
+  network = DEFAULT_NETWORK,
+  url = `${PROTOCOL}://${HOST}:${PORT}`,
+}: ProviderArgumentsType = {}): ProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     /*
      * @TODO Instantly check the connection to see if the provider is up
+     *
      * Currently it will create the provider regardless, and only check if it's up when
      * sending a transaction.
+     *
      * If we check for it upfront, we can add this provider to the start of the array.
      * To implement this, we need to switch this (and maybe all) provider methods to
      * `async`s, the tradeoff in this case might not be worth it.

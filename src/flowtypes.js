@@ -94,4 +94,5 @@ export type MessagesExportType = {
 export type ProviderArgumentsType = {
   network?: string,
   apiKey?: string,
+  url?: string,
 };
