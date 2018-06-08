@@ -25,7 +25,7 @@ describe('`providers` module', () => {
     });
     test('Connects with custom network', () => {
       const testNetworkName = 'skynet';
-      metamask(testNetworkName);
+      metamask({ network: testNetworkName });
       expect(ethersProviders.Web3Provider).toHaveBeenCalled();
       expect(ethersProviders.Web3Provider).toHaveBeenCalledWith(
         global.web3.currentProvider,
@@ -34,14 +34,14 @@ describe('`providers` module', () => {
     });
     test('Detects if the metamask in-page provider is not available', () => {
       global.web3 = undefined;
-      const provider = metamask('not-called');
+      const provider = metamask({ network: 'not-called' });
       expect(ethersProviders.Web3Provider).not.toHaveBeenCalled();
       expect(utils.warning).toHaveBeenCalled();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
     test('Catch the connection error if something goes wrong', () => {
       const testNetworkName = 'error';
-      const provider = metamask(testNetworkName);
+      const provider = metamask({ network: testNetworkName });
       expect(ethersProviders.Web3Provider).toHaveBeenCalled();
       expect(() =>
         ethersProviders.Web3Provider(
