@@ -307,7 +307,7 @@ const providerDefaults = metamask();
 etherscan([ProviderArguments: Object])
 ```
 
-This method returns an provider instance object, instantiated with the necessary prop fields.
+This method returns a `Promise`, which after resolving, will return a provider instance object, instantiated with the necessary prop fields.
 
 Even though it will work out of the box, it is highly recommended that you pass in at least the `apiKey` key via the `walletArguments` object. A new token for the Etherscan API can be generated [here](https://etherscan.io/myapikey).
 
@@ -318,7 +318,7 @@ The only two _(optional)_ props that this method will take are `network` and `ap
 ```js
 import { etherscan } from 'colony-wallet/providers';
 
-const provider = etherscan({
+const provider = await etherscan({
   network: 'homestead',
   apiKey: '<your-token-key>',
 });
@@ -390,10 +390,12 @@ This is just a helper method that goes through a list of providers _(both genera
 
 By default it goes through the following provider list, in order: `[metamask, etherscan, infura, jsonRpc]`, so if this works for you, just call it directly without any arguments:
 
+This, as all other methos is `async`, meaning it will return a `Promise` with the selected provider instance.
+
 ```js
 import { autoselect } from 'colony-wallet/providers';
 
-const provider = autoselect(); // This will return the first available, instantiated provider
+const provider = await autoselect(); // This will return the first available, instantiated provider
 ```
 
 Because it takes both generator methods and already-instantiated providers you can mix and match them:
@@ -406,8 +408,8 @@ const localFallback = jsonRpc({
   network: 'ropsten',
 });
 
-const provider = autoselect([
-  () => metamask({ network: 'ropsten' }),
+const provider = await autoselect([
+  async () => await metamask({ network: 'ropsten' }),
   localFallback,
 ]);
 ```
