@@ -4,8 +4,10 @@ import ethersProviders from 'ethers/providers';
 
 import type {
   ProviderType,
+  AsyncProviderType,
   ProviderArgumentsType,
   ProviderGeneratorType,
+  AsyncProviderGeneratorType,
   ProvidersExportType,
 } from './flowtypes';
 
@@ -24,8 +26,6 @@ import {
  * Etherscan provider generator method.
  * This wraps the `ethers` `EtherscanProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Convert to an `async` method
- *
  * @method etherscan
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
@@ -33,12 +33,12 @@ import {
  *
  * All the above params are sent in as props of an {ProviderArgumentsType} object.
  *
- * @return {ProviderType} The provider connection object or an empty one if the connection failed.
+ * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const etherscan = ({
+export const etherscan = async ({
   network = DEFAULT_NETWORK,
   apiKey,
-}: ProviderArgumentsType = {}): ProviderType => {
+}: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider: ProviderType = PROVIDER_PROTO;
   try {
     if (apiKey) {
@@ -163,22 +163,20 @@ export const jsonRpc = ({
  * Helper method to autoselect from a pre-determined list of providers.
  * It will select the first one that's available.
  *
- * @TODO Convert to an `async` method
- *
  * @method autoselect
  *
  * @param {Array} providersList An array of providers to select from. Can be either a provider
  * object (ProviderType) or an provider generator method (ProviderGeneratorType)
- * @return {ProviderType} The selected provider connection object
+ * @return {ProviderType | AsyncProviderGeneratorType} The selected provider connection object
  */
-export const autoselect = (
-  providersList: Array<ProviderGeneratorType> = [
+export const autoselect = async (
+  providersList: Array<ProviderGeneratorType | AsyncProviderGeneratorType> = [
     metamask,
     etherscan,
     infura,
     jsonRpc,
   ],
-) => {
+): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   if (!providersList.length) {
     warning(messages.autoselect.empty, { level: 'high' });
