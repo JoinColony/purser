@@ -67,7 +67,7 @@ export type DebugExportType = {
 
 export type ProvidersExportType = {
   etherscan: AsyncProviderGeneratorType,
-  infura: ProviderGeneratorType,
+  infura: AsyncProviderGeneratorType,
   metamask: ProviderGeneratorType,
   jsonRpc: ProviderGeneratorType,
   autoselect: AsyncProviderGeneratorType,

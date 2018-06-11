@@ -59,8 +59,6 @@ export const etherscan = async ({
  * Infura provider generator method.
  * This wraps the `ethers` `InfuraProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Convert to an `async` method
- *
  * @method infura
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
@@ -68,12 +66,12 @@ export const etherscan = async ({
  *
  * All the above params are sent in as props of an {ProviderArgumentsType} object.
  *
- * @return {ProviderType} The provider connection object or an empty one if the connection failed.
+ * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const infura = ({
+export const infura = async ({
   network = DEFAULT_NETWORK,
   apiKey,
-}: ProviderArgumentsType = {}): ProviderType => {
+}: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     if (apiKey) {
