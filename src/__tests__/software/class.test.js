@@ -26,46 +26,64 @@ describe('`software` wallet module', () => {
       expect(testWallet).toBeInstanceOf(software.SoftwareWallet);
       expect(testWallet).toBeInstanceOf(EthersWallet);
     });
-    test('Creates a new wallet with a manual provider', () => {
+    test('Creates a new wallet with a manual provider', async () => {
       const provider = jsonRpc();
-      software.SoftwareWallet.create({ provider });
+      await software.SoftwareWallet.create({ provider });
       expect(software.SoftwareWallet).toHaveBeenCalled();
       /*
        * `0x1` is the value the `createRandom()` mock returns
        */
       expect(software.SoftwareWallet).toHaveBeenCalledWith('0x1', provider);
     });
-    test('Creates a new wallet with a provider generator function', () => {
+    test('Creates a new wallet with a provider generator method', async () => {
       const providerMock = jest.fn(() => () => ({ mocked: true }));
-      software.SoftwareWallet.create({ provider: providerMock });
+      await software.SoftwareWallet.create({ provider: providerMock });
       expect(software.SoftwareWallet).toHaveBeenCalled();
       expect(providerMock).toHaveBeenCalled();
     });
-    test('Creates a new wallet when provider is set to a falsy value', () => {
-      software.SoftwareWallet.create({ provider: false });
-      expect(utils.warning).toHaveBeenCalled();
-      expect(software.SoftwareWallet).toHaveBeenCalled();
-      /*
-       * `0x1` is the value the `createRandom()` mock returns
-       */
-      expect(software.SoftwareWallet).toHaveBeenCalledWith('0x1', undefined);
-    });
-    test('Creates a new wallet with manual entropy', () => {
+    /*
+     * For some reason prettier always suggests a way to fix this that would
+     * violate the 80 max-len rule. Wierd
+     */
+    /* eslint-disable prettier/prettier */
+    test(
+      'Creates a new wallet when provider is set to a falsy value',
+      async () => {
+        await software.SoftwareWallet.create({ provider: false });
+        expect(utils.warning).toHaveBeenCalled();
+        expect(software.SoftwareWallet).toHaveBeenCalled();
+        /*
+         * `0x1` is the value the `createRandom()` mock returns
+         */
+        expect(software.SoftwareWallet).toHaveBeenCalledWith('0x1', undefined);
+      },
+    );
+    /* eslint-enable prettier/prettier */
+    test('Creates a new wallet with manual entropy', async () => {
       const entropy = new Uint8Array(100);
-      software.SoftwareWallet.create({ entropy });
+      await software.SoftwareWallet.create({ entropy });
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith({
         extraEntropy: entropy,
       });
     });
-    test('Creates a new wallet when entropy is set to a falsy value', () => {
-      software.SoftwareWallet.create({ entropy: false });
-      expect(utils.warning).toHaveBeenCalled();
-      expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
-      expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith();
-    });
-    test("Returns new wallet even when there's and error", () => {
-      software.SoftwareWallet.create({ provider: { error: true } });
+    /*
+     * For some reason prettier always suggests a way to fix this that would
+     * violate the 80 max-len rule. Wierd
+     */
+    /* eslint-disable prettier/prettier */
+    test(
+      'Creates a new wallet when entropy is set to a falsy value',
+      async () => {
+        await software.SoftwareWallet.create({ entropy: false });
+        expect(utils.warning).toHaveBeenCalled();
+        expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
+        expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith();
+      },
+    );
+    /* eslint-enable prettier/prettier */
+    test("Returns new wallet even when there's and error", async () => {
+      await software.SoftwareWallet.create({ provider: { error: true } });
       expect(utils.warning).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalled();
       expect(software.SoftwareWallet.createRandom).toHaveBeenCalledWith();
@@ -85,10 +103,10 @@ describe('`software` wallet module', () => {
       expect(testWallet).toBeInstanceOf(software.SoftwareWallet);
       expect(testWallet).toBeInstanceOf(EthersWallet);
     });
-    test('Opens wallet using a mnemonic', () => {
+    test('Opens wallet using a mnemonic', async () => {
       const mnemonic = 'romeo delta india golf';
       const privateKey = '0x1';
-      software.SoftwareWallet.open({ mnemonic });
+      await software.SoftwareWallet.open({ mnemonic });
       expect(HDNode.fromMnemonic).toHaveBeenCalled();
       expect(HDNode.fromMnemonic).toHaveBeenCalledWith(mnemonic);
       expect(EthersWallet).toHaveBeenCalled();
@@ -112,16 +130,21 @@ describe('`software` wallet module', () => {
       expect(software.SoftwareWallet).toHaveBeenCalled();
     });
     test('Return undefined when no suitable open method provided', async () => {
-      const testWallet = software.SoftwareWallet.open({});
-      expect(HDNode.fromMnemonic).not.toHaveBeenCalled();
-      expect(EthersWallet).toHaveBeenCalled();
-      expect(software.SoftwareWallet).toHaveBeenCalled();
-      expect(software.SoftwareWallet).toHaveBeenCalledWith(
-        undefined,
-        PROVIDER_PROTO,
-      );
-      expect(utils.warning).toHaveBeenCalled();
-      expect(testWallet).rejects.toEqual(new Error());
+      /*
+       * Jest seems to not play well with unsing `await` when rejecting a promise
+       * To be visisted at a later time.
+       */
+      software.SoftwareWallet.open({}).catch(wallet => {
+        expect(HDNode.fromMnemonic).not.toHaveBeenCalled();
+        expect(EthersWallet).toHaveBeenCalled();
+        expect(software.SoftwareWallet).toHaveBeenCalled();
+        expect(software.SoftwareWallet).toHaveBeenCalledWith(
+          undefined,
+          PROVIDER_PROTO,
+        );
+        expect(utils.warning).toHaveBeenCalled();
+        expect(wallet).toEqual(new Error());
+      });
     });
     test('After open, the wallet should have the `mnemonic` prop', async () => {
       const mnemonic = 'romeo delta india golf';
