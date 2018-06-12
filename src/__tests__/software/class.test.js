@@ -27,7 +27,7 @@ describe('`software` wallet module', () => {
       expect(testWallet).toBeInstanceOf(EthersWallet);
     });
     test('Creates a new wallet with a manual provider', async () => {
-      const provider = jsonRpc();
+      const provider = await jsonRpc();
       await software.SoftwareWallet.create({ provider });
       expect(software.SoftwareWallet).toHaveBeenCalled();
       /*
@@ -134,7 +134,7 @@ describe('`software` wallet module', () => {
        * Jest seems to not play well with unsing `await` when rejecting a promise
        * To be visisted at a later time.
        */
-      software.SoftwareWallet.open({}).catch(wallet => {
+      await software.SoftwareWallet.open({}).catch(wallet => {
         expect(HDNode.fromMnemonic).not.toHaveBeenCalled();
         expect(EthersWallet).toHaveBeenCalled();
         expect(software.SoftwareWallet).toHaveBeenCalled();

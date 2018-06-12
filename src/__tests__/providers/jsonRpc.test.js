@@ -16,18 +16,18 @@ describe('`providers` module', () => {
     ethersProviders.JsonRpcProvider.mockClear();
   });
   describe('`localhost` provider', () => {
-    test('Connects with defaults', () => {
-      jsonRpc();
+    test('Connects with defaults', async () => {
+      await jsonRpc();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         `${PROTOCOL}://${HOST}:${PORT}`,
         DEFAULT_NETWORK,
       );
     });
-    test('Connects with custom url and network', () => {
+    test('Connects with custom url and network', async () => {
       const testUrl = 'http://127.0.0.1';
       const testNetworkName = 'skynet';
-      jsonRpc({
+      await jsonRpc({
         network: testNetworkName,
         url: testUrl,
       });
@@ -37,9 +37,9 @@ describe('`providers` module', () => {
         testNetworkName,
       );
     });
-    test('Catch the connection error if something goes wrong', () => {
+    test('Catch the connection error if something goes wrong', async () => {
       const testNetworkName = 'error';
-      const provider = jsonRpc({
+      const provider = await jsonRpc({
         network: testNetworkName,
       });
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
