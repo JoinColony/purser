@@ -277,28 +277,28 @@ import { metamask } from 'colony-wallet/providers'; // metamask();
 ### `metamask`
 
 ```js
-metamask([ProviderArguments: Object])
+await metamask([ProviderArguments: Object])
 ```
 
-This method returns an provider instance object, instantiated with the necessary prop fields.
+This method returns a `Promise`, which after resolving, will return an provider instance object, instantiated with the necessary prop fields.
 
-This provider use the in-page `Web3` provider injected by the [Metamask extension](https://github.com/MetaMask/metamask-extension), if available.
+This provider uses the in-page `Web3` provider injected by the [Metamask extension](https://github.com/MetaMask/metamask-extension), if available.
 
 See [`ProviderArgumentsType`](../src/flowtypes.js#L94-L98) in [`flowtypes.js`](../src/flowtypes.js) for how the arguments object looks like.
 
-The only _(optional)_ prop that this method will take is `network`. _(defaults to "homestead")_
+The only _(optional)_ prop that this method will take is `network` _(defaults to "homestead")_ as part of the `ProvidersArgument` Object.
 
 ```js
 import { metamask } from 'colony-wallet/providers';
 
-const provider = metamask({
+const provider = await metamask({
   network: 'homestead'
 });
 
 // { chainId: '', ensAddress: '', ... }
 
 // Or just use the defaults if you just want to go on mainnet.
-const providerDefaults = metamask();
+const providerDefaults = await metamask();
 ```
 
 ### `etherscan`
@@ -313,7 +313,7 @@ Even though it will work out of the box, it is highly recommended that you pass 
 
 See [`ProviderArgumentsType`](../src/flowtypes.js#L94-L98) in [`flowtypes.js`](../src/flowtypes.js) for how the arguments object looks like.
 
-The only two _(optional)_ props that this method will take are `network` and `apiKey`.
+The only two _(optional)_ props that this method will take are `network` and `apiKey` as part of the `ProvidersArgument` Object.
 
 ```js
 import { etherscan } from 'colony-wallet/providers';
@@ -338,7 +338,7 @@ Even though it will work out of the box, it is highly recommended that you pass 
 
 See [`ProviderArgumentsType`](../src/flowtypes.js#L94-L98) in [`flowtypes.js`](../src/flowtypes.js) for how the arguments object looks like.
 
-The only two _(optional)_ props that this method will take are `network` and `apiKey`.
+The only two _(optional)_ props that this method will take are `network` and `apiKey` as part of the `ProvidersArgument` Object.
 
 ```js
 import { infura } from 'colony-wallet/providers';
