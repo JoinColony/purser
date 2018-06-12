@@ -100,9 +100,9 @@ export const infura = async ({
  *
  * @return {ProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const metamask = ({
+export const metamask = async ({
   network = DEFAULT_NETWORK,
-}: ProviderArgumentsType = {}): ProviderType => {
+}: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     if (!global.web3 || !global.web3.currentProvider) {
