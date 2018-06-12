@@ -6,7 +6,6 @@ import type {
   ProviderType,
   AsyncProviderType,
   ProviderArgumentsType,
-  ProviderGeneratorType,
   AsyncProviderGeneratorType,
   ProvidersExportType,
 } from './flowtypes';
@@ -121,8 +120,6 @@ export const metamask = async ({
  * Local provider generator method. Useful to connect to a local instance of geth / parity / testrpc.
  * This wraps the `ethers` `JsonRpcProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Convert to an `async` method
- *
  * @method jsonRpc
  *
  * @param {string} url The Json Rpc url of the localhost provider (defaults to `http://localhost:8545`)
@@ -130,12 +127,12 @@ export const metamask = async ({
  *
  * All the above params are sent in as props of an {ProviderArgumentsType} object.
  *
- * @return {ProviderType} The provider connection object or an empty one if the connection failed.
+ * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const jsonRpc = ({
+export const jsonRpc = async ({
   network = DEFAULT_NETWORK,
   url = `${PROTOCOL}://${HOST}:${PORT}`,
-}: ProviderArgumentsType = {}): ProviderType => {
+}: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     /*
@@ -163,10 +160,10 @@ export const jsonRpc = ({
  *
  * @param {Array} providersList An array of providers to select from. Can be either a provider
  * object (ProviderType) or an provider generator method (ProviderGeneratorType)
- * @return {ProviderType | AsyncProviderGeneratorType} The selected provider connection object
+ * @return {AsyncProviderGeneratorType} The selected provider connection object
  */
 export const autoselect = async (
-  providersList: Array<ProviderGeneratorType | AsyncProviderGeneratorType> = [
+  providersList: Array<AsyncProviderGeneratorType> = [
     metamask,
     etherscan,
     infura,
@@ -184,7 +181,14 @@ export const autoselect = async (
       return provider;
     }
     if (typeof providersList[i] === 'function') {
-      provider = providersList[i]();
+      /*
+       * While disabling this is considered an anti-pattern, since we won't be
+       * able to take advantage of pararellization, it this case it doesn't
+       * really matter since we are returning after the first available
+       * provider
+       */
+      /* eslint-disable-next-line no-await-in-loop */
+      provider = await providersList[i]();
       if (provider && provider.chainId) {
         return provider;
       }

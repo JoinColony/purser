@@ -17,8 +17,6 @@ export type ProviderType = {
 
 export type AsyncProviderType = Promise<ProviderType>;
 
-export type ProviderGeneratorType = (...*) => ProviderType;
-
 export type AsyncProviderGeneratorType = (...*) => AsyncProviderType;
 
 export type WalletObjectType = {
@@ -69,7 +67,7 @@ export type ProvidersExportType = {
   etherscan: AsyncProviderGeneratorType,
   infura: AsyncProviderGeneratorType,
   metamask: AsyncProviderGeneratorType,
-  jsonRpc: ProviderGeneratorType,
+  jsonRpc: AsyncProviderGeneratorType,
   autoselect: AsyncProviderGeneratorType,
 };
 
