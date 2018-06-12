@@ -122,7 +122,7 @@ Create a new wallet and give it a provider:
 import { create } from 'colony-wallet/software';
 import { jsonRpc } from 'colony-wallet/providers';
 
-const provider = jsonRpc('http://localhost:8545', 'kovan');
+const provider = await jsonRpc('http://localhost:8545', 'kovan');
 
 const newWallet = await create({ provider });
 ```
@@ -354,10 +354,10 @@ const provider = await infura({
 ### `jsonRpc`
 
 ```js
-jsonRpc([ProviderArguments: Object])
+await jsonRpc([ProviderArguments: Object])
 ```
 
-This method returns an provider instance object, instantiated with the necessary prop fields, but as opposed to the previous methods, this will not actually connect to your local [`JSON-RPC`](http://www.jsonrpc.org/specification) server. It will only do that once you try sending a transaction. This also means that calling this method will never result in an error state, as any `url` string you provide will be initially instantiated -- when you try to communicate with it, than it will fail.
+This method returns a `Promise`, which after resolving will return a provider instance object, instantiated with the necessary prop fields, but as opposed to the previous methods, this will not actually connect to your local [`JSON-RPC`](http://www.jsonrpc.org/specification) server. It will only do that once you try sending a transaction. This also means that calling this method will never result in an error state, as any `url` string you provide will be initially instantiated -- when you try to communicate with it, than it will fail.
 
 This provider method takes an optional `url` as string _(defaults to 'http://localhost:8545')_ and an optional `network` name as string _(defaults to 'homestead')_, which you will pass in as props of the `ProviderArguments` object.
 
@@ -372,7 +372,7 @@ To be able to connect to them locally you'll have to add `--rpccorsdomain "<your
 ```js
 import { jsonRpc } from 'colony-wallet/providers';
 
-const provider = jsonRpc({
+const provider = await jsonRpc({
   url: 'http://localhost:8545',
   network: 'homestead',
 });
