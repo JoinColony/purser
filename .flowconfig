@@ -6,6 +6,7 @@
 .*/__mocks__/.*
 .*/lib/.*
 .*/docs/.*
+.*/node_modules/protobufjs-old-fixed-webpack/*.
 
 [libs]
 

@@ -85,6 +85,7 @@ export type UtilsExportType = {
 
 export type WalletIndexExportType = {
   software: SoftwareWalletExportType,
+  hardware: *,
 };
 
 export type MessagesExportType = {
