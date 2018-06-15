@@ -78,7 +78,6 @@
   "dependencies": {
     "ethereum-blockies": "https://github.com/ethereum/blockies.git",
     "ethers": "^3.0.16",
-    "qrcode": "^1.2.0",
-    "trezor.js": "^6.17.3"
+    "qrcode": "^1.2.0"
   }
 }

@@ -1,7 +1,5 @@
 /* @flow */
 
-import * as trezor from 'trezor.js';
-
 import { ENV } from './defaults';
 
 /*
@@ -10,7 +8,7 @@ import { ENV } from './defaults';
  */
 const hardwareWallet: * = Object.assign(
   {},
-  ENV === 'development' || ENV === 'test' ? { trezor } : {},
+  ENV === 'development' || ENV === 'test' ? {} : {},
 );
 
 export default hardwareWallet;
