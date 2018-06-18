@@ -1,6 +1,7 @@
 /* @flow */
 
 import { ENV } from './defaults';
+import Trezor from './trezor';
 
 /*
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
@@ -8,7 +9,7 @@ import { ENV } from './defaults';
  */
 const hardwareWallet: * = Object.assign(
   {},
-  ENV === 'development' || ENV === 'test' ? {} : {},
+  ENV === 'development' || ENV === 'test' ? { Trezor } : {},
 );
 
 export default hardwareWallet;

@@ -1,4 +1,0 @@
-[submodule "vendor/trezor-connect"]
-	path = vendor/trezor-connect
-	url = git@github.com:trezor/connect.git
-	branch = v4
