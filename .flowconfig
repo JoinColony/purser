@@ -7,6 +7,7 @@
 .*/lib/.*
 .*/docs/.*
 .*/node_modules/protobufjs-old-fixed-webpack/*.
+.*/src/_.js
 
 [libs]
 

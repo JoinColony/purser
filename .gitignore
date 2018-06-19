@@ -74,3 +74,6 @@ reports
 *.patch
 .diff/
 .patch/
+
+# Vendor
+src/_*.js
