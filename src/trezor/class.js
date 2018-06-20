@@ -1,6 +1,6 @@
 /* eslint-disable flowtype/require-valid-file-annotation */
 
-class Trezor {
+export class TrezorWallet {
   constructor() {
     window.addEventListener('message', event => {
       const { data, isTrusted, origin } = event;
@@ -78,7 +78,7 @@ class Trezor {
   }
 }
 
-export const open = () => new Trezor();
+export const open = () => new TrezorWallet();
 
 export const create = () =>
   console.log(

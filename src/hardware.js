@@ -1,8 +1,6 @@
 /* @flow */
 
-import { ENV } from './defaults';
-import { open, create } from './trezor';
-import _TrezorConnect from './_trezorConnectIIFE';
+import trezorWallet from './trezor';
 
 /*
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
@@ -11,12 +9,8 @@ import _TrezorConnect from './_trezorConnectIIFE';
 const hardwareWallet: * = Object.assign(
   {},
   {
-    trezor: {
-      open,
-      create,
-    },
+    trezor: trezorWallet,
   },
-  ENV === 'development' || ENV === 'test' ? { _TrezorConnect } : {},
 );
 
 export default hardwareWallet;

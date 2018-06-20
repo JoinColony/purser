@@ -7,8 +7,10 @@ import blockies from 'ethereum-blockies';
 import type { DebugExportType } from './flowtypes';
 
 import { software } from './wallets';
+import trezor from './trezor';
 
 const { SoftwareWallet } = software;
+const { TrezorWallet } = trezor;
 
 /*
  * This object was extracted in it's own export to not pollute the index,
@@ -19,7 +21,10 @@ const debug: DebugExportType = {
     ethers,
     qrcode,
     blockies,
-    SoftwareWallet,
+    walletClasses: {
+      SoftwareWallet,
+      TrezorWallet,
+    },
   },
 };
 
