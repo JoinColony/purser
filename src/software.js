@@ -8,7 +8,7 @@ import type {
   ProviderType,
   WalletObjectType,
   WalletArgumentsType,
-  SoftwareWalletExportType,
+  WalletExportType,
 } from './flowtypes';
 
 import { autoselect } from './providers';
@@ -403,7 +403,7 @@ export const open = (
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
  * to us directly for debugging.
  */
-const softwareWallet: SoftwareWalletExportType = Object.assign(
+const softwareWallet: WalletExportType = Object.assign(
   {},
   {
     create,

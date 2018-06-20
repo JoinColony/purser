@@ -71,10 +71,11 @@ export type ProvidersExportType = {
   autoselect: AsyncProviderGeneratorType,
 };
 
-export type SoftwareWalletExportType = {
+export type WalletExportType = {
   create: WalletArgumentsType => Promise<WalletObjectType>,
   open: WalletArgumentsType => Promise<WalletObjectType | void>,
   SoftwareWallet?: Class<*>,
+  TrezorWallet?: Class<*>,
 };
 
 export type UtilsExportType = {
@@ -83,9 +84,13 @@ export type UtilsExportType = {
   verbose?: () => boolean,
 };
 
+export type HardwareWalletIndexExportType = {
+  trezor: *,
+};
+
 export type WalletIndexExportType = {
-  software: SoftwareWalletExportType,
-  hardware: *,
+  software: WalletExportType,
+  hardware: HardwareWalletIndexExportType,
 };
 
 export type MessagesExportType = {
