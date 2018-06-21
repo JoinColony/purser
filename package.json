@@ -76,8 +76,10 @@
     "webpack-cli": "^3.0.1"
   },
   "dependencies": {
+    "bip32-path": "^0.4.2",
     "ethereum-blockies": "https://github.com/ethereum/blockies.git",
     "ethers": "^3.0.16",
+    "hdkey": "^1.0.0",
     "qrcode": "^1.2.0"
   }
 }

@@ -1,45 +1,80 @@
 /* eslint-disable flowtype/require-valid-file-annotation */
 
+import { SigningKey } from 'ethers/wallet';
+import bip32Path from 'bip32-path';
+import HDKey from 'hdkey';
+
+const TREZOR_FIRST_ACCOUNT_PATH = "m/44'/60'/0'/0";
+const TREZOR_DOMAIN = 'https://connect.trezor.io';
+const TREZOR_SERVICE_VERSION = 4;
+const TREZOR_SERVICE_URL = 'popup/popup.html';
+const TREZOR_SERVICE_KEY = 'v';
+const PROMPT_WIDTH = 600;
+const PROMPT_HEIGHT = 500;
+
 export class TrezorWallet {
-  constructor() {
-    window.addEventListener('message', event => {
-      const { data, isTrusted, origin } = event;
-      const sameOrigin =
-        this.prompt &&
-        this.__sanitizeUrl(this.prompt.origin) === this.__sanitizeUrl(origin);
-      if (isTrusted && sameOrigin && data === 'handshake') {
-        this.prompt.instance.postMessage(
-          this.prompt.payload,
-          this.prompt.origin,
-        );
-      }
-      if (isTrusted && sameOrigin && data && data.success) {
-        console.log('response', data);
-        this.prompt.instance.close();
-        window.removeEventListener('message', null);
-      }
+  constructor(publicKey, chainCode) {
+    /*
+     * Derive the public key with the derivation index, so we can
+     * reverse the addresses (basically first 20 bytes of the keccak256 hash)
+     */
+    const hdKey = new HDKey();
+    hdKey.publicKey = Buffer.from(publicKey, 'hex');
+    hdKey.chainCode = Buffer.from(chainCode, 'hex');
+    const derivationKey = hdKey.derive(`m/0`);
+    /*
+     * Set the Wallet Object's values
+     */
+    this.path = TREZOR_FIRST_ACCOUNT_PATH;
+    this.publicKey = derivationKey.publicKey.toString('hex');
+    this.account = SigningKey.publicKeyToAddress(
+      Buffer.from(derivationKey.publicKey, 'hex'),
+    );
+  }
+
+  async publicKey() {
+    return this.__payloadListener({
+      payload: {
+        type: 'xpubkey',
+        path: bip32Path
+          .fromString(TREZOR_FIRST_ACCOUNT_PATH, true)
+          .toPathArray(),
+      },
     });
   }
 
-  getFirstEthereumAddress() {
-    delete this.prompt;
-    const prompt = this.__promptGenerator();
-    const payload = {
-      type: 'ethgetaddress',
-      address_n: [2147483692, 2147483708, 2147483648, 0, 0],
-    };
-    const origin = 'https://connect.trezor.io';
-    this.prompt = {
-      instance: prompt,
-      payload,
-      origin,
-    };
+  async __payloadListener({
+    payload,
+    origin: payloadOrigin = TREZOR_DOMAIN,
+  } = {}) {
+    /*
+     * @TODO Handle the reject case
+     *
+     * This will most likely happen due to
+     */
+    return new Promise(resolve => {
+      const prompt = this.__promptGenerator();
+      const messageListener = event => {
+        const { data, isTrusted, origin } = event;
+        const sameOrigin =
+          prompt &&
+          this.__sanitizeUrl(payloadOrigin) === this.__sanitizeUrl(origin);
+        if (isTrusted && sameOrigin && data === 'handshake') {
+          prompt.postMessage(payload, payloadOrigin);
+        }
+        if (isTrusted && sameOrigin && data && data.success) {
+          resolve(data);
+          prompt.close();
+          window.removeEventListener('message', messageListener);
+        }
+      };
+      window.addEventListener('message', messageListener);
+    });
   }
 
   /* eslint-disable-next-line class-methods-use-this */
-  __promptGenerator() {
-    const width = 600;
-    const height = 500;
+  __promptGenerator({ width = PROMPT_WIDTH, height = PROMPT_HEIGHT } = {}) {
+    const requestTime = new Date().getTime();
     const promptOptions = {
       width,
       height,
@@ -63,8 +98,9 @@ export class TrezorWallet {
       '',
     );
     return window.open(
-      `https://connect.trezor.io/4/popup/popup.html?v=${new Date().getTime()}`,
-      'trezor-connect',
+      `${TREZOR_DOMAIN}/${TREZOR_SERVICE_VERSION}` +
+        `/${TREZOR_SERVICE_URL}?${TREZOR_SERVICE_KEY}=${requestTime}`,
+      'trezor-service-connection',
       promptOptionsString,
     );
   }
@@ -76,9 +112,14 @@ export class TrezorWallet {
     }
     return '';
   }
+
+  static async open() {
+    const { publicKey, chainCode } = await this.prototype.publicKey();
+    return new this(publicKey, chainCode);
+  }
 }
 
-export const open = () => new TrezorWallet();
+export const open = () => TrezorWallet.open();
 
 export const create = () =>
   console.log(
