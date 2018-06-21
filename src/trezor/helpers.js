@@ -43,7 +43,7 @@ export const serviceUrlGenerator = ({
   url = SERVICE_URL,
   key = SERVICE_KEY,
 }: ServiceUrlType = {}): string =>
-  `${domain}/${version}${url}?${key}=${new Date().getTime()}`;
+  `${domain}/${version}/${url}?${key}=${new Date().getTime()}`;
 
 export const promptGenerator = ({
   serviceUrl = serviceUrlGenerator(),
