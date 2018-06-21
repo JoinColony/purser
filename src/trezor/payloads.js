@@ -10,8 +10,8 @@ export const PAYLOAD_XPUB: PayloadType = {
   path: bip32Path.fromString(PATH, true).toPathArray(),
 };
 
-const trezorDefaults: Object = {
+const trezorServicePayloads: Object = {
   PAYLOAD_XPUB,
 };
 
-export default trezorDefaults;
+export default trezorServicePayloads;
