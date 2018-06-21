@@ -4,13 +4,15 @@ import { SigningKey } from 'ethers/wallet';
 import bip32Path from 'bip32-path';
 import HDKey from 'hdkey';
 
-const TREZOR_FIRST_ACCOUNT_PATH = "m/44'/60'/0'/0";
-const TREZOR_DOMAIN = 'https://connect.trezor.io';
-const TREZOR_SERVICE_VERSION = 4;
-const TREZOR_SERVICE_URL = 'popup/popup.html';
-const TREZOR_SERVICE_KEY = 'v';
-const PROMPT_WIDTH = 600;
-const PROMPT_HEIGHT = 500;
+import {
+  PATH,
+  SERVICE_DOMAIN,
+  SERVICE_VERSION,
+  SERVICE_URL,
+  SERVICE_KEY,
+  PROMPT_WIDTH,
+  PROMPT_HEIGHT,
+} from './defaults';
 
 export class TrezorWallet {
   constructor(publicKey, chainCode) {
@@ -25,7 +27,7 @@ export class TrezorWallet {
     /*
      * Set the Wallet Object's values
      */
-    this.path = TREZOR_FIRST_ACCOUNT_PATH;
+    this.path = PATH;
     this.publicKey = derivationKey.publicKey.toString('hex');
     this.account = SigningKey.publicKeyToAddress(
       Buffer.from(derivationKey.publicKey, 'hex'),
@@ -36,16 +38,14 @@ export class TrezorWallet {
     return this.__payloadListener({
       payload: {
         type: 'xpubkey',
-        path: bip32Path
-          .fromString(TREZOR_FIRST_ACCOUNT_PATH, true)
-          .toPathArray(),
+        path: bip32Path.fromString(PATH, true).toPathArray(),
       },
     });
   }
 
   async __payloadListener({
     payload,
-    origin: payloadOrigin = TREZOR_DOMAIN,
+    origin: payloadOrigin = SERVICE_DOMAIN,
   } = {}) {
     /*
      * @TODO Handle the reject case
@@ -98,8 +98,8 @@ export class TrezorWallet {
       '',
     );
     return window.open(
-      `${TREZOR_DOMAIN}/${TREZOR_SERVICE_VERSION}` +
-        `/${TREZOR_SERVICE_URL}?${TREZOR_SERVICE_KEY}=${requestTime}`,
+      `${SERVICE_DOMAIN}/${SERVICE_VERSION}` +
+        `/${SERVICE_URL}?${SERVICE_KEY}=${requestTime}`,
       'trezor-service-connection',
       promptOptionsString,
     );
@@ -123,6 +123,6 @@ export const open = () => TrezorWallet.open();
 
 export const create = () =>
   console.log(
-    "Cannot create a new wallet, it's harware",
+    "Cannot create a new wallet, it's hardware",
     'generated via the derived HD path',
   );
