@@ -11,11 +11,13 @@ export type ProviderType = {
   resetEventsBlock?: (blockNumber: number) => void,
   testnet: boolean,
   url: string,
-  _events: Object,
+  _events?: Object,
   _web3Provider?: Object,
 };
 
-export type ProviderGeneratorType = (...*) => ProviderType;
+export type AsyncProviderType = Promise<ProviderType>;
+
+export type AsyncProviderGeneratorType = (...*) => AsyncProviderType;
 
 export type WalletObjectType = {
   address: string,
@@ -36,7 +38,7 @@ export type WalletArgumentsType = {
   mnemonic?: string,
   path?: string,
   keystore?: string,
-  provider?: ProviderType,
+  provider?: AsyncProviderType,
   entropy?: Uint8Array,
   password?: string,
 };
@@ -62,11 +64,11 @@ export type DebugExportType = {
 };
 
 export type ProvidersExportType = {
-  etherscan: ProviderGeneratorType,
-  infura: ProviderGeneratorType,
-  metamask: ProviderGeneratorType,
-  localhost: ProviderGeneratorType,
-  autoselect: ProviderGeneratorType,
+  etherscan: AsyncProviderGeneratorType,
+  infura: AsyncProviderGeneratorType,
+  metamask: AsyncProviderGeneratorType,
+  jsonRpc: AsyncProviderGeneratorType,
+  autoselect: AsyncProviderGeneratorType,
 };
 
 export type SoftwareWalletExportType = {
@@ -89,4 +91,10 @@ export type MessagesExportType = {
   providers: Object,
   utils: Object,
   softwareWallet: Object,
+};
+
+export type ProviderArgumentsType = {
+  network?: string,
+  apiKey?: string,
+  url?: string,
 };

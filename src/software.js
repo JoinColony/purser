@@ -245,13 +245,13 @@ class SoftwareWallet extends EtherWallet {
       }
       return new this(
         basicWallet.privateKey,
-        provider,
+        await provider,
         password,
         basicWallet.mnemonic,
         basicWallet.path,
       );
     } catch (err) {
-      warning(messages.create, provider, entropy, err, { level: 'high' });
+      warning(messages.create, await provider, entropy, err, { level: 'high' });
       return this.createRandom();
     }
   }
@@ -321,7 +321,7 @@ class SoftwareWallet extends EtherWallet {
        */
       return new this(
         privateKey || extractedPrivateKey,
-        provider,
+        await provider,
         password,
         mnemonic || extractedMnemonic,
         path || extractedPath,

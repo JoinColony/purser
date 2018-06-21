@@ -1,6 +1,6 @@
 import ethersProviders from 'ethers/providers';
 
-import { localhost } from '../../providers';
+import { jsonRpc } from '../../providers';
 import {
   DEFAULT_NETWORK,
   LOCALPROVIDER_HOST as HOST,
@@ -16,29 +16,36 @@ describe('`providers` module', () => {
     ethersProviders.JsonRpcProvider.mockClear();
   });
   describe('`localhost` provider', () => {
-    test('Connects with defaults', () => {
-      localhost();
+    test('Connects with defaults', async () => {
+      await jsonRpc();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         `${PROTOCOL}://${HOST}:${PORT}`,
         DEFAULT_NETWORK,
       );
     });
-    test('Connects with custom url and network', () => {
+    test('Connects with custom url and network', async () => {
       const testUrl = 'http://127.0.0.1';
       const testNetworkName = 'skynet';
-      localhost(testUrl, testNetworkName);
+      await jsonRpc({
+        network: testNetworkName,
+        url: testUrl,
+      });
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         testUrl,
         testNetworkName,
       );
     });
-    test('Catch the connection error if something goes wrong', () => {
+    test('Catch the connection error if something goes wrong', async () => {
       const testNetworkName = 'error';
-      const provider = localhost(testNetworkName);
+      const provider = await jsonRpc({
+        network: testNetworkName,
+      });
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
-      expect(() => ethersProviders.JsonRpcProvider(testNetworkName)).toThrow();
+      expect(() =>
+        ethersProviders.JsonRpcProvider('', testNetworkName),
+      ).toThrow();
       expect(provider).toEqual(PROVIDER_PROTO);
     });
   });

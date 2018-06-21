@@ -1,5 +1,5 @@
 import software, { create } from '../../software';
-import { localhost } from '../../providers';
+import { jsonRpc } from '../../providers';
 
 let SoftwareWalletCreateSpy;
 
@@ -18,7 +18,7 @@ describe('`software` wallet module', () => {
       expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({});
     });
     test('Creates a new wallet with a provider', () => {
-      const provider = localhost();
+      const provider = jsonRpc();
       create({ provider });
       expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
       expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({ provider });

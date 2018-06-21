@@ -1,20 +1,24 @@
-export const providerMock = jest.fn().mockImplementation(network => {
+const throwErrorNetwork = network => {
   if (network === 'error') {
     throw new Error();
   }
-});
+};
 
-export const EtherscanProvider = providerMock;
+export const EtherscanProvider = jest
+  .fn()
+  .mockImplementation(network => throwErrorNetwork(network));
 
-export const InfuraProvider = providerMock;
+export const InfuraProvider = jest
+  .fn()
+  .mockImplementation(network => throwErrorNetwork(network));
 
-export const JsonRpcProvider = providerMock;
+export const JsonRpcProvider = jest
+  .fn()
+  .mockImplementation((url, network) => throwErrorNetwork(network));
 
-export const Web3Provider = jest.fn().mockImplementation((web3, network) => {
-  if (network === 'error') {
-    throw new Error();
-  }
-});
+export const Web3Provider = jest
+  .fn()
+  .mockImplementation((web3, network) => throwErrorNetwork(network));
 
 const providers = {
   EtherscanProvider,

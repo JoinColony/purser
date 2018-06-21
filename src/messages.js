@@ -5,13 +5,13 @@ import { MessagesExportType } from './flowtypes';
 
 export const providers = {
   etherscan: {
-    token:
+    apiKey:
       "You are using the Etherscan provider without an API key. This may limit the number of requests you're allowed to make. You can generate a new API key here: https://etherscan.io/myapikey",
     connect:
       'Etherscan provider failed to connect. Please verify the provided network name (%s) and api key (%s). %s',
   },
   infura: {
-    token:
+    apiKey:
       "You are using the Infura provider without an API key. This may limit the number of requests you're allowed to make. You can generate a new API by signing up to the service: https://infura.io/signup",
     connect:
       'Infura provider failed to connect. Please verify the provided network name (%s) and api key (%s). %s',
@@ -22,7 +22,7 @@ export const providers = {
     connect:
       'Metamask provider failed to connect. Please verify the provided network name (%s). %s',
   },
-  localhost: {
+  jsonRpc: {
     connect:
       'Local provider failed to connect. Please verify the provided rpc url (%s) and network name (%s). %s',
   },

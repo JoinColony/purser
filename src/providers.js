@@ -4,7 +4,9 @@ import ethersProviders from 'ethers/providers';
 
 import type {
   ProviderType,
-  ProviderGeneratorType,
+  AsyncProviderType,
+  ProviderArgumentsType,
+  AsyncProviderGeneratorType,
   ProvidersExportType,
 } from './flowtypes';
 
@@ -23,30 +25,31 @@ import {
  * Etherscan provider generator method.
  * This wraps the `ethers` `EtherscanProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Refactor method to accept arguments as object props
- * @TODO Convert to an `async` method
- *
  * @method etherscan
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
  * @param {string} token Optional (but recommended) api key to use when connecting
  *
- * @return {ProviderType} The provider connection object or an empty one if the connection failed.
+ * All the above params are sent in as props of an {ProviderArgumentsType} object.
+ *
+ * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const etherscan = (
-  network: string = DEFAULT_NETWORK,
-  token: string,
-): ProviderType => {
-  let provider = PROVIDER_PROTO;
+export const etherscan = async ({
+  network = DEFAULT_NETWORK,
+  apiKey,
+}: ProviderArgumentsType = {}): AsyncProviderType => {
+  let provider: ProviderType = PROVIDER_PROTO;
   try {
-    if (token) {
-      provider = new ethersProviders.EtherscanProvider(network, token);
+    if (apiKey) {
+      provider = new ethersProviders.EtherscanProvider(network, apiKey);
       return provider;
     }
-    warning(messages.etherscan.token);
+    warning(messages.etherscan.apiKey);
     provider = new ethersProviders.EtherscanProvider(network);
   } catch (err) {
-    warning(messages.etherscan.connect, network, token, err, { level: 'high' });
+    warning(messages.etherscan.connect, network, apiKey, err, {
+      level: 'high',
+    });
   }
   return provider;
 };
@@ -55,30 +58,29 @@ export const etherscan = (
  * Infura provider generator method.
  * This wraps the `ethers` `InfuraProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Refactor method to accept arguments as object props
- * @TODO Convert to an `async` method
- *
  * @method infura
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
  * @param {string} token Optional (but recommended) api key to use when connecting
  *
- * @return {ProviderType} The provider connection object or an empty one if the connection failed.
+ * All the above params are sent in as props of an {ProviderArgumentsType} object.
+ *
+ * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const infura = (
-  network: string = DEFAULT_NETWORK,
-  token: string,
-): ProviderType => {
+export const infura = async ({
+  network = DEFAULT_NETWORK,
+  apiKey,
+}: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   try {
-    if (token) {
-      provider = new ethersProviders.InfuraProvider(network, token);
+    if (apiKey) {
+      provider = new ethersProviders.InfuraProvider(network, apiKey);
       return provider;
     }
-    warning(messages.infura.token);
+    warning(messages.infura.apiKey);
     provider = new ethersProviders.InfuraProvider(network);
   } catch (err) {
-    warning(messages.infura.connect, network, token, err, { level: 'high' });
+    warning(messages.infura.connect, network, apiKey, err, { level: 'high' });
   }
   return provider;
 };
@@ -87,16 +89,17 @@ export const infura = (
  * Metamask provider generator method.
  * This wraps the `ethers` `Web3Provider` method and provides defaults, error catching and warnings.
  *
- * @TODO Refactor method to accept arguments as object props
- * @TODO Convert to an `async` method
- *
  * @method metamask
  *
  * @param {string} network The network name to connect to (defaults to `homestead`)
  *
- * @return {ProviderType} The provider connection object or an empty one if the connection failed.
+ * The above param are sent in as props of an {ProviderArgumentsType} object.
+ *
+ * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
+export const metamask = async ({
+  network = DEFAULT_NETWORK,
+}: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     if (!global.web3 || !global.web3.currentProvider) {
@@ -117,33 +120,34 @@ export const metamask = (network: string = DEFAULT_NETWORK): ProviderType => {
  * Local provider generator method. Useful to connect to a local instance of geth / parity / testrpc.
  * This wraps the `ethers` `JsonRpcProvider` method and provides defaults, error catching and warnings.
  *
- * @TODO Refactor method to accept arguments as object props
- * @TODO Convert to an `async` method
- *
- * @method localhost
+ * @method jsonRpc
  *
  * @param {string} url The Json Rpc url of the localhost provider (defaults to `http://localhost:8545`)
  * @param {string} network The network name to connect to (defaults to `homestead`)
  *
- * @return {ProviderType} The provider connection object or an empty one if the connection failed.
+ * All the above params are sent in as props of an {ProviderArgumentsType} object.
+ *
+ * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
-export const localhost = (
-  url: string = `${PROTOCOL}://${HOST}:${PORT}`,
-  network: string = DEFAULT_NETWORK,
-): ProviderType => {
+export const jsonRpc = async ({
+  network = DEFAULT_NETWORK,
+  url = `${PROTOCOL}://${HOST}:${PORT}`,
+}: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   try {
     /*
      * @TODO Instantly check the connection to see if the provider is up
+     *
      * Currently it will create the provider regardless, and only check if it's up when
      * sending a transaction.
+     *
      * If we check for it upfront, we can add this provider to the start of the array.
      * To implement this, we need to switch this (and maybe all) provider methods to
      * `async`s, the tradeoff in this case might not be worth it.
      */
     provider = new ethersProviders.JsonRpcProvider(url, network);
   } catch (err) {
-    warning(messages.localhost.connect, url, network, err, { level: 'high' });
+    warning(messages.jsonRpc.connect, url, network, err, { level: 'high' });
   }
   return provider;
 };
@@ -152,22 +156,20 @@ export const localhost = (
  * Helper method to autoselect from a pre-determined list of providers.
  * It will select the first one that's available.
  *
- * @TODO Convert to an `async` method
- *
  * @method autoselect
  *
  * @param {Array} providersList An array of providers to select from. Can be either a provider
  * object (ProviderType) or an provider generator method (ProviderGeneratorType)
- * @return {ProviderType} The selected provider connection object
+ * @return {AsyncProviderGeneratorType} The selected provider connection object
  */
-export const autoselect = (
-  providersList: Array<ProviderGeneratorType> = [
+export const autoselect = async (
+  providersList: Array<AsyncProviderGeneratorType> = [
     metamask,
     etherscan,
     infura,
-    localhost,
+    jsonRpc,
   ],
-) => {
+): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   if (!providersList.length) {
     warning(messages.autoselect.empty, { level: 'high' });
@@ -179,7 +181,14 @@ export const autoselect = (
       return provider;
     }
     if (typeof providersList[i] === 'function') {
-      provider = providersList[i]();
+      /*
+       * While disabling this is considered an anti-pattern, since we won't be
+       * able to take advantage of pararellization, it this case it doesn't
+       * really matter since we are returning after the first available
+       * provider
+       */
+      /* eslint-disable-next-line no-await-in-loop */
+      provider = await providersList[i]();
       if (provider && provider.chainId) {
         return provider;
       }
@@ -196,7 +205,7 @@ export const autoselect = (
 const colonyWallet: ProvidersExportType = {
   etherscan,
   infura,
-  localhost,
+  jsonRpc,
   metamask,
   autoselect,
 };
