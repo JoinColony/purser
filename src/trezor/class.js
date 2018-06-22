@@ -29,7 +29,7 @@ export default class TrezorWallet {
     /*
      * Generate the address from the derived public key
      */
-    this.account = SigningKey.publicKeyToAddress(
+    this.address = SigningKey.publicKeyToAddress(
       Buffer.from(derivationKey.publicKey, HEX_HASH_TYPE),
     );
   }

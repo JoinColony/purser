@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { PromptOptionsType } from './flowtypes';
+import type { WindowFeaturesType } from './flowtypes';
 
 export const PATH_INDEX: number = 0;
 export const PATH: string = `m/44'/60'/0'/${PATH_INDEX}`;
@@ -12,7 +12,7 @@ export const PROMPT_WIDTH: number = 600;
 export const PROMPT_HEIGHT: number = 500;
 export const HEX_HASH_TYPE: string = 'hex';
 
-export const PROMPT_OPTIONS: PromptOptionsType = {
+export const WINDOW_FEATURES: WindowFeaturesType = {
   width: PROMPT_WIDTH,
   height: PROMPT_HEIGHT,
   /*
@@ -37,7 +37,7 @@ const trezorDefaults: Object = {
   SERVICE_KEY,
   PROMPT_WIDTH,
   PROMPT_HEIGHT,
-  PROMPT_OPTIONS,
+  WINDOW_FEATURES,
   HEX_HASH_TYPE,
 };
 

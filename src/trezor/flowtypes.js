@@ -5,16 +5,11 @@ export type PayloadType = {
   path?: number[],
 };
 
-export type PromptOptionsType = {
+export type WindowFeaturesType = {
   width: number,
   height: number,
   left: number,
   top: number,
-  menubar?: boolean,
-  toolbar?: boolean,
-  location?: boolean,
-  personalbar?: boolean,
-  status?: boolean,
 };
 
 export type ServiceUrlType = {
@@ -22,4 +17,13 @@ export type ServiceUrlType = {
   version: number,
   url: string,
   key: string,
+};
+
+export type PayloadListenerType = {
+  payload: PayloadType,
+  origin: string,
+};
+
+export type PayloadResponseType = {
+  success: boolean,
 };
