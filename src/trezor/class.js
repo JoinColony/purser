@@ -3,7 +3,7 @@
 import { SigningKey } from 'ethers/wallet';
 import HDKey from 'hdkey';
 
-import { PATH, PATH_INDEX, HEX_HASH_TYPE } from './defaults';
+import { HEX_HASH_TYPE } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
 import { payloadListener } from './helpers';
 
@@ -16,11 +16,11 @@ export default class TrezorWallet {
     const hdKey = new HDKey();
     hdKey.publicKey = Buffer.from(publicKey, HEX_HASH_TYPE);
     hdKey.chainCode = Buffer.from(chainCode, HEX_HASH_TYPE);
-    const derivationKey = hdKey.derive(`m/${PATH_INDEX}`);
+    const derivationKey = hdKey.derive(`m/0`);
     /*
      * Set the Wallet Object's values
      */
-    this.path = PATH;
+    this.path = "m/44'/60'/0'/0";
     /*
      * This is the derrived public key, not the one originally fetched from
      * the trezor service

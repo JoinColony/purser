@@ -1,9 +1,9 @@
 /* @flow */
 
-export const HANDSHAKE: string = 'handshake';
+export const RESPONSE_HANDSHAKE: string = 'handshake';
 
 const trezorServiceResponses: Object = {
-  HANDSHAKE,
+  RESPONSE_HANDSHAKE,
 };
 
 export default trezorServiceResponses;

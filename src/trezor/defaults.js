@@ -2,8 +2,30 @@
 
 import type { WindowFeaturesType } from './flowtypes';
 
-export const PATH_INDEX: number = 0;
-export const PATH: string = `m/44'/60'/0'/${PATH_INDEX}`;
+/*
+ * Ethereum HD Wallet Bip32 Derivation path
+ *
+ * @TODO there's an argument here that this should be moved into common defaults
+ * and used through all of the wallet types for consistency.
+ *
+ * See the ongoing standardization discussions:
+ * https://github.com/ethereum/EIPs/issues/84
+ */
+/*
+ * Ethereum reserved purpouse
+ */
+export const PATH_PURPOSE: number = 44;
+/*
+ * ETH coin type is 60 for main net, and 1 for test nets
+ */
+export const PATH_MAIN_COIN_TYPE: number = 60;
+export const PATH_TEST_COIN_TYPE: number = 1;
+export const PATH_ACCOUNT: number = 0;
+export const PATH_CHANGE: number = 0;
+/*
+ * First address index
+ */
+export const PATH_ADDRESS_INDEX: number = 0;
 export const SERVICE_DOMAIN: string = 'https://connect.trezor.io';
 export const SERVICE_VERSION: number = 4;
 export const SERVICE_URL: string = 'popup/popup.html';
@@ -29,8 +51,12 @@ export const WINDOW_FEATURES: WindowFeaturesType = {
 };
 
 const trezorDefaults: Object = {
-  PATH,
-  PATH_INDEX,
+  PATH_PURPOSE,
+  PATH_MAIN_COIN_TYPE,
+  PATH_TEST_COIN_TYPE,
+  PATH_ACCOUNT,
+  PATH_CHANGE,
+  PATH_ADDRESS_INDEX,
   SERVICE_DOMAIN,
   SERVICE_VERSION,
   SERVICE_URL,

@@ -7,7 +7,7 @@ import {
   SERVICE_KEY,
   WINDOW_FEATURES,
 } from './defaults';
-import { HANDSHAKE } from './responses';
+import { RESPONSE_HANDSHAKE } from './responses';
 
 import type {
   WindowFeaturesType,
@@ -135,6 +135,8 @@ export const promptGenerator = ({
  * @TODO Create own response format
  * Basically remove un-needed props
  *
+ * @TODO Allow users to choose the service url location / version
+ *
  * @method payloadListener
  *
  * @param {Object} payload payload object to send to the Trezor service
@@ -155,7 +157,7 @@ export const payloadListener = async ({
       const { data, isTrusted, origin } = event;
       const sameOrigin =
         prompt && sanitizeUrl(payloadOrigin) === sanitizeUrl(origin);
-      if (isTrusted && sameOrigin && data === HANDSHAKE) {
+      if (isTrusted && sameOrigin && data === RESPONSE_HANDSHAKE) {
         prompt.postMessage(payload, payloadOrigin);
       }
       if (isTrusted && sameOrigin && data && data.success) {
