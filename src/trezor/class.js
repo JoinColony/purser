@@ -3,35 +3,59 @@
 import { SigningKey } from 'ethers/wallet';
 import HDKey from 'hdkey';
 
-import { HEX_HASH_TYPE, PATH } from './defaults';
+import { HEX_HASH_TYPE } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
 import { payloadListener, derivationPathSerializer } from './helpers';
 
+import type { WalletArgumentsType } from '../flowtypes';
+
 export default class TrezorWallet {
-  constructor(publicKey, chainCode, addressIndex = PATH.INDEX) {
+  /*
+   * @TODO Check the `publicKey` and `chainCode` values
+   *
+   * If for some reason the Trezor service fails to send them in the correct format
+   * eg: malware shenanigans
+   */
+  constructor(publicKey: string, chainCode: string, addressCount: number = 1) {
     /*
-     * Derive the public key with the derivation index, so we can
-     * reverse the addresses (basically first 20 bytes of the keccak256 hash)
+     * Derive the public key with the address index, so we can get the address
      */
     const hdKey = new HDKey();
     hdKey.publicKey = Buffer.from(publicKey, HEX_HASH_TYPE);
     hdKey.chainCode = Buffer.from(chainCode, HEX_HASH_TYPE);
-    const derivationKey = hdKey.derive(`m/${addressIndex}`);
+    /*
+     * @TODO Check that `addressesCount` is a number
+     */
+    const allAddresses = Array.from(new Array(addressCount), (value, index) => {
+      const addressObject = {};
+      const derivationKey = hdKey.derive(`m/${index}`);
+      addressObject.path = derivationPathSerializer({ addressIndex: index });
+      /*
+       * This is the derrived public key, not the one originally fetched from
+       * the trezor service
+       */
+      addressObject.publicKey = derivationKey.publicKey.toString(HEX_HASH_TYPE);
+      /*
+       * Generate the address from the derived public key
+       */
+      addressObject.address = SigningKey.publicKeyToAddress(
+        Buffer.from(derivationKey.publicKey, HEX_HASH_TYPE),
+      );
+      return addressObject;
+    });
     /*
      * Set the Wallet Object's values
      */
-    this.path = derivationPathSerializer({ addressIndex });
+    this.address = allAddresses[0].address;
+    this.publicKey = allAddresses[0].publicKey;
+    this.path = allAddresses[0].path;
     /*
-     * This is the derrived public key, not the one originally fetched from
-     * the trezor service
+     * The `addresses` prop is only available if we have more than one.
+     * Otherwise it's pointless since it just repeats information.
      */
-    this.publicKey = derivationKey.publicKey.toString(HEX_HASH_TYPE);
-    /*
-     * Generate the address from the derived public key
-     */
-    this.address = SigningKey.publicKeyToAddress(
-      Buffer.from(derivationKey.publicKey, HEX_HASH_TYPE),
-    );
+    if (addressCount > 1) {
+      this.addresses = allAddresses;
+    }
   }
 
   /**
@@ -44,7 +68,9 @@ export default class TrezorWallet {
    * @return {WalletType} The wallet object resulted by instantiating the class
    * (Object is wrapped in a promise).
    */
-  static async open() {
+  static async open({ addressCount }: WalletArgumentsType = {}): Promise<
+    TrezorWallet,
+  > {
     /*
      * Get the harware wallet's public key and chain code, to use for deriving
      * the rest of the accounts
@@ -52,6 +78,6 @@ export default class TrezorWallet {
     const { publicKey, chainCode } = await payloadListener({
       payload: PAYLOAD_XPUB,
     });
-    return new this(publicKey, chainCode);
+    return new this(publicKey, chainCode, addressCount);
   }
 }

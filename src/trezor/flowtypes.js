@@ -32,8 +32,8 @@ export type DerivationPathObjectType = {|
   purpose: number,
   coinType: number,
   account: number,
-  change?: number,
-  addressIndex: number,
+  change: number,
+  addressIndex?: number,
 |};
 
 export type DerivationPathDefaultType = {

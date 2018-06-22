@@ -34,6 +34,10 @@ export type WalletObjectType = {
 };
 
 export type WalletArgumentsType = {
+  /*
+   * Used to select the address index from the trezor wallet
+   */
+  addressCount?: number,
   privateKey?: string,
   mnemonic?: string,
   path?: string,

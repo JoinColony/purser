@@ -4,7 +4,7 @@ import TrezorWallet from './class';
 
 import { warning } from '../utils';
 
-import type { WalletExportType } from '../flowtypes';
+import type { WalletExportType, WalletArgumentsType } from '../flowtypes';
 
 const trezorWallet: WalletExportType = Object.assign(
   {},
@@ -17,7 +17,9 @@ const trezorWallet: WalletExportType = Object.assign(
      * @return {WalletType} A new wallet object (wrapped in a promise), which is
      * derived from the given path. Path defaults to the first address path.
      */
-    open: async () => TrezorWallet.open(),
+    open: async (
+      trezorWalletArguments: WalletArgumentsType = {},
+    ): Promise<TrezorWallet> => TrezorWallet.open(trezorWalletArguments),
     /**
      * We can't actually create a new wallet address since this is a harware
      * one and comes pre-seeeded.
