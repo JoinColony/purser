@@ -3,44 +3,55 @@
 import { SigningKey } from 'ethers/wallet';
 import HDKey from 'hdkey';
 
-import { PATH } from './defaults';
+import { PATH, PATH_INDEX, HEX_HASH_TYPE } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
 import { payloadListener } from './helpers';
 
-export class TrezorWallet {
+export default class TrezorWallet {
   constructor(publicKey, chainCode) {
     /*
      * Derive the public key with the derivation index, so we can
      * reverse the addresses (basically first 20 bytes of the keccak256 hash)
      */
     const hdKey = new HDKey();
-    hdKey.publicKey = Buffer.from(publicKey, 'hex');
-    hdKey.chainCode = Buffer.from(chainCode, 'hex');
-    const derivationKey = hdKey.derive('m/0');
+    hdKey.publicKey = Buffer.from(publicKey, HEX_HASH_TYPE);
+    hdKey.chainCode = Buffer.from(chainCode, HEX_HASH_TYPE);
+    const derivationKey = hdKey.derive(`m/${PATH_INDEX}`);
     /*
      * Set the Wallet Object's values
      */
     this.path = PATH;
-    this.publicKey = derivationKey.publicKey.toString('hex');
+    /*
+     * This is the derrived public key, not the one originally fetched from
+     * the trezor service
+     */
+    this.publicKey = derivationKey.publicKey.toString(HEX_HASH_TYPE);
+    /*
+     * Generate the address from the derived public key
+     */
     this.account = SigningKey.publicKeyToAddress(
-      Buffer.from(derivationKey.publicKey, 'hex'),
+      Buffer.from(derivationKey.publicKey, HEX_HASH_TYPE),
     );
   }
 
-  static async publicKey() {
-    return payloadListener({ payload: PAYLOAD_XPUB });
-  }
-
+  /**
+   * Open a new wallet from the public key and chain code, which are received
+   * form the Trezor service after interacting (confirming) with the hardware
+   * in real life.
+   *
+   * @method open
+   *
+   * @return {WalletType} The wallet object resulted by instantiating the class
+   * (Object is wrapped in a promise).
+   */
   static async open() {
-    const { publicKey, chainCode } = await this.publicKey();
+    /*
+     * Get the harware wallet's public key and chain code, to use for deriving
+     * the rest of the accounts
+     */
+    const { publicKey, chainCode } = await payloadListener({
+      payload: PAYLOAD_XPUB,
+    });
     return new this(publicKey, chainCode);
   }
 }
-
-export const open = () => TrezorWallet.open();
-
-export const create = () =>
-  console.log(
-    "Cannot create a new wallet, it's hardware",
-    'generated via the derived HD path',
-  );

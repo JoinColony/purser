@@ -7,10 +7,9 @@ import blockies from 'ethereum-blockies';
 import type { DebugExportType } from './flowtypes';
 
 import { software } from './wallets';
-import trezor from './trezor';
+import TrezorWallet from './trezor/class';
 
 const { SoftwareWallet } = software;
-const { TrezorWallet } = trezor;
 
 /*
  * This object was extracted in it's own export to not pollute the index,

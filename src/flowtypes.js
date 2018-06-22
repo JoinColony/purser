@@ -72,7 +72,7 @@ export type ProvidersExportType = {
 };
 
 export type WalletExportType = {
-  create: WalletArgumentsType => Promise<WalletObjectType>,
+  create: WalletArgumentsType => Promise<WalletObjectType | void>,
   open: WalletArgumentsType => Promise<WalletObjectType | void>,
   SoftwareWallet?: Class<*>,
   TrezorWallet?: Class<*>,
