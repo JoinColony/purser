@@ -6,6 +6,7 @@ import {
   SERVICE_URL,
   SERVICE_KEY,
   WINDOW_FEATURES,
+  PATH,
 } from './defaults';
 import { RESPONSE_HANDSHAKE } from './responses';
 
@@ -14,6 +15,7 @@ import type {
   ServiceUrlType,
   PayloadListenerType,
   PayloadResponseType,
+  DerivationPathObjectType,
 } from './flowtypes';
 
 /**
@@ -169,11 +171,46 @@ export const payloadListener = async ({
     window.addEventListener('message', messageListener);
   });
 
+/**
+ * Serialize an derivation path object's props into it's string counterpart
+ *
+ * @TODO Check path values are of the correct (number) type
+ *
+ * @TODO there's an argument here that this should be moved into common defaults
+ * and used through all of the wallet types for consistency.
+ *
+ * @method derivationPathSerializer
+ *
+ * @param {number} purpose path purpouse
+ * @param {number} coinType path coin type (and network)
+ * @param {number} account path account number
+ * @param {number} change path change number
+ * @param {number} addressIndex address index (no default since it should be manually added)
+ *
+ * See the defaults file for some more information regarding the format of the
+ * ethereum deviation path.
+ *
+ * All the above params are sent in as props of an {DerivationPathObjectType} object.
+ *
+ * @return {string} The serialized path
+ */
+export const derivationPathSerializer = ({
+  purpose = PATH.PURPOSE,
+  coinType = PATH.COIN_MAINNET,
+  account = PATH.ACCOUNT,
+  change = PATH.CHANGE,
+  addressIndex,
+}: DerivationPathObjectType = {}): string =>
+  `m/${purpose}'/${coinType}'/${account}'/${change}${
+    addressIndex || addressIndex === 0 ? `/${addressIndex}` : ''
+  }`;
+
 const trezorClassHelper: Object = {
   sanitizeUrl,
   windowFeaturesSerializer,
   promptGenerator,
   payloadListener,
+  derivationPathSerializer,
 };
 
 export default trezorClassHelper;

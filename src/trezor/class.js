@@ -3,12 +3,12 @@
 import { SigningKey } from 'ethers/wallet';
 import HDKey from 'hdkey';
 
-import { HEX_HASH_TYPE } from './defaults';
+import { HEX_HASH_TYPE, PATH } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
-import { payloadListener } from './helpers';
+import { payloadListener, derivationPathSerializer } from './helpers';
 
 export default class TrezorWallet {
-  constructor(publicKey, chainCode) {
+  constructor(publicKey, chainCode, addressIndex = PATH.INDEX) {
     /*
      * Derive the public key with the derivation index, so we can
      * reverse the addresses (basically first 20 bytes of the keccak256 hash)
@@ -16,11 +16,11 @@ export default class TrezorWallet {
     const hdKey = new HDKey();
     hdKey.publicKey = Buffer.from(publicKey, HEX_HASH_TYPE);
     hdKey.chainCode = Buffer.from(chainCode, HEX_HASH_TYPE);
-    const derivationKey = hdKey.derive(`m/0`);
+    const derivationKey = hdKey.derive(`m/${addressIndex}`);
     /*
      * Set the Wallet Object's values
      */
-    this.path = "m/44'/60'/0'/0";
+    this.path = derivationPathSerializer({ addressIndex });
     /*
      * This is the derrived public key, not the one originally fetched from
      * the trezor service

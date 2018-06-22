@@ -27,3 +27,20 @@ export type PayloadListenerType = {
 export type PayloadResponseType = {
   success: boolean,
 };
+
+export type DerivationPathObjectType = {|
+  purpose: number,
+  coinType: number,
+  account: number,
+  change?: number,
+  addressIndex: number,
+|};
+
+export type DerivationPathDefaultType = {
+  PURPOSE: number,
+  COIN_MAINNET: number,
+  COIN_TESTNET: number,
+  ACCOUNT: number,
+  CHANGE: number,
+  INDEX: number,
+};
