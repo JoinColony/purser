@@ -71,10 +71,12 @@ class SoftwareWallet extends EtherWallet {
       path: Object.assign({}, { value: path }, WALLET_PROP_DESCRIPTORS),
     });
   }
+
   /*
    * Encrypted JSON Keystore
    */
   keystore: string;
+
   get keystore(): Promise<string | void> {
     if (encryptionPassword) {
       /*
@@ -101,6 +103,7 @@ class SoftwareWallet extends EtherWallet {
     warning(messages.noPassword);
     return Promise.reject();
   }
+
   /*
    * Just set the encryption password, we don't return anything from here,
    * hence we don't have a need for `this`.
@@ -112,10 +115,12 @@ class SoftwareWallet extends EtherWallet {
   set keystore(newEncryptionPassword: string): void {
     encryptionPassword = newEncryptionPassword;
   }
+
   /*
    * Address QR Code
    */
   addressQR: string;
+
   get addressQR(): Promise<string | void> {
     if (this.address) {
       /*
@@ -135,10 +140,12 @@ class SoftwareWallet extends EtherWallet {
     warning(messages.noAddress, this.address, { level: 'high' });
     return Promise.reject();
   }
+
   /*
    * Address Identicon (Blockie)
    */
   blockie: string;
+
   get blockie(): Promise<string | void> {
     if (this.address) {
       const blockiePromise = Promise.resolve(
@@ -161,10 +168,12 @@ class SoftwareWallet extends EtherWallet {
     warning(messages.noAddress, this.address, { level: 'high' });
     return Promise.reject();
   }
+
   /*
    * Private Key QR Code
    */
   privateKeyQR: string;
+
   get privateKeyQR(): Promise<string | void> {
     if (this.privateKey) {
       /*
@@ -184,6 +193,7 @@ class SoftwareWallet extends EtherWallet {
     warning(messages.noPrivateKey, this.privateKey, { level: 'high' });
     return Promise.reject();
   }
+
   /**
    * Wrapper method for `sendTransaction()` that waits for confirmation before
    * sending the transaction.
@@ -212,6 +222,7 @@ class SoftwareWallet extends EtherWallet {
     warning(messages.transactionConfirmationFail, [data]);
     return Promise.reject();
   }
+
   /**
    * Create a new wallet.
    *
@@ -255,6 +266,7 @@ class SoftwareWallet extends EtherWallet {
       return this.createRandom();
     }
   }
+
   /**
    * Open an existing wallet
    * Using either `mnemonic`, `private key` or `encrypted keystore`
