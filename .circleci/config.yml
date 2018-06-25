@@ -3,7 +3,7 @@ version: 2.0
 jobs:
   build-with-lockfile:
     docker:
-      - image: circleci/node:8.9.4
+      - image: circleci/node:8.10
     parallelism: 2
     working_directory: ~/colony-wallet
     steps:
@@ -47,7 +47,7 @@ jobs:
           command: yarn lockfile:upload
   build:
     docker:
-      - image: circleci/node:8.9.4
+      - image: circleci/node:8.10
     parallelism: 2
     working_directory: ~/colony-wallet
     steps:
