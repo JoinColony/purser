@@ -2,13 +2,13 @@
 
 import trezorWallet from './trezor';
 
-import type { HardwareWalletIndexExportType } from './flowtypes';
+import type { WalletExportType } from './flowtypes';
 
 /*
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
  * to us directly for debugging.
  */
-const hardwareWallet: HardwareWalletIndexExportType = Object.assign(
+const hardwareWallet: { trezor: WalletExportType } = Object.assign(
   {},
   {
     trezor: trezorWallet,

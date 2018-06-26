@@ -88,13 +88,9 @@ export type UtilsExportType = {
   verbose?: () => boolean,
 };
 
-export type HardwareWalletIndexExportType = {
-  trezor: *,
-};
-
 export type WalletIndexExportType = {
   software: WalletExportType,
-  hardware: HardwareWalletIndexExportType,
+  hardware: Object,
 };
 
 export type ProviderArgumentsType = {
