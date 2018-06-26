@@ -321,7 +321,7 @@ class SoftwareWallet extends EtherWallet {
        * @TODO Detect if existing but not valid keystore, and warn the user
        */
       if (keystore && this.isEncryptedWallet(keystore) && password) {
-        const keystoreWallet: WalletObjectType = await this.fromEncryptedWallet(
+        const keystoreWallet: Object = await this.fromEncryptedWallet(
           keystore,
           password,
         );
@@ -333,9 +333,9 @@ class SoftwareWallet extends EtherWallet {
        * @TODO Detect if existing but not valid mnemonic, and warn the user
        */
       if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
-        const mnemonicWallet: WalletObjectType = HDNode.fromMnemonic(
-          mnemonic,
-        ).derivePath(path);
+        const mnemonicWallet: Object = HDNode.fromMnemonic(mnemonic).derivePath(
+          path,
+        );
         extractedPrivateKey = mnemonicWallet.privateKey;
       }
       /*

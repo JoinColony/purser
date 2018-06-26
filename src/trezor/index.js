@@ -4,7 +4,11 @@ import TrezorWallet from './class';
 
 import { warning } from '../utils';
 
-import type { WalletExportType, WalletArgumentsType } from '../flowtypes';
+import type {
+  WalletExportType,
+  WalletArgumentsType,
+  WalletObjectType,
+} from '../flowtypes';
 
 const trezorWallet: WalletExportType = Object.assign(
   {},
@@ -19,7 +23,8 @@ const trezorWallet: WalletExportType = Object.assign(
      */
     open: async (
       trezorWalletArguments: WalletArgumentsType = {},
-    ): Promise<TrezorWallet> => TrezorWallet.open(trezorWalletArguments),
+    ): Promise<WalletObjectType | void> =>
+      TrezorWallet.open(trezorWalletArguments),
     /**
      * We can't actually create a new wallet address since this is a harware
      * one and comes pre-seeeded.
@@ -31,7 +36,8 @@ const trezorWallet: WalletExportType = Object.assign(
      *
      * @method create
      */
-    create: async () => warning('Cannot create a new wallet/address'),
+    create: async (): Promise<void> =>
+      warning('Cannot create a new wallet/address'),
   },
 );
 

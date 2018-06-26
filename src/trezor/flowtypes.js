@@ -21,18 +21,20 @@ export type ServiceUrlType = {
 
 export type PayloadListenerType = {
   payload: PayloadType,
-  origin: string,
+  origin?: string,
 };
 
 export type PayloadResponseType = {
   success: boolean,
+  publicKey: string,
+  chainCode: string,
 };
 
 export type DerivationPathObjectType = {|
-  purpose: number,
-  coinType: number,
-  account: number,
-  change: number,
+  purpose?: number,
+  coinType?: number,
+  account?: number,
+  change?: number,
   addressIndex?: number,
 |};
 

@@ -1,4 +1,4 @@
-/* eslint-disable flowtype/require-valid-file-annotation */
+/* @flow */
 
 import { SigningKey } from 'ethers/wallet';
 import HDKey from 'hdkey';
@@ -9,26 +9,50 @@ import { PAYLOAD_XPUB } from './payloads';
 import { WALLET_PROP_DESCRIPTORS } from '../defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
 
-import type { WalletArgumentsType } from '../flowtypes';
+import type { WalletArgumentsType, WalletObjectType } from '../flowtypes';
 
 export default class TrezorWallet {
+  address: string;
+
+  addresses: Object[];
+
+  publicKey: string;
+
+  path: string;
+
+  type: string;
+
+  subtype: string;
+
   /*
    * @TODO Check the `publicKey` and `chainCode` values
    *
    * If for some reason the Trezor service fails to send them in the correct format
    * eg: malware shenanigans
    */
-  constructor(publicKey: string, chainCode: string, addressCount: number) {
+  constructor(publicKey: string, chainCode: string, addressCount: number = 1) {
     /*
      * Derive the public key with the address index, so we can get the address
      */
     const hdKey = new HDKey();
+    /*
+     * Sadly Flow doesn't have the correct types for node's Buffer Object
+     */
+    /* $FlowFixMe */
     hdKey.publicKey = Buffer.from(publicKey, HEX_HASH_TYPE);
+    /*
+     * Sadly Flow doesn't have the correct types for node's Buffer Object
+     */
+    /* $FlowFixMe */
     hdKey.chainCode = Buffer.from(chainCode, HEX_HASH_TYPE);
     /*
      * @TODO Check that `addressesCount` is a number
      */
     const allAddresses = Array.from(
+      /*
+       * We default again to `1`, but this time, to prevent the case where the
+       * user passes in the value `0` manually (which will break the array map)
+       */
       new Array(addressCount || 1),
       (value, index) => {
         const addressObject = {};
@@ -45,6 +69,10 @@ export default class TrezorWallet {
          * Generate the address from the derived public key
          */
         addressObject.address = SigningKey.publicKeyToAddress(
+          /*
+           * Sadly Flow doesn't have the correct types for node's Buffer Object
+           */
+          /* $FlowFixMe */
           Buffer.from(derivationKey.publicKey, HEX_HASH_TYPE),
         );
         return addressObject;
@@ -106,9 +134,9 @@ export default class TrezorWallet {
    * @return {WalletType} The wallet object resulted by instantiating the class
    * (Object is wrapped in a promise).
    */
-  static async open({ addressCount }: WalletArgumentsType = {}): Promise<
-    TrezorWallet,
-  > {
+  static async open({
+    addressCount,
+  }: WalletArgumentsType = {}): Promise<WalletObjectType | void> {
     /*
      * Get the harware wallet's public key and chain code, to use for deriving
      * the rest of the accounts
@@ -116,6 +144,11 @@ export default class TrezorWallet {
     const { publicKey, chainCode } = await payloadListener({
       payload: PAYLOAD_XPUB,
     });
-    return new this(publicKey, chainCode, addressCount);
+    const walletInstance: WalletObjectType = new this(
+      publicKey,
+      chainCode,
+      addressCount,
+    );
+    return walletInstance;
   }
 }

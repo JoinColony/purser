@@ -21,16 +21,16 @@ export type AsyncProviderGeneratorType = (...*) => AsyncProviderType;
 
 export type WalletObjectType = {
   address: string,
-  defaultGasLimit: number,
+  defaultGasLimit?: number,
   keystore?: Promise<string>,
-  mnemonic: string,
+  mnemonic?: string,
   path: string,
-  privateKey: string,
-  provider: ProviderType,
+  privateKey?: string,
+  provider?: ProviderType,
   /*
    * @TODO Create Flow transaction types
    */
-  sign: (transaction: *) => string,
+  sign?: (transaction: *) => string,
 };
 
 export type WalletArgumentsType = {
