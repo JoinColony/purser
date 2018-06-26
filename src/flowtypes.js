@@ -67,14 +67,6 @@ export type DebugExportType = {
   debug: Object,
 };
 
-export type ProvidersExportType = {
-  etherscan: AsyncProviderGeneratorType,
-  infura: AsyncProviderGeneratorType,
-  metamask: AsyncProviderGeneratorType,
-  jsonRpc: AsyncProviderGeneratorType,
-  autoselect: AsyncProviderGeneratorType,
-};
-
 export type WalletExportType = {
   create: WalletArgumentsType => Promise<WalletObjectType | void>,
   open: WalletArgumentsType => Promise<WalletObjectType | void>,

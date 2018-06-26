@@ -7,7 +7,6 @@ import type {
   AsyncProviderType,
   ProviderArgumentsType,
   AsyncProviderGeneratorType,
-  ProvidersExportType,
 } from './flowtypes';
 
 import { warning } from './utils';
@@ -202,7 +201,13 @@ export const autoselect = async (
   return provider;
 };
 
-const colonyWallet: ProvidersExportType = {
+const colonyWallet: {
+  etherscan: AsyncProviderGeneratorType,
+  infura: AsyncProviderGeneratorType,
+  jsonRpc: AsyncProviderGeneratorType,
+  metamask: AsyncProviderGeneratorType,
+  autoselect: AsyncProviderGeneratorType,
+} = {
   etherscan,
   infura,
   jsonRpc,
