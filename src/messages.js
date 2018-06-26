@@ -1,9 +1,7 @@
-/* eslint-disable flowtype/require-valid-file-annotation */
+/* @flow */
 /* eslint-disable max-len */
 
-import { MessagesExportType } from './flowtypes';
-
-export const providers = {
+export const providers: Object = {
   etherscan: {
     apiKey:
       "You are using the Etherscan provider without an API key. This may limit the number of requests you're allowed to make. You can generate a new API key here: https://etherscan.io/myapikey",
@@ -34,7 +32,7 @@ export const providers = {
   },
 };
 
-export const utils = {
+export const utils: Object = {
   getRandomValues: {
     nodeCryptoFallback:
       "Your browser doesn't have the `webcrypto` API implemented, falling back to the `cryto` library provided by `node`",
@@ -45,7 +43,7 @@ export const utils = {
   },
 };
 
-export const softwareWallet = {
+export const softwareWallet: Object = {
   noProvider:
     "You did not set a provider. While this is not required for wallet creation, it's highly recommended as it will easier to use later. If you do not need a custom provider, just remove the argument and it will auto-select the first one available.",
   noEntrophy:
@@ -66,7 +64,7 @@ export const softwareWallet = {
     'The confirmation for this transaction (%s) was rejected. The transaction was not sent.',
 };
 
-const messages: MessagesExportType = {
+const messages: { providers: Object, utils: Object, softwareWallet: Object } = {
   providers,
   utils,
   softwareWallet,

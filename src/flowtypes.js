@@ -97,12 +97,6 @@ export type WalletIndexExportType = {
   hardware: HardwareWalletIndexExportType,
 };
 
-export type MessagesExportType = {
-  providers: Object,
-  utils: Object,
-  softwareWallet: Object,
-};
-
 export type ProviderArgumentsType = {
   network?: string,
   apiKey?: string,
