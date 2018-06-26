@@ -63,10 +63,6 @@ export type LibraryExportType = {
   debug?: Object,
 };
 
-export type DebugExportType = {
-  debug: Object,
-};
-
 export type WalletExportType = {
   create: WalletArgumentsType => Promise<WalletObjectType | void>,
   open: WalletArgumentsType => Promise<WalletObjectType | void>,
