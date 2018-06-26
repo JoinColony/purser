@@ -74,12 +74,6 @@ export type WalletExportType = {
   TrezorWallet?: Class<*>,
 };
 
-export type UtilsExportType = {
-  warning: (...*) => void,
-  getRandomValues: (...*) => Uint8Array,
-  verbose?: () => boolean,
-};
-
 export type WalletIndexExportType = {
   software: WalletExportType,
   hardware: Object,

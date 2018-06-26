@@ -2,8 +2,6 @@
 
 import crypto from 'crypto';
 
-import type { UtilsExportType } from './flowtypes';
-
 import { ENV } from './defaults';
 import { utils as messages } from './messages';
 
@@ -145,7 +143,11 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   throw new Error(messages.getRandomValues.noCryptoLib);
 };
 
-const utils: UtilsExportType = Object.assign(
+const utils: {
+  warning: (...*) => void,
+  getRandomValues: (...*) => Uint8Array,
+  verbose?: (...*) => boolean,
+} = Object.assign(
   {},
   {
     warning,
