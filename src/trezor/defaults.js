@@ -31,14 +31,20 @@ export const PATH: DerivationPathDefaultType = {
    */
   INDEX: 0,
 };
+
+/*
+ * Trezor service Url
+ */
 export const SERVICE_DOMAIN: string = 'https://connect.trezor.io';
 export const SERVICE_VERSION: number = 4;
 export const SERVICE_URL: string = 'popup/popup.html';
 export const SERVICE_KEY: string = 'v';
+
+/*
+ * Prompt window options
+ */
 export const PROMPT_WIDTH: number = 600;
 export const PROMPT_HEIGHT: number = 500;
-export const HEX_HASH_TYPE: string = 'hex';
-
 export const WINDOW_FEATURES: WindowFeaturesType = {
   width: PROMPT_WIDTH,
   height: PROMPT_HEIGHT,
@@ -54,6 +60,11 @@ export const WINDOW_FEATURES: WindowFeaturesType = {
   personalbar: false,
   status: false,
 };
+
+/*
+ * Hash types
+ */
+export const HEX_HASH_TYPE: string = 'hex';
 
 const trezorDefaults: Object = {
   PATH,

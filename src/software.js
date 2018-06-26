@@ -22,7 +22,7 @@ import {
   WALLET_PROP_DESCRIPTORS,
   MNEMONIC_PATH,
 } from './defaults';
-
+import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './walletTypes';
 /*
  * "Private" variable(s)
  */
@@ -69,6 +69,16 @@ class SoftwareWallet extends EtherWallet {
     Object.defineProperties(this, {
       mnemonic: Object.assign({}, { value: mnemonic }, WALLET_PROP_DESCRIPTORS),
       path: Object.assign({}, { value: path }, WALLET_PROP_DESCRIPTORS),
+      type: Object.assign(
+        {},
+        { value: TYPE_SOFTWARE },
+        WALLET_PROP_DESCRIPTORS,
+      ),
+      subtype: Object.assign(
+        {},
+        { value: SUBTYPE_ETHERS },
+        WALLET_PROP_DESCRIPTORS,
+      ),
     });
   }
 

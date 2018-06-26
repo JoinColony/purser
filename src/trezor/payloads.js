@@ -1,4 +1,5 @@
 /* @flow */
+
 import { fromString } from 'bip32-path';
 
 import { derivationPathSerializer } from './helpers';
