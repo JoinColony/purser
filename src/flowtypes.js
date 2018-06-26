@@ -51,7 +51,7 @@ export type WalletArgumentsType = {
  * Types used for modules exports
  */
 
-export type ColonyWalletExportType = {
+export type LibraryExportType = {
   wallets: Object,
   about: {
     name: string,

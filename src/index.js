@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { ColonyWalletExportType } from './flowtypes';
+import type { LibraryExportType } from './flowtypes';
 
 import wallets from './wallets';
 import providers from './providers';
@@ -10,7 +10,7 @@ import debug from './debug';
 import { ENV } from './defaults';
 import { name, version } from '../package.json';
 
-const colonyWallet: ColonyWalletExportType = Object.assign(
+const colonyWallet: LibraryExportType = Object.assign(
   {},
   {
     wallets,
