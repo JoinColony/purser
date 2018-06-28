@@ -1,7 +1,7 @@
 import ethersProviders from 'ethers/providers';
 
 import { etherscan } from '../../providers';
-import { DEFAULT_NETWORK, PROVIDER_PROTO } from '../../defaults';
+import { MAIN_NETWORK, PROVIDER_PROTO } from '../../defaults';
 
 jest.mock('ethers/providers');
 
@@ -14,7 +14,7 @@ describe('`providers` module', () => {
       await etherscan();
       expect(ethersProviders.EtherscanProvider).toHaveBeenCalled();
       expect(ethersProviders.EtherscanProvider).toHaveBeenCalledWith(
-        DEFAULT_NETWORK,
+        MAIN_NETWORK,
       );
     });
     test('Connects with custom network and api key', async () => {

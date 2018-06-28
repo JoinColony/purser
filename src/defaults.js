@@ -5,7 +5,7 @@ import type { ProviderType } from './flowtypes';
 /*
  * Networks
  */
-export const DEFAULT_NETWORK: string = 'homestead';
+export const MAIN_NETWORK: string = 'homestead';
 export const TEST_NETWORK: string = 'ropsten';
 
 /*
@@ -28,7 +28,7 @@ export const LOCALPROVIDER_PORT: string = '8545';
 export const PROVIDER_PROTO: ProviderType = {
   chainId: 0,
   ensAddress: '',
-  name: DEFAULT_NETWORK,
+  name: MAIN_NETWORK,
   testnet: false,
   url: '',
   _events: {},
@@ -78,7 +78,7 @@ export const BLOCKIE_OPTS: Object = {
 
 const defaults: Object = {
   BLOCKIE_OPTS,
-  DEFAULT_NETWORK,
+  MAIN_NETWORK,
   ENV,
   GETTER_PROP_DESCRIPTORS,
   LOCALPROVIDER_HOST,

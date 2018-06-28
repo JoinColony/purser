@@ -1,7 +1,7 @@
 import ethersProviders from 'ethers/providers';
 
 import { infura } from '../../providers';
-import { DEFAULT_NETWORK, PROVIDER_PROTO } from '../../defaults';
+import { MAIN_NETWORK, PROVIDER_PROTO } from '../../defaults';
 
 jest.mock('ethers/providers');
 
@@ -13,9 +13,7 @@ describe('`providers` module', () => {
     test('Connects with defaults', async () => {
       await infura();
       expect(ethersProviders.InfuraProvider).toHaveBeenCalled();
-      expect(ethersProviders.InfuraProvider).toHaveBeenCalledWith(
-        DEFAULT_NETWORK,
-      );
+      expect(ethersProviders.InfuraProvider).toHaveBeenCalledWith(MAIN_NETWORK);
     });
     test('Connects with custom network and api key', async () => {
       const testNetworkName = 'skynet';
