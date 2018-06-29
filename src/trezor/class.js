@@ -30,6 +30,7 @@ export default class TrezorWallet {
   constructor(
     publicKey: string,
     chainCode: string,
+    coinType: number,
     addressCount: number = 1,
     provider: ProviderType | void,
   ) {
@@ -59,15 +60,10 @@ export default class TrezorWallet {
       (value, index) => {
         const addressObject = {};
         const derivationKey = hdKey.derive(`m/${index}`);
-        /*
-         * @TODO Fix serilized derivation path on final Wallet Object
-         *
-         * Curretly it doesn't take into account the coin type id
-         *
-         * The solution has to be something more elegant, since we are basically
-         * doing this again in the `open()` static method :(
-         */
-        addressObject.path = derivationPathSerializer({ addressIndex: index });
+        addressObject.path = derivationPathSerializer({
+          coinType,
+          addressIndex: index,
+        });
         /*
          * This is the derrived public key, not the one originally fetched from
          * the trezor service
@@ -93,6 +89,11 @@ export default class TrezorWallet {
      *
      * We're using `defineProperties` instead of strait up assignment, so that
      * we can customize the prop's descriptors
+     *
+     * @TODO Reduce code repetition when setting Class props
+     *
+     * We do this here and in the software wallet, so it might make sense to
+     * write a helper method for this.
      */
     Object.defineProperties(this, {
       address: Object.assign(
@@ -212,6 +213,7 @@ export default class TrezorWallet {
     const walletInstance: WalletObjectType = new this(
       publicKey,
       chainCode,
+      coinType,
       addressCount,
       providerMode,
     );
