@@ -8,7 +8,7 @@ import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
 import { warning } from '../utils';
 import { HEX_HASH_TYPE, PATH } from './defaults';
-import { PAYLOAD_XPUB } from './payloads';
+import { PAYLOAD_XPUB, PAYLOAD_SIGNTX } from './payloads';
 import { WALLET_PROP_DESCRIPTORS, MAIN_NETWORK } from '../defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
 
@@ -16,8 +16,6 @@ import type {
   WalletArgumentsType,
   WalletObjectType,
   ProviderType,
-  AsyncProviderType,
-  AsyncProviderGeneratorType,
 } from '../flowtypes';
 
 export default class TrezorWallet {
@@ -85,6 +83,12 @@ export default class TrezorWallet {
       },
     );
     /*
+     * Sign method
+     */
+    const sign = async () => {
+      TrezorWallet.signTransaction();
+    };
+    /*
      * Set the Wallet Object's values
      *
      * We're using `defineProperties` instead of strait up assignment, so that
@@ -101,6 +105,12 @@ export default class TrezorWallet {
         { value: allAddresses[0].address },
         WALLET_PROP_DESCRIPTORS,
       ),
+      /*
+       * @TODO Make publicKey prop a getter
+       *
+       * While a public key is relatively safe, it's still a good idea to lock
+       * it behind a getter, and not expose it directly on the Wallet Object
+       */
       publicKey: Object.assign(
         {},
         { value: allAddresses[0].publicKey },
@@ -122,6 +132,7 @@ export default class TrezorWallet {
         WALLET_PROP_DESCRIPTORS,
       ),
       provider: Object.assign({}, { value: provider }, WALLET_PROP_DESCRIPTORS),
+      sign: Object.assign({}, { value: sign }, WALLET_PROP_DESCRIPTORS),
     });
     /*
      * The `addresses` prop is only available if we have more than one.
@@ -150,6 +161,8 @@ export default class TrezorWallet {
 
   provider: ProviderType | void;
 
+  sign: (...*) => Promise<string>;
+
   /**
    * Open a new wallet from the public key and chain code, which are received
    * form the Trezor service after interacting (confirming) with the hardware
@@ -162,14 +175,14 @@ export default class TrezorWallet {
    */
   static async open({
     addressCount,
-    provider = autoselect(),
+    provider = autoselect,
   }: WalletArgumentsType = {}): Promise<WalletObjectType | void> {
     const { COIN_MAINNET, COIN_TESTNET } = PATH;
     /*
      * Get the provider.
      * If it's a provider generator, execute the function and get it's return
      */
-    let providerMode: AsyncProviderType | AsyncProviderGeneratorType | void =
+    let providerMode =
       typeof provider === 'function' ? await provider() : provider;
     let coinType = COIN_MAINNET;
     if (typeof provider !== 'object' && typeof provider !== 'function') {
@@ -218,5 +231,11 @@ export default class TrezorWallet {
       providerMode,
     );
     return walletInstance;
+  }
+
+  static async signTransaction() {
+    return payloadListener({
+      payload: PAYLOAD_SIGNTX,
+    });
   }
 }

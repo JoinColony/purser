@@ -250,7 +250,7 @@ class SoftwareWallet extends EtherWallet {
    * @return {WalletType} A new wallet object
    */
   static async create({
-    provider = autoselect(),
+    provider = autoselect,
     password,
     entropy = new Uint8Array(65536),
   }: WalletArgumentsType): Promise<WalletObjectType> {

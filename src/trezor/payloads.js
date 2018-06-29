@@ -11,8 +11,13 @@ export const PAYLOAD_XPUB: PayloadType = {
   path: fromString(derivationPathSerializer(), true).toPathArray(),
 };
 
+export const PAYLOAD_SIGNTX: PayloadType = {
+  type: 'signethtx',
+};
+
 const trezorServicePayloads: Object = {
   PAYLOAD_XPUB,
+  PAYLOAD_SIGNTX,
 };
 
 export default trezorServicePayloads;

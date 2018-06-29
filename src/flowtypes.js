@@ -30,7 +30,7 @@ export type WalletObjectType = {
   /*
    * @TODO Create Flow transaction types
    */
-  sign?: (transaction: *) => string,
+  sign: (...*) => Promise<string>,
 };
 
 export type WalletArgumentsType = {
@@ -42,7 +42,7 @@ export type WalletArgumentsType = {
   mnemonic?: string,
   path?: string,
   keystore?: string,
-  provider?: AsyncProviderType,
+  provider?: AsyncProviderGeneratorType,
   entropy?: Uint8Array,
   password?: string,
 };
