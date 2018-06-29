@@ -139,6 +139,8 @@ export const promptGenerator = ({
  *
  * @TODO Allow users to choose the service url location / version
  *
+ * @TODO Check the minimal required firmware version
+ *
  * @method payloadListener
  *
  * @param {Object} payload payload object to send to the Trezor service

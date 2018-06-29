@@ -2,6 +2,7 @@
 
 export type PayloadType = {
   type: string,
+  requiredFirmware: string,
   path?: number[],
 };
 
