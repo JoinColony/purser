@@ -92,9 +92,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@colony/eslint-config-colony@^4.0.0":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@colony/eslint-config-colony/-/eslint-config-colony-4.0.1.tgz#74495655bf461ef196edc262983c471b42cf2d75"
+"@colony/eslint-config-colony@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@colony/eslint-config-colony/-/eslint-config-colony-5.0.0.tgz#e466d019aebdf98104ddd542dd6709fdc96a2cc3"
 
 "@kironeducation/flow-junit-transformer@^0.3.0":
   version "0.3.0"
