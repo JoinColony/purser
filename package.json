@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/JoinColony/colony-wallet",
   "devDependencies": {
-    "@colony/eslint-config-colony": "^4.0.0",
+    "@colony/eslint-config-colony": "^5.0.0",
     "@kironeducation/flow-junit-transformer": "^0.3.0",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
