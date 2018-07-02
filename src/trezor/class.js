@@ -16,6 +16,7 @@ import type {
   WalletArgumentsType,
   WalletObjectType,
   ProviderType,
+  TransactionObjectType,
 } from '../flowtypes';
 
 export default class TrezorWallet {
@@ -58,6 +59,11 @@ export default class TrezorWallet {
       (value, index) => {
         const addressObject = {};
         const derivationKey = hdKey.derive(`m/${index}`);
+        /*
+         * @TODO Cut down on path derivation code repetition
+         *
+         * This happes here, and inside the `open()` static method``
+         */
         addressObject.path = derivationPathSerializer({
           coinType,
           addressIndex: index,
@@ -82,12 +88,6 @@ export default class TrezorWallet {
         return addressObject;
       },
     );
-    /*
-     * Sign method
-     */
-    const sign = async () => {
-      TrezorWallet.signTransaction();
-    };
     /*
      * Set the Wallet Object's values
      *
@@ -132,7 +132,21 @@ export default class TrezorWallet {
         WALLET_PROP_DESCRIPTORS,
       ),
       provider: Object.assign({}, { value: provider }, WALLET_PROP_DESCRIPTORS),
-      sign: Object.assign({}, { value: sign }, WALLET_PROP_DESCRIPTORS),
+      sign: Object.assign(
+        {},
+        {
+          value: async (transactionObject: TransactionObjectType = {}) => {
+            const {
+              path = this.path,
+              chainId = (this.provider && this.provider.chainId) || 1,
+            } = transactionObject;
+            return TrezorWallet.signTransaction(
+              Object.assign({}, transactionObject, { path, chainId }),
+            );
+          },
+        },
+        WALLET_PROP_DESCRIPTORS,
+      ),
     });
     /*
      * The `addresses` prop is only available if we have more than one.
@@ -175,6 +189,11 @@ export default class TrezorWallet {
    */
   static async open({
     addressCount,
+    /*
+     * @TODO Add provider deptrecation warning
+     *
+     * As we have roadmapped to separate providers from the actual wallet
+     */
     provider = autoselect,
   }: WalletArgumentsType = {}): Promise<WalletObjectType | void> {
     const { COIN_MAINNET, COIN_TESTNET } = PATH;
@@ -206,23 +225,19 @@ export default class TrezorWallet {
      * Modify the default payload to overwrite the path with the new
      * coid type id derivation
      */
-    const modifiedPayloadObject: Object = Object.assign(
-      {},
-      {
-        payload: PAYLOAD_XPUB,
-      },
-    );
-    modifiedPayloadObject.payload.path = fromString(
-      derivationPathSerializer({ coinType }),
-      true,
-    ).toPathArray();
+    const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_XPUB, {
+      path: fromString(
+        derivationPathSerializer({ coinType }),
+        true,
+      ).toPathArray(),
+    });
     /*
      * Get the harware wallet's public key and chain code, to use for deriving
      * the rest of the accounts
      */
-    const { publicKey, chainCode } = await payloadListener(
-      modifiedPayloadObject,
-    );
+    const { publicKey, chainCode } = await payloadListener({
+      payload: modifiedPayloadObject,
+    });
     const walletInstance: WalletObjectType = new this(
       publicKey,
       chainCode,
@@ -233,9 +248,49 @@ export default class TrezorWallet {
     return walletInstance;
   }
 
-  static async signTransaction() {
+  /*
+   * Sign a transaction and return the signed transaction composed of:
+   * - Signature R component
+   * - Signature S component
+   * - Signature V component (recovery parameter)
+   */
+  static async signTransaction(transactionObject: TransactionObjectType) {
+    /*
+     * We can't currently use the object spread operator here because of some
+     * Eslint 5 and airbnb ruleset lack of compatibility.
+     *
+     * @TODO Fix object spread operator
+     */
+    /*
+     * @TODO Validate transaction prop values
+     *
+     * Something like `assert()` should work well here
+     */
+    const {
+      path,
+      gasPrice,
+      gasLimit,
+      chainId,
+      nonce,
+      to,
+      value,
+      data,
+    } = transactionObject;
+    /*
+     * Modify the default payload to set the transaction details
+     */
+    const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_SIGNTX, {
+      address_n: fromString(path, true).toPathArray(),
+      gas_price: gasPrice,
+      gas_limit: gasLimit,
+      chain_id: chainId,
+      nonce,
+      to,
+      value,
+      data,
+    });
     return payloadListener({
-      payload: PAYLOAD_SIGNTX,
+      payload: modifiedPayloadObject,
     });
   }
 }

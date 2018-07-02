@@ -140,6 +140,7 @@ export const promptGenerator = ({
  * @TODO Allow users to choose the service url location / version
  *
  * @TODO Check the minimal required firmware version
+ * This should also validate if the firmaware is the correct format
  *
  * @method payloadListener
  *

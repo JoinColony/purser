@@ -80,3 +80,14 @@ export type ProviderArgumentsType = {
   apiKey?: string,
   url?: string,
 };
+
+export type TransactionObjectType = {
+  path?: string,
+  chainId?: number,
+  gasPrice?: string,
+  gasLimit?: string,
+  nonce?: string,
+  to?: string,
+  value?: string,
+  data?: string,
+};

@@ -1,6 +1,6 @@
 {
   "extends": ["@colony/eslint-config-colony"],
-  "plugins": ["import", "babel"],
+  "plugins": ["import"],
   "env": {
     "browser": true,
     "commonjs": true,
