@@ -6,7 +6,8 @@
       "include": [
         "NODE_ENV"
       ]
-    }]
+    }],
+    "transform-object-rest-spread"
   ],
   "ignore": [
     "__tests__",
