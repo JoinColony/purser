@@ -249,11 +249,19 @@ class SoftwareWallet extends EtherWallet {
    *
    * @return {WalletType} A new wallet object
    */
-  static async create({
-    provider = autoselect,
-    password,
-    entropy = new Uint8Array(65536),
-  }: WalletArgumentsType): Promise<WalletObjectType> {
+  static async create(
+    walletArguments: WalletArgumentsType,
+  ): Promise<WalletObjectType> {
+    const {
+      /*
+       * @TODO Add provider deptrecation warning
+       *
+       * As we have roadmapped to separate providers from the actual wallet
+       */
+      provider = await autoselect(),
+      password,
+      entropy = new Uint8Array(65536),
+    } = walletArguments;
     let basicWallet: WalletObjectType;
     try {
       if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
@@ -306,7 +314,12 @@ class SoftwareWallet extends EtherWallet {
      * need to iterate through them in case of an error.
      */
     const {
-      provider = autoselect(),
+      /*
+       * @TODO Add provider deptrecation warning
+       *
+       * As we have roadmapped to separate providers from the actual wallet
+       */
+      provider = await autoselect(),
       password,
       privateKey,
       mnemonic,
