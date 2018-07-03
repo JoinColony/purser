@@ -8,7 +8,7 @@ import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
 import { warning } from '../utils';
 import { HEX_HASH_TYPE, PATH } from './defaults';
-import { PAYLOAD_XPUB, PAYLOAD_SIGNTX } from './payloads';
+import { PAYLOAD_XPUB, PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG } from './payloads';
 import { WALLET_PROP_DESCRIPTORS, MAIN_NETWORK } from '../defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
 
@@ -17,6 +17,7 @@ import type {
   WalletObjectType,
   ProviderType,
   TransactionObjectType,
+  MessageObjectType,
 } from '../flowtypes';
 
 export default class TrezorWallet {
@@ -151,6 +152,21 @@ export default class TrezorWallet {
         },
         WALLET_PROP_DESCRIPTORS,
       ),
+      /*
+       * We need to add the values here as opposed to the static `signTransaction`
+       * because we need access to the current instance's values (eg: `this`)
+       */
+      signMessage: Object.assign(
+        {},
+        {
+          value: async ({
+            path = this.path,
+            message,
+          }: MessageObjectType = {}) =>
+            TrezorWallet.signMessage({ path, message }),
+        },
+        WALLET_PROP_DESCRIPTORS,
+      ),
     });
     /*
      * The `addresses` prop is only available if we have more than one.
@@ -180,6 +196,8 @@ export default class TrezorWallet {
   provider: ProviderType | void;
 
   sign: (...*) => Promise<string>;
+
+  signMessage: (...*) => Promise<string>;
 
   /**
    * Open a new wallet from the public key and chain code, which are received
@@ -266,6 +284,9 @@ export default class TrezorWallet {
    * - Signature S component
    * - Signature V component (recovery parameter)
    *
+   * @TODO Validate transaction prop values
+   * Something like `assert()` should work well here
+   *
    * @method signTransaction
    *
    * @param {string} path the derivation path for the account with which to sign the transaction
@@ -279,34 +300,31 @@ export default class TrezorWallet {
    *
    * All the above params are sent in as props of an {TransactionObjectType} object.
    *
-   * @return {Object} the signed transaction composed of the three signature components (see above).
+   * @return {Promise<Object>} the signed transaction composed of the three signature components (see above).
    */
-  static async signTransaction(transactionObject: TransactionObjectType) {
+  static async signTransaction({
+    path,
+    gasPrice,
+    gasLimit,
+    chainId,
     /*
      * We can't currently use the object spread operator here because of some
      * Eslint 5 and airbnb ruleset lack of compatibility.
      *
      * @TODO Fix object spread operator
      */
-    /*
-     * @TODO Validate transaction prop values
-     *
-     * Something like `assert()` should work well here
-     */
-    const {
-      path,
-      gasPrice,
-      gasLimit,
-      chainId,
-      nonce,
-      to,
-      value,
-      data,
-    } = transactionObject;
+    nonce,
+    to,
+    value,
+    data,
+  }: TransactionObjectType) {
     /*
      * Modify the default payload to set the transaction details
      */
     const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_SIGNTX, {
+      /*
+       * Path needs to be sent in as an derivation path array
+       */
       address_n: fromString(path, true).toPathArray(),
       gas_price: gasPrice,
       gas_limit: gasLimit,
@@ -318,6 +336,33 @@ export default class TrezorWallet {
     });
     return payloadListener({
       payload: modifiedPayloadObject,
+    });
+  }
+
+  /**
+   * Sign a message and return the signed signature. Usefull for varifying addresses.
+   *
+   * @TODO Validate message prop values
+   * Something like `assert()` should work well here
+   *
+   * @method signMessage
+   *
+   * @param {string} path the derivation path for the account with which to sign the message
+   * @param {string} message the message you want to sign
+   *
+   * All the above params are sent in as props of an {MessageObjectType} object.
+   *
+   * @return {Promise<Object>} The signed message as an object, containing the signer address and the signature
+   */
+  static async signMessage({ path, message }: MessageObjectType) {
+    return payloadListener({
+      payload: Object.assign({}, PAYLOAD_SIGNMSG, {
+        /*
+         * Path needs to be sent in as an derivation path array
+         */
+        path: fromString(path, true).toPathArray(),
+        message,
+      }),
     });
   }
 }

@@ -91,3 +91,8 @@ export type TransactionObjectType = {
   value?: string,
   data?: string,
 };
+
+export type MessageObjectType = {
+  path?: string,
+  message?: string,
+};
