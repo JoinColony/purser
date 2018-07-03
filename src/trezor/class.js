@@ -132,6 +132,10 @@ export default class TrezorWallet {
         WALLET_PROP_DESCRIPTORS,
       ),
       provider: Object.assign({}, { value: provider }, WALLET_PROP_DESCRIPTORS),
+      /*
+       * We need to add the values here as opposed to the static `signTransaction`
+       * because we need access to the current instance's values (eg: `this`)
+       */
       sign: Object.assign(
         {},
         {
@@ -184,8 +188,14 @@ export default class TrezorWallet {
    *
    * @method open
    *
+   * @param {number} addressCount the number of extra addresses to generate from the derivation path
+   * @param {ProviderType} provider An available provider to add to the wallet
+   *
+   * The above param is sent in as a prop of an {WalletArgumentsType} object.
+   *
    * @return {WalletType} The wallet object resulted by instantiating the class
    * (Object is wrapped in a promise).
+   *
    */
   static async open({
     addressCount,
@@ -248,11 +258,28 @@ export default class TrezorWallet {
     return walletInstance;
   }
 
-  /*
-   * Sign a transaction and return the signed transaction composed of:
+  /**
+   * Sign a transaction and return the signed transaction.
+   *
+   * The signed transaction is composed of:
    * - Signature R component
    * - Signature S component
    * - Signature V component (recovery parameter)
+   *
+   * @method signTransaction
+   *
+   * @param {string} path the derivation path for the account with which to sign the transaction
+   * @param {string} gasPrice gas price for the transaction (as a `hex` string)
+   * @param {string} gasLimit gas limit for the transaction (as a `hex` string)
+   * @param {number} chainId the id of the chain for which this transaction is intended
+   * @param {string} nonce the nonce to use for the transaction (as a `hex` string)
+   * @param {string} to the address to which to transaction is sent
+   * @param {string} value the value of the transaction (as a `hex` string)
+   * @param {string} data data appended to the transaction (as a `hex` string)
+   *
+   * All the above params are sent in as props of an {TransactionObjectType} object.
+   *
+   * @return {Object} the signed transaction composed of the three signature components (see above).
    */
   static async signTransaction(transactionObject: TransactionObjectType) {
     /*
