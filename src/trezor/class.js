@@ -1,6 +1,7 @@
 /* @flow */
 
 import { SigningKey } from 'ethers/wallet';
+import { getAddress as validateAddress } from 'ethers/utils';
 import HDKey from 'hdkey';
 import { fromString } from 'bip32-path';
 
@@ -449,19 +450,36 @@ export default class TrezorWallet {
    *
    * All the above params are sent in as props of an {MessageObjectType} object.
    *
-   * @return {Promise<Object>} An object with a `success` prop to indicate if the message was indeed signed by the given address
+   * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
    */
   static async verifyMessage({
     address,
     message,
     signature,
   }: MessageObjectType) {
-    return payloadListener({
+    /*
+     * @TODO Do own bip32 address validation
+     *
+     * This will remove reliance on ethers utils and it could be combined togher with prefix stripping
+     */
+    const validatedAddress = validateAddress(address);
+    const strippedPrefixAddress =
+      validatedAddress.substring(0, 2) === '0x'
+        ? validatedAddress.slice(2)
+        : validatedAddress;
+    /*
+     * @TODO Try/Catch the verify message call
+     *
+     * This is because this won't actually return `false` as the promise will fail.
+     * This has to wait until the `reject()` case is handled in the helper.
+     */
+    const { success: isMessageValid } = await payloadListener({
       payload: Object.assign({}, PAYLOAD_VERIFYMSG, {
-        address,
+        address: strippedPrefixAddress,
         message,
         signature,
       }),
     });
+    return isMessageValid;
   }
 }
