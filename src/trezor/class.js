@@ -420,10 +420,10 @@ export default class TrezorWallet {
    *
    * All the above params are sent in as props of an {MessageObjectType} object.
    *
-   * @return {Promise<Object>} The signed message as an object, containing the signer address and the signature (in `hex` format)
+   * @return {Promise<string>} The signed message `base64` string (wrapped inside a `Promise`)
    */
   static async signMessage({ path, message }: MessageObjectType) {
-    return payloadListener({
+    const { signature: signedMessage } = await payloadListener({
       payload: Object.assign({}, PAYLOAD_SIGNMSG, {
         /*
          * Path needs to be sent in as an derivation path array
@@ -432,6 +432,7 @@ export default class TrezorWallet {
         message,
       }),
     });
+    return signedMessage;
   }
 
   /**
@@ -444,7 +445,7 @@ export default class TrezorWallet {
    *
    * @param {string} address The address that verified the original message (without the hex `0x` identifier)
    * @param {string} message The message to verify if it was signed correctly
-   * @param {string} signature The message signature as a `hex` string (you usually get this via `signMessage`)
+   * @param {string} signature The message signature as a `base64` string (you usually get this via `signMessage`)
    *
    * All the above params are sent in as props of an {MessageObjectType} object.
    *
