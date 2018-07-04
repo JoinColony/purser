@@ -1,9 +1,4 @@
 /* @flow */
+/* eslint-disable import/prefer-default-export */
 
 export const RESPONSE_HANDSHAKE: string = 'handshake';
-
-const trezorServiceResponses: Object = {
-  RESPONSE_HANDSHAKE,
-};
-
-export default trezorServiceResponses;

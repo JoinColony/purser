@@ -72,18 +72,3 @@ export const HEX_HASH_TYPE: string = 'hex';
  * Note: 1.4.0 is the first version that supports ethereum
  */
 export const FIRMWARE_MIN = '1.4.0';
-
-const trezorDefaults: Object = {
-  PATH,
-  SERVICE_DOMAIN,
-  SERVICE_VERSION,
-  SERVICE_URL,
-  SERVICE_KEY,
-  PROMPT_WIDTH,
-  PROMPT_HEIGHT,
-  WINDOW_FEATURES,
-  HEX_HASH_TYPE,
-  FIRMWARE_MIN,
-};
-
-export default trezorDefaults;

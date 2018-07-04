@@ -207,13 +207,3 @@ export const derivationPathSerializer = ({
   `m/${purpose}'/${coinType}'/${account}'/${change}${
     addressIndex || addressIndex === 0 ? `/${addressIndex}` : ''
   }`;
-
-const trezorClassHelper: Object = {
-  sanitizeUrl,
-  windowFeaturesSerializer,
-  promptGenerator,
-  payloadListener,
-  derivationPathSerializer,
-};
-
-export default trezorClassHelper;
