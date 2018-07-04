@@ -8,7 +8,12 @@ import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
 import { warning } from '../utils';
 import { HEX_HASH_TYPE, PATH } from './defaults';
-import { PAYLOAD_XPUB, PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG } from './payloads';
+import {
+  PAYLOAD_XPUB,
+  PAYLOAD_SIGNTX,
+  PAYLOAD_SIGNMSG,
+  PAYLOAD_VERIFYMSG,
+} from './payloads';
 import { WALLET_PROP_DESCRIPTORS, MAIN_NETWORK } from '../defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
 
@@ -153,7 +158,7 @@ export default class TrezorWallet {
         WALLET_PROP_DESCRIPTORS,
       ),
       /*
-       * We need to add the values here as opposed to the static `signTransaction`
+       * We need to add the values here as opposed to the static `signMessage`
        * because we need access to the current instance's values (eg: `this`)
        */
       signMessage: Object.assign(
@@ -164,6 +169,22 @@ export default class TrezorWallet {
             message,
           }: MessageObjectType = {}) =>
             TrezorWallet.signMessage({ path, message }),
+        },
+        WALLET_PROP_DESCRIPTORS,
+      ),
+      /*
+       * We need to add the values here as opposed to the static `vewrifyMessage`
+       * because we need access to the current instance's values (eg: `this`)
+       */
+      verifyMessage: Object.assign(
+        {},
+        {
+          value: async ({
+            address = this.address,
+            message,
+            signature,
+          }: MessageObjectType = {}) =>
+            TrezorWallet.verifyMessage({ address, message, signature }),
         },
         WALLET_PROP_DESCRIPTORS,
       ),
@@ -198,6 +219,8 @@ export default class TrezorWallet {
   sign: (...*) => Promise<string>;
 
   signMessage: (...*) => Promise<string>;
+
+  verifyMessage: (...*) => Promise<string>;
 
   /**
    * Open a new wallet from the public key and chain code, which are received
@@ -341,6 +364,7 @@ export default class TrezorWallet {
 
   /**
    * Sign a message and return the signed signature. Usefull for varifying addresses.
+   * (In conjunction with `verifyMessage`)
    *
    * @TODO Validate message prop values
    * Something like `assert()` should work well here
@@ -352,7 +376,7 @@ export default class TrezorWallet {
    *
    * All the above params are sent in as props of an {MessageObjectType} object.
    *
-   * @return {Promise<Object>} The signed message as an object, containing the signer address and the signature
+   * @return {Promise<Object>} The signed message as an object, containing the signer address and the signature (in `hex` format)
    */
   static async signMessage({ path, message }: MessageObjectType) {
     return payloadListener({
@@ -362,6 +386,36 @@ export default class TrezorWallet {
          */
         path: fromString(path, true).toPathArray(),
         message,
+      }),
+    });
+  }
+
+  /**
+   * Verify a signed message. Usefull for varifying addresses. (In conjunction with `signMessage`)
+   *
+   * @TODO Validate message prop values
+   * Something like `assert()` should work well here
+   *
+   * @method verifyMessage
+   *
+   * @param {string} address The address that verified the original message (without the hex `0x` identifier)
+   * @param {string} message The message to verify if it was signed correctly
+   * @param {string} signature The message signature as a `hex` string (you usually get this via `signMessage`)
+   *
+   * All the above params are sent in as props of an {MessageObjectType} object.
+   *
+   * @return {Promise<Object>} An object with a `success` prop to indicate if the message was indeed signed by the given address
+   */
+  static async verifyMessage({
+    address,
+    message,
+    signature,
+  }: MessageObjectType) {
+    return payloadListener({
+      payload: Object.assign({}, PAYLOAD_VERIFYMSG, {
+        address,
+        message,
+        signature,
       }),
     });
   }

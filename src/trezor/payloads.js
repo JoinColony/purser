@@ -29,9 +29,7 @@ export const PAYLOAD_SIGNMSG: PayloadType = {
   requiredFirmware: FIRMWARE_MIN,
 };
 
-const trezorServicePayloads: Object = {
-  PAYLOAD_XPUB,
-  PAYLOAD_SIGNTX,
+export const PAYLOAD_VERIFYMSG: PayloadType = {
+  type: 'verifyethmsg',
+  requiredFirmware: FIRMWARE_MIN,
 };
-
-export default trezorServicePayloads;
