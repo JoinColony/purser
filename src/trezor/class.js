@@ -14,7 +14,11 @@ import {
   PAYLOAD_SIGNMSG,
   PAYLOAD_VERIFYMSG,
 } from './payloads';
-import { WALLET_PROP_DESCRIPTORS, MAIN_NETWORK } from '../defaults';
+import {
+  WALLET_PROP_DESCRIPTORS,
+  MAIN_NETWORK,
+  SETTER_PROP_DESCRIPTORS,
+} from '../defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
 
 import type {
@@ -109,7 +113,7 @@ export default class TrezorWallet {
       address: Object.assign(
         {},
         { value: allAddresses[0].address },
-        WALLET_PROP_DESCRIPTORS,
+        SETTER_PROP_DESCRIPTORS,
       ),
       /*
        * @TODO Make publicKey prop a getter
@@ -120,12 +124,12 @@ export default class TrezorWallet {
       publicKey: Object.assign(
         {},
         { value: allAddresses[0].publicKey },
-        WALLET_PROP_DESCRIPTORS,
+        SETTER_PROP_DESCRIPTORS,
       ),
       path: Object.assign(
         {},
         { value: allAddresses[0].path },
-        WALLET_PROP_DESCRIPTORS,
+        SETTER_PROP_DESCRIPTORS,
       ),
       type: Object.assign(
         {},
@@ -138,6 +142,44 @@ export default class TrezorWallet {
         WALLET_PROP_DESCRIPTORS,
       ),
       provider: Object.assign({}, { value: provider }, WALLET_PROP_DESCRIPTORS),
+      /**
+       * Set the default address/public key/path one of the (other) addresses from the array.
+       * This is usefull since most methods (sign, signMessage) use this props as defaults.
+       *
+       * @method setDefaultAddress
+       *
+       * @param {number} addressIndex The address index from the array
+       *
+       * @return {Promise<boolean>} True if it was able to set it, false otherwise
+       */
+      setDefaultAddress: Object.assign(
+        {},
+        {
+          /*
+           * @TODO Accept both number and object as argument
+           * To make the arguments consistent across the wallet instance methods
+           */
+          value: async (addressIndex = 0) => {
+            /*
+             * @TODO Validate address index
+             */
+            if (addressCount > 1) {
+              /*
+               * Address count will always be at least `1` (the first derived address).
+               *
+               * This method is useful (can be used) only when the user generated more than
+               * one address when instantiating the Wallet.
+               */
+              this.address = allAddresses[addressIndex].address;
+              this.publicKey = allAddresses[addressIndex].publicKey;
+              this.path = allAddresses[addressIndex].path;
+              return true;
+            }
+            return false;
+          },
+        },
+        WALLET_PROP_DESCRIPTORS,
+      ),
       /*
        * We need to add the values here as opposed to the static `signTransaction`
        * because we need access to the current instance's values (eg: `this`)
@@ -215,6 +257,8 @@ export default class TrezorWallet {
   subtype: string;
 
   provider: ProviderType | void;
+
+  setDefaultAddress: number => Promise<boolean>;
 
   sign: (...*) => Promise<string>;
 

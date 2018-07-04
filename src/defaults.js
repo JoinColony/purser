@@ -44,6 +44,15 @@ export const GETTER_PROP_DESCRIPTORS: Object = {
 };
 
 /*
+ * Default class setter props.
+ * Most likely to be used with `Object.defineProperty()`
+ */
+export const SETTER_PROP_DESCRIPTORS: Object = {
+  enumerable: true,
+  writable: true,
+};
+
+/*
  * Default wallet instance object props
  * Most likely to be used with `Object.defineProperty()`
  */
@@ -75,20 +84,3 @@ export const BLOCKIE_OPTS: Object = {
   size: 8,
   scale: 25,
 };
-
-const defaults: Object = {
-  BLOCKIE_OPTS,
-  MAIN_NETWORK,
-  ENV,
-  GETTER_PROP_DESCRIPTORS,
-  LOCALPROVIDER_HOST,
-  LOCALPROVIDER_PORT,
-  LOCALPROVIDER_PROTOCOL,
-  MNEMONIC_PATH,
-  PROVIDER_PROTO,
-  QR_CODE_OPTS,
-  TEST_NETWORK,
-  WALLET_PROP_DESCRIPTORS,
-};
-
-export default defaults;
