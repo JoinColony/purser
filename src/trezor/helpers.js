@@ -131,16 +131,13 @@ export const promptGenerator = ({
  *
  * This is usefull to facilitate communication with the Trezor service.
  *
- * @TODO Handle the reject case
- * This will most likely happen due to erros in the handshake or the url being opened
- *
  * @TODO Create own response format
  * Basically remove un-needed props
  *
  * @TODO Allow users to choose the service url location / version
  *
  * @TODO Check the minimal required firmware version
- * This should also validate if the firmaware is the correct format
+ * This should also validate if the firmware is the correct format
  *
  * @method payloadListener
  *
@@ -156,20 +153,35 @@ export const payloadListener = async ({
   payload,
   origin: payloadOrigin = SERVICE_DOMAIN,
 }: PayloadListenerType = {}): Promise<PayloadResponseType> =>
-  new Promise(resolve => {
+  new Promise((resolve, reject) => {
     const prompt = promptGenerator();
     const messageListener = event => {
       const { data, isTrusted, origin } = event;
       const sameOrigin =
         prompt && sanitizeUrl(payloadOrigin) === sanitizeUrl(origin);
-      if (isTrusted && sameOrigin && data === RESPONSE_HANDSHAKE) {
-        prompt.postMessage(payload, payloadOrigin);
+      const responseIsObject = data && typeof data === 'object';
+      /*
+       * Intial call will fail as the origin is the local domain
+       * (until the window is open and the instance is initialized).
+       *
+       * So we can't `return` directly and just wait for the handshake
+       */
+      if (isTrusted && sameOrigin) {
+        if (data === RESPONSE_HANDSHAKE) {
+          return prompt.postMessage(payload, payloadOrigin);
+        }
+        if (responseIsObject && data.success) {
+          prompt.close();
+          window.removeEventListener('message', messageListener);
+          return resolve(data);
+        }
+        if (responseIsObject && data.error) {
+          prompt.close();
+          window.removeEventListener('message', messageListener);
+          return reject(new Error(data.error));
+        }
       }
-      if (isTrusted && sameOrigin && data && data.success) {
-        resolve(data);
-        prompt.close();
-        window.removeEventListener('message', messageListener);
-      }
+      return undefined;
     };
     window.addEventListener('message', messageListener);
   });
