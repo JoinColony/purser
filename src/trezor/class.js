@@ -8,7 +8,8 @@ import { fromString } from 'bip32-path';
 import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
 import { warning } from '../utils';
-import { HEX_HASH_TYPE, PATH } from './defaults';
+import messages from './messages';
+import { HEX_HASH_TYPE, PATH, STD_ERRORS } from './defaults';
 import {
   PAYLOAD_XPUB,
   PAYLOAD_SIGNTX,
@@ -328,20 +329,30 @@ export default class TrezorWallet {
       ).toPathArray(),
     });
     /*
-     * Get the harware wallet's public key and chain code, to use for deriving
-     * the rest of the accounts
+     * We need to catch the cancelled error since it's part of a normal user workflow
      */
-    const { publicKey, chainCode } = await payloadListener({
-      payload: modifiedPayloadObject,
-    });
-    const walletInstance: WalletObjectType = new this(
-      publicKey,
-      chainCode,
-      coinType,
-      addressCount,
-      providerMode,
-    );
-    return walletInstance;
+    try {
+      /*
+       * Get the harware wallet's public key and chain code, to use for deriving
+       * the rest of the accounts
+       */
+      const { publicKey, chainCode } = await payloadListener({
+        payload: modifiedPayloadObject,
+      });
+      const walletInstance: WalletObjectType = new this(
+        publicKey,
+        chainCode,
+        coinType,
+        addressCount,
+        providerMode,
+      );
+      return walletInstance;
+    } catch (error) {
+      if (error.message === STD_ERRORS.USER_CANCELLED) {
+        warning(messages.userCancelled);
+      }
+      return undefined;
+    }
   }
 
   /**

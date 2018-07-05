@@ -139,6 +139,9 @@ export const promptGenerator = ({
  * @TODO Check the minimal required firmware version
  * This should also validate if the firmware is the correct format
  *
+ * @TODO Check if the trezor service is up and running
+ * Have a rejection case for that too
+ *
  * @method payloadListener
  *
  * @param {Object} payload payload object to send to the Trezor service
