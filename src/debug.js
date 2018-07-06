@@ -4,6 +4,8 @@ import ethers from 'ethers';
 import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
 
+import { derivationPathValidator } from './trezor/validators';
+
 import { software } from './wallets';
 import TrezorWallet from './trezor/class';
 
@@ -18,6 +20,9 @@ const debug: Object = {
     ethers,
     qrcode,
     blockies,
+    validators: {
+      derivationPathValidator,
+    },
     walletClasses: {
       SoftwareWallet,
       TrezorWallet,

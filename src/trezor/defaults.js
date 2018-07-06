@@ -73,6 +73,16 @@ export const HEX_HASH_TYPE: string = 'hex';
  */
 export const FIRMWARE_MIN: string = '1.4.0';
 
+/*
+ * This list is not by any strech complete. It's just the ones we use.
+ */
 export const STD_ERRORS: Object = {
   USER_CANCELLED: 'Cancelled',
+};
+
+/*
+ * Regex to use when validating strings
+ */
+export const MATCH: Object = {
+  DIGITS: /^\d+$/,
 };
