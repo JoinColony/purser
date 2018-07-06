@@ -44,7 +44,7 @@ export default class TrezorWallet {
     publicKey: string,
     chainCode: string,
     coinType: number,
-    addressCount: number = 1,
+    addressCount: number = 10,
     provider: ProviderType | void,
   ) {
     /*
@@ -66,7 +66,7 @@ export default class TrezorWallet {
      */
     const allAddresses = Array.from(
       /*
-       * We default again to `1`, but this time, to prevent the case where the
+       * We default to `1`, but this time, to prevent the case where the
        * user passes in the value `0` manually (which will break the array map)
        */
       new Array(addressCount || 1),
