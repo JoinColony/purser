@@ -238,12 +238,28 @@ export default class TrezorWallet {
     /*
      * The `addresses` prop is only available if we have more than one.
      * Otherwise it's pointless since it just repeats information.
+     *
+     * @TODO All addresses array should be a getter
+     * So not available by default
      */
     if (addressCount > 1) {
       Object.defineProperty(
         this,
         'addresses',
-        Object.assign({}, { value: allAddresses }, WALLET_PROP_DESCRIPTORS),
+        Object.assign(
+          {},
+          {
+            /*
+             * Map out the publicKey and derivation path from the `allAddresses`
+             * array that gets assigned to the Wallet instance.
+             *
+             * The user should only have access to the publicKey and path for the
+             * default account (set via `setDefaultAddress()`)
+             */
+            value: allAddresses.map(({ address }) => address),
+          },
+          WALLET_PROP_DESCRIPTORS,
+        ),
       );
     }
   }
