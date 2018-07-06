@@ -8,6 +8,8 @@ import { fromString } from 'bip32-path';
 import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
 import { warning } from '../utils';
+import { derivationPathValidator } from './validators';
+import { derivationPathNormalizer } from './normalizers';
 import { classMessages as messages } from './messages';
 import { HEX_HASH_TYPE, PATH, STD_ERRORS } from './defaults';
 import {
@@ -398,13 +400,26 @@ export default class TrezorWallet {
     data,
   }: TransactionObjectType) {
     /*
+     * Check if the derivation path is in the correct format
+     *
+     * Flow doesn't even let us validate it.
+     * It shoots first, asks questions later.
+     */
+    /* $FlowFixMe */
+    derivationPathValidator(path);
+    /*
      * Modify the default payload to set the transaction details
      */
     const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_SIGNTX, {
       /*
        * Path needs to be sent in as an derivation path array
+       *
+       * We also normalize it first (but for some reason Flow doesn't pick up
+       * the default value value of `path` and assumes it's undefined -- it can be,
+       * but it will not pass the validator)
        */
-      address_n: fromString(path, true).toPathArray(),
+      /* $FlowFixMe */
+      address_n: fromString(derivationPathNormalizer(path), true).toPathArray(),
       gas_price: gasPrice,
       gas_limit: gasLimit,
       chain_id: chainId,
@@ -435,12 +450,25 @@ export default class TrezorWallet {
    * @return {Promise<string>} The signed message `base64` string (wrapped inside a `Promise`)
    */
   static async signMessage({ path, message }: MessageObjectType) {
+    /*
+     * Check if the derivation path is in the correct format
+     *
+     * Flow doesn't even let us validate it.
+     * It shoots first, asks questions later.
+     */
+    /* $FlowFixMe */
+    derivationPathValidator(path);
     const { signature: signedMessage } = await payloadListener({
       payload: Object.assign({}, PAYLOAD_SIGNMSG, {
         /*
          * Path needs to be sent in as an derivation path array
+         *
+         * We also normalize it first (but for some reason Flow doesn't pick up
+         * the default value value of `path` and assumes it's undefined -- it can be,
+         * but it will not pass the validator)
          */
-        path: fromString(path, true).toPathArray(),
+        /* $FlowFixMe */
+        path: fromString(derivationPathNormalizer(path), true).toPathArray(),
         message,
       }),
     });
