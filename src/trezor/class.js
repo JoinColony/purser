@@ -193,11 +193,13 @@ export default class TrezorWallet {
         {
           value: async (transactionObject: TransactionObjectType = {}) => {
             const {
-              path = this.path,
               chainId = (this.provider && this.provider.chainId) || 1,
             } = transactionObject;
             return TrezorWallet.signTransaction(
-              Object.assign({}, transactionObject, { path, chainId }),
+              Object.assign({}, transactionObject, {
+                path: this.path,
+                chainId,
+              }),
             );
           },
         },
@@ -210,11 +212,8 @@ export default class TrezorWallet {
       signMessage: Object.assign(
         {},
         {
-          value: async ({
-            path = this.path,
-            message,
-          }: MessageObjectType = {}) =>
-            TrezorWallet.signMessage({ path, message }),
+          value: async ({ message }: MessageObjectType = {}) =>
+            TrezorWallet.signMessage({ path: this.path, message }),
         },
         WALLET_PROP_DESCRIPTORS,
       ),
