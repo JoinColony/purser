@@ -19,6 +19,8 @@ export const validators: Object = {
     notValidAccount: 'Derivation path does have the correct account value/type',
     notValidChangeIndex:
       'Derivation path does have the correct Change value or Account Index',
+    notValidAccountIndex:
+      'Derivation path should have only one value for the Account Index',
     genericError: 'Something is wrong with the supplied derivation path:',
   },
 };

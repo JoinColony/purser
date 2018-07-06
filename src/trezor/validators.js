@@ -121,11 +121,23 @@ export const derivationPathValidator = (derivationPath: string): boolean => {
   validationTests.push(
     assertTruth({
       expression: deSerializedDerivationPath[3]
-        .split('/')
+        .split(SPLITTER)
         .map(value => !!value.match(MATCH.DIGITS))
         .every(truth => truth !== false),
       message: [
         `${derivationPathMessages.notValidChangeIndex}:`,
+        deSerializedDerivationPath[3] || UNDEFINED,
+      ],
+    }),
+  );
+  /*
+   * It should have the correct amount of Account Indexed (just one)
+   */
+  validationTests.push(
+    assertTruth({
+      expression: deSerializedDerivationPath[3].split(SPLITTER).length <= 2,
+      message: [
+        `${derivationPathMessages.notValidAccountIndex}:`,
         deSerializedDerivationPath[3] || UNDEFINED,
       ],
     }),
