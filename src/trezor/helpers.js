@@ -218,7 +218,13 @@ export const derivationPathSerializer = ({
   account = PATH.ACCOUNT,
   change = PATH.CHANGE,
   addressIndex,
-}: DerivationPathObjectType = {}): string =>
-  `m/${purpose}'/${coinType}'/${account}'/${change}${
-    addressIndex || addressIndex === 0 ? `/${addressIndex}` : ''
-  }`;
+}: DerivationPathObjectType = {}): string => {
+  const { DELIMITER } = PATH;
+  return (
+    `m/${purpose}` +
+    `${DELIMITER}${coinType}` +
+    `${DELIMITER}${account}` +
+    `${DELIMITER}${change}` +
+    `${addressIndex || addressIndex === 0 ? `/${addressIndex}` : ''}`
+  );
+};

@@ -5,6 +5,7 @@ import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
 
 import { derivationPathValidator } from './trezor/validators';
+import { derivationPathNormalizer } from './trezor/normalizers';
 
 import { software } from './wallets';
 import TrezorWallet from './trezor/class';
@@ -22,6 +23,9 @@ const debug: Object = {
     blockies,
     validators: {
       derivationPathValidator,
+    },
+    normalizers: {
+      derivationPathNormalizer,
     },
     walletClasses: {
       SoftwareWallet,

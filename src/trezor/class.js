@@ -8,7 +8,7 @@ import { fromString } from 'bip32-path';
 import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
 import { warning } from '../utils';
-import messages from './messages';
+import { classMessages as messages } from './messages';
 import { HEX_HASH_TYPE, PATH, STD_ERRORS } from './defaults';
 import {
   PAYLOAD_XPUB,
@@ -392,7 +392,7 @@ export default class TrezorWallet {
      *
      * @TODO Fix object spread operator
      */
-    nonce,
+    nonce = '0',
     to,
     value,
     data,

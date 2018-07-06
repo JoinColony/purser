@@ -30,6 +30,10 @@ export const PATH: DerivationPathDefaultType = {
    * First address index
    */
   INDEX: 0,
+  /*
+   * Characters seqeunce used as a deviation path delimiter
+   */
+  DELIMITER: "'/",
 };
 
 /*

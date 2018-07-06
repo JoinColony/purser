@@ -34,7 +34,7 @@ export const derivationPathValidator = (derivationPath: string): boolean => {
      *
      * Otherwise, this will fail before we have a change to assert it.
      */
-    deSerializedDerivationPath = derivationPath.split("'/");
+    deSerializedDerivationPath = derivationPath.split(PATH.DELIMITER);
   } catch (error) {
     /*
      * It should be a string

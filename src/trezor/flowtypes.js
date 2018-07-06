@@ -47,4 +47,5 @@ export type DerivationPathDefaultType = {
   ACCOUNT: number,
   CHANGE: number,
   INDEX: number,
+  DELIMITER: string,
 };
