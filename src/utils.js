@@ -143,15 +143,58 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   throw new Error(messages.getRandomValues.noCryptoLib);
 };
 
+/**
+ * Check if an expression is true and, if not, either throw and error or just log a message.
+ *
+ * Just as the `warning()` util above it uses two levels: `high` and `low`. If the set level is high (default),
+ * it will throw an error, else it will just use the `warning()` method (set to `low`) to log the message
+ * as an warning.
+ *
+ * @method assertTruth
+ *
+ * @param {boolean} expression The logic expression to assert
+ * @param {string | Array<string>} message The message to display in case of an error
+ * @param {string} level The log level: high (error) or low (warning)
+ *
+ * The above parameters are sent in as props of an object.
+ *
+ * @return {boolean} true if the expression is valid, false otherwise (and depending on the level, throw an error
+ * or just log the warning)
+ */
+export const assertTruth = ({
+  expression,
+  message,
+  level = 'high',
+}: {
+  expression: boolean,
+  message: string | Array<string>,
+  level?: string,
+} = {}): boolean => {
+  if (expression) {
+    return true;
+  }
+  if (level === 'high') {
+    throw new Error(Array.isArray(message) ? message.join(' ') : message);
+  }
+  if (Array.isArray(message)) {
+    warning(...message);
+  } else {
+    warning(message);
+  }
+  return false;
+};
+
 const utils: {
   warning: (...*) => void,
   getRandomValues: (...*) => Uint8Array,
   verbose?: (...*) => boolean,
+  assertTruth: (...*) => boolean,
 } = Object.assign(
   {},
   {
     warning,
     getRandomValues,
+    assertTruth,
   },
   /*
    * Only export the `verbose` method for testing purpouses
