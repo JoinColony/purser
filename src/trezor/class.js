@@ -64,7 +64,7 @@ export default class TrezorWallet {
     /*
      * @TODO Check that `addressesCount` is a number
      */
-    const allAddresses = Array.from(
+    const otherAddresses = Array.from(
       /*
        * We default to `1`, but this time, to prevent the case where the
        * user passes in the value `0` manually (which will break the array map)
@@ -116,7 +116,7 @@ export default class TrezorWallet {
     Object.defineProperties(this, {
       address: Object.assign(
         {},
-        { value: allAddresses[0].address },
+        { value: otherAddresses[0].address },
         SETTER_PROP_DESCRIPTORS,
       ),
       /*
@@ -127,12 +127,12 @@ export default class TrezorWallet {
        */
       publicKey: Object.assign(
         {},
-        { value: allAddresses[0].publicKey },
+        { value: otherAddresses[0].publicKey },
         SETTER_PROP_DESCRIPTORS,
       ),
       path: Object.assign(
         {},
-        { value: allAddresses[0].path },
+        { value: otherAddresses[0].path },
         SETTER_PROP_DESCRIPTORS,
       ),
       type: Object.assign(
@@ -174,9 +174,9 @@ export default class TrezorWallet {
                * This method is useful (can be used) only when the user generated more than
                * one address when instantiating the Wallet.
                */
-              this.address = allAddresses[addressIndex].address;
-              this.publicKey = allAddresses[addressIndex].publicKey;
-              this.path = allAddresses[addressIndex].path;
+              this.address = otherAddresses[addressIndex].address;
+              this.publicKey = otherAddresses[addressIndex].publicKey;
+              this.path = otherAddresses[addressIndex].path;
               return true;
             }
             return false;
@@ -236,16 +236,16 @@ export default class TrezorWallet {
       ),
     });
     /*
-     * The `addresses` prop is only available if we have more than one.
+     * The `otherAddresses` prop is only available if we have more than one.
      * Otherwise it's pointless since it just repeats information.
      *
-     * @TODO All addresses array should be a getter
+     * @TODO `otherAddresses` array should be a getter
      * So not available by default
      */
     if (addressCount > 1) {
       Object.defineProperty(
         this,
-        'addresses',
+        'otherAddresses',
         Object.assign(
           {},
           {
@@ -256,7 +256,7 @@ export default class TrezorWallet {
              * The user should only have access to the publicKey and path for the
              * default account (set via `setDefaultAddress()`)
              */
-            value: allAddresses.map(({ address }) => address),
+            value: otherAddresses.map(({ address }) => address),
           },
           WALLET_PROP_DESCRIPTORS,
         ),
@@ -266,7 +266,7 @@ export default class TrezorWallet {
 
   address: string;
 
-  addresses: Object[];
+  otherAddresses: Object[];
 
   publicKey: string;
 
