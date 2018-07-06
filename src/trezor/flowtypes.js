@@ -41,6 +41,7 @@ export type DerivationPathObjectType = {|
 |};
 
 export type DerivationPathDefaultType = {
+  HEADER_KEY: string,
   PURPOSE: number,
   COIN_MAINNET: number,
   COIN_TESTNET: number,

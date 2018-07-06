@@ -10,6 +10,8 @@ export const validators: Object = {
     notString: 'Derivation path is not the correct type (expected a String)',
     notValidParts:
       'Derivation path does not contain the required parts (Purpouse, Coin Id, Account, Change + Index)',
+    notValidHeaderKey:
+      'Derivation path does not start with the correct header key',
     notValidPurpouse:
       'Derivation path does have the Ethereum reserved Purpouse',
     notValidCoin:

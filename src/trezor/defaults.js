@@ -16,6 +16,10 @@ export const PATH: DerivationPathDefaultType = {
    * https://github.com/ethereum/EIPs/issues/84
    */
   /*
+   * The default (and only one that is correct, as far as I know of) header key
+   */
+  HEADER_KEY: 'm',
+  /*
    * Ethereum reserved purpouse
    */
   PURPOSE: 44,
@@ -90,3 +94,14 @@ export const STD_ERRORS: Object = {
 export const MATCH: Object = {
   DIGITS: /^\d+$/,
 };
+
+/*
+ * Used to separate misc. derivation paths or urls
+ */
+export const SPLITTER: string = '/';
+
+/*
+ * Used to better inform the user when a variable doesn't have a value
+ * (Used in Error messsages)
+ */
+export const UNDEFINED: string = 'undefined';

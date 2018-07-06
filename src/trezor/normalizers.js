@@ -1,6 +1,6 @@
 /* @flow */
 
-import { PATH } from './defaults';
+import { PATH, SPLITTER } from './defaults';
 
 /*
  * @TODO Make normalizers core methods
@@ -22,7 +22,6 @@ import { PATH } from './defaults';
  * @return {string} The normalized derivation path
  */
 export const derivationPathNormalizer = (derivationPath: string): string => {
-  const SPLITTER = '/';
   const deSerializedDerivationPath: Array<string> = derivationPath.split(
     PATH.DELIMITER,
   );

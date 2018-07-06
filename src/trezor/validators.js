@@ -2,7 +2,7 @@
 
 import { assertTruth } from '../utils';
 import { validators as messages } from './messages';
-import { PATH, MATCH } from './defaults';
+import { PATH, MATCH, UNDEFINED, SPLITTER } from './defaults';
 
 /*
  * @TODO Make validators core methods
@@ -10,8 +10,6 @@ import { PATH, MATCH } from './defaults';
  * These validators will most likely be used across all wallet types, so it will
  * make sense that as some point they will become core validators.
  */
-
-const UNDEFINED = 'undefined';
 
 /**
  * Validate a derivation path passed in as a string
@@ -64,12 +62,27 @@ export const derivationPathValidator = (derivationPath: string): boolean => {
     }),
   );
   /*
+   * It should have the correct Header Key (the letter 'm')
+   */
+  validationTests.push(
+    assertTruth({
+      expression:
+        deSerializedDerivationPath[0].split(SPLITTER)[0].toLowerCase() ===
+        PATH.HEADER_KEY,
+      message: [
+        `${derivationPathMessages.notValidHeaderKey}:`,
+        deSerializedDerivationPath[0] || UNDEFINED,
+      ],
+    }),
+  );
+  /*
    * It should have the Ethereum reserved Purpouse (44)
    */
   validationTests.push(
     assertTruth({
       expression:
-        parseInt(deSerializedDerivationPath[0].slice(2), 10) === PATH.PURPOSE,
+        parseInt(deSerializedDerivationPath[0].split(SPLITTER)[1], 10) ===
+        PATH.PURPOSE,
       message: [
         `${derivationPathMessages.notValidPurpouse}:`,
         deSerializedDerivationPath[0] || UNDEFINED,
