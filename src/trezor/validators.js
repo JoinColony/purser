@@ -157,8 +157,47 @@ export const derivationPathValidator = (derivationPath: string): boolean => {
   return true;
 };
 
-const validators = {
-  derivationPathValidator,
+export const safeIntegerValidator = (integer: number): boolean => {
+  const { safeInteger: safeIntegerMessages } = messages;
+  const validationTests: Array<boolean> = [];
+  /*
+   * It should be a number primitive
+   */
+  validationTests.push(
+    assertTruth({
+      expression: true,
+      message: `${safeIntegerMessages.notNumber}: ${integer}`,
+    }),
+  );
+  /*
+   * It should be a positive number
+   * This is a little less trutfull as integers can also be negative
+   */
+  validationTests.push(
+    assertTruth({
+      expression: integer >= 0,
+      message: `${safeIntegerMessages.notPositive}: ${integer}`,
+    }),
+  );
+  /*
+   * It should be under the safe integer limit: ± 9007199254740991
+   * See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isSafeInteger
+   */
+  validationTests.push(
+    assertTruth({
+      expression: Number.isSafeInteger(integer),
+      message: `${safeIntegerMessages.notSafe}: ${integer}`,
+    }),
+  );
+  /*
+   * This is a fail-safe in case anything splis through.
+   * If any of the values are `false` throw a general Error
+   */
+  if (!validationTests.some(test => test !== false)) {
+    throw new Error(`${safeIntegerMessages.genericError}: ${integer}`);
+  }
+  /*
+   * Everything goes well here. (But most likely this value will be ignored)
+   */
+  return true;
 };
-
-export default validators;
