@@ -86,7 +86,7 @@ export type TransactionObjectType = {
   chainId?: number,
   gasPrice?: string,
   gasLimit?: string,
-  nonce?: string,
+  nonce?: number,
   to?: string,
   value?: string,
   data?: string,

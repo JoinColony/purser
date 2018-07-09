@@ -7,8 +7,8 @@ import { fromString } from 'bip32-path';
 
 import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
-import { warning } from '../utils';
-import { derivationPathValidator } from './validators';
+import { warning, padLeft } from '../utils';
+import { derivationPathValidator, safeIntegerValidator } from './validators';
 import { derivationPathNormalizer } from './normalizers';
 import { classMessages as messages } from './messages';
 import { HEX_HASH_TYPE, PATH, STD_ERRORS } from './defaults';
@@ -47,6 +47,7 @@ export default class TrezorWallet {
     addressCount: number = 10,
     provider: ProviderType | void,
   ) {
+    safeIntegerValidator(addressCount);
     /*
      * Derive the public key with the address index, so we can get the address
      */
@@ -61,9 +62,6 @@ export default class TrezorWallet {
      */
     /* $FlowFixMe */
     hdKey.chainCode = Buffer.from(chainCode, HEX_HASH_TYPE);
-    /*
-     * @TODO Check that `addressesCount` is a number
-     */
     const otherAddresses = Array.from(
       /*
        * We default to `1`, but this time, to prevent the case where the
@@ -164,10 +162,11 @@ export default class TrezorWallet {
            * To make the arguments consistent across the wallet instance methods
            */
           value: async (addressIndex = 0) => {
+            safeIntegerValidator(addressIndex);
             /*
-             * @TODO Validate address index
+             * @TODO Throw error if index outside of range
              */
-            if (addressCount > 1) {
+            if (addressIndex >= 0 && addressIndex <= otherAddresses.length) {
               /*
                * Address count will always be at least `1` (the first derived address).
                *
@@ -389,7 +388,7 @@ export default class TrezorWallet {
    * @param {string} gasPrice gas price for the transaction (as a `hex` string)
    * @param {string} gasLimit gas limit for the transaction (as a `hex` string)
    * @param {number} chainId the id of the chain for which this transaction is intended
-   * @param {string} nonce the nonce to use for the transaction (as a `hex` string)
+   * @param {number} nonce the nonce to use for the transaction (as a `hex` string)
    * @param {string} to the address to which to transaction is sent
    * @param {string} value the value of the transaction (as a `hex` string)
    * @param {string} data data appended to the transaction (as a `hex` string)
@@ -399,9 +398,15 @@ export default class TrezorWallet {
    * @return {Promise<Object>} the signed transaction composed of the three signature components (see above).
    */
   static async signTransaction({
+    /*
+     * Path defaults to the current selected "default" address path
+     */
     path,
     gasPrice,
     gasLimit,
+    /*
+     * Chain Id defaults to the on set on the provider but it can be overwritten
+     */
     chainId,
     /*
      * We can't currently use the object spread operator here because of some
@@ -409,7 +414,7 @@ export default class TrezorWallet {
      *
      * @TODO Fix object spread operator
      */
-    nonce = '0',
+    nonce = 0,
     to,
     value,
     data,
@@ -422,6 +427,19 @@ export default class TrezorWallet {
      */
     /* $FlowFixMe */
     derivationPathValidator(path);
+    /*
+     * Check if the nonce value is valid (a positive, safe integer)
+     */
+    safeIntegerValidator(nonce);
+    const hexNonce = nonce.toString(16);
+    /*
+     * Check if the chain id value is valid (a positive, safe integer)
+     *
+     * Flow doesn't even let us validate it.
+     * It shoots first, asks questions later.
+     */
+    /* $FlowFixMe */
+    safeIntegerValidator(chainId);
     /*
      * Modify the default payload to set the transaction details
      */
@@ -438,7 +456,16 @@ export default class TrezorWallet {
       gas_price: gasPrice,
       gas_limit: gasLimit,
       chain_id: chainId,
-      nonce,
+      /*
+       * Nonce needs to be sent in as a hex string, and to be a multiple of two.
+       * Eg: '3' to be '03', `12c` to be `012c`
+       *
+       * So below, we left-pad it
+       */
+      nonce: padLeft({
+        length: Math.ceil(hexNonce.length / 2) * 2,
+        value: hexNonce,
+      }),
       to,
       value,
       data,
