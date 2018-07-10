@@ -85,7 +85,8 @@ export const FIRMWARE_MIN: string = '1.4.0';
  * This list is not by any strech complete. It's just the ones we use.
  */
 export const STD_ERRORS: Object = {
-  USER_CANCELLED: 'Cancelled',
+  CANCEL_ACC_EXPORT: 'Cancelled',
+  CANCEL_TX_SIGN: 'Action cancelled by user',
 };
 
 /*

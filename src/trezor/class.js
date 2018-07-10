@@ -363,9 +363,9 @@ export default class TrezorWallet {
         providerMode,
       );
       return walletInstance;
-    } catch (error) {
-      if (error.message === STD_ERRORS.USER_CANCELLED) {
-        warning(messages.userCancelled);
+    } catch (caughtError) {
+      if (caughtError.message === STD_ERRORS.CANCEL_ACC_EXPORT) {
+        warning(messages.userExportCancel);
       }
       return undefined;
     }
@@ -388,7 +388,7 @@ export default class TrezorWallet {
    * @param {string} gasPrice gas price for the transaction (as a `hex` string)
    * @param {string} gasLimit gas limit for the transaction (as a `hex` string)
    * @param {number} chainId the id of the chain for which this transaction is intended
-   * @param {number} nonce the nonce to use for the transaction (as a `hex` string)
+   * @param {number} nonce the nonce to use for the transaction (as a number)
    * @param {string} to the address to which to transaction is sent
    * @param {string} value the value of the transaction (as a `hex` string)
    * @param {string} data data appended to the transaction (as a `hex` string)
@@ -470,9 +470,20 @@ export default class TrezorWallet {
       value,
       data,
     });
-    return payloadListener({
-      payload: modifiedPayloadObject,
-    });
+    /*
+     * We need to catch the cancelled error since it's part of a normal user workflow
+     */
+    try {
+      const signedTransaction = await payloadListener({
+        payload: modifiedPayloadObject,
+      });
+      return signedTransaction;
+    } catch (caughtError) {
+      if (caughtError.message === STD_ERRORS.CANCEL_TX_SIGN) {
+        warning(messages.userSignTxCancel);
+      }
+      return undefined;
+    }
   }
 
   /**

@@ -2,7 +2,10 @@
 /* eslint-disable max-len */
 
 export const classMessages: Object = {
-  userCancelled: 'User cancelled the account export request (via the Prompt)',
+  userExportCancel:
+    'User cancelled the account export request (via Window prompt)',
+  userSignTxCancel:
+    'User cancelled signing the transaction (via Hardware buttons)',
 };
 
 export const validators: Object = {
