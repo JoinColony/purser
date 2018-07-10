@@ -1,5 +1,7 @@
 /* @flow */
 
+import { padLeft } from '../utils';
+
 import { PATH, SPLITTER } from './defaults';
 
 /*
@@ -17,7 +19,7 @@ import { PATH, SPLITTER } from './defaults';
  *
  * @method derivationPathNormalizer
  *
- * @param {string} derivationPath The derivation path to check
+ * @param {string} derivationPath The derivation path to normalize
  *
  * @return {string} The normalized derivation path
  */
@@ -70,6 +72,27 @@ export const derivationPathNormalizer = (derivationPath: string): string => {
     })
     .join(PATH.DELIMITER);
 };
+
+/**
+ * Normalize a hex string to have the length of multiple of two.
+ * Eg: '3' to be '03', `12c` to be `012c`
+ *
+ * This is only needed currently for Trezor's service
+ *
+ * This method assumes the value path is already validatated.
+ *
+ * @method multipleOfTwoHexValueNormalizer
+ *
+ * @param {string} hexValue The hex value to normalize
+ *
+ * @return {string} The normalized (padded) hex path
+ */
+export const multipleOfTwoHexValueNormalizer = (hexValue: string): string =>
+  padLeft({
+    value: hexValue,
+    length: Math.ceil(hexValue.length / 2) * 2,
+    character: '0',
+  });
 
 const normalizers = {
   derivationPathNormalizer,

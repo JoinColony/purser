@@ -229,12 +229,36 @@ export const bigNumber = (value: number | string | BN): BN => {
   return bigNumberInstance;
 };
 
+/**
+ * Left pad a string with up to a number of characters
+ *
+ * @method padLeft
+ *
+ * @param {string} value the string (or value that will be converted to string) to pad
+ * @param {number} length the length of the final string (from which this determines the number of padding characters)
+ * @param {any} character character to use for padding (can be anything since it get converted to a string, defaults to 0)
+ *
+ * The above parameters are sent in as props of an object.
+ *
+ * @return {string} the newly padded string
+ */
+export const padLeft = ({
+  value,
+  length,
+  character = 0,
+}: {
+  value: string,
+  length: number,
+  character?: any,
+} = {}): string => `${String(character).repeat(length - value.length)}${value}`;
+
 const utils: {
   warning: (...*) => void,
   getRandomValues: (...*) => Uint8Array,
   verbose?: (...*) => boolean,
   assertTruth: (...*) => boolean,
   bigNumber: (...*) => BN,
+  padLeft: (...*) => string,
 } = Object.assign(
   {},
   {
@@ -242,6 +266,7 @@ const utils: {
     getRandomValues,
     assertTruth,
     bigNumber,
+    padLeft,
   },
   /*
    * Only export the `verbose` method for testing purpouses
