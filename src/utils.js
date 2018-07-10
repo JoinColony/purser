@@ -3,7 +3,7 @@
 import crypto from 'crypto';
 import BN from 'bn.js';
 
-import { ENV, WALLET_PROP_DESCRIPTORS, WEI_MINIFICATION } from './defaults';
+import { ENV, WEI_MINIFICATION } from './defaults';
 import { utils as messages } from './messages';
 
 /**
@@ -206,27 +206,24 @@ export const assertTruth = ({
  */
 export const bigNumber = (value: number | string | BN): BN => {
   const oneWei = new BN(WEI_MINIFICATION.toString());
-  const bigNumberInstance = new BN(value);
-  const bigNumberInstancePrototype = Object.getPrototypeOf(bigNumberInstance);
-  Object.defineProperties(bigNumberInstancePrototype, {
-    /*
-     * Convert the number to WEI (multiply by 1 to the power of 18)
-     */
-    toWei: Object.assign(
-      {},
-      { value: () => bigNumberInstance.mul(oneWei) },
-      WALLET_PROP_DESCRIPTORS,
-    ),
-    /*
-     * Convert the number to WEI (multiply by 1 to the power of 18)
-     */
-    fromWei: Object.assign(
-      {},
-      { value: () => bigNumberInstance.div(oneWei) },
-      WALLET_PROP_DESCRIPTORS,
-    ),
-  });
-  return bigNumberInstance;
+  class ExtendedBN extends BN {
+    constructor(...args) {
+      super(...args);
+      const ExtendedBNPrototype = Object.getPrototypeOf(this);
+      const BNPrototype = Object.getPrototypeOf(ExtendedBNPrototype);
+      Object.defineProperties(BNPrototype, {
+        /*
+         * Convert the number to WEI (multiply by 1 to the power of 18)
+         */
+        toWei: { value: () => this.imul(oneWei) },
+        /*
+         * Convert the number to WEI (multiply by 1 to the power of 18)
+         */
+        fromWei: { value: () => this.div(oneWei) },
+      });
+    }
+  }
+  return new ExtendedBN(value);
 };
 
 /**
