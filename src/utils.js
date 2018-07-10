@@ -3,7 +3,7 @@
 import crypto from 'crypto';
 import BN from 'bn.js';
 
-import { ENV, WEI_MINIFICATION } from './defaults';
+import { ENV, WEI_MINIFICATION, GWEI_MINIFICATION } from './defaults';
 import { utils as messages } from './messages';
 
 /**
@@ -206,6 +206,7 @@ export const assertTruth = ({
  */
 export const bigNumber = (value: number | string | BN): BN => {
   const oneWei = new BN(WEI_MINIFICATION.toString());
+  const oneGwei = new BN(GWEI_MINIFICATION.toString());
   class ExtendedBN extends BN {
     constructor(...args) {
       super(...args);
@@ -220,6 +221,14 @@ export const bigNumber = (value: number | string | BN): BN => {
          * Convert the number to WEI (multiply by 1 to the power of 18)
          */
         fromWei: { value: () => this.div(oneWei) },
+        /*
+         * Convert the number to GWEI (multiply by 1 to the power of 18)
+         */
+        toGwei: { value: () => this.imul(oneGwei) },
+        /*
+         * Convert the number to GWEI (multiply by 1 to the power of 18)
+         */
+        fromGwei: { value: () => this.div(oneGwei) },
       });
     }
   }
