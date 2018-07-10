@@ -278,6 +278,23 @@ export const padLeft = ({
   character?: any,
 } = {}): string => `${String(character).repeat(length - value.length)}${value}`;
 
+/**
+ * Convert an object to a key (value) concatenated string.
+ * This is usefull to list values inside of error messages, where you can only pass in a string and
+ * not the whole object.
+ *
+ * @method objectToErrorString
+ *
+ * @param {Object} object The object to convert
+ *
+ * @return {[type]} The string containing the object's key (value) pairs
+ */
+export const objectToErrorString = (object: Object = {}): string =>
+  Object.keys(object).reduce(
+    (allArgs, key) => `${allArgs}${key} (${String(object[key])}), `,
+    '',
+  );
+
 const utils: {
   warning: (...*) => void,
   getRandomValues: (...*) => Uint8Array,
@@ -285,6 +302,7 @@ const utils: {
   assertTruth: (...*) => boolean,
   bigNumber: (...*) => BN,
   padLeft: (...*) => string,
+  objectToErrorString: (...*) => string,
 } = Object.assign(
   {},
   {
@@ -293,6 +311,7 @@ const utils: {
     assertTruth,
     bigNumber,
     padLeft,
+    objectToErrorString,
   },
   /*
    * Only export the `verbose` method for testing purpouses
