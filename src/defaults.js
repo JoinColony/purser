@@ -84,3 +84,5 @@ export const BLOCKIE_OPTS: Object = {
   size: 8,
   scale: 25,
 };
+
+export const WEI_MINIFICATION: number = 1e18;

@@ -1,8 +1,9 @@
 /* @flow */
 
 import crypto from 'crypto';
+import BN from 'bn.js';
 
-import { ENV } from './defaults';
+import { ENV, WALLET_PROP_DESCRIPTORS, WEI_MINIFICATION } from './defaults';
 import { utils as messages } from './messages';
 
 /**
@@ -185,41 +186,62 @@ export const assertTruth = ({
 };
 
 /**
- * Left pad a string with up to a number of characters
+ * Wrapper for the `bn.js` constructor to use as an utility for big numbers
  *
- * @method padLeft
+ * Make sure to inform the users that this is the preffered way of interacting with
+ * big numbers inside this library, as even if the underlying Big Number library will change,
+ * this API will (mostly) stay the same.
  *
- * @param {string} value the string (or value that will be converted to string) to pad
- * @param {number} length the length of the final string (from which this determines the number of padding characters)
- * @param {any} character character to use for padding (can be anything since it get converted to a string, defaults to 0)
+ * See: BigInt
+ * https://developers.google.com/web/updates/2018/05/bigint
  *
- * The above parameters are sent in as props of an object.
+ * @TODO Add internal version of methods
+ * Eg: `ifromWei()` and `itoWei`. See BN's docs about prefixes and postfixes
  *
- * @return {string} the newly padded string
+ * @method bigNumber
+ *
+ * @param {number | string | BN} value the value to convert to a big number
+ *
+ * @return {BN} The new bignumber instance
  */
-export const padLeft = ({
-  value,
-  length,
-  character = 0,
-}: {
-  value: string,
-  length: number,
-  character?: any,
-} = {}): string => `${String(character).repeat(length - value.length)}${value}`;
+export const bigNumber = (value: number | string | BN): BN => {
+  const oneWei = new BN(WEI_MINIFICATION.toString());
+  const bigNumberInstance = new BN(value);
+  const bigNumberInstancePrototype = Object.getPrototypeOf(bigNumberInstance);
+  Object.defineProperties(bigNumberInstancePrototype, {
+    /*
+     * Convert the number to WEI (multiply by 1 to the power of 18)
+     */
+    toWei: Object.assign(
+      {},
+      { value: () => bigNumberInstance.mul(oneWei) },
+      WALLET_PROP_DESCRIPTORS,
+    ),
+    /*
+     * Convert the number to WEI (multiply by 1 to the power of 18)
+     */
+    fromWei: Object.assign(
+      {},
+      { value: () => bigNumberInstance.div(oneWei) },
+      WALLET_PROP_DESCRIPTORS,
+    ),
+  });
+  return bigNumberInstance;
+};
 
 const utils: {
   warning: (...*) => void,
   getRandomValues: (...*) => Uint8Array,
   verbose?: (...*) => boolean,
   assertTruth: (...*) => boolean,
-  padLeft: (...*) => string,
+  bigNumber: (...*) => BN,
 } = Object.assign(
   {},
   {
     warning,
     getRandomValues,
     assertTruth,
-    padLeft,
+    bigNumber,
   },
   /*
    * Only export the `verbose` method for testing purpouses

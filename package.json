@@ -78,6 +78,7 @@
   },
   "dependencies": {
     "bip32-path": "^0.4.2",
+    "bn.js": "^4.11.8",
     "ethereum-blockies": "https://github.com/ethereum/blockies.git",
     "ethers": "^3.0.16",
     "hdkey": "^1.0.0",
