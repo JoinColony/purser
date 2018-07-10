@@ -1,5 +1,7 @@
 export const warning = jest.fn();
 
+export const objectToErrorString = jest.fn();
+
 export const getRandomValues = jest.fn(value => value);
 
 const utils = {
