@@ -4,7 +4,7 @@ import { getAddress as validateAddress } from 'ethers/utils';
 import { fromString } from 'bip32-path';
 
 import { payloadListener } from './helpers';
-import { warning, bigNumber } from '../utils';
+import { warning, bigNumber, objectToErrorString } from '../utils';
 import {
   derivationPathValidator,
   safeIntegerValidator,
@@ -127,10 +127,20 @@ export const signTransaction = async ({
     });
     return signedTransaction;
   } catch (caughtError) {
+    /*
+     * Don't throw an error if the user cancelled
+     */
     if (caughtError.message === STD_ERRORS.CANCEL_TX_SIGN) {
-      warning(messages.userSignTxCancel);
+      return warning(messages.userSignTxCancel);
     }
-    return undefined;
+    /*
+     * But throw otherwise, so we can see what's going on
+     */
+    throw new Error(
+      `${messages.userSignTxGenericError}: ${objectToErrorString(
+        modifiedPayloadObject,
+      )} ${caughtError.message}`,
+    );
   }
 };
 

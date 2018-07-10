@@ -12,7 +12,7 @@ import type {
 } from './flowtypes';
 
 import { autoselect } from './providers';
-import { getRandomValues, warning } from './utils';
+import { getRandomValues, warning, objectToErrorString } from './utils';
 import { softwareWallet as messages } from './messages';
 import {
   ENV,
@@ -363,16 +363,9 @@ class SoftwareWallet extends EtherWallet {
         keystore,
       );
     } catch (err) {
-      warning(
-        messages.open,
-        Object.keys(walletArguments).reduce(
-          (allArgs, key) =>
-            `${allArgs}${key} (${String(walletArguments[key])}), `,
-          '',
-        ),
-        err,
-        { level: 'high' },
-      );
+      warning(messages.open, objectToErrorString(walletArguments), err, {
+        level: 'high',
+      });
       throw new Error();
     }
   }

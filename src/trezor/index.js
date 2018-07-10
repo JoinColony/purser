@@ -6,7 +6,7 @@ import TrezorWallet from './class';
 
 import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
-import { warning } from '../utils';
+import { warning, objectToErrorString } from '../utils';
 
 import { classMessages as messages } from './messages';
 import { PATH, STD_ERRORS } from './defaults';
@@ -102,10 +102,20 @@ const trezorWallet: WalletExportType = Object.assign(
         );
         return walletInstance;
       } catch (caughtError) {
+        /*
+         * Don't throw an error if the user cancelled
+         */
         if (caughtError.message === STD_ERRORS.CANCEL_ACC_EXPORT) {
-          warning(messages.userExportCancel);
+          return warning(messages.userExportCancel);
         }
-        return undefined;
+        /*
+         * But throw otherwise, so we can see what's going on
+         */
+        throw new Error(
+          `${messages.userExportGenericError}: ${objectToErrorString(
+            modifiedPayloadObject,
+          )} ${caughtError.message}`,
+        );
       }
     },
   },
