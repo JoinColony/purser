@@ -64,7 +64,7 @@ export type LibraryExportType = {
 };
 
 export type WalletExportType = {
-  create: WalletArgumentsType => Promise<WalletObjectType | void>,
+  create?: WalletArgumentsType => Promise<WalletObjectType | void>,
   open: WalletArgumentsType => Promise<WalletObjectType | void>,
   SoftwareWallet?: Class<*>,
   TrezorWallet?: Class<*>,

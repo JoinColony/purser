@@ -1,43 +1,113 @@
 /* @flow */
 
+import { fromString } from 'bip32-path';
+
 import TrezorWallet from './class';
 
+import { payloadListener, derivationPathSerializer } from './helpers';
+import { autoselect } from '../providers';
 import { warning } from '../utils';
 
+import { classMessages as messages } from './messages';
+import { PATH, STD_ERRORS } from './defaults';
+import { PAYLOAD_XPUB } from './payloads';
+import { MAIN_NETWORK } from '../defaults';
+
 import type {
-  WalletExportType,
   WalletArgumentsType,
   WalletObjectType,
+  WalletExportType,
 } from '../flowtypes';
 
 const trezorWallet: WalletExportType = Object.assign(
   {},
   {
     /**
-     * Open the hardware wallet by generating address from the derived public key
+     * Open a new wallet from the public key and chain code, which are received
+     * form the Trezor service after interacting (confirming) with the hardware
+     * in real life.
      *
      * @method open
      *
-     * @return {WalletType} A new wallet object (wrapped in a promise), which is
-     * derived from the given path. Path defaults to the first address path.
+     * @param {number} addressCount the number of extra addresses to generate from the derivation path
+     * @param {ProviderType} provider An available provider to add to the wallet
+     *
+     * The above param is sent in as a prop of an {WalletArgumentsType} object.
+     *
+     * @return {WalletType} The wallet object resulted by instantiating the class
+     * (Object is wrapped in a promise).
+     *
      */
-    open: async (
-      trezorWalletArguments: WalletArgumentsType = {},
-    ): Promise<WalletObjectType | void> =>
-      TrezorWallet.open(trezorWalletArguments),
-    /**
-     * We can't actually create a new wallet address since this is a harware
-     * one and comes pre-seeeded.
-     *
-     * For consistency with the rest of the library we keep this method. But
-     * instead of creating a new wallet we just warn the user that we can't.
-     *
-     * @TODO Add message prop
-     *
-     * @method create
-     */
-    create: async (): Promise<void> =>
-      warning('Cannot create a new wallet/address'),
+    open: async ({
+      addressCount,
+      /*
+       * @TODO Add provider deptrecation warning
+       *
+       * As we have roadmapped to separate providers from the actual wallet
+       */
+      provider = autoselect,
+    }: WalletArgumentsType = {}): Promise<WalletObjectType | void> => {
+      const { COIN_MAINNET, COIN_TESTNET } = PATH;
+      /*
+       * Get the provider.
+       * If it's a provider generator, execute the function and get it's return
+       */
+      let providerMode =
+        typeof provider === 'function' ? await provider() : provider;
+      let coinType = COIN_MAINNET;
+      if (typeof provider !== 'object' && typeof provider !== 'function') {
+        /*
+         * @TODO Add no provider set warning message
+         */
+        warning('No provider set');
+        providerMode = undefined;
+      }
+      /*
+       * If we're on a testnet set the coin type id to `1`
+       * This will be used in the derivation path
+       */
+      if (
+        providerMode &&
+        (!!providerMode.testnet || providerMode.name !== MAIN_NETWORK)
+      ) {
+        coinType = COIN_TESTNET;
+      }
+      /*
+       * Modify the default payload to overwrite the path with the new
+       * coid type id derivation
+       */
+      const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_XPUB, {
+        path: fromString(
+          derivationPathSerializer({ coinType }),
+          true,
+        ).toPathArray(),
+      });
+      /*
+       * We need to catch the cancelled error since it's part of a normal user workflow
+       */
+      try {
+        /*
+         * Get the harware wallet's public key and chain code, to use for deriving
+         * the rest of the accounts
+         */
+        const { publicKey, chainCode } = await payloadListener({
+          payload: modifiedPayloadObject,
+        });
+        const walletInstance: WalletObjectType = new TrezorWallet(
+          publicKey,
+          chainCode,
+          coinType,
+          addressCount,
+          providerMode,
+        );
+        return walletInstance;
+      } catch (caughtError) {
+        if (caughtError.message === STD_ERRORS.CANCEL_ACC_EXPORT) {
+          warning(messages.userExportCancel);
+        }
+        return undefined;
+      }
+    },
   },
 );
 
