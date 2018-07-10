@@ -1,5 +1,7 @@
 /* @flow */
 
+import BN from 'bn.js';
+
 import { assertTruth } from '../utils';
 import { validators as messages } from './messages';
 import { PATH, MATCH, UNDEFINED, SPLITTER } from './defaults';
@@ -157,6 +159,16 @@ export const derivationPathValidator = (derivationPath: string): boolean => {
   return true;
 };
 
+/**
+ * Validate an integer passed in to make sure is safe (< 9007199254740991) and positive
+ *
+ * @method safeIntegerValidator
+ *
+ * @param {number} integer The integer to validate
+ *
+ * @return {boolean} It only returns true if the integer is safe and positive,
+ * otherwise an Error will be thrown and this will not finish execution.
+ */
 export const safeIntegerValidator = (integer: number): boolean => {
   const { safeInteger: safeIntegerMessages } = messages;
   const validationTests: Array<boolean> = [];
@@ -195,6 +207,45 @@ export const safeIntegerValidator = (integer: number): boolean => {
    */
   if (!validationTests.some(test => test !== false)) {
     throw new Error(`${safeIntegerMessages.genericError}: ${integer}`);
+  }
+  /*
+   * Everything goes well here. (But most likely this value will be ignored)
+   */
+  return true;
+};
+
+/**
+ * Validate a Big Number instance object that was passed in
+ *
+ * @method bigNumberValidator
+ *
+ * @param {Object} bigNumber The big number instance to check
+ *
+ * @return {boolean} It only returns true if the object is an instance of Big Number,
+ * otherwise an Error will be thrown and this will not finish execution.
+ */
+export const bigNumberValidator = (bigNumber: number): boolean => {
+  const { bigNumber: bigNumberMessages } = messages;
+  const validationTests: Array<boolean> = [];
+  /*
+   * It should be an instance of the BN Class
+   */
+  validationTests.push(
+    assertTruth({
+      expression: BN.isBN(bigNumber),
+      message: `${bigNumberMessages.notBigNumber}: ${JSON.stringify(
+        bigNumber,
+      )}`,
+    }),
+  );
+  /*
+   * This is a fail-safe in case anything splis through.
+   * If any of the values are `false` throw a general Error
+   */
+  if (!validationTests.some(test => test !== false)) {
+    throw new Error(
+      `${bigNumberMessages.genericError}: ${JSON.stringify(bigNumber)}`,
+    );
   }
   /*
    * Everything goes well here. (But most likely this value will be ignored)
