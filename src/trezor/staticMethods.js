@@ -36,7 +36,7 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  *
  * @param {string} path the derivation path for the account with which to sign the transaction
  * @param {bigNumber} gasPrice gas price for the transaction in GWEI (as an instance of bigNumber), defaults to 10
- * @param {string} gasLimit gas limit for the transaction (as a `hex` string)
+ * @param {bigNumber} gasLimit gas limit for the transaction (as an instance of bigNumber), defaults to 21000
  * @param {number} chainId the id of the chain for which this transaction is intended
  * @param {number} nonce the nonce to use for the transaction (as a number)
  * @param {string} to the address to which to transaction is sent
@@ -53,7 +53,7 @@ export const signTransaction = async ({
    */
   path,
   gasPrice = bigNumber(10).toGwei(),
-  gasLimit,
+  gasLimit = bigNumber(21000),
   /*
    * Chain Id defaults to the on set on the provider but it can be overwritten
    */
@@ -75,6 +75,10 @@ export const signTransaction = async ({
   derivationPathValidator(path);
   /*
    * Check that the gas price is a big number
+   */
+  bigNumberValidator(gasPrice);
+  /*
+   * Check that the gas limit is a big number
    */
   bigNumberValidator(gasPrice);
   /*
@@ -102,7 +106,8 @@ export const signTransaction = async ({
      */
     /* $FlowFixMe */
     gas_price: multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
-    gas_limit: gasLimit,
+    /* $FlowFixMe */
+    gas_limit: multipleOfTwoHexValueNormalizer(gasLimit.toString(16)),
     chain_id: chainId,
     /*
      * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
