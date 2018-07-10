@@ -3,7 +3,12 @@
 import crypto from 'crypto';
 import BN from 'bn.js';
 
-import { ENV, WEI_MINIFICATION, GWEI_MINIFICATION } from './defaults';
+import {
+  ENV,
+  WEI_MINIFICATION,
+  GWEI_MINIFICATION,
+  GETTER_PROP_DESCRIPTORS,
+} from './defaults';
 import { utils as messages } from './messages';
 
 /**
@@ -211,24 +216,39 @@ export const bigNumber = (value: number | string | BN): BN => {
     constructor(...args) {
       super(...args);
       const ExtendedBNPrototype = Object.getPrototypeOf(this);
-      const BNPrototype = Object.getPrototypeOf(ExtendedBNPrototype);
-      Object.defineProperties(BNPrototype, {
+      Object.defineProperties(ExtendedBNPrototype, {
         /*
          * Convert the number to WEI (multiply by 1 to the power of 18)
          */
-        toWei: { value: () => this.imul(oneWei) },
+        toWei: Object.assign(
+          {},
+          { value: () => this.imul(oneWei) },
+          GETTER_PROP_DESCRIPTORS,
+        ),
         /*
          * Convert the number to WEI (multiply by 1 to the power of 18)
          */
-        fromWei: { value: () => this.div(oneWei) },
+        fromWei: Object.assign(
+          {},
+          { value: () => this.div(oneWei) },
+          GETTER_PROP_DESCRIPTORS,
+        ),
         /*
          * Convert the number to GWEI (multiply by 1 to the power of 18)
          */
-        toGwei: { value: () => this.imul(oneGwei) },
+        toGwei: Object.assign(
+          {},
+          { value: () => this.imul(oneGwei) },
+          GETTER_PROP_DESCRIPTORS,
+        ),
         /*
          * Convert the number to GWEI (multiply by 1 to the power of 18)
          */
-        fromGwei: { value: () => this.div(oneGwei) },
+        fromGwei: Object.assign(
+          {},
+          { value: () => this.div(oneGwei) },
+          GETTER_PROP_DESCRIPTORS,
+        ),
       });
     }
   }

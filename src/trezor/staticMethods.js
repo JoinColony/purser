@@ -4,9 +4,16 @@ import { getAddress as validateAddress } from 'ethers/utils';
 import { fromString } from 'bip32-path';
 
 import { payloadListener } from './helpers';
-import { warning, padLeft } from '../utils';
-import { derivationPathValidator, safeIntegerValidator } from './validators';
-import { derivationPathNormalizer } from './normalizers';
+import { warning, bigNumber } from '../utils';
+import {
+  derivationPathValidator,
+  safeIntegerValidator,
+  bigNumberValidator,
+} from './validators';
+import {
+  derivationPathNormalizer,
+  multipleOfTwoHexValueNormalizer,
+} from './normalizers';
 
 import { classMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';
@@ -28,7 +35,7 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  * @method signTransaction
  *
  * @param {string} path the derivation path for the account with which to sign the transaction
- * @param {string} gasPrice gas price for the transaction (as a `hex` string)
+ * @param {bigNumber} gasPrice gas price for the transaction in GWEI (as an instance of bigNumber), defaults to 10
  * @param {string} gasLimit gas limit for the transaction (as a `hex` string)
  * @param {number} chainId the id of the chain for which this transaction is intended
  * @param {number} nonce the nonce to use for the transaction (as a number)
@@ -45,7 +52,7 @@ export const signTransaction = async ({
    * Path defaults to the current selected "default" address path
    */
   path,
-  gasPrice,
+  gasPrice = bigNumber(10).toGwei(),
   gasLimit,
   /*
    * Chain Id defaults to the on set on the provider but it can be overwritten
@@ -61,28 +68,23 @@ export const signTransaction = async ({
   to,
   value,
   data,
-}: TransactionObjectType) => {
+}: TransactionObjectType = {}) => {
   /*
    * Check if the derivation path is in the correct format
-   *
-   * Flow doesn't even let us validate it.
-   * It shoots first, asks questions later.
    */
-  /* $FlowFixMe */
   derivationPathValidator(path);
+  /*
+   * Check that the gas price is a big number
+   */
+  bigNumberValidator(gasPrice);
+  /*
+   * Check if the chain id value is valid (a positive, safe integer)
+   */
+  safeIntegerValidator(chainId);
   /*
    * Check if the nonce value is valid (a positive, safe integer)
    */
   safeIntegerValidator(nonce);
-  const hexNonce = nonce.toString(16);
-  /*
-   * Check if the chain id value is valid (a positive, safe integer)
-   *
-   * Flow doesn't even let us validate it.
-   * It shoots first, asks questions later.
-   */
-  /* $FlowFixMe */
-  safeIntegerValidator(chainId);
   /*
    * Modify the default payload to set the transaction details
    */
@@ -94,21 +96,19 @@ export const signTransaction = async ({
      * the default value value of `path` and assumes it's undefined -- it can be,
      * but it will not pass the validator)
      */
-    /* $FlowFixMe */
     address_n: fromString(derivationPathNormalizer(path), true).toPathArray(),
-    gas_price: gasPrice,
+    /*
+     * We could really do with some BN.js flow types declarations :(
+     */
+    /* $FlowFixMe */
+    gas_price: multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
     gas_limit: gasLimit,
     chain_id: chainId,
     /*
-     * Nonce needs to be sent in as a hex string, and to be a multiple of two.
+     * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
      * Eg: '3' to be '03', `12c` to be `012c`
-     *
-     * So below, we left-pad it
      */
-    nonce: padLeft({
-      length: Math.ceil(hexNonce.length / 2) * 2,
-      value: hexNonce,
-    }),
+    nonce: multipleOfTwoHexValueNormalizer(nonce.toString(16)),
     to,
     value,
     data,

@@ -178,7 +178,7 @@ export const payloadListener = async ({
           window.removeEventListener('message', messageListener);
           return resolve(data);
         }
-        if (responseIsObject && data.error) {
+        if (responseIsObject && (data.error || !data.success)) {
           prompt.close();
           window.removeEventListener('message', messageListener);
           return reject(new Error(data.error));

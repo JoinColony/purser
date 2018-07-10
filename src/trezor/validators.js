@@ -23,7 +23,7 @@ import { PATH, MATCH, UNDEFINED, SPLITTER } from './defaults';
  * @return {boolean} It only returns true if the derivation path is correct,
  * otherwise an Error will be thrown and this will not finish execution.
  */
-export const derivationPathValidator = (derivationPath: string): boolean => {
+export const derivationPathValidator = (derivationPath: any): boolean => {
   const { derivationPath: derivationPathMessages } = messages;
   const validationTests: Array<boolean> = [];
   let deSerializedDerivationPath: Array<string> = [];
@@ -169,7 +169,7 @@ export const derivationPathValidator = (derivationPath: string): boolean => {
  * @return {boolean} It only returns true if the integer is safe and positive,
  * otherwise an Error will be thrown and this will not finish execution.
  */
-export const safeIntegerValidator = (integer: number): boolean => {
+export const safeIntegerValidator = (integer: any): boolean => {
   const { safeInteger: safeIntegerMessages } = messages;
   const validationTests: Array<boolean> = [];
   /*
@@ -224,7 +224,7 @@ export const safeIntegerValidator = (integer: number): boolean => {
  * @return {boolean} It only returns true if the object is an instance of Big Number,
  * otherwise an Error will be thrown and this will not finish execution.
  */
-export const bigNumberValidator = (bigNumber: number): boolean => {
+export const bigNumberValidator = (bigNumber: any): boolean => {
   const { bigNumber: bigNumberMessages } = messages;
   const validationTests: Array<boolean> = [];
   /*

@@ -82,7 +82,7 @@ export type ProviderArgumentsType = {
 };
 
 export type TransactionObjectType = {
-  path?: string,
+  path: string,
   chainId?: number,
   gasPrice?: string,
   gasLimit?: string,
