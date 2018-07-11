@@ -297,7 +297,7 @@ export const addressValidator = (address: any): boolean => {
   validationTests.push(
     assertTruth({
       expression: !!address.match(MATCH.ADDRESS),
-      message: `${addressMessages.notFormat}: ${address}`,
+      message: `${addressMessages.notFormat}: ${address || UNDEFINED}`,
     }),
   );
   /*
@@ -305,7 +305,55 @@ export const addressValidator = (address: any): boolean => {
    * If any of the values are `false` throw a general Error
    */
   if (!validationTests.some(test => test !== false)) {
-    throw new Error(`${addressMessages.genericError}: ${address}`);
+    throw new Error(`${addressMessages.genericError}: ${address || UNDEFINED}`);
+  }
+  /*
+   * Everything goes well here. (But most likely this value will be ignored)
+   */
+  return true;
+};
+
+/**
+ * Validate a hex string
+ *
+ * @method hexStringValidator
+ *
+ * @param {string} address The big number instance to check
+ *
+ * @return {boolean} It only returns true if the string is a valid hex format,
+ * otherwise an Error will be thrown and this will not finish execution.
+ */
+export const hexStringValidator = (string: any): boolean => {
+  const { hexString: hexStringMessages } = messages;
+  const validationTests: Array<boolean> = [];
+  /*
+   * It should be a string
+   */
+  validationTests.push(
+    assertTruth({
+      expression: typeof string === 'string',
+      message: `${hexStringMessages.notStringSequence}: ${JSON.stringify(
+        string,
+      ) || UNDEFINED}`,
+    }),
+  );
+  /*
+   * It should be in the correct format (hex string with or with out the `0x` prefix)
+   */
+  validationTests.push(
+    assertTruth({
+      expression: !!string.match(MATCH.HEX_STRING),
+      message: `${hexStringMessages.notFormat}: ${string || UNDEFINED}`,
+    }),
+  );
+  /*
+   * This is a fail-safe in case anything splis through.
+   * If any of the values are `false` throw a general Error
+   */
+  if (!validationTests.some(test => test !== false)) {
+    throw new Error(
+      `${hexStringMessages.genericError}: ${string || UNDEFINED}`,
+    );
   }
   /*
    * Everything goes well here. (But most likely this value will be ignored)
