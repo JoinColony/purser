@@ -1,6 +1,5 @@
 /* @flow */
 
-import { getAddress as validateAddress } from 'ethers/utils';
 import { fromString } from 'bip32-path';
 
 import { payloadListener } from './helpers';
@@ -9,10 +8,12 @@ import {
   derivationPathValidator,
   safeIntegerValidator,
   bigNumberValidator,
+  addressValidator,
 } from './validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
+  addressNormalizer,
 } from './normalizers';
 
 import { classMessages as messages } from './messages';
@@ -90,6 +91,10 @@ export const signTransaction = async ({
    */
   safeIntegerValidator(nonce);
   /*
+   * Check if the address (`to` prop) is in the correct format
+   */
+  addressValidator(to);
+  /*
    * Modify the default payload to set the transaction details
    */
   const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_SIGNTX, {
@@ -114,7 +119,10 @@ export const signTransaction = async ({
      * Eg: '3' to be '03', `12c` to be `012c`
      */
     nonce: multipleOfTwoHexValueNormalizer(nonce.toString(16)),
-    to,
+    /*
+     * Trezor service requires the prefix from the address to be stripped
+     */
+    to: addressNormalizer(to, false),
     value,
     data,
   });
@@ -208,15 +216,9 @@ export const verifyMessage = async ({
   signature,
 }: MessageObjectType) => {
   /*
-   * @TODO Do own bip32 address validation
-   *
-   * This will remove reliance on ethers utils and it could be combined togher with prefix stripping
+   * Check if the address is in the correct format
    */
-  const validatedAddress = validateAddress(address);
-  const strippedPrefixAddress =
-    validatedAddress.substring(0, 2) === '0x'
-      ? validatedAddress.slice(2)
-      : validatedAddress;
+  addressValidator(address);
   /*
    * @TODO Try/Catch the verify message call
    *
@@ -225,7 +227,10 @@ export const verifyMessage = async ({
    */
   const { success: isMessageValid } = await payloadListener({
     payload: Object.assign({}, PAYLOAD_VERIFYMSG, {
-      address: strippedPrefixAddress,
+      /*
+       * Trezor service requires the prefix from the address to be stripped
+       */
+      address: addressNormalizer(address, false),
       message,
       signature,
     }),

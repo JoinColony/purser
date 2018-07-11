@@ -112,7 +112,7 @@ export const multipleOfTwoHexValueNormalizer = (hexValue: string): string =>
  * @return {string} The normalized string
  */
 export const addressNormalizer = (
-  adddress: string,
+  adddress: string | void,
   prefix: boolean = true,
 ): string => {
   const checksumedAddress: string = getAddress(adddress);
