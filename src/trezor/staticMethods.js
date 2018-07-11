@@ -9,11 +9,13 @@ import {
   safeIntegerValidator,
   bigNumberValidator,
   addressValidator,
+  hexSequenceValidator,
 } from './validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
+  hexSequenceNormalizer,
 } from './normalizers';
 
 import { classMessages as messages } from './messages';
@@ -29,9 +31,6 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  * - Signature R component
  * - Signature S component
  * - Signature V component (recovery parameter)
- *
- * @TODO Validate transaction prop values
- * Something like `assert()` should work well here
  *
  * @method signTransaction
  *
@@ -68,7 +67,7 @@ export const signTransaction = async ({
   nonce = 0,
   to,
   value = bigNumber(1),
-  data,
+  inputData,
 }: TransactionObjectType = {}) => {
   /*
    * Check if the derivation path is in the correct format
@@ -98,6 +97,10 @@ export const signTransaction = async ({
    * Check that the value is a big number
    */
   bigNumberValidator(value);
+  /*
+   * Check that the input data prop is a valid hex string sequence
+   */
+  hexSequenceValidator(inputData);
   /*
    * Modify the default payload to set the transaction details
    */
@@ -129,7 +132,10 @@ export const signTransaction = async ({
     to: addressNormalizer(to, false),
     /* $FlowFixMe */
     value: multipleOfTwoHexValueNormalizer(value.toString(16)),
-    data,
+    /*
+     * Trezor service requires the prefix from the input data to be stripped
+     */
+    data: hexSequenceNormalizer(inputData, false),
   });
   /*
    * We need to catch the cancelled error since it's part of a normal user workflow

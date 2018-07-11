@@ -316,15 +316,15 @@ export const addressValidator = (address: any): boolean => {
 /**
  * Validate a hex string
  *
- * @method hexStringValidator
+ * @method hexSequenceValidator
  *
  * @param {string} address The big number instance to check
  *
  * @return {boolean} It only returns true if the string is a valid hex format,
  * otherwise an Error will be thrown and this will not finish execution.
  */
-export const hexStringValidator = (string: any): boolean => {
-  const { hexString: hexStringMessages } = messages;
+export const hexSequenceValidator = (string: any): boolean => {
+  const { hexSequence: hexSequenceMessages } = messages;
   const validationTests: Array<boolean> = [];
   /*
    * It should be a string
@@ -332,7 +332,7 @@ export const hexStringValidator = (string: any): boolean => {
   validationTests.push(
     assertTruth({
       expression: typeof string === 'string',
-      message: `${hexStringMessages.notStringSequence}: ${JSON.stringify(
+      message: `${hexSequenceMessages.notStringSequence}: ${JSON.stringify(
         string,
       ) || UNDEFINED}`,
     }),
@@ -343,7 +343,7 @@ export const hexStringValidator = (string: any): boolean => {
   validationTests.push(
     assertTruth({
       expression: !!string.match(MATCH.HEX_STRING),
-      message: `${hexStringMessages.notFormat}: ${string || UNDEFINED}`,
+      message: `${hexSequenceMessages.notFormat}: ${string || UNDEFINED}`,
     }),
   );
   /*
@@ -352,7 +352,7 @@ export const hexStringValidator = (string: any): boolean => {
    */
   if (!validationTests.some(test => test !== false)) {
     throw new Error(
-      `${hexStringMessages.genericError}: ${string || UNDEFINED}`,
+      `${hexSequenceMessages.genericError}: ${string || UNDEFINED}`,
     );
   }
   /*

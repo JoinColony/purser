@@ -47,7 +47,7 @@ export const validators: Object = {
     notFormat: 'The address passed in is not in the correct format',
     genericError: 'Something is wrong with the supplied address',
   },
-  hexString: {
+  hexSequence: {
     notStringSequence: 'The hex sequence passed in is not a valid String',
     notFormat: 'The hex sequence passed in is not in a correct hex format',
     genericError: 'Something is wrong with the supplied hex sequence',

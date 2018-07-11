@@ -89,7 +89,7 @@ export type TransactionObjectType = {
   nonce?: number,
   to?: string,
   value?: string,
-  data?: string,
+  inputData?: string | void,
 };
 
 export type MessageObjectType = {
