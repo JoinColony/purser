@@ -97,7 +97,7 @@ export const multipleOfTwoHexValueNormalizer = (hexValue: string): string =>
   });
 
 /**
- * Nomalize and ethereum address
+ * Nomalize an ethereum address
  *
  * Under the hood we're still using `ethers`'s `getAddress()` method since they
  * normalize each character's case, when doing the checksum check.
@@ -107,7 +107,7 @@ export const multipleOfTwoHexValueNormalizer = (hexValue: string): string =>
  * @method addressNormalizer
  *
  * @param {string} adddress The address to normalize
- * @param {boolean} prefix The hex value to normalize
+ * @param {boolean} prefix Should the final value have a prefix?
  *
  * @return {string} The normalized string
  */
@@ -127,4 +127,39 @@ export const addressNormalizer = (
     return `0x${matchedAddress[2]}`;
   }
   return matchedAddress[2];
+};
+
+/**
+ * Nomalize a hex string sequence.
+ *
+ * Transforms it to lower case, and, depending on the prefix argument,
+ * either add it (`0x`) or remove it
+ *
+ * This method assumes the address is already validatated and is in the correct format.
+ *
+ * @method hexSequenceNormalizer
+ *
+ * @param {string} hexString The hex string sequence to normalize
+ * @param {boolean} prefix Should the final value have a prefix?
+ *
+ * @return {string} The normalized string
+ */
+export const hexSequenceNormalizer = (
+  hexString: string | void,
+  prefix: boolean = true,
+): string => {
+  /*
+  * Flow doesn't trust that we are actually capable of validating a string
+  */
+  /* $FlowFixMe */
+  const lowecaseSequence = hexString.toLowerCase();
+  /*
+   * Index 1 is the prefix (if it exists), index 2 is the rest of the string sequence
+   */
+  /* $FlowFixMe */
+  const matchedString: Array<*> = lowecaseSequence.match(MATCH.HEX_STRING);
+  if (prefix) {
+    return `0x${matchedString[2]}`;
+  }
+  return matchedString[2];
 };
