@@ -1,8 +1,10 @@
 /* @flow */
 
+import { getAddress } from 'ethers/utils';
+
 import { padLeft } from '../utils';
 
-import { PATH, SPLITTER } from './defaults';
+import { PATH, SPLITTER, MATCH } from './defaults';
 
 /*
  * @TODO Make normalizers core methods
@@ -14,7 +16,7 @@ import { PATH, SPLITTER } from './defaults';
 /**
  * Normalize a derivation path passed in as a string
  *
- * This method assumes the deripation path is already validatated and is in a correct format.
+ * This method assumes the derivation path is already validatated and is in a correct format.
  * Use `derivationPathValidator` from `validators` to achieve that.
  *
  * @method derivationPathNormalizer
@@ -94,8 +96,35 @@ export const multipleOfTwoHexValueNormalizer = (hexValue: string): string =>
     character: '0',
   });
 
-const normalizers = {
-  derivationPathNormalizer,
+/**
+ * Nomalize and ethereum address
+ *
+ * Under the hood we're still using `ethers`'s `getAddress()` method since they
+ * normalize each character's case, when doing the checksum check.
+ *
+ * This method assumes the address is already validatated and is in the correct format.
+ *
+ * @method addressNormalizer
+ *
+ * @param {string} adddress The address to normalize
+ * @param {boolean} prefix The hex value to normalize
+ *
+ * @return {string} The normalized string
+ */
+export const addressNormalizer = (
+  adddress: string,
+  prefix: boolean = true,
+): string => {
+  const checksumedAddress: string = getAddress(adddress);
+  /*
+   * Index 1 is the prefix (if it exists), index 2 is the address without a prefix
+   *
+   * Flow doesn't trust that we are actually capable of validating a string
+   */
+  /* $FlowFixMe */
+  const matchedAddress: Array<*> = checksumedAddress.match(MATCH.ADDRESS);
+  if (prefix) {
+    return `0x${matchedAddress[2]}`;
+  }
+  return matchedAddress[2];
 };
-
-export default normalizers;
