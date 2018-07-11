@@ -30,6 +30,9 @@ export type PayloadResponseType = {
   publicKey: string,
   chainCode: string,
   signature?: string,
+  r?: string,
+  s?: string,
+  v?: number,
 };
 
 export type DerivationPathObjectType = {|

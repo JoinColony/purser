@@ -1,7 +1,6 @@
 /* @flow */
 
 import BN from 'bn.js';
-import { isValidChecksumAddress } from 'ethereumjs-util';
 
 import { assertTruth } from '../utils';
 import { validators as messages } from './messages';
@@ -299,15 +298,6 @@ export const addressValidator = (address: any): boolean => {
     assertTruth({
       expression: !!address.match(MATCH.ADDRESS),
       message: `${addressMessages.notFormat}: ${address || UNDEFINED}`,
-    }),
-  );
-  /*
-   * It has a valid checksum
-   */
-  validationTests.push(
-    assertTruth({
-      expression: isValidChecksumAddress(address),
-      message: `${addressMessages.notChecksum}: ${address || UNDEFINED}`,
     }),
   );
   /*

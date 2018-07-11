@@ -1,6 +1,7 @@
 /* @flow */
 
 import { fromString } from 'bip32-path';
+import EthereumTx from 'ethereumjs-tx';
 
 import { payloadListener } from './helpers';
 import { warning, bigNumber, objectToErrorString } from '../utils';
@@ -27,11 +28,6 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
 /**
  * Sign a transaction and return the signed transaction.
  *
- * The signed transaction is composed of:
- * - Signature R component
- * - Signature S component
- * - Signature V component (recovery parameter)
- *
  * @method signTransaction
  *
  * @param {string} path the derivation path for the account with which to sign the transaction
@@ -45,7 +41,7 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  *
  * All the above params are sent in as props of an {TransactionObjectType} object.
  *
- * @return {Promise<Object>} the signed transaction composed of the three signature components (see above).
+ * @return {Promise<string>} the signed hex transaction string
  */
 export const signTransaction = async ({
   /*
@@ -141,10 +137,33 @@ export const signTransaction = async ({
    * We need to catch the cancelled error since it's part of a normal user workflow
    */
   try {
-    const signedTransaction = await payloadListener({
-      payload: modifiedPayloadObject,
+    /*
+     * See fundamentals of Elliptic Curve Digital Signature Algorithm (ECDSA) to
+     * get an general idea of where the three components come from:
+     * https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm
+     *
+     * Also, see EIP-155 for the 27 and 28 magic numbers expected in the recovery
+     * parameter:
+     * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
+     *
+     * Now, trezor will give you the recovery paramenter already encoded, but if you
+     * want to derive the magic numbers again:
+     *
+     * recoveryParam - 35 - (chainId * 2)
+     *
+     * If the result is even, then V is 27, if odd, it's 28
+     */
+    const {
+      r: rSignatureComponent,
+      s: sSignatureComponent,
+      v: recoveryParameter,
+    } = await payloadListener({ payload: modifiedPayloadObject });
+    const signedTransaction = await new EthereumTx({
+      r: hexSequenceNormalizer(rSignatureComponent),
+      s: hexSequenceNormalizer(sSignatureComponent),
+      v: hexSequenceNormalizer(bigNumber(recoveryParameter).toString(16)),
     });
-    return signedTransaction;
+    return hexSequenceNormalizer(signedTransaction.serialize().toString('hex'));
   } catch (caughtError) {
     /*
      * Don't throw an error if the user cancelled
