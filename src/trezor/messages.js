@@ -28,17 +28,23 @@ export const validators: Object = {
       'Derivation path does have the correct Change value or Account Index',
     notValidAccountIndex:
       'Derivation path should have only one value for the Account Index',
-    genericError: 'Something went wrong with the supplied derivation path:',
+    genericError: 'Something is wrong with the supplied derivation path:',
   },
   safeInteger: {
     notNumber: 'The value passed in as an argument is not a number',
     notPositive: 'The integer value passed in as an argument is not positive',
     notSafe:
       'The integer value passed in as an argument outside the safe range',
-    genericError: 'Something went wrong with the supplied integer',
+    genericError: 'Something is wrong with the supplied integer',
   },
   bigNumber: {
     notBigNumber: 'The value passed in is not a Big Number',
-    genericError: 'Something went wrong with the supplied Big Number value',
+    genericError: 'Something is wrong with the supplied Big Number value',
+  },
+  address: {
+    notStringSequence: 'The address passed in is not a valid String',
+    notLength: 'The address passed in does not have the correct length',
+    notFormat: 'The address passed in is not in the correct format',
+    genericError: 'Something is wrong with the supplied address',
   },
 };

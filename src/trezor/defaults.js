@@ -94,6 +94,7 @@ export const STD_ERRORS: Object = {
  */
 export const MATCH: Object = {
   DIGITS: /^\d+$/,
+  ADDRESS: /^(0x)?[0-9a-fA-F]{40}$/,
 };
 
 /*

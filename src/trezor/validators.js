@@ -252,3 +252,63 @@ export const bigNumberValidator = (bigNumber: any): boolean => {
    */
   return true;
 };
+
+/**
+ * Validate a BIP32 Ethereum Address
+ *
+ * @TODO Validate the checksum of the address.
+ *
+ * @TODO Validate also if the address is in the ICAP format
+ *
+ * @method addressValidator
+ *
+ * @param {string} address The big number instance to check
+ *
+ * @return {boolean} It only returns true if the string is a valid address format,
+ * otherwise an Error will be thrown and this will not finish execution.
+ */
+export const addressValidator = (address: any): boolean => {
+  const { address: addressMessages } = messages;
+  const validationTests: Array<boolean> = [];
+  /*
+   * It should be a string
+   */
+  validationTests.push(
+    assertTruth({
+      expression: typeof address === 'string',
+      message: `${addressMessages.notStringSequence}: ${JSON.stringify(
+        address,
+      ) || UNDEFINED}`,
+    }),
+  );
+  /*
+   * It should be the correct length. Either 40 or 42 (with prefix)
+   */
+  validationTests.push(
+    assertTruth({
+      expression: address.length === 40 || address.length === 42,
+      message: `${addressMessages.notStringSequence}: ${address || UNDEFINED}`,
+    }),
+  );
+  /*
+   * It should be in the correct format (hex string of length 40 with or
+   * with out the `0x` prefix)
+   */
+  validationTests.push(
+    assertTruth({
+      expression: !!address.match(MATCH.ADDRESS),
+      message: `${addressMessages.notFormat}: ${address}`,
+    }),
+  );
+  /*
+   * This is a fail-safe in case anything splis through.
+   * If any of the values are `false` throw a general Error
+   */
+  if (!validationTests.some(test => test !== false)) {
+    throw new Error(`${addressMessages.genericError}: ${address}`);
+  }
+  /*
+   * Everything goes well here. (But most likely this value will be ignored)
+   */
+  return true;
+};
