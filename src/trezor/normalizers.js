@@ -1,7 +1,5 @@
 /* @flow */
 
-import { getAddress } from 'ethers/utils';
-
 import { padLeft } from '../utils';
 
 import { PATH, SPLITTER, MATCH } from './defaults';
@@ -99,9 +97,6 @@ export const multipleOfTwoHexValueNormalizer = (hexValue: string): string =>
 /**
  * Nomalize an ethereum address
  *
- * Under the hood we're still using `ethers`'s `getAddress()` method since they
- * normalize each character's case, when doing the checksum check.
- *
  * This method assumes the address is already validatated and is in the correct format.
  *
  * @method addressNormalizer
@@ -115,14 +110,13 @@ export const addressNormalizer = (
   adddress: string | void,
   prefix: boolean = true,
 ): string => {
-  const checksumedAddress: string = getAddress(adddress);
   /*
    * Index 1 is the prefix (if it exists), index 2 is the address without a prefix
    *
    * Flow doesn't trust that we are actually capable of validating a string
    */
   /* $FlowFixMe */
-  const matchedAddress: Array<*> = checksumedAddress.match(MATCH.ADDRESS);
+  const matchedAddress: Array<*> = adddress.match(MATCH.ADDRESS);
   if (prefix) {
     return `0x${matchedAddress[2]}`;
   }
