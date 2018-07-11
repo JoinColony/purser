@@ -36,12 +36,12 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  * @method signTransaction
  *
  * @param {string} path the derivation path for the account with which to sign the transaction
- * @param {bigNumber} gasPrice gas price for the transaction in GWEI (as an instance of bigNumber), defaults to 10
+ * @param {bigNumber} gasPrice gas price for the transaction in WEI (as an instance of bigNumber), defaults to 9000000000 (9 GWEI)
  * @param {bigNumber} gasLimit gas limit for the transaction (as an instance of bigNumber), defaults to 21000
  * @param {number} chainId the id of the chain for which this transaction is intended
  * @param {number} nonce the nonce to use for the transaction (as a number)
  * @param {string} to the address to which to transaction is sent
- * @param {string} value the value of the transaction (as a `hex` string)
+ * @param {string} value the value of the transaction in WEI (as an instance of bigNumber), defaults to 1
  * @param {string} data data appended to the transaction (as a `hex` string)
  *
  * All the above params are sent in as props of an {TransactionObjectType} object.
@@ -53,7 +53,7 @@ export const signTransaction = async ({
    * Path defaults to the current selected "default" address path
    */
   path,
-  gasPrice = bigNumber(10).toGwei(),
+  gasPrice = bigNumber(9000000000),
   gasLimit = bigNumber(21000),
   /*
    * Chain Id defaults to the on set on the provider but it can be overwritten
@@ -67,7 +67,7 @@ export const signTransaction = async ({
    */
   nonce = 0,
   to,
-  value,
+  value = bigNumber(1),
   data,
 }: TransactionObjectType = {}) => {
   /*
@@ -95,6 +95,10 @@ export const signTransaction = async ({
    */
   addressValidator(to);
   /*
+   * Check that the value is a big number
+   */
+  bigNumberValidator(value);
+  /*
    * Modify the default payload to set the transaction details
    */
   const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_SIGNTX, {
@@ -102,7 +106,7 @@ export const signTransaction = async ({
      * Path needs to be sent in as an derivation path array
      *
      * We also normalize it first (but for some reason Flow doesn't pick up
-     * the default value value of `path` and assumes it's undefined -- it can be,
+     * the default value of `path` and assumes it's undefined -- it can be,
      * but it will not pass the validator)
      */
     address_n: fromString(derivationPathNormalizer(path), true).toPathArray(),
@@ -123,7 +127,8 @@ export const signTransaction = async ({
      * Trezor service requires the prefix from the address to be stripped
      */
     to: addressNormalizer(to, false),
-    value,
+    /* $FlowFixMe */
+    value: multipleOfTwoHexValueNormalizer(value.toString(16)),
     data,
   });
   /*
