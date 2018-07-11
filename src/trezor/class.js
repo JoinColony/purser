@@ -6,6 +6,7 @@ import HDKey from 'hdkey';
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { derivationPathSerializer } from './helpers';
 import { safeIntegerValidator } from './validators';
+import { addressNormalizer } from './normalizers';
 
 import { HEX_HASH_TYPE } from './defaults';
 import { WALLET_PROP_DESCRIPTORS, SETTER_PROP_DESCRIPTORS } from '../defaults';
@@ -96,13 +97,14 @@ export default class TrezorWallet {
         /*
          * Generate the address from the derived public key
          */
-        addressObject.address = SigningKey.publicKeyToAddress(
+        const addressFromPublicKey = SigningKey.publicKeyToAddress(
           /*
            * Sadly Flow doesn't have the correct types for node's Buffer Object
            */
           /* $FlowFixMe */
           Buffer.from(derivationKey.publicKey, HEX_HASH_TYPE),
         );
+        addressObject.address = addressNormalizer(addressFromPublicKey);
         return addressObject;
       },
     );
