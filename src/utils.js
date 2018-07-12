@@ -344,13 +344,14 @@ export const validatorGenerator = (
 };
 
 const utils: {
-  warning: (...*) => void,
+  warning?: (...*) => void,
   getRandomValues: (...*) => Uint8Array,
   verbose?: (...*) => boolean,
-  assertTruth: (...*) => boolean,
+  assertTruth?: (...*) => boolean,
   bigNumber: (...*) => BN,
-  padLeft: (...*) => string,
-  objectToErrorString: (...*) => string,
+  padLeft?: (...*) => string,
+  objectToErrorString?: (...*) => string,
+  validatorGenerator?: (...*) => boolean,
 } = Object.assign(
   {},
   {
@@ -360,11 +361,21 @@ const utils: {
     bigNumber,
     padLeft,
     objectToErrorString,
+    validatorGenerator,
   },
   /*
    * Only export the `verbose` method for testing purpouses
    */
-  ENV === 'test' ? { verbose } : {},
+  ENV === 'test'
+    ? {
+        warning,
+        verbose,
+        assertTruth,
+        padLeft,
+        objectToErrorString,
+        validatorGenerator,
+      }
+    : {},
 );
 
 export default utils;
