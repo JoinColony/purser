@@ -52,4 +52,10 @@ export const validators: Object = {
     notFormat: 'The hex sequence passed in is not in a correct hex format',
     genericError: 'Something is wrong with the supplied hex sequence',
   },
+  message: {
+    notString: 'The string passed in is not a valid String type',
+    tooBig:
+      'The string passed in is too big in size. It should be up to 1024 Bytes',
+    genericError: 'Something is wrong with the supplied string',
+  },
 };

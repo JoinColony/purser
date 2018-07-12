@@ -318,12 +318,12 @@ export const addressValidator = (address: any): boolean => {
  *
  * @method hexSequenceValidator
  *
- * @param {string} address The big number instance to check
+ * @param {string} hexSequence The big number instance to check
  *
  * @return {boolean} It only returns true if the string is a valid hex format,
  * otherwise an Error will be thrown and this will not finish execution.
  */
-export const hexSequenceValidator = (string: any): boolean => {
+export const hexSequenceValidator = (hexSequence: any): boolean => {
   const { hexSequence: hexSequenceMessages } = messages;
   const validationTests: Array<boolean> = [];
   /*
@@ -331,9 +331,9 @@ export const hexSequenceValidator = (string: any): boolean => {
    */
   validationTests.push(
     assertTruth({
-      expression: typeof string === 'string',
+      expression: typeof hexSequence === 'string',
       message: `${hexSequenceMessages.notStringSequence}: ${JSON.stringify(
-        string,
+        hexSequence,
       ) || UNDEFINED}`,
     }),
   );
@@ -342,8 +342,8 @@ export const hexSequenceValidator = (string: any): boolean => {
    */
   validationTests.push(
     assertTruth({
-      expression: !!string.match(MATCH.HEX_STRING),
-      message: `${hexSequenceMessages.notFormat}: ${string || UNDEFINED}`,
+      expression: !!hexSequence.match(MATCH.HEX_STRING),
+      message: `${hexSequenceMessages.notFormat}: ${hexSequence || UNDEFINED}`,
     }),
   );
   /*
@@ -352,8 +352,57 @@ export const hexSequenceValidator = (string: any): boolean => {
    */
   if (!validationTests.some(test => test !== false)) {
     throw new Error(
-      `${hexSequenceMessages.genericError}: ${string || UNDEFINED}`,
+      `${hexSequenceMessages.genericError}: ${hexSequence || UNDEFINED}`,
     );
+  }
+  /*
+   * Everything goes well here. (But most likely this value will be ignored)
+   */
+  return true;
+};
+
+/**
+ * Validate a hex string
+ *
+ * @method messageValidator
+ *
+ * @param {string} string The big number instance to check
+ *
+ * @return {boolean} It only returns true if the string is a valid hex format,
+ * otherwise an Error will be thrown and this will not finish execution.
+ */
+export const messageValidator = (string: any): boolean => {
+  /*
+   * Real creative naming there, huh...?
+   */
+  const { message: messageMessages } = messages;
+  const validationTests: Array<boolean> = [];
+  /*
+   * It should be a string
+   */
+  validationTests.push(
+    assertTruth({
+      expression: typeof string === 'string',
+      message: `${messageMessages.notString}: ${JSON.stringify(string) ||
+        UNDEFINED}`,
+    }),
+  );
+  /*
+   * It should be under (or equal to) 1024 Bytes in size
+   */
+  validationTests.push(
+    assertTruth({
+      expression: string.length <= 1024,
+      message: `${messageMessages.tooBig}: ${JSON.stringify(string) ||
+        UNDEFINED}`,
+    }),
+  );
+  /*
+   * This is a fail-safe in case anything splis through.
+   * If any of the values are `false` throw a general Error
+   */
+  if (!validationTests.some(test => test !== false)) {
+    throw new Error(`${messageMessages.genericError}: ${string || UNDEFINED}`);
   }
   /*
    * Everything goes well here. (But most likely this value will be ignored)
