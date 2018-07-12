@@ -8,7 +8,9 @@ import {
   SERVICE_URL,
   SERVICE_KEY,
   WINDOW_FEATURES,
+  WINDOW_NAME,
   PATH,
+  MATCH,
 } from './defaults';
 import { RESPONSE_HANDSHAKE } from './responses';
 
@@ -42,7 +44,7 @@ export const sanitizeUrl = (url: string): string => {
    * https://github.com/facebook/flow/issues/3554
    */
   /* $FlowFixMe */
-  return url.match(/^.+:\/\/[^‌​/]+/)[0];
+  return url.match(MATCH.URL)[0];
 };
 
 /**
@@ -108,8 +110,6 @@ export const serviceUrlGenerator = ({
  * See more information about the Window API here:
  * https://developer.mozilla.org/en-US/docs/Web/API/Window
  *
- * @TODO Add constant for the Window instance name
- *
  * @method promptGenerator
  *
  * @param {string} serviceUrl The Url to open the window to
@@ -122,8 +122,7 @@ export const serviceUrlGenerator = ({
 export const promptGenerator = ({
   serviceUrl = serviceUrlGenerator(),
   windowFeatures = windowFeaturesSerializer(WINDOW_FEATURES),
-}: Object = {}): Object =>
-  window.open(serviceUrl, 'trezor-service-connection', windowFeatures);
+}: Object = {}): Object => window.open(serviceUrl, WINDOW_NAME, windowFeatures);
 
 /**
  * This method acomplishes fourt things: spawn an 'message' event listener,
@@ -192,7 +191,8 @@ export const payloadListener = async ({
 /**
  * Serialize an derivation path object's props into it's string counterpart
  *
- * @TODO there's an argument here that this should be moved into common defaults
+ * @TODO Move to core
+ * there's an argument here that this should be moved into common defaults
  * and used through all of the wallet types for consistency.
  *
  * @method derivationPathSerializer

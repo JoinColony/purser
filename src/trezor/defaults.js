@@ -49,6 +49,11 @@ export const SERVICE_URL: string = 'popup/popup.html';
 export const SERVICE_KEY: string = 'v';
 
 /*
+ * Trezor service prompt window name
+ */
+export const WINDOW_NAME: string = 'trezor-service-connection';
+
+/*
  * Prompt window options
  */
 export const PROMPT_WIDTH: number = 600;
@@ -92,6 +97,9 @@ export const STD_ERRORS: Object = {
 
 /*
  * Regex to use when validating strings
+ *
+ * @TODO Move to core
+ * This will most likely maket it's way to the core package / module
  */
 export const MATCH: Object = {
   DIGITS: /^\d+$/,
@@ -100,6 +108,7 @@ export const MATCH: Object = {
    * Just like the address above, but without the character number limit
    */
   HEX_STRING: /^(0x)?([0-9a-fA-F]+)$/,
+  URL: /^.+:\/\/[^‌​/]+/,
 };
 
 /*
