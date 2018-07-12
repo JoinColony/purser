@@ -24,7 +24,7 @@ export type WalletObjectType = {
   defaultGasLimit?: number,
   keystore?: Promise<string>,
   mnemonic?: string,
-  path: string,
+  path?: string,
   privateKey?: string,
   provider?: ProviderType,
   /*

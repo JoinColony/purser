@@ -9,11 +9,15 @@ import {
   hexSequenceValidator,
   addressValidator,
 } from './validators';
-import { addressNormalizer } from './normalizers';
+import { addressNormalizer, hexSequenceNormalizer } from './normalizers';
 
 import { classMessages as messages } from './messages';
 import { HEX_HASH_TYPE } from './defaults';
-import { WALLET_PROP_DESCRIPTORS, SETTER_PROP_DESCRIPTORS } from '../defaults';
+import {
+  WALLET_PROP_DESCRIPTORS,
+  GETTER_PROP_DESCRIPTORS,
+  SETTER_PROP_DESCRIPTORS,
+} from '../defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
 
 import type {
@@ -22,14 +26,27 @@ import type {
   MessageObjectType,
 } from '../flowtypes';
 
+/*
+ * "Private" (internal) variable(s).
+ *
+ * These are used as return values from getter which don't have an accompanying setter,
+ * but we still want to set them internally.
+ */
+let internalPublicKey: string;
+let internalDerivationPath: string;
+
 export default class TrezorWallet {
   address: string;
 
   otherAddresses: Object[];
 
+  /*
+   * Both `publicKey` and `derivationPath` are getters.
+   */
+
   publicKey: string;
 
-  path: string;
+  derivationPath: string;
 
   type: string;
 
@@ -88,7 +105,7 @@ export default class TrezorWallet {
         /*
          * Se this individual address's derivation path
          */
-        addressObject.path = `${rootDerivationPath}/${index}`;
+        addressObject.derivationPath = `${rootDerivationPath}/${index}`;
         /*
          * This is the derrived public key, not the one originally fetched from
          * the trezor service
@@ -115,6 +132,11 @@ export default class TrezorWallet {
       },
     );
     /*
+     * Set the "private" (internal) variables values
+     */
+    internalPublicKey = hexSequenceNormalizer(otherAddresses[0].publicKey);
+    internalDerivationPath = otherAddresses[0].derivationPath;
+    /*
      * Set the Wallet Object's values
      *
      * We're using `defineProperties` instead of strait up assignment, so that
@@ -129,22 +151,6 @@ export default class TrezorWallet {
       address: Object.assign(
         {},
         { value: otherAddresses[0].address },
-        SETTER_PROP_DESCRIPTORS,
-      ),
-      /*
-       * @TODO Make publicKey prop a getter
-       *
-       * While a public key is relatively safe, it's still a good idea to lock
-       * it behind a getter, and not expose it directly on the Wallet Object
-       */
-      publicKey: Object.assign(
-        {},
-        { value: otherAddresses[0].publicKey },
-        SETTER_PROP_DESCRIPTORS,
-      ),
-      path: Object.assign(
-        {},
-        { value: otherAddresses[0].path },
         SETTER_PROP_DESCRIPTORS,
       ),
       type: Object.assign(
@@ -194,8 +200,11 @@ export default class TrezorWallet {
                * one address when instantiating the Wallet.
                */
               this.address = otherAddresses[addressIndex].address;
-              this.publicKey = otherAddresses[addressIndex].publicKey;
-              this.path = otherAddresses[addressIndex].path;
+              internalPublicKey = hexSequenceNormalizer(
+                otherAddresses[addressIndex].publicKey,
+              );
+              internalDerivationPath =
+                otherAddresses[addressIndex].derivationPath;
               return true;
             }
             throw new Error(
@@ -221,7 +230,7 @@ export default class TrezorWallet {
             } = transactionObject;
             return signTransaction(
               Object.assign({}, transactionObject, {
-                path: this.path,
+                path: internalDerivationPath,
                 chainId,
               }),
             );
@@ -238,7 +247,7 @@ export default class TrezorWallet {
         {},
         {
           value: async ({ message }: MessageObjectType = {}) =>
-            signMessage({ path: this.path, message }),
+            signMessage({ path: internalDerivationPath, message }),
         },
         WALLET_PROP_DESCRIPTORS,
       ),
@@ -258,14 +267,13 @@ export default class TrezorWallet {
     });
     /*
      * The `otherAddresses` prop is only available if we have more than one.
-     * Otherwise it's pointless since it just repeats information.
      *
-     * @TODO `otherAddresses` array should be a getter
-     * So not available by default
+     * Otherwise it's pointless since it just repeats information (first index
+     * is also the default one).
      */
     if (addressCount > 1) {
       Object.defineProperty(
-        this,
+        (this: any),
         'otherAddresses',
         Object.assign(
           {},
@@ -284,4 +292,26 @@ export default class TrezorWallet {
       );
     }
   }
+
+  /*
+   * Public Key Getter
+   */
+  /* eslint-disable-next-line class-methods-use-this */
+  get publicKey(): Promise<string> {
+    return Promise.resolve(internalPublicKey);
+  }
+
+  /* eslint-disable-next-line class-methods-use-this */
+  get derivationPath(): Promise<string> {
+    return Promise.resolve(internalDerivationPath);
+  }
 }
+
+/*
+ * We need to use `defineProperties` to make props enumerable.
+ * When adding them via a `Class` getter/setter it will prevent that by default
+ */
+Object.defineProperties((TrezorWallet: any).prototype, {
+  publicKey: GETTER_PROP_DESCRIPTORS,
+  derivationPath: GETTER_PROP_DESCRIPTORS,
+});
