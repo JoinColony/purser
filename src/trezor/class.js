@@ -11,6 +11,7 @@ import {
 } from './validators';
 import { addressNormalizer } from './normalizers';
 
+import { classMessages as messages } from './messages';
 import { HEX_HASH_TYPE } from './defaults';
 import { WALLET_PROP_DESCRIPTORS, SETTER_PROP_DESCRIPTORS } from '../defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
@@ -185,10 +186,7 @@ export default class TrezorWallet {
            */
           value: async (addressIndex: number = 0): Promise<boolean> => {
             safeIntegerValidator(addressIndex);
-            /*
-             * @TODO Throw error if index outside of range
-             */
-            if (addressIndex >= 0 && addressIndex <= otherAddresses.length) {
+            if (addressIndex >= 0 && addressIndex < otherAddresses.length) {
               /*
                * Address count will always be at least `1` (the first derived address).
                *
@@ -200,7 +198,11 @@ export default class TrezorWallet {
               this.path = otherAddresses[addressIndex].path;
               return true;
             }
-            return false;
+            throw new Error(
+              `${
+                messages.addressIndexOutsideRange
+              }: index (${addressIndex}) count (${addressCount})`,
+            );
           },
         },
         WALLET_PROP_DESCRIPTORS,

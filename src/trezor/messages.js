@@ -1,6 +1,11 @@
 /* @flow */
 /* eslint-disable max-len */
 
+export const classMessages: Object = {
+  addressIndexOutsideRange:
+    'The address index you provided is outside the address count range you derived when opening the wallet',
+};
+
 export const staticMethodsMessages: Object = {
   userExportCancel:
     'User cancelled the account export request (via Window prompt)',
