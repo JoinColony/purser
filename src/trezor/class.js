@@ -4,7 +4,11 @@ import { SigningKey } from 'ethers/wallet';
 import HDKey from 'hdkey';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
-import { safeIntegerValidator } from './validators';
+import {
+  safeIntegerValidator,
+  hexSequenceValidator,
+  addressValidator,
+} from './validators';
 import { addressNormalizer } from './normalizers';
 
 import { HEX_HASH_TYPE } from './defaults';
@@ -40,12 +44,6 @@ export default class TrezorWallet {
 
   verifyMessage: (...*) => Promise<string>;
 
-  /*
-   * @TODO Check the `publicKey` and `chainCode` values
-   *
-   * If for some reason the Trezor service fails to send them in the correct format
-   * eg: malware shenanigans
-   */
   constructor(
     publicKey: string,
     chainCode: string,
@@ -53,7 +51,16 @@ export default class TrezorWallet {
     addressCount: number = 10,
     provider: ProviderType | void,
   ) {
+    /*
+     * Validate address count (this comes from the end user)
+     */
     safeIntegerValidator(addressCount);
+    /*
+     * Validate the `publicKey` and `chainCode` hex sequences. These come from
+     * Trezor's service, but we still shouldn't trust them.
+     */
+    hexSequenceValidator(publicKey);
+    hexSequenceValidator(chainCode);
     /*
      * Derive the public key with the address index, so we can get the address
      */
@@ -98,6 +105,10 @@ export default class TrezorWallet {
           /* $FlowFixMe */
           Buffer.from(derivationKey.publicKey, HEX_HASH_TYPE),
         );
+        /*
+         * Also validate the address that comes from the `HDKey` library.
+         */
+        addressValidator(addressFromPublicKey);
         addressObject.address = addressNormalizer(addressFromPublicKey);
         return addressObject;
       },
