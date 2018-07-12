@@ -11,6 +11,7 @@ import {
   bigNumberValidator,
   addressValidator,
   hexSequenceValidator,
+  messageValidator,
 } from './validators';
 import {
   derivationPathNormalizer,
@@ -157,8 +158,8 @@ export const signTransaction = async ({
       r: rSignatureComponent,
       s: sSignatureComponent,
       v: recoveryParameter,
-    } = await payloadListener({ payload: modifiedPayloadObject });
-    const signedTransaction = await new EthereumTx({
+    }: Object = await payloadListener({ payload: modifiedPayloadObject });
+    const signedTransaction: Object = await new EthereumTx({
       r: hexSequenceNormalizer(rSignatureComponent),
       s: hexSequenceNormalizer(sSignatureComponent),
       v: hexSequenceNormalizer(bigNumber(recoveryParameter).toString(16)),
@@ -186,9 +187,6 @@ export const signTransaction = async ({
  * Sign a message and return the signed signature. Usefull for varifying addresses.
  * (In conjunction with `verifyMessage`)
  *
- * @TODO Validate message prop values
- * Something like `assert()` should work well here
- *
  * @method signMessage
  *
  * @param {string} path the derivation path for the account with which to sign the message
@@ -198,7 +196,13 @@ export const signTransaction = async ({
  *
  * @return {Promise<string>} The signed message `base64` string (wrapped inside a `Promise`)
  */
-export const signMessage = async ({ path, message }: MessageObjectType) => {
+export const signMessage = async ({
+  /*
+   * Path defaults to the current selected "default" address path
+   */
+  path,
+  message = '',
+}: MessageObjectType) => {
   /*
    * Check if the derivation path is in the correct format
    *
@@ -207,6 +211,10 @@ export const signMessage = async ({ path, message }: MessageObjectType) => {
    */
   /* $FlowFixMe */
   derivationPathValidator(path);
+  /*
+   * Check if the messages is in the correct format
+   */
+  messageValidator(message);
   const { signature: signedMessage } = await payloadListener({
     payload: Object.assign({}, PAYLOAD_SIGNMSG, {
       /*
@@ -221,7 +229,10 @@ export const signMessage = async ({ path, message }: MessageObjectType) => {
       message,
     }),
   });
-  return signedMessage;
+  /*
+   * Add the hex `0x` prefix
+   */
+  return hexSequenceNormalizer(signedMessage);
 };
 
 /**
