@@ -4,7 +4,6 @@ import { SigningKey } from 'ethers/wallet';
 import HDKey from 'hdkey';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
-import { derivationPathSerializer } from './helpers';
 import { safeIntegerValidator } from './validators';
 import { addressNormalizer } from './normalizers';
 
@@ -50,7 +49,7 @@ export default class TrezorWallet {
   constructor(
     publicKey: string,
     chainCode: string,
-    coinType: number,
+    rootDerivationPath: string,
     addressCount: number = 10,
     provider: ProviderType | void,
   ) {
@@ -77,16 +76,11 @@ export default class TrezorWallet {
       new Array(addressCount || 1),
       (value, index) => {
         const addressObject = {};
-        const derivationKey = hdKey.derive(`m/${index}`);
+        const derivationKey = hdKey.deriveChild(index);
         /*
-         * @TODO Cut down on path derivation code repetition
-         *
-         * This happes here, and inside the `open()` static method``
+         * Se this individual address's derivation path
          */
-        addressObject.path = derivationPathSerializer({
-          coinType,
-          addressIndex: index,
-        });
+        addressObject.path = `${rootDerivationPath}/${index}`;
         /*
          * This is the derrived public key, not the one originally fetched from
          * the trezor service
@@ -156,6 +150,15 @@ export default class TrezorWallet {
        * Set the default address/public key/path one of the (other) addresses from the array.
        * This is usefull since most methods (sign, signMessage) use this props as defaults.
        *
+       * There's an argument to be made here that we can derive new addresses only when this
+       * method gets called.
+       *
+       * This would be helpful to offload the initial cost of deriving a number
+       * of `addressCount` addresses.
+       *
+       * On the other hand, if we do this, we won't be able to show the user what
+       * addresses are available up front.
+       *
        * @method setDefaultAddress
        *
        * @param {number} addressIndex The address index from the array
@@ -169,7 +172,7 @@ export default class TrezorWallet {
            * @TODO Accept both number and object as argument
            * To make the arguments consistent across the wallet instance methods
            */
-          value: async (addressIndex = 0) => {
+          value: async (addressIndex: number = 0): Promise<boolean> => {
             safeIntegerValidator(addressIndex);
             /*
              * @TODO Throw error if index outside of range

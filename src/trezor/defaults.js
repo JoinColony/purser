@@ -9,8 +9,8 @@ export const PATH: DerivationPathDefaultType = {
   /*
    * Ethereum HD Wallet Bip32 Derivation path
    *
-   * @TODO there's an argument here that this should be moved into common defaults
-   * and used through all of the wallet types for consistency.
+   * @TODO there's an argument to be made here that this should be moved
+   * into common defaults and used through all of the wallet types for consistency.
    *
    * See the ongoing standardization discussions:
    * https://github.com/ethereum/EIPs/issues/84

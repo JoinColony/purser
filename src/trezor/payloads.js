@@ -1,8 +1,8 @@
 /* @flow */
 
-import { fromString } from 'bip32-path';
+// import { fromString } from 'bip32-path';
 
-import { derivationPathSerializer } from './helpers';
+// import { derivationPathSerializer } from './helpers';
 import { FIRMWARE_MIN } from './defaults';
 
 import type { PayloadType } from './flowtypes';
@@ -15,7 +15,7 @@ import type { PayloadType } from './flowtypes';
 
 export const PAYLOAD_XPUB: PayloadType = {
   type: 'xpubkey',
-  path: fromString(derivationPathSerializer(), true).toPathArray(),
+  // path: fromString(derivationPathSerializer(), true).toPathArray(),
   requiredFirmware: FIRMWARE_MIN,
 };
 

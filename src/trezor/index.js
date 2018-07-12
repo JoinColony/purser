@@ -41,7 +41,7 @@ const trezorWallet: WalletExportType = Object.assign(
     open: async ({
       addressCount,
       /*
-       * @TODO Add provider deptrecation warning
+       * @TODO Add provider deprecation warning
        *
        * As we have roadmapped to separate providers from the actual wallet
        */
@@ -54,7 +54,7 @@ const trezorWallet: WalletExportType = Object.assign(
        */
       let providerMode =
         typeof provider === 'function' ? await provider() : provider;
-      let coinType = COIN_MAINNET;
+      let coinType: number = COIN_MAINNET;
       if (typeof provider !== 'object' && typeof provider !== 'function') {
         /*
          * @TODO Add no provider set warning message
@@ -73,14 +73,18 @@ const trezorWallet: WalletExportType = Object.assign(
         coinType = COIN_TESTNET;
       }
       /*
+       * Get to root derivation path base on the coin type.
+       *
+       * Based on this, we will then derive all the needed address indexes
+       * (inside the class constructor)
+       */
+      const rootDerivationPath: string = derivationPathSerializer({ coinType });
+      /*
        * Modify the default payload to overwrite the path with the new
        * coid type id derivation
        */
       const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_XPUB, {
-        path: fromString(
-          derivationPathSerializer({ coinType }),
-          true,
-        ).toPathArray(),
+        path: fromString(rootDerivationPath, true).toPathArray(),
       });
       /*
        * We need to catch the cancelled error since it's part of a normal user workflow
@@ -96,7 +100,7 @@ const trezorWallet: WalletExportType = Object.assign(
         const walletInstance: WalletObjectType = new TrezorWallet(
           publicKey,
           chainCode,
-          coinType,
+          rootDerivationPath,
           addressCount,
           providerMode,
         );
