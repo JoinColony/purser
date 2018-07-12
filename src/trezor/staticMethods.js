@@ -20,7 +20,7 @@ import {
   hexSequenceNormalizer,
 } from './normalizers';
 
-import { classMessages as messages } from './messages';
+import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
 
@@ -238,9 +238,6 @@ export const signMessage = async ({
 /**
  * Verify a signed message. Usefull for varifying addresses. (In conjunction with `signMessage`)
  *
- * @TODO Validate message prop values
- * Something like `assert()` should work well here
- *
  * @method verifyMessage
  *
  * @param {string} address The address that verified the original message (without the hex `0x` identifier)
@@ -253,28 +250,48 @@ export const signMessage = async ({
  */
 export const verifyMessage = async ({
   address,
-  message,
-  signature,
+  message = '',
+  signature = '',
 }: MessageObjectType) => {
   /*
    * Check if the address is in the correct format
    */
   addressValidator(address);
   /*
-   * @TODO Try/Catch the verify message call
-   *
-   * This is because this won't actually return `false` as the promise will fail.
-   * This has to wait until the `reject()` case is handled in the helper.
+   * Check if the messages is in the correct format
    */
-  const { success: isMessageValid } = await payloadListener({
-    payload: Object.assign({}, PAYLOAD_VERIFYMSG, {
-      /*
-       * Trezor service requires the prefix from the address to be stripped
-       */
-      address: addressNormalizer(address, false),
-      message,
-      signature,
-    }),
-  });
-  return isMessageValid;
+  messageValidator(message);
+  /*
+   * Check if the signature is in the correct format
+   */
+  hexSequenceValidator(signature);
+  /*
+   * The Trezor service throws and Error if the signature is invalid.
+   * We warn the user, but not throw and error, just return 'false'.
+   *
+   * This way you have a consistent return.
+   */
+  try {
+    const { success: isMessageValid } = await payloadListener({
+      payload: Object.assign({}, PAYLOAD_VERIFYMSG, {
+        /*
+         * Trezor service requires the prefix from the address to be stripped
+         */
+        address: addressNormalizer(address, false),
+        message,
+        /*
+         * Trezor service requires the prefix from the signature to be stripped
+         */
+        signature: hexSequenceNormalizer(signature, false),
+      }),
+    });
+    return isMessageValid;
+  } catch (caughtError) {
+    warning(
+      `${
+        messages.messageSignatureInvalid
+      }: message (${message}), signature (${signature})`,
+    );
+    return false;
+  }
 };

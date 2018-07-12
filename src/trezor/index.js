@@ -8,7 +8,7 @@ import { payloadListener, derivationPathSerializer } from './helpers';
 import { autoselect } from '../providers';
 import { warning, objectToErrorString } from '../utils';
 
-import { classMessages as messages } from './messages';
+import { staticMethodsMessages as messages } from './messages';
 import { PATH, STD_ERRORS } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
 import { MAIN_NETWORK } from '../defaults';

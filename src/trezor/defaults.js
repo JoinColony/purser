@@ -87,6 +87,7 @@ export const FIRMWARE_MIN: string = '1.4.0';
 export const STD_ERRORS: Object = {
   CANCEL_ACC_EXPORT: 'Cancelled',
   CANCEL_TX_SIGN: 'Action cancelled by user',
+  INVALID_SIGN: 'Invalid signature',
 };
 
 /*
