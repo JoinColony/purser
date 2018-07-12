@@ -295,6 +295,54 @@ export const objectToErrorString = (object: Object = {}): string =>
     '',
   );
 
+/**
+ * Validate an (array) sequence of validation assertions (objects that are to be
+ * directly passed into `assertTruth`)
+ *
+ * This it to reduce code duplication and boilerplate.
+ *
+ * @TODO Validate the validator
+ * So we can have redundancy while being reduntant :)
+ *
+ * @method validatorGenerator
+ *
+ * @param {Array} validationSequenceArray An array containing objects which are in the same format as the one expect by `assertTruth`
+ * @param {string} genericError A generic error message to be used for the catch all error (and if some of the other messages are missing)
+ *
+ * @return {boolean} It only returns true if all the validation assertions pass,
+ * otherwise an Error will be thrown and this will not finish execution.
+ */
+export const validatorGenerator = (
+  validationSequenceArray: Array<{
+    expression: boolean,
+    message: string | Array<string>,
+  }>,
+  genericError: string,
+): boolean => {
+  const validationTests: Array<boolean> = [];
+  validationSequenceArray.map((validationSequence: Object) =>
+    validationTests.push(
+      assertTruth(
+        /*
+         * If there's no message passed in, use the generic error
+         */
+        Object.assign({}, { message: genericError }, validationSequence),
+      ),
+    ),
+  );
+  /*
+   * This is a fail-safe in case anything splis through.
+   * If any of the values are `false` throw a general Error
+   */
+  if (!validationTests.some(test => test !== false)) {
+    throw new Error(genericError);
+  }
+  /*
+   * Everything goes well here. (But most likely this value will be ignored)
+   */
+  return true;
+};
+
 const utils: {
   warning: (...*) => void,
   getRandomValues: (...*) => Uint8Array,
