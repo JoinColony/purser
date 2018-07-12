@@ -1,5 +1,7 @@
 /* @flow */
 
+import { messageValidator } from './validators';
+
 import {
   SERVICE_DOMAIN,
   SERVICE_VERSION,
@@ -31,18 +33,16 @@ import type {
  * @return {string} The correct url as determined by a regex pattern match
  */
 export const sanitizeUrl = (url: string): string => {
-  if (typeof url === 'string') {
-    /*
-     * Flow for some reason (well, there is one...) doesn't play well when matching
-     * a string to a regex pattern.
-     *
-     * See this issue about that:
-     * https://github.com/facebook/flow/issues/3554
-     */
-    /* $FlowFixMe */
-    return url.match(/^.+:\/\/[^‌​/]+/)[0];
-  }
-  throw new Error('Url to be santized not in the correct format');
+  messageValidator(url);
+  /*
+   * Flow for some reason (well, there is one...) doesn't play well when matching
+   * a string to a regex pattern.
+   *
+   * See this issue about that:
+   * https://github.com/facebook/flow/issues/3554
+   */
+  /* $FlowFixMe */
+  return url.match(/^.+:\/\/[^‌​/]+/)[0];
 };
 
 /**
