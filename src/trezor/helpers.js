@@ -192,8 +192,6 @@ export const payloadListener = async ({
 /**
  * Serialize an derivation path object's props into it's string counterpart
  *
- * @TODO Check path values are of the correct (number) type
- *
  * @TODO there's an argument here that this should be moved into common defaults
  * and used through all of the wallet types for consistency.
  *

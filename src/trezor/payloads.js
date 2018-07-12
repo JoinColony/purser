@@ -15,7 +15,6 @@ import type { PayloadType } from './flowtypes';
 
 export const PAYLOAD_XPUB: PayloadType = {
   type: 'xpubkey',
-  // path: fromString(derivationPathSerializer(), true).toPathArray(),
   requiredFirmware: FIRMWARE_MIN,
 };
 

@@ -40,11 +40,6 @@ const trezorWallet: WalletExportType = Object.assign(
      */
     open: async ({
       addressCount,
-      /*
-       * @TODO Add provider deprecation warning
-       *
-       * As we have roadmapped to separate providers from the actual wallet
-       */
       provider = autoselect,
     }: WalletArgumentsType = {}): Promise<WalletObjectType | void> => {
       const { COIN_MAINNET, COIN_TESTNET } = PATH;
@@ -56,11 +51,9 @@ const trezorWallet: WalletExportType = Object.assign(
         typeof provider === 'function' ? await provider() : provider;
       let coinType: number = COIN_MAINNET;
       if (typeof provider !== 'object' && typeof provider !== 'function') {
-        /*
-         * @TODO Add no provider set warning message
-         */
-        warning('No provider set');
         providerMode = undefined;
+      } else {
+        warning(messages.providersDeprecated);
       }
       /*
        * If we're on a testnet set the coin type id to `1`

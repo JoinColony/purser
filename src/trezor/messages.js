@@ -11,6 +11,16 @@ export const staticMethodsMessages: Object = {
   userSignTxGenericError:
     'Could not sign the transaction, check the values you are sending to the Trezor service',
   messageSignatureInvalid: 'The message signature is invalid',
+  /*
+   * @TODO Generalized warning/error messages
+   *
+   * This is exactly the same as the software providersDeprecated warning.
+   * So when this will all be split up into multiple components (wallets-core,
+   * wallets-software, wallets-treozor, etc...) this should go into the core
+   * component as it is shared between all of them/
+   */
+  providersDeprecated:
+    'Use of providers with this library is deprecated. In the upcoming releases we will not use them internally at all, as this functionality will be offloaded to the end user.',
 };
 
 export const validators: Object = {
