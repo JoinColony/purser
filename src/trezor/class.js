@@ -234,12 +234,8 @@ export default class TrezorWallet {
       verifyMessage: Object.assign(
         {},
         {
-          value: async ({
-            address = this.address,
-            message,
-            signature,
-          }: MessageObjectType = {}) =>
-            verifyMessage({ address, message, signature }),
+          value: async ({ message, signature }: MessageObjectType = {}) =>
+            verifyMessage({ address: this.address, message, signature }),
         },
         WALLET_PROP_DESCRIPTORS,
       ),
