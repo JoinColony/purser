@@ -347,6 +347,21 @@ export const hexSequenceValidator = (hexSequence: any): boolean => {
     }),
   );
   /*
+   * It should be under (or equal to) 1024 Bytes in size
+   *
+   * @TODO Cut down lenght check code repetition
+   *
+   * This repeats itself here and in the message length check. Might be a good
+   * idea to have "generalized" validator types
+   */
+  validationTests.push(
+    assertTruth({
+      expression: hexSequence.length <= 1024,
+      message: `${hexSequenceMessages.tooBig}: ${JSON.stringify(hexSequence) ||
+        UNDEFINED}`,
+    }),
+  );
+  /*
    * This is a fail-safe in case anything splis through.
    * If any of the values are `false` throw a general Error
    */
