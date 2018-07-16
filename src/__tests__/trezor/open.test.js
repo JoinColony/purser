@@ -15,12 +15,12 @@ jest.mock('../../trezor/class');
 jest.mock('../../trezor/helpers');
 jest.mock('../../utils');
 
-describe('`Trezor` wallet module', () => {
+describe('Trezor` Hardware Wallet Module', () => {
   afterEach(() => {
     TrezorWalletClass.mockReset();
     TrezorWalletClass.mockRestore();
   });
-  describe('`Trezor` hardware wallet `open()` method', () => {
+  describe('`open()` static method with defaults', () => {
     test('Open the wallet with defaults', async () => {
       const { type, requiredFirmware } = PAYLOAD_XPUB;
       await trezorWallet.open();
