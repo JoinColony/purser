@@ -360,7 +360,6 @@ const utils: {
     assertTruth,
     bigNumber,
     padLeft,
-    objectToErrorString,
     validatorGenerator,
   },
   /*

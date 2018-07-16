@@ -12,6 +12,7 @@ export const bigNumber = jest.fn(value => ({
 const utils = {
   warning,
   getRandomValues,
+  bigNumber,
 };
 
 export default utils;

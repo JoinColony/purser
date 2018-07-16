@@ -1,4 +1,5 @@
 import EthereumTx from 'ethereumjs-tx';
+
 import { signTransaction } from '../../trezor/staticMethods';
 import { payloadListener } from '../../trezor/helpers';
 import {
@@ -195,6 +196,16 @@ describe('`Trezor` Hardware Wallet Module', () => {
         s: sComponent,
         v: recoveryParam,
       });
+    });
+    test('Catches is something goes wrong along the way', async () => {
+      /*
+       * We're re-mocking the helpers just for this test so we can simulate
+       * an error from one of the method
+       */
+      payloadListener.mockImplementation(() =>
+        Promise.reject(new Error('Oh no!')),
+      );
+      expect(signTransaction()).rejects.toThrow();
     });
   });
 });
