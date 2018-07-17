@@ -223,10 +223,16 @@ export default class TrezorWallet {
       sign: Object.assign(
         {},
         {
-          value: async (transactionObject: TransactionObjectType = {}) => {
+          value: async (transactionObject: TransactionObjectType) => {
+            /*
+             * For some reason prettier always suggests a way to fix this that would
+             * violate the 80 max-len rule. Wierd
+             */
+            /* eslint-disable prettier/prettier */
             const {
               chainId = (this.provider && this.provider.chainId) || 1,
-            } = transactionObject;
+            } = transactionObject || {};
+            /* eslint-enable prettier/prettier */
             return signTransaction(
               Object.assign({}, transactionObject, {
                 path: internalDerivationPath,
