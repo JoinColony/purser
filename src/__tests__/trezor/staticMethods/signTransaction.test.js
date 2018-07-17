@@ -1,30 +1,30 @@
 import EthereumTx from 'ethereumjs-tx';
 
-import { signTransaction } from '../../trezor/staticMethods';
-import { payloadListener } from '../../trezor/helpers';
+import { signTransaction } from '../../../trezor/staticMethods';
+import { payloadListener } from '../../../trezor/helpers';
 import {
   derivationPathValidator,
   bigNumberValidator,
   safeIntegerValidator,
   addressValidator,
   hexSequenceValidator,
-} from '../../trezor/validators';
+} from '../../../trezor/validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../trezor/normalizers';
+} from '../../../trezor/normalizers';
 
-import { PAYLOAD_SIGNTX } from '../../trezor/payloads';
+import { PAYLOAD_SIGNTX } from '../../../trezor/payloads';
 
-jest.dontMock('../../trezor/staticMethods');
+jest.dontMock('../../../trezor/staticMethods');
 
 jest.mock('ethereumjs-tx');
-jest.mock('../../trezor/helpers');
-jest.mock('../../trezor/validators');
-jest.mock('../../trezor/normalizers');
-jest.mock('../../utils');
+jest.mock('../../../utils');
+jest.mock('../../../trezor/helpers');
+jest.mock('../../../trezor/validators');
+jest.mock('../../../trezor/normalizers');
 
 const path = 'mocked-derivation-path';
 const chainId = 'mocked-chain-id';
@@ -36,6 +36,10 @@ const to = 'mocked-destination-address';
 const value = 'mocked-transaction-value';
 
 describe('`Trezor` Hardware Wallet Module', () => {
+  afterEach(() => {
+    EthereumTx.mockClear();
+    EthereumTx.mockRestore();
+  });
   describe('`signTransacion()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNTX;

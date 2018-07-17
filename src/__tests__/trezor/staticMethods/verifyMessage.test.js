@@ -1,22 +1,25 @@
-import { verifyMessage } from '../../trezor/staticMethods';
-import { payloadListener } from '../../trezor/helpers';
+import * as utils from '../../../utils';
+
+import { verifyMessage } from '../../../trezor/staticMethods';
+import { payloadListener } from '../../../trezor/helpers';
 import {
   addressValidator,
   messageValidator,
   hexSequenceValidator,
-} from '../../trezor/validators';
+} from '../../../trezor/validators';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../trezor/normalizers';
+} from '../../../trezor/normalizers';
 
-import { PAYLOAD_VERIFYMSG } from '../../trezor/payloads';
+import { PAYLOAD_VERIFYMSG } from '../../../trezor/payloads';
 
-jest.dontMock('../../trezor/staticMethods');
+jest.dontMock('../../../trezor/staticMethods');
 
-jest.mock('../../trezor/helpers');
-jest.mock('../../trezor/validators');
-jest.mock('../../trezor/normalizers');
+jest.mock('../../../trezor/helpers');
+jest.mock('../../../trezor/validators');
+jest.mock('../../../trezor/normalizers');
+jest.mock('../../../utils');
 
 const address = 'mocked-derivation-address';
 const message = 'mocked-message';
@@ -97,6 +100,21 @@ describe('`Trezor` Hardware Wallet Module', () => {
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
       expect(hexSequenceNormalizer).toHaveBeenCalledWith(signature, false);
+    });
+    test('Catches and warns the user if the signature is invalid', async () => {
+      /*
+       * We're re-mocking the helpers just for this test so we can simulate
+       * an error from one of the method
+       */
+      payloadListener.mockImplementation(() =>
+        Promise.reject(new Error('Invalid signature')),
+      );
+      const verification = await verifyMessage({
+        address,
+        signature,
+      });
+      expect(utils.warning).toHaveBeenCalled();
+      expect(verification).toBeFalsy();
     });
   });
 });
