@@ -26,6 +26,15 @@ jest.mock('../../trezor/validators');
 jest.mock('../../trezor/normalizers');
 jest.mock('../../utils');
 
+const path = 'mocked-derivation-path';
+const chainId = 'mocked-chain-id';
+const inputData = 'mocked-data';
+const gasLimit = 'mocked-gas-limit';
+const gasPrice = 'mocked-gas-price';
+const nonce = 'mocked-nonce';
+const to = 'mocked-destination-address';
+const value = 'mocked-transaction-value';
+
 describe('`Trezor` Hardware Wallet Module', () => {
   describe('`signTransacion()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
@@ -35,13 +44,14 @@ describe('`Trezor` Hardware Wallet Module', () => {
          * These values are not correct. Do not use the as reference.
          * If the validators wouldn't be mocked, they wouldn't pass.
          */
-        chainId: 0,
-        inputData: 0,
-        gasLimit: 0,
-        gasPrice: 0,
-        nonce: 0,
-        to: 0,
-        value: 0,
+        path,
+        chainId,
+        inputData,
+        gasLimit,
+        gasPrice,
+        nonce,
+        to,
+        value,
       });
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
@@ -70,14 +80,6 @@ describe('`Trezor` Hardware Wallet Module', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      const path = 'mocked-derivation-path';
-      const chainId = 'mocked-chain-id';
-      const inputData = 'mocked-data';
-      const gasLimit = 'mocked-gas-limit';
-      const gasPrice = 'mocked-gas-price';
-      const nonce = 'mocked-nonce';
-      const to = 'mocked-destination-address';
-      const value = 'mocked-transaction-value';
       await signTransaction({
         path,
         chainId,
@@ -130,13 +132,6 @@ describe('`Trezor` Hardware Wallet Module', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      const path = 'mocked-derivation-path';
-      const inputData = 'mocked-data';
-      const gasLimit = 'mocked-gas-limit';
-      const gasPrice = 'mocked-gas-price';
-      const nonce = 'mocked-nonce';
-      const to = 'mocked-destination-address';
-      const value = 'mocked-transaction-value';
       await signTransaction({
         path,
         inputData,
