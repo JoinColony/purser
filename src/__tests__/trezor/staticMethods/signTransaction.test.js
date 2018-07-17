@@ -1,5 +1,7 @@
 import EthereumTx from 'ethereumjs-tx';
 
+import * as utils from '../../../utils';
+
 import { signTransaction } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
 import {
@@ -17,6 +19,7 @@ import {
 } from '../../../trezor/normalizers';
 
 import { PAYLOAD_SIGNTX } from '../../../trezor/payloads';
+import { STD_ERRORS } from '../../../trezor/defaults';
 
 jest.dontMock('../../../trezor/staticMethods');
 
@@ -207,6 +210,21 @@ describe('`Trezor` Hardware Wallet Module', () => {
         Promise.reject(new Error('Oh no!')),
       );
       expect(signTransaction()).rejects.toThrow();
+    });
+    test('Log a warning if the user Cancels signing it', async () => {
+      /*
+       * We're re-mocking the helpers just for this test so we can simulate
+       * a cancel response.
+       */
+      payloadListener.mockImplementation(() =>
+        Promise.reject(new Error(STD_ERRORS.CANCEL_TX_SIGN)),
+      );
+      await signTransaction();
+      expect(EthereumTx).not.toHaveBeenCalled();
+      /*
+       * User cancelled, so we don't throw
+       */
+      expect(utils.warning).toHaveBeenCalled();
     });
   });
 });
