@@ -223,7 +223,7 @@ export default class TrezorWallet {
       sign: Object.assign(
         {},
         {
-          value: async (transactionObject: TransactionObjectType) => {
+          value: async (transactionObject: TransactionObjectType = {}) => {
             const {
               chainId = (this.provider && this.provider.chainId) || 1,
             } = transactionObject;
