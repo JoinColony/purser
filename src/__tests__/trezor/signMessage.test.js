@@ -17,6 +17,8 @@ jest.mock('../../trezor/helpers');
 jest.mock('../../trezor/validators');
 jest.mock('../../trezor/normalizers');
 
+const path = 'mocked-derivation-path';
+
 describe('`Trezor` Hardware Wallet Module', () => {
   describe('`signMessage()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
@@ -50,7 +52,6 @@ describe('`Trezor` Hardware Wallet Module', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      const path = 'mocked-derivation-path';
       const message = 'mocked-message';
       await signMessage({
         path,
@@ -72,7 +73,6 @@ describe('`Trezor` Hardware Wallet Module', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      const path = 'mocked-derivation-path';
       await signMessage({
         path,
       });
@@ -83,7 +83,6 @@ describe('`Trezor` Hardware Wallet Module', () => {
       expect(derivationPathNormalizer).toHaveBeenCalledWith(path);
     });
     test('Normalizes the return hex string', async () => {
-      const path = 'mocked-derivation-path';
       const returnedHexString = '48656c6c6f20796f75';
       /*
        * We're re-mocking the helpers just for this test so we can simulate
