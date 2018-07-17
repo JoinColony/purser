@@ -1,6 +1,53 @@
 module.exports = {
   rootDir: 'src',
-  collectCoverageFrom: ['*.{js}', '!index.js'],
+  collectCoverageFrom: [
+    '*.{js}',
+    'trezor/*.{js}',
+    /*
+     * Exports debug objects, no functionality
+     */
+    '!debug.js',
+    /*
+     * String assignments, will always pass
+     */
+    '!defaults.js',
+    /*
+     * Exports main library objects, no functionality
+     */
+    '!index.js',
+    /*
+     * String assignments, will always pass
+     */
+    '!messages.js',
+    /*
+     * Exports hardware wallets objects, no functionality
+     */
+    '!hardware.js',
+    /*
+     * Exports all wallets objects, no functionality
+     */
+    '!wallets.js',
+    /*
+     * String assignments, will always pass
+     */
+    '!walletTypes.js',
+    /*
+     * String assignments, will always pass
+     */
+    '!trezor/defaults.js',
+    /*
+     * String assignments, will always pass
+     */
+    '!trezor/messages.js',
+    /*
+     * String assignments, will always pass
+     */
+    '!trezor/payloads.js',
+    /*
+     * String assignments, will always pass
+     */
+    '!trezor/responses.js',
+  ],
   coverageDirectory: '../coverage',
   coverageThreshold: {
     global: {
