@@ -110,9 +110,10 @@ export default class TrezorWallet {
          * This is the derrived public key, not the one originally fetched from
          * the trezor service
          */
-        addressObject.publicKey = derivationKey.publicKey.toString(
+        const derivedPublicKey = derivationKey.publicKey.toString(
           HEX_HASH_TYPE,
         );
+        addressObject.publicKey = hexSequenceNormalizer(derivedPublicKey);
         /*
          * Generate the address from the derived public key
          */
@@ -134,7 +135,7 @@ export default class TrezorWallet {
     /*
      * Set the "private" (internal) variables values
      */
-    internalPublicKey = hexSequenceNormalizer(otherAddresses[0].publicKey);
+    internalPublicKey = otherAddresses[0].publicKey;
     internalDerivationPath = otherAddresses[0].derivationPath;
     /*
      * Set the Wallet Object's values
@@ -200,9 +201,7 @@ export default class TrezorWallet {
                * one address when instantiating the Wallet.
                */
               this.address = otherAddresses[addressIndex].address;
-              internalPublicKey = hexSequenceNormalizer(
-                otherAddresses[addressIndex].publicKey,
-              );
+              internalPublicKey = otherAddresses[addressIndex].publicKey;
               internalDerivationPath =
                 otherAddresses[addressIndex].derivationPath;
               return true;
