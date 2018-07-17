@@ -18,6 +18,10 @@ jest.mock('../../trezor/helpers');
 jest.mock('../../trezor/validators');
 jest.mock('../../trezor/normalizers');
 
+const address = 'mocked-derivation-address';
+const message = 'mocked-message';
+const signature = 'mocked-signature';
+
 describe('`Trezor` Hardware Wallet Module', () => {
   describe('`verifyMessage()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
@@ -53,9 +57,6 @@ describe('`Trezor` Hardware Wallet Module', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      const address = 'mocked-derivation-address';
-      const message = 'mocked-message';
-      const signature = 'mocked-signature';
       await verifyMessage({
         address,
         message,
@@ -82,8 +83,6 @@ describe('`Trezor` Hardware Wallet Module', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      const address = 'mocked-derivation-address';
-      const signature = 'mocked-signature';
       await verifyMessage({
         address,
         signature,
