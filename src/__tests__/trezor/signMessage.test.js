@@ -11,6 +11,8 @@ import {
 
 import { PAYLOAD_SIGNMSG } from '../../trezor/payloads';
 
+jest.dontMock('../../trezor/staticMethods');
+
 jest.mock('../../trezor/helpers');
 jest.mock('../../trezor/validators');
 jest.mock('../../trezor/normalizers');

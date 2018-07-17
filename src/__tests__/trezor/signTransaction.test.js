@@ -18,6 +18,8 @@ import {
 
 import { PAYLOAD_SIGNTX } from '../../trezor/payloads';
 
+jest.dontMock('../../trezor/staticMethods');
+
 jest.mock('ethereumjs-tx');
 jest.mock('../../trezor/helpers');
 jest.mock('../../trezor/validators');

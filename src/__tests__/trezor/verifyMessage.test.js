@@ -12,6 +12,8 @@ import {
 
 import { PAYLOAD_VERIFYMSG } from '../../trezor/payloads';
 
+jest.dontMock('../../trezor/staticMethods');
+
 jest.mock('../../trezor/helpers');
 jest.mock('../../trezor/validators');
 jest.mock('../../trezor/normalizers');
