@@ -267,10 +267,9 @@ export const bigNumber = (value: number | string | BN): BN => {
  * @return {[type]} The string containing the object's key (value) pairs
  */
 export const objectToErrorString = (object: Object = {}): string =>
-  Object.keys(object).reduce(
-    (allArgs, key) => `${allArgs}${key} (${String(object[key])}), `,
-    '',
-  );
+  Object.keys(object)
+    .reduce((allArgs, key) => `${allArgs}${key} (${String(object[key])}), `, '')
+    .trim();
 
 /**
  * Validate an (array) sequence of validation assertions (objects that are to be
