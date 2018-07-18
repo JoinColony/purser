@@ -88,6 +88,7 @@ export const windowFeaturesSerializer = (
  * @param {number} version Service version in use
  * @param {string} url service file path
  * @param {string} key the key to use when generating the message request
+ * @param {string} keyValue the key value to use when generating the message request
  *
  * All the above params are sent in as props of an {ServiceUrlType} object.
  *
@@ -98,8 +99,9 @@ export const serviceUrlGenerator = ({
   version = SERVICE_VERSION,
   url = SERVICE_URL,
   key = SERVICE_KEY,
+  keyValue = 0,
 }: ServiceUrlType = {}): string =>
-  `${domain}/${version}/${url}?${key}=${new Date().getTime()}`;
+  `${domain}/${version}/${url}?${key}=${keyValue}`;
 
 /**
  * Communications prompt (window) generator
@@ -120,7 +122,7 @@ export const serviceUrlGenerator = ({
  * @return {Object} The new instance of the Window object (opened)
  */
 export const promptGenerator = ({
-  serviceUrl = serviceUrlGenerator(),
+  serviceUrl = serviceUrlGenerator({ keyValue: new Date().getTime() }),
   windowFeatures = windowFeaturesSerializer(WINDOW_FEATURES),
 }: Object = {}): Object => window.open(serviceUrl, WINDOW_NAME, windowFeatures);
 

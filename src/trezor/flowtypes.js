@@ -14,10 +14,11 @@ export type WindowFeaturesType = {
 };
 
 export type ServiceUrlType = {
-  domain: string,
-  version: number,
-  url: string,
-  key: string,
+  domain?: string,
+  version?: number,
+  url?: string,
+  key?: string,
+  keyValue?: any,
 };
 
 export type PayloadListenerType = {
