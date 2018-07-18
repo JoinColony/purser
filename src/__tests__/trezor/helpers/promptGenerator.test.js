@@ -3,7 +3,7 @@ import { promptGenerator } from '../../../trezor/helpers';
 jest.dontMock('../../../trezor/helpers');
 
 /*
- * We need to mock the `window`'s `opne()` global method
+ * We need to mock the `window`'s `open()` global method
  */
 window.open = jest.fn();
 
