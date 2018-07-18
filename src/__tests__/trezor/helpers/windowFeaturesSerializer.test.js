@@ -2,8 +2,6 @@ import { windowFeaturesSerializer } from '../../../trezor/helpers';
 
 jest.dontMock('../../../trezor/helpers');
 
-jest.mock('../../../trezor/validators');
-
 const testFeaturesObject = {
   stringFeature: 'string',
   numberFeature: 13,
