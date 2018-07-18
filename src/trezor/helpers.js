@@ -185,7 +185,7 @@ export const payloadListener = async ({
           return reject(new Error(data.error));
         }
       }
-      return undefined;
+      return false;
     };
     window.addEventListener('message', messageListener);
   });
