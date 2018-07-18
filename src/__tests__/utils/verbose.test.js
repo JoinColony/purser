@@ -22,17 +22,13 @@ describe('`Utils` Core Module', () => {
       const isVerbose = verbose();
       expect(isVerbose).toBeTruthy();
     });
-    test(
-      "Should NOT be verbose if we're in a any kind of other" +
-        "environment (other than 'development')",
-      () => {
-        defaults.ENV = 'production';
-        let isVerbose = verbose();
-        expect(isVerbose).not.toBeTruthy();
-        defaults.ENV = 'testing';
-        isVerbose = verbose();
-        expect(isVerbose).not.toBeTruthy();
-      },
-    );
+    test("Should NOT be verbose if we're not in `development` env", () => {
+      defaults.ENV = 'production';
+      let isVerbose = verbose();
+      expect(isVerbose).not.toBeTruthy();
+      defaults.ENV = 'testing';
+      isVerbose = verbose();
+      expect(isVerbose).not.toBeTruthy();
+    });
   });
 });
