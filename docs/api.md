@@ -16,6 +16,7 @@ When building with `NODE_ENV=production` all output will be silenced.
   * [Software](#software)
     * [`create`](#create)
     * [`open`](#open)
+  * [Hardware](#hardware)
 * [Providers](#providers)
   * [`metamask`](#metamask)
   * [`etherscan`](#etherscan)
@@ -35,6 +36,12 @@ Create or open a new wallet via software, hardware or browser extension.
 A standard wallet working in it's entirety in a software environment. This means that it gives you access to sensitive data _(`private key`, `mnemonic`, etc...)_ via it's API.
 
 For a more in-depth look at what the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
+
+### Hardware
+
+A hardware device that gives you access to it's internal stored account(s). Usually enforced by a hardware true random number generator.
+
+See the [Hardware-specific API docs](api-hardware.md) and all the hardware wallet subtypes.
 
 #### Imports:
 
