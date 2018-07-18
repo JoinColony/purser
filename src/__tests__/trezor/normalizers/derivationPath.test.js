@@ -3,7 +3,7 @@ import { derivationPathNormalizer } from '../../../trezor/normalizers';
 jest.dontMock('../../../utils');
 jest.dontMock('../../../trezor/normalizers');
 
-describe('`Trezor` Hardware Wallet Module', () => {
+describe('`Trezor` Hardware Wallet Module Normalizers', () => {
   describe('`derivationPathNormalizer()` normalizer', () => {
     test('Normalizes the header key', () => {
       const abnormalDerivationPath = "M/44'/60'/0'/0";

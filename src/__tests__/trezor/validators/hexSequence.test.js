@@ -3,7 +3,7 @@ import { hexSequenceValidator } from '../../../trezor/validators';
 jest.dontMock('../../../utils');
 jest.dontMock('../../../trezor/validators');
 
-describe('`Trezor` Hardware Wallet Module', () => {
+describe('`Trezor` Hardware Wallet Module Validators', () => {
   describe('`hexSequenceValidator()` validator', () => {
     test("Fail if it's not a String", () => {
       expect(() => hexSequenceValidator('')).toThrow();

@@ -3,7 +3,7 @@ import { safeIntegerValidator } from '../../../trezor/validators';
 jest.dontMock('../../../utils');
 jest.dontMock('../../../trezor/validators');
 
-describe('`Trezor` Hardware Wallet Module', () => {
+describe('`Trezor` Hardware Wallet Module Validators', () => {
   describe('`safeIntegerValidator()` validator', () => {
     test("Fail if it's not a Number primitive", () => {
       expect(() => safeIntegerValidator('')).toThrow();

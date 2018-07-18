@@ -25,7 +25,7 @@ const address = 'mocked-derivation-address';
 const message = 'mocked-message';
 const signature = 'mocked-signature';
 
-describe('`Trezor` Hardware Wallet Module', () => {
+describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   describe('`verifyMessage()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_VERIFYMSG;

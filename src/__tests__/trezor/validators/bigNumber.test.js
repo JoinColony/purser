@@ -4,7 +4,7 @@ import { bigNumberValidator } from '../../../trezor/validators';
 jest.dontMock('../../../utils');
 jest.dontMock('../../../trezor/validators');
 
-describe('`Trezor` Hardware Wallet Module', () => {
+describe('`Trezor` Hardware Wallet Module Validators', () => {
   describe('`bigNumberValidator()` validator', () => {
     test("Fail if it's not an instance of the `bigNumber` util", () => {
       expect(() => bigNumberValidator('')).toThrow();

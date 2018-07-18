@@ -43,7 +43,7 @@ describe('`Trezor` Hardware Wallet Module', () => {
     EthereumTx.mockClear();
     EthereumTx.mockRestore();
   });
-  describe('`signTransacion()` static method', () => {
+  describe('`signTransacion()` static method Static Methods', () => {
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNTX;
       await signTransaction({

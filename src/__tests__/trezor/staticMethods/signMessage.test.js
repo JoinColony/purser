@@ -19,7 +19,7 @@ jest.mock('../../../trezor/normalizers');
 
 const path = 'mocked-derivation-path';
 
-describe('`Trezor` Hardware Wallet Module', () => {
+describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   describe('`signMessage()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNMSG;
