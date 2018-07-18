@@ -12,3 +12,7 @@ export const payloadListener = jest.fn(() =>
 );
 
 export const derivationPathSerializer = jest.fn(() => 'mocked-derivation-path');
+
+export const serviceUrlGenerator = jest.fn();
+
+export const windowFeaturesSerializer = jest.fn();
