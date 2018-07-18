@@ -1,7 +1,5 @@
 /* @flow */
 
-import { padLeft } from '../utils';
-
 import { PATH, SPLITTER, MATCH } from './defaults';
 
 /*
@@ -88,11 +86,7 @@ export const derivationPathNormalizer = (derivationPath: string): string => {
  * @return {string} The normalized (padded) hex path
  */
 export const multipleOfTwoHexValueNormalizer = (hexValue: string): string =>
-  padLeft({
-    value: hexValue,
-    length: Math.ceil(hexValue.length / 2) * 2,
-    character: '0',
-  });
+  String(hexValue).padStart(Math.ceil(hexValue.length / 2) * 2, '0');
 
 /**
  * Nomalize an ethereum address
