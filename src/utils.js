@@ -268,7 +268,12 @@ export const bigNumber = (value: number | string | BN): BN => {
  */
 export const objectToErrorString = (object: Object = {}): string =>
   Object.keys(object)
-    .reduce((allArgs, key) => `${allArgs}${key} (${String(object[key])}), `, '')
+    .reduce(
+      (allArgs, key) =>
+        `${allArgs}${key} (${String(JSON.stringify(object[key]))}), `,
+      '',
+    )
+    .replace(/"/g, '')
     .trim();
 
 /**
