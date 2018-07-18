@@ -12,18 +12,18 @@ const { verbose } = utils;
 
 describe('`Utils` Core Module', () => {
   describe('`verbose()` method', () => {
-    test('It should be verbose if the environment is not defined', () => {
+    test('Should be verbose if the environment is not defined', () => {
       defaults.ENV = undefined;
       const isVerbose = verbose();
       expect(isVerbose).toBeTruthy();
     });
-    test("It should be verbose if we're in a development environment", () => {
+    test("Should be verbose if we're in a development environment", () => {
       defaults.ENV = 'development';
       const isVerbose = verbose();
       expect(isVerbose).toBeTruthy();
     });
     test(
-      "It should NOT be verbose if we're in a any kind of other" +
+      "Should NOT be verbose if we're in a any kind of other" +
         "environment (other than 'development')",
       () => {
         defaults.ENV = 'production';

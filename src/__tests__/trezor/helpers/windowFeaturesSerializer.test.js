@@ -9,7 +9,7 @@ const testFeaturesObject = {
 
 describe('`Trezor` Hardware Wallet Module Helpers', () => {
   describe('`windowFeaturesSerializer()` helper', () => {
-    test('It should serialize window features', () => {
+    test('Should serialize window features', () => {
       const { stringFeature, numberFeature } = testFeaturesObject;
       const serializedWindowOptions = windowFeaturesSerializer(
         testFeaturesObject,
@@ -18,7 +18,7 @@ describe('`Trezor` Hardware Wallet Module Helpers', () => {
         `stringFeature=${stringFeature},numberFeature=${numberFeature},`,
       );
     });
-    test('It should serialize a window boolean feature as yes/no', () => {
+    test('Should serialize a window boolean feature as yes/no', () => {
       const serializedWindowOptions = windowFeaturesSerializer({
         booleanFeature: false,
       });

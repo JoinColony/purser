@@ -15,7 +15,7 @@ describe('`Utils` Core Module', () => {
     beforeEach(() => {
       jest.resetModules();
     });
-    test('It selects the Chrome `webcrypto` method, when available', () => {
+    test('Selects the Chrome `webcrypto` method, when available', () => {
       window.crypto = {
         getRandomValues: jest.fn(),
       };
@@ -26,7 +26,7 @@ describe('`Utils` Core Module', () => {
         randomnessArray,
       );
     });
-    test('It selects the Microsoft `msCrypto` method, when available', () => {
+    test('Selects the Microsoft `msCrypto` method, when available', () => {
       window.crypto = undefined;
       window.msCrypto = {
         getRandomValues: jest.fn(),
@@ -38,7 +38,7 @@ describe('`Utils` Core Module', () => {
         randomnessArray,
       );
     });
-    test('It selects the nodeJS `crypto` library as a fallack', () => {
+    test('Selects the nodeJS `crypto` library as a fallack', () => {
       window.crypto = undefined;
       window.msCrypto = undefined;
       const randomnessArray = new Uint8Array(10);
@@ -47,7 +47,7 @@ describe('`Utils` Core Module', () => {
       expect(crypto.randomBytes).toHaveBeenCalled();
       expect(crypto.randomBytes).toHaveBeenCalledWith(randomnessArray.length);
     });
-    test('Using nodeJS `crypto` it throws if array is not an uint8', () => {
+    test('Using nodeJS `crypto`, throws if array is not an uint8', () => {
       window.crypto = undefined;
       window.msCrypto = undefined;
       const randomnessArray = new Array(10);

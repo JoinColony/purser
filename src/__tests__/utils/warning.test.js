@@ -19,11 +19,11 @@ describe('`Utils` Core Module', () => {
       console.warn.mockClear();
       console.error.mockClear();
     });
-    test('It logs the correct message', () => {
+    test('Logs the correct message', () => {
       warning(message);
       expect(console.warn).toHaveBeenCalledWith(message);
     });
-    test("It doesn't log a message when in production", () => {
+    test("Doesn't log a message when in production", () => {
       defaults.ENV = 'production';
       warning(message);
       expect(console.warn).not.toHaveBeenCalled();
@@ -32,17 +32,17 @@ describe('`Utils` Core Module', () => {
       expect(console.warn).not.toHaveBeenCalled();
       expect(console.error).not.toHaveBeenCalled();
     });
-    test('It correctly sets the low priority', () => {
+    test('Correctly sets the low priority', () => {
       warning(message, { level: 'low' });
       expect(console.warn).toHaveBeenCalled();
       expect(console.error).not.toHaveBeenCalled();
     });
-    test('It correctly sets the high priority', () => {
+    test('Correctly sets the high priority', () => {
       warning(message, { level: 'high' });
       expect(console.error).toHaveBeenCalled();
       expect(console.warn).not.toHaveBeenCalled();
     });
-    test('It correctly falls back to the low priority', () => {
+    test('Correctly falls back to the low priority', () => {
       warning(message, { level: 'lower' });
       expect(console.warn).toHaveBeenCalled();
       expect(console.error).not.toHaveBeenCalled();
@@ -53,12 +53,12 @@ describe('`Utils` Core Module', () => {
       expect(console.warn).toHaveBeenCalled();
       expect(console.error).not.toHaveBeenCalled();
     });
-    test("It doesn't log a message when in production", () => {
+    test("Doesn't log a message when in production", () => {
       defaults.ENV = 'production';
       warning(message);
       expect(console.warn).not.toHaveBeenCalled();
     });
-    test('It correctly splits out template literals', () => {
+    test('Correctly splits out template literals', () => {
       const templateLiterals = ['part', 'part', 'part'];
       warning(
         message,
@@ -69,7 +69,7 @@ describe('`Utils` Core Module', () => {
       expect(console.warn).toHaveBeenCalled();
       expect(console.warn).toHaveBeenCalledWith(message, ...templateLiterals);
     });
-    test('It correctly splits out template literals and priority', () => {
+    test('Correctly splits out template literals and priority', () => {
       const templateLiterals = ['part', 'part', 'part'];
       const priority = {
         level: 'high',
