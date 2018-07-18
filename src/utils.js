@@ -297,6 +297,7 @@ export const validatorGenerator = (
   validationSequenceArray: Array<{
     expression: boolean,
     message: string | Array<string>,
+    level: string,
   }>,
   genericError: string,
 ): boolean => {
@@ -307,7 +308,11 @@ export const validatorGenerator = (
         /*
          * If there's no message passed in, use the generic error
          */
-        Object.assign({}, { message: genericError }, validationSequence),
+        Object.assign(
+          {},
+          { message: genericError, level: 'high' },
+          validationSequence,
+        ),
       ),
     ),
   );
@@ -315,7 +320,7 @@ export const validatorGenerator = (
    * This is a fail-safe in case anything splis through.
    * If any of the values are `false` throw a general Error
    */
-  if (!validationTests.some(test => test !== false)) {
+  if (!validationTests.every(testResult => testResult === true)) {
     throw new Error(genericError);
   }
   /*
