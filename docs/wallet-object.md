@@ -17,6 +17,7 @@ WalletInstance {
   derivationPath?: Promise<String>,
   privateKey: String,
   privateKeyQR: Promise<String>, // deprecated
+  publicKey: Promise<String>,
   provider: Object, // deprecated
   type: String,
   subtype: String,
@@ -45,6 +46,7 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
     * [`derivationPath`](#derivationpath)
     * [`privateKey`](#privatekey)
     * [`privateKeyQR`](#privatekeyqr)
+    * [`publicKey`](#publickey)
     * [`provider`](#provider)
     * [`type`](#type)
     * [`subtype`](#subtype)
@@ -262,6 +264,23 @@ const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f8305246
 const qr = await wallet.privateKeyQR;
 
 console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... 5rQkAAAAASUVORK5CYII=
+```
+
+### `publicKey`
+```js
+WalletInstance.publicKey: Promise<String>
+```
+
+This is a `getter` that returns a `Promise`. Upon resolving, the promise returns the public key for the current address, in `String` form.
+
+This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(eg: `privateKey`, `mnemonic`...)_.
+
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const wallet = await open();
+
+console.log(await wallet.publicKey); // 0x93f7 ... a9dd
 ```
 
 ### `provider`
