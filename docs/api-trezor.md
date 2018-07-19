@@ -98,5 +98,5 @@ const wallet = await open({ addressCount: 100 });
 
 // Optionally set another address as the default
 
-wallet.setDefaultAddress(12); //true
+await wallet.setDefaultAddress(12); //true
 ```
