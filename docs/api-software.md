@@ -58,7 +58,7 @@ await create([walletArguments: Object]);
 
 This method returns a `Promise` which, upon resolving, will return new software wallet instance _(see: [Wallet Object](wallet-object.md))_.
 
-By default it will generate the maximum possible `entropy` _(see: [`getRandomValues`](#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](#autoselect))_.
+By default it will generate the maximum possible `entropy` _(see: [`getRandomValues`](api-utils.md#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](api-providers.md#autoselect))_.
 
 Even though it will work out of the box, you can however, pass in custom arguments via the `walletArguments` object.
 
@@ -68,7 +68,7 @@ See [`WalletArgumentsType`](../src/flowtypes.js#L34-L42) in [`flowtypes.js`](../
 walletArguments.entropy: Uint8Array<>
 ```
 
-Provide custom randomness when creating the wallet. By default it will use a `8`-bit unsigned array of `65536` length on which it will generate random values _(see: [`getRandomValues`](#getRandomValues))_.
+Provide custom randomness when creating the wallet. By default it will use a `8`-bit unsigned array of `65536` length on which it will generate random values _(see: [`getRandomValues`](api-utils.md#getRandomValues))_.
 
 ```js
 walletArguments.provider: Object | function
@@ -76,7 +76,7 @@ walletArguments.provider: Object | function
 
 **_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
 
-Override the default auto-selector _(see: [`autoselect`](#autoselect))_ and provide a manual, custom provider when creating the new wallet instance.
+Override the default auto-selector _(see: [`autoselect`](api-providers.md#autoselect))_ and provide a manual, custom provider when creating the new wallet instance.
 
 The provider `prop` can be either a provider object, or a provider generator method.
 
@@ -136,7 +136,7 @@ await open(walletArguments: Object);
 
 This method returns a `Promise`, which after unlocking it via one of the available methods, it will `resolve` and `return` new software wallet instance _(see: [Wallet Object](wallet-object.md))_.
 
-By default it auto-selects the first available provider _(see: [`autoselect`](#autoselect))_, if one was not provided via the argument prop.
+By default it auto-selects the first available provider _(see: [`autoselect`](api-providers.md#autoselect))_, if one was not provided via the argument prop.
 
 It will not work without any arguments so you must specify at least one method of opening the wallet. If at least one is not provided, the `Promise` will `reject`, throwing an error.
 
@@ -172,7 +172,7 @@ walletArguments.provider: Object | function
 
 **_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
 
-Override the default auto-selector _(see: [`autoselect`](#autoselect))_ and provide a manual, custom provider when creating the wallet instance.
+Override the default auto-selector _(see: [`autoselect`](api-providers.md#autoselect))_ and provide a manual, custom provider when creating the wallet instance.
 
 The provider `prop` can be either a provider object, or a provider generator method.
 

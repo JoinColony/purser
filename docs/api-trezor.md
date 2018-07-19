@@ -62,7 +62,7 @@ await open(walletArguments: Object);
 
 This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` new `TrezorWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
 
-By default it auto-selects the first available provider _(see: [`autoselect`](#autoselect))_, if one was not provided via the argument prop.
+By default it auto-selects the first available provider _(see: [`autoselect`](api-providers.md#autoselect))_, if one was not provided via the argument prop.
 
 **_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much)_**
 

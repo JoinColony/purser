@@ -248,11 +248,11 @@ WalletInstance.provider: Object | Function | undefined
 
 **_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
 
-This is an optional prop that will contain a [provider](api.md#providers) for the wallet to use. It can be set during instantiation _(both `open()` and `create()`)_ and can even be set to `null` or `undefined` if you don't want to have one.
+This is an optional prop that will contain a [provider](api-providers.md) for the wallet to use. It can be set during instantiation _(both `open()` and `create()`)_ and can even be set to `null` or `undefined` if you don't want to have one.
 
-As a value, it can be both a [provider `Object`](../src/flowtypes.js#L3-L16) or a [provider generator method](api.md#providers).
+As a value, it can be both a [provider `Object`](../src/flowtypes.js#L3-L16) or a [provider generator method](api-proviers.md).
 
-If one is not set via the argument prop, it defaults to [`autoselect()`](api.md#autoselect), setting the first one available.
+If one is not set via the argument prop, it defaults to [`autoselect()`](api-providers.md#autoselect), setting the first one available.
 
 ```js
 import { create } from 'colony-wallet/software';
@@ -284,6 +284,8 @@ console.log(wallet.type); // software
 ```js
 WalletInstance.sendWithConfirmation(transactionObject: Object, confirmation: Promise<boolean> | boolean): Promise<string>
 ```
+
+**_The `sendWithConfirmation` method is deprecated as a result of [Providers](api-providers.md) being deprecated, so make sure you don't rely on it too much. This functionality will be offloaded to the user._**
 
 This is a wrapper for the `sendTransaction()` method that adds an extra argument which controls an async transaction confirmation. This is useful for scenarios where you would want to ask a user for approval / acknowledgement before sending a transaction to be mined.
 
