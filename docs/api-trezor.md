@@ -24,28 +24,32 @@ A hardware device that gives you access to it's internal stored account(s). Usua
 
 For a more in-depth look at what the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
 
+#### Note: Trezor Bridge
+
+To be able to use the Trezor Wallet inside a browser, you'll need to install and start a [Trezor Bridge Service](https://wallet.trezor.io/#/bridge), otherwise the hardware device won't be able to talk to the browser.
+
+_If the above link doesn't work, here's an [alternative download location](https://wallet.trezor.io/data/bridge/latest/index.html)_
+
+#### Note: Firmware Version
+
+The Trezor Wallet only started supporting ethereum methods in firmware version `1.4.0`, so make sure your device has this version at least. _(But most likely it will have a newer version)_. A safe bet is to update it to the latest one.
+
+Just make sure that, if you're updating your firmware version, it will wipe all your device's memory and you'll have to restore it from a saved seed.
+
 #### Imports:
 
 There are different ways in which you can import the library in your project _(as a module)_, but in the end they all bring in the same thing:
 
 Using `ES5` `require()` statements:
 ```js
-var wallet = require('colony-wallet/hardware'); // wallet.trezor.open().then();
-
 var wallets = require('colony-wallet/wallets'); // wallets.hardware.trezor.open().then();
-
-var wallet = require('colony-wallet/wallets').hardware; // wallet.trezor.open().then();
 
 var trezor = require('colony-wallet/hardware/trezor'); // trezor.open().then();
 ```
 
 Using `ES6` `import` statements:
 ```js
-import wallet from 'colony-wallet/hardware'; // await wallet.trezor.open();
-
 import wallets from 'colony-wallet/wallets'; // await wallets.hardware.trezor.open();
-
-import { hardware as wallet } from 'colony-wallet/wallets'; // await wallet.trezor.open();
 
 import { trezor } from 'colony-wallet/hardware'; // await trezor.open();
 ```
@@ -55,4 +59,45 @@ import { trezor } from 'colony-wallet/hardware'; // await trezor.open();
 ```js
 await open(walletArguments: Object);
 ```
-...
+
+This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` new `TrezorWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
+
+By default it auto-selects the first available provider _(see: [`autoselect`](#autoselect))_, if one was not provided via the argument prop.
+
+**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much)_**
+
+By default, without any arguments it will open the first `10` accounts in the derivation path, but you can change that via the `addressCount` object prop argument _(Unlike the software wallet, this is the only argument the `open` method takes, but to preserved consistency, it's still being passed in as an object)_.
+
+Also, the first index from the addresses that you opened will be selected as the default one _(See: the `setDefaultAddress()` method from the [Wallet Object](wallet-object.md))_, while the rest of them will be available under the `otherAddresses` Array prop on the wallet instance.
+
+#### Argument props
+
+```js
+walletArguments.addressCount: Number = 10
+```
+
+Sets the number of addresses to derive from the derivation path. Defaults to `10` and cannot be set lower than `1`.
+
+It will set first one as the default _(index `0`)_, while the rest will be available through the `otherAddresses` Array, found as a prop on the Wallet Instance _(index `0` through `9` in this case)_.
+
+You will be able to change through them using the `setDefaultAddress()` instance method _(See: [Wallet Object](wallet-object.md) for details))_.
+
+**Usage examples:**
+
+Open the trezor wallet using the default number of addresses:
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const wallet = await open();
+```
+
+Open the trezor wallet using a custom number of addresses:
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const wallet = await open({ addressCount: 100 });
+
+// Optionally set another address as the default
+
+wallet.setDefaultAddress(12); //true
+```

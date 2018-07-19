@@ -22,6 +22,30 @@ A hardware device that gives you access to it's internal stored account(s). Usua
 
 For a more in-depth look at what the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
 
+#### Imports:
+
+There are different ways in which you can import the library in your project _(as a module)_, but in the end they all bring in the same thing:
+
+Using `ES5` `require()` statements:
+```js
+var wallet = require('colony-wallet/hardware');
+
+var wallets = require('colony-wallet/wallets');
+
+var wallet = require('colony-wallet/wallets').hardware;
+
+```
+
+Using `ES6` `import` statements:
+```js
+import wallet from 'colony-wallet/hardware';
+
+import wallets from 'colony-wallet/wallets';
+
+import { hardware as wallet } from 'colony-wallet/wallets';
+
+```
+
 #### Trezor
 
 See the [Trezor-specific API docs](api-hardware-trezor.md).
