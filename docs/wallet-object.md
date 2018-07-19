@@ -14,7 +14,7 @@ WalletInstance {
   keystore: Promise<String>,
   mnemonic: String,
   path?: String, // deprecated, will be renamed to `derivationPath`
-  derivationath?: Promise<String>,
+  derivationPath?: Promise<String>,
   privateKey: String,
   privateKeyQR: Promise<String>, // deprecated
   provider: Object, // deprecated
@@ -42,6 +42,7 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
     * [`keystore`](#keystore)
     * [`mnemonic`](#mnemonic)
     * [`path`](#path)
+    * [`derivationPath`](#derivationpath)
     * [`privateKey`](#privatekey)
     * [`privateKeyQR`](#privatekeyqr)
     * [`provider`](#provider)
@@ -191,16 +192,36 @@ WalletInstance.path: String
 
 **_The `path` prop is deprecated and will be renamed to `derivationPath`, so make sure you don't rely on it too much_**
 
-Contains the [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) [derivation path](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#specification-key-derivation) in the form of a `String`. When instantiating a wallet using a `mnemonic` phrase, this is used to re-create the `private key`.
+See: [`derivationPath`](#derivationpath)
 
-This defaults to `m/44'/60'/0'/0/0`, but can be manually set when creating the wallet instance.
+### `derivationPath`
+```js
+WalletInstance.derivationPath: Promise<String>
+```
+
+This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) [derivation path](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#specification-key-derivation) in the form of a `String`.
+
+When instantiating a software wallet using a `mnemonic` phrase, this is used to re-create the `privateKey`. This defaults to `m/44'/60'/0'/0/0`, but can be manually set when creating the wallet instance.
+
+On a hardware wallet, this is read-only, and is used to derive all the address indexes.
 
 ```js
 import { open } from 'colony-wallet/software';
 
 const wallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
 
-console.log(wallet.path); // m/44'/60'/0'/0/0
+console.log(await wallet.derivationPath); // m/44'/60'/0'/0/0
+```
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const wallet = await open();
+
+console.log(await wallet.derivationPath); // m/44'/60'/0'/0/0
+
+walet.setDefaultAddress(1);
+
+console.log(await wallet.derivationPath); // m/44'/60'/0'/0/1
 ```
 
 ### `privateKey`
