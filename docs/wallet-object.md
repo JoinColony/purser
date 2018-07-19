@@ -27,6 +27,7 @@ WalletInstance {
    */
   sendWithConfirmation(transactionObject: Object, confirmation: Promise<Boolean> | Boolean): Promise<String>,
   setDefaultAddress(addressIndex: Number): Promise<Boolean>,
+  sign(transactionObject: Object): Promise<String>
 }
 ```
 
@@ -56,6 +57,7 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
   * Methods
     * [`sendWithConfirmation()`](#sendwithconfirmation)
     * [`setDefaultAddress()`](#setdefaultaddress)
+    * [`sign()`](#sign)
 
 ## Props
 
@@ -68,6 +70,7 @@ Contains the wallet's public address in the form of `String`.
 
 _**Tip:** Across all wallet types and formats this is the only value that you can count on as always present on the object._
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/software';
 
@@ -89,6 +92,7 @@ This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 The returned image has a size of `200`x`200` pixels.
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/software';
 
@@ -112,6 +116,7 @@ This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 The returned image has a size of `200`x`200` pixels.
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/software';
 
@@ -131,6 +136,7 @@ This is prop has both a `getter` and a `setter` attached to it. The `getter` ret
 
 This value will be used if the transaction you wish to send from the wallet does not contain a `gasLimit`.
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/software';
 
@@ -160,6 +166,7 @@ If the wallet was instantiated using an encrypted `keystore`, than this value is
 
 If you need more information about the encrypted `keystore`, you can check out the [Web3 Secret Storage Definition](https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition).
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/software';
 
@@ -183,6 +190,7 @@ WalletInstance.mnemonic: String
 
 If a _new_ wallet was instantiated, or a new instance was created via a `mnemonic` phrase, this prop will contain that _(or a new)_ phrase in the form of a `String`.
 
+**Usage:**
 ```js
 import { create } from 'colony-wallet/software';
 
@@ -211,6 +219,7 @@ When instantiating a software wallet using a `mnemonic` phrase, this is used to 
 
 On a hardware wallet, this is read-only, and is used to derive all the address indexes.
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/software';
 
@@ -243,6 +252,7 @@ This is useful to see all the addresses that you have access to.
 
 Note, that if only one address was derived _(opened)_ when you opened the wallet _(Eg: `{ addressCount : 1 }`)_, than this prop will be `undefined`. This is because it will only contain one entry, which is also the default selected address _(See: [`setDefaultAddress`](#setdefaultaddress))_, so there's no point, as it will just repeat information.
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/hardware/trezor';
 
@@ -252,7 +262,6 @@ console.log(wallet.otherAddress); // [0x56B4...8173, 0x0F91...d9A8, 0x26eB...bAD
 
 console.log(wallet.otherAddress.length); // 10
 ```
-
 ```js
 import { open } from 'colony-wallet/hardware/trezor';
 
@@ -270,6 +279,7 @@ Contains the `private key` for the wallet in `String` form. This will be availab
 
 _**Warning:** As the name suggests, this is private. So treat it with caution and if possible don't expose it to other parts of your app._
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/software';
 
@@ -291,6 +301,7 @@ This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/Ja
 
 The returned image has a size of `200`x`200` pixels.
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/software';
 
@@ -310,6 +321,7 @@ This is a `getter` that returns a `Promise`. Upon resolving, the promise returns
 
 This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(Eg: `privateKey`, `mnemonic`...)_.
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/hardware/trezor';
 
@@ -331,6 +343,7 @@ As a value, it can be both a [provider `Object`](../src/flowtypes.js#L3-L16) or 
 
 If one is not set via the argument prop, it defaults to [`autoselect()`](api-providers.md#autoselect), setting the first one available.
 
+**Usage:**
 ```js
 import { create } from 'colony-wallet/software';
 import { jsonRpc } from 'colony-wallet/providers';
@@ -347,6 +360,7 @@ WalletInstance.type: String
 
 This is just a simple string value that represents the main type for the instantiated wallet object.
 
+**Usage:**
 ```js
 import { create } from 'colony-wallet/software';
 
@@ -362,6 +376,7 @@ WalletInstance.subtype: String
 
 This is just a simple string value that represents the sub type for _(wallet type engine)_ the instantiated wallet object.
 
+**Usage:**
 ```js
 import { create } from 'colony-wallet/software';
 
@@ -385,6 +400,7 @@ As with `sendTransaction()` it takes a `transactionObject` object as the first a
 
 If the `confirmation` is truthy _(and the `transaction` object format is valid)_ it will return a `Promise`, which will resolve to the transaction hash as a `string` type. If the `confirmation` fails _(is `false`)_, it will return a `reject`ed `Promise`, and, if we're running in `dev` mode, it will log out a warning to the console.
 
+**Usage:**
 ```js
 import { create } from 'colony-wallet/software';
 
@@ -414,6 +430,7 @@ This method takes in an address index argument, as a `Number` _(this corresponds
 
 If it's can set it successfully, it will return `true`, otherwise it will `throw` an Error. The only case this will fail is if you provide an unavailable address index. _(Eg: if you opened the wallet with `{ addressCount: 1 }`, there's no other `addressIndex` that will work, except `0`)_
 
+**Usage:**
 ```js
 import { open } from 'colony-wallet/hardware/trezor';
 
@@ -424,4 +441,55 @@ console.log(wallet.address); // 0x56B4...8173
 await wallet.setDefaultAddress(2);
 
 console.log(wallet.address); // 0x0F91...d9A8
+```
+
+### `sign()`
+```js
+WalletInstance.sign(transactionObject: Object): Promise<String>
+```
+
+Sign an ethereum transaction using the current default address.
+
+This method takes in an `transactionObject` Object _(See below)_, and returns the hex `String` signature wrapped inside a `Promise` _(This method is `async`)_.
+
+The `transactionObject`'s props will be each individually validated, and if there's something wrong with one of them, it will `throw` and Error.
+
+**`transactionObject` format:**
+```js
+transactionObject {
+  gasPrice: bigNumber // The gas price you're willing to pay for this transaction WEI, as an instance of bigNumber. Defaults to 9000000000 WEI (9 GWEI)
+  gasLimit: bigNumber // The gas limit you want for this transaction As an instance of bigNumber. Defaults to 21000
+  chainId: Number // The chain id where the transaction is going to be sent. If this is not set, but a provider is set, it takes it from the provider Object. Defaults to 1.
+  nonce: Number // The nonce of the transaction. Defaults to 0.
+  to: String // The destination address to send the transaction to, as a hex String. This is the only REQUIRED prop by this library
+  value: bigNumber // The value you want to send to the destination address, In WEI, as an instance of bigNumber. Defaults to 1 WEI
+  inputData: String // The additional input data to send in the transaction, as a hex String. Defaults to `0x00`
+}
+```
+
+**Usage:**
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const trezorWallet = await open();
+
+const transactionSignature = await trezorWallet.sign({ to: '0x3953cF4eA75a62c6fCD0b3988b1984265006a4C1' });
+```
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+import { bigNumber } from 'colony-wallet/utils';
+
+const trezorWallet = await open();
+
+const transaction = {
+  gasPrice: bigNumber(0.00000001).toWei(),
+  gasLimit: bigNumber(30000),
+  chainId: 4,
+  nonce: 15987,
+  to: '0x3953cF4eA75a62c6fCD0b3988b1984265006a4C1',
+  value: bigNumber(1).toWei(),
+  inputData: '0x00',
+};
+
+const transactionSignature = await trezorWallet.sign(transaction);
 ```
