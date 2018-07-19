@@ -477,7 +477,7 @@ import { open } from 'colony-wallet/hardware/trezor';
 
 const trezorWallet = await open();
 
-const transactionSignature = await trezorWallet.sign({ to: '0x3953...a4C1' });
+const transactionSignature = await trezorWallet.sign({ to: '0x3953...a4C1' }); // 0xF990...8d91
 ```
 ```js
 import { open } from 'colony-wallet/hardware/trezor';
@@ -486,7 +486,7 @@ import { bigNumber } from 'colony-wallet/utils';
 const trezorWallet = await open();
 
 const transaction = {
-  gasPrice: bigNumber(0.00000001).toWei(),
+  gasPrice: bigNumber('0.00000001').toWei(),
   gasLimit: bigNumber(30000),
   chainId: 4,
   nonce: 15987,
@@ -495,7 +495,7 @@ const transaction = {
   inputData: '0x00',
 };
 
-const transactionSignature = await trezorWallet.sign(transaction);
+const transactionSignature = await trezorWallet.sign(transaction); // 0xf849...5681
 ```
 
 ### `signMessage()`
@@ -522,7 +522,7 @@ import { open } from 'colony-wallet/hardware/trezor';
 
 const trezorWallet = await open();
 
-const messageSignature = await trezorWallet.signMessage({ message: 'Yes, this is me!' });
+const messageSignature = await trezorWallet.signMessage({ message: 'Yes, this is me!' }); // '0xa1f7...0b1c'
 ```
 
 ### `verifyMessage()`
