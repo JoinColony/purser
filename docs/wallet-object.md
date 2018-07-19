@@ -28,6 +28,7 @@ WalletInstance {
   sendWithConfirmation(transactionObject: Object, confirmation: Promise<Boolean> | Boolean): Promise<String>,
   setDefaultAddress(addressIndex: Number): Promise<Boolean>,
   sign(transactionObject: Object): Promise<String>
+  signMessage(messageObject: Object): Promise<String>
 }
 ```
 
@@ -58,6 +59,7 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
     * [`sendWithConfirmation()`](#sendwithconfirmation)
     * [`setDefaultAddress()`](#setdefaultaddress)
     * [`sign()`](#sign)
+    * [`signMessage()`](#signmessage)
 
 ## Props
 
@@ -492,4 +494,31 @@ const transaction = {
 };
 
 const transactionSignature = await trezorWallet.sign(transaction);
+```
+
+### `signMessage()`
+```js
+WalletInstance.signMessage(messageObject: Object): Promise<String>
+```
+
+Sign a message with your public key to prove your identity and ownership of the address.
+
+This method takes in an `messageObject` Object _(See below)_, and returns the hex `String` signature wrapped inside a `Promise` _(This method is `async`)_.
+
+The `messageObject` only has one prop, `message`, but to keep consistency with the rest of the library, it is passed in as an Object.
+
+**`messageObject` format:**
+```js
+messageObject {
+  message: String // The message you want to sign as a String. Default to the '' empty String
+}
+```
+
+**Usage:**
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const trezorWallet = await open();
+
+const messageSignature = await trezorWallet.sign({ message: 'Yes, this is me!' });
 ```
