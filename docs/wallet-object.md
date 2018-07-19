@@ -78,9 +78,9 @@ _**Tip:** Across all wallet types and formats this is the only value that you ca
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x9274...f447` });
 
-console.log(wallet.address); // 0x3953cF4eA75a62c6fCD0b3988b1984265006a4CC
+console.log(wallet.address); // 0x3953...a4CC
 ```
 
 ### `addressQR`
@@ -100,7 +100,7 @@ The returned image has a size of `200`x`200` pixels.
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x9274...f447` });
 
 const qr = await wallet.addressQR;
 
@@ -124,7 +124,7 @@ The returned image has a size of `200`x`200` pixels.
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x9274...f447` });
 
 const blockie = await wallet.blockie;
 
@@ -144,7 +144,7 @@ This value will be used if the transaction you wish to send from the wallet does
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x9274...f447` });
 
 console.log(wallet.defaultGasLimit); // 1500000
 
@@ -174,7 +174,7 @@ If you need more information about the encrypted `keystore`, you can check out t
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x9274...f447` });
 
 let keystore = await wallet.keystore; // Promise rejects: You did not provide a password for encryption...
 
@@ -184,7 +184,7 @@ wallet.keystore = '0fbfd56c94dc9d2578a6';
 
 let keystore = await wallet.keystore;
 
-console.log(keystore); // {"address":"3953cf4ea75a62c6fcd0b3988b1984265006a4 ... 8f53696a","version":"0.1"}}
+console.log(keystore); // {"address":"3953...06a4","version":"0.1"}}
 ```
 
 ### `mnemonic`
@@ -289,7 +289,7 @@ import { open } from 'colony-wallet/software';
 
 const wallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
 
-console.log(wallet.privateKey); // 0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447
+console.log(wallet.privateKey); // 0x9274...f447
 ```
 
 ### `privateKeyQR`
@@ -309,7 +309,7 @@ The returned image has a size of `200`x`200` pixels.
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = await open({ privateKey: `0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447` });
+const wallet = await open({ privateKey: `0x9274...f447` });
 
 const qr = await wallet.privateKeyQR;
 
@@ -354,7 +354,7 @@ import { jsonRpc } from 'colony-wallet/providers';
 
 const wallet = await create({ provider: jsonRpc });
 
-console.log(wallet.provider); // {chainId: 1, ensAddress: "0x314159265dD8dbb310642f98f50C066173C1259b", name: "homestead", _events: {…}, resetEventsBlock: ƒ, …}
+console.log(wallet.provider); // {chainId: 1, ensAddress: "0x3141...259b", name: "homestead", _events: {…}, resetEventsBlock: ƒ, …}
 ```
 
 ### `type`
@@ -411,7 +411,7 @@ import { create } from 'colony-wallet/software';
 const wallet = await create();
 
 const transaction = {
-  to: '0x3953cF4eA75a62c6fCD0b39abc1984265006a4CC',
+  to: '0x3953...a4CC',
   inputData: '0x0',
 };
 
@@ -477,7 +477,7 @@ import { open } from 'colony-wallet/hardware/trezor';
 
 const trezorWallet = await open();
 
-const transactionSignature = await trezorWallet.sign({ to: '0x3953cF4eA75a62c6fCD0b3988b1984265006a4C1' });
+const transactionSignature = await trezorWallet.sign({ to: '0x3953...a4C1' });
 ```
 ```js
 import { open } from 'colony-wallet/hardware/trezor';
@@ -490,7 +490,7 @@ const transaction = {
   gasLimit: bigNumber(30000),
   chainId: 4,
   nonce: 15987,
-  to: '0x3953cF4eA75a62c6fCD0b3988b1984265006a4C1',
+  to: '0x3953...a4C1',
   value: bigNumber(1).toWei(),
   inputData: '0x00',
 };

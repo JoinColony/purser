@@ -202,7 +202,7 @@ Open a wallet using a private key:
 ```js
 import { open } from 'colony-wallet/software';
 
-const privateKey = '0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447';
+const privateKey = '0x9274...f447';
 
 const existingWallet = await open({ privateKey });
 ```
@@ -222,7 +222,7 @@ import { open } from 'colony-wallet/software';
 import { etherscan } from 'colony-wallet/providers';
 
 const existingWallet = await open({
-  privateKey: '0x92745ab44bb19f1e955db11ef7c22f830524691d0be3630fa6c4d89120c9f447'
+  privateKey: '0x9274...f447'
   provider: etherscan,
   password: '6a8752d9cd49c65dfbf0',
 });
