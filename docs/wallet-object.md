@@ -15,6 +15,7 @@ WalletInstance {
   mnemonic: String,
   path?: String, // deprecated, will be renamed to `derivationPath`
   derivationPath?: Promise<String>,
+  otherAddresses: Array<String>,
   privateKey: String,
   privateKeyQR: Promise<String>, // deprecated
   publicKey: Promise<String>,
@@ -44,6 +45,7 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
     * [`mnemonic`](#mnemonic)
     * [`path`](#path)
     * [`derivationPath`](#derivationpath)
+    * [`otherAddresses`](#otheraddresses)
     * [`privateKey`](#privatekey)
     * [`privateKeyQR`](#privatekeyqr)
     * [`publicKey`](#publickey)
@@ -224,6 +226,37 @@ console.log(await wallet.derivationPath); // m/44'/60'/0'/0/0
 walet.setDefaultAddress(1);
 
 console.log(await wallet.derivationPath); // m/44'/60'/0'/0/1
+```
+
+### `otherAddresses`
+```js
+WalletInstance.otherAddresses: Array<String>
+```
+
+_Note: This prop is only available on Hardware Wallet types (eg: Trezor)_.
+
+It contains an `Array` of all the addresses that were derived _(opened)_ initially when opening the wallet, by specifying a number to the `addressCount` prop. _(The addresses in the `Array` are in `String` format)_.
+
+This is useful to see all the addresses that you have access to.
+
+Note, that if only one address was derived _(opened)_ when you opened the wallet _(eg: `{ addressCount : 1 }`)_, than this prop will be `undefined`. This is because it will only contain one entry, which is also the default selected address _(See: [`setDefaultAddress`](#setdefaultaddress))_, so there's no point, as it will just repeat information.
+
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const multipleAddresesWallet = await open();
+
+console.log(wallet.otherAddress); // [0x56B4...8173, 0x0F91...d9A8, 0x26eB...bAD1, 0xb883...49F6, 0x9d4E...7dbc, 0x4a59...8526, 0x9E8b...5C28, 0x6F29...A682, 0x4BAB...5aFb, 0x9677...9647]
+
+console.log(wallet.otherAddress.length); // 10
+```
+
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const multipleAddresesWallet = await open({ addressCount: 1 });
+
+console.log(wallet.otherAddress); // undefined
 ```
 
 ### `privateKey`
