@@ -12,10 +12,9 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 ## Contents
 
-* Wallets
-  * [Hardware](#hardware)
-    * [Trezor](#trezor)
-      * [`open`](#open-trezor)
+* Hardware
+  * Trezor
+    * [`open`](#open)
 
 
 ### Hardware

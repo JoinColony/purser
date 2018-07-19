@@ -48,4 +48,4 @@ import { hardware as wallet } from 'colony-wallet/wallets';
 
 #### Trezor
 
-See the [Trezor-specific API docs](api-hardware-trezor.md).
+See the [Trezor Wallet API](api-trezor.md).
