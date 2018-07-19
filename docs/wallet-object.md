@@ -19,6 +19,7 @@ WalletInstance {
   privateKeyQR: Promise<String>, // deprecated
   provider: Object, // deprecated
   type: String,
+  subtype: String,
   /*
    * Methods
    */
@@ -28,7 +29,7 @@ WalletInstance {
 
 This is the complete form of the Wallet Object, but in some cases, values are not going to be set due to various constraints.
 
-_**Example:** Instantiating a software wallet using an existing `private key` will not set the `mnemonic` since it's value cannot be reversed. But instantiating a software wallet using a `mnemonic` phrase will also set the `privateKey`s prop value since that can be reversed._
+_**Example:** Instantiating a software wallet using an existing `privateKey` will not set the `mnemonic` since it's value cannot be reversed. But instantiating a software wallet using a `mnemonic` phrase will also set the `privateKey`s prop value since that can be reversed._
 
 ## Contents:
 
@@ -45,6 +46,7 @@ _**Example:** Instantiating a software wallet using an existing `private key` wi
     * [`privateKeyQR`](#privatekeyqr)
     * [`provider`](#provider)
     * [`type`](#type)
+    * [`subtype`](#subtype)
   * Methods
     * [`sendWithConfirmation()`](#sendwithconfirmation)
 
@@ -276,6 +278,21 @@ import { create } from 'colony-wallet/software';
 const wallet = await create();
 
 console.log(wallet.type); // software
+```
+
+### `subtype`
+```js
+WalletInstance.subtype: String
+```
+
+This is just a simple string value that represents the sub type for _(wallet type engine)_ the instantiated wallet object.
+
+```js
+import { create } from 'colony-wallet/software';
+
+const wallet = await create();
+
+console.log(wallet.subtype); // ethers
 ```
 
 ## Methods
