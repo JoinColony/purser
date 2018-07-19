@@ -25,7 +25,8 @@ WalletInstance {
   /*
    * Methods
    */
-  sendWithConfirmation(transactionObject: Object, confirmation: Promise<boolean> | boolean): Promise<string>,
+  sendWithConfirmation(transactionObject: Object, confirmation: Promise<Boolean> | Boolean): Promise<String>,
+  setDefaultAddress(addressIndex: Number): Promise<Boolean>,
 }
 ```
 
@@ -54,6 +55,7 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
     * [`subtype`](#subtype)
   * Methods
     * [`sendWithConfirmation()`](#sendwithconfirmation)
+    * [`setDefaultAddress()`](#setdefaultaddress)
 
 ## Props
 
@@ -143,7 +145,7 @@ console.log(wallet.defaultGasLimit); // 1600000
 
 ### `keystore`
 ```js
-WalletInstance.keystore: Promise<String | undefined>
+WalletInstance.keystore: Promise<String>
 ```
 
 This is prop has both a `getter` and a `setter` attached to it. The `getter` is `async` and returns a `Promise`, while the `setter` is synchronous and give you the ability to set the encryption password.
@@ -176,7 +178,7 @@ console.log(keystore); // {"address":"3953cf4ea75a62c6fcd0b3988b1984265006a4 ...
 
 ### `mnemonic`
 ```js
-WalletInstance.mnemonic: String | undefined
+WalletInstance.mnemonic: String
 ```
 
 If a _new_ wallet was instantiated, or a new instance was created via a `mnemonic` phrase, this prop will contain that _(or a new)_ phrase in the form of a `String`.
@@ -223,7 +225,7 @@ const wallet = await open();
 
 console.log(await wallet.derivationPath); // m/44'/60'/0'/0/0
 
-walet.setDefaultAddress(1);
+await wallet.setDefaultAddress(1);
 
 console.log(await wallet.derivationPath); // m/44'/60'/0'/0/1
 ```
@@ -233,13 +235,13 @@ console.log(await wallet.derivationPath); // m/44'/60'/0'/0/1
 WalletInstance.otherAddresses: Array<String>
 ```
 
-_Note: This prop is only available on Hardware Wallet types (eg: Trezor)_.
+_Note: This prop is only available on Hardware Wallet types (Eg: Trezor)_.
 
 It contains an `Array` of all the addresses that were derived _(opened)_ initially when opening the wallet, by specifying a number to the `addressCount` prop. _(The addresses in the `Array` are in `String` format)_.
 
 This is useful to see all the addresses that you have access to.
 
-Note, that if only one address was derived _(opened)_ when you opened the wallet _(eg: `{ addressCount : 1 }`)_, than this prop will be `undefined`. This is because it will only contain one entry, which is also the default selected address _(See: [`setDefaultAddress`](#setdefaultaddress))_, so there's no point, as it will just repeat information.
+Note, that if only one address was derived _(opened)_ when you opened the wallet _(Eg: `{ addressCount : 1 }`)_, than this prop will be `undefined`. This is because it will only contain one entry, which is also the default selected address _(See: [`setDefaultAddress`](#setdefaultaddress))_, so there's no point, as it will just repeat information.
 
 ```js
 import { open } from 'colony-wallet/hardware/trezor';
@@ -306,7 +308,7 @@ WalletInstance.publicKey: Promise<String>
 
 This is a `getter` that returns a `Promise`. Upon resolving, the promise returns the public key for the current address, in `String` form.
 
-This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(eg: `privateKey`, `mnemonic`...)_.
+This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(Eg: `privateKey`, `mnemonic`...)_.
 
 ```js
 import { open } from 'colony-wallet/hardware/trezor';
@@ -318,7 +320,7 @@ console.log(await wallet.publicKey); // 0x93f7 ... a9dd
 
 ### `provider`
 ```js
-WalletInstance.provider: Object | Function | undefined
+WalletInstance.provider: Object
 ```
 
 **_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
@@ -372,7 +374,7 @@ console.log(wallet.subtype); // ethers
 
 ### `sendWithConfirmation()`
 ```js
-WalletInstance.sendWithConfirmation(transactionObject: Object, confirmation: Promise<boolean> | boolean): Promise<string>
+WalletInstance.sendWithConfirmation(transactionObject: Object, confirmation: Promise<Boolean> | Boolean): Promise<String>
 ```
 
 **_The `sendWithConfirmation` method is deprecated as a result of [Providers](api-providers.md) being deprecated, so make sure you don't rely on it too much. This functionality will be offloaded to the user._**
@@ -397,5 +399,29 @@ await wallet.sendWithConfirmation(
   transaction,
   window.confirm('Do you want to send this transaction?'),
 );
+```
 
+### `setDefaultAddress()`
+```js
+WalletInstance.setDefaultAddress(addressIndex: Number): Promise<Boolean>
+```
+
+_Note: This prop is only available on Hardware Wallet types (Eg: Trezor)_.
+
+By default address, we reference the address who's details are available via the `address`, `publicKey` and `derivationPath` props, and which will be used when call-ing the `sign()`, `signMessage()` and `verifyMessage()` methods, as can use only one at a time for these operations.
+
+This method takes in an address index argument, as a `Number` _(this corresponds to the [`otherAddresses`](#otheraddresses) Array)_ and sets that addresses value internally.
+
+If it's can set it successfully, it will return `true`, otherwise it will `throw` an Error. The only case this will fail is if you provide an unavailable address index. _(Eg: if you opened the wallet with `{ addressCount: 1 }`, there's no other `addressIndex` that will work, except `0`)_
+
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const multipleAddresesWallet = await open();
+
+console.log(wallet.address); // 0x56B4...8173
+
+await wallet.setDefaultAddress(2);
+
+console.log(wallet.address); // 0x0F91...d9A8
 ```
