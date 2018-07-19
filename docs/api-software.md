@@ -74,6 +74,8 @@ Provide custom randomness when creating the wallet. By default it will use a `8`
 walletArguments.provider: Object | function
 ```
 
+**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
+
 Override the default auto-selector _(see: [`autoselect`](#autoselect))_ and provide a manual, custom provider when creating the new wallet instance.
 
 The provider `prop` can be either a provider object, or a provider generator method.
@@ -167,6 +169,8 @@ This defaults to `m/44'/60'/0'/0/0`.
 ```js
 walletArguments.provider: Object | function
 ```
+
+**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
 
 Override the default auto-selector _(see: [`autoselect`](#autoselect))_ and provide a manual, custom provider when creating the wallet instance.
 

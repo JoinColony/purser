@@ -11,17 +11,24 @@ await wallet.create();
 Gives you the following object:
 ```js
 SoftwareWallet {
+  /*
+   * Props
+   */
   address: String,
-  addressQR: Promise<String>,
-  blockie: Promise<String>,
+  addressQR: Promise<String>, // deprecated
+  blockie: Promise<String>, // deprecated
   defaultGasLimit: Number,
   keystore: Promise<String | undefined>,
   mnemonic: String | undefined,
-  path: String,
+  path?: String, // deprecated, will be renamed to `derivationPath`
+  derivationath?: String,
   privateKey: String,
-  privateKeyQR: Promise<String>,
-  provider: Object | Function | undefined,
-  sendWithConfirmation(transaction: Object, confirmation: Promise<boolean> | boolean): Promise<string>,
+  privateKeyQR: Promise<String>, // deprecated
+  provider: Object | Function | undefined, // deprecated
+  /*
+   * Methods
+   */
+  sendWithConfirmation(transactionObject: Object, confirmation: Promise<boolean> | boolean): Promise<string>,
 }
 ```
 
@@ -66,6 +73,8 @@ console.log(wallet.address); // 0x3953cF4eA75a62c6fCD0b3988b1984265006a4CC
 SoftwareWallet.addressQR: Promise<String>
 ```
 
+**_The `addressQR` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
+
 This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a QR code of the wallet's public address in the form of a `base64`-encoded `String`.
 
 This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
@@ -86,6 +95,8 @@ console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... eocA
 ```js
 SoftwareWallet.blockie: Promise<String>
 ```
+
+**_The `blockie` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
 
 This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a [Blockie _(Identicon)_](https://github.com/rdig/better-ethereum-blockies) of the wallet's public address in the form of a `base64`-encoded `String`.
 
@@ -177,6 +188,8 @@ console.log(wallet.mnemonic); // load blush spray dirt random cash pear illness 
 SoftwareWallet.path: String
 ```
 
+**_The `path` prop is deprecated and will be renamed to `derivationPath`, so make sure you don't rely on it too much_**
+
 Contains the [BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) [derivation path](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#specification-key-derivation) in the form of a `String`. When instantiating a wallet using a `mnemonic` phrase, this is used to re-create the `private key`.
 
 This defaults to `m/44'/60'/0'/0/0`, but can be manually set when creating the wallet instance.
@@ -211,6 +224,8 @@ console.log(wallet.privateKey); // 0x92745ab44bb19f1e955db11ef7c22f830524691d0be
 SoftwareWallet.privateKeyQR: Promise<String>
 ```
 
+**_The `privateKeyQR` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
+
 This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a QR code of the wallet's `private key` address in the form of a `base64`-encoded `String`.
 
 This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
@@ -232,6 +247,8 @@ console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... 5rQk
 SoftwareWallet.provider: Object | Function | undefined
 ```
 
+**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
+
 This is an optional prop that will contain a [provider](api.md#providers) for the wallet to use. It can be set during instantiation _(both `open()` and `create()`)_ and can even be set to `null` or `undefined` if you don't want to have one.
 
 As a value, it can be both a [provider `Object`](../src/flowtypes.js#L3-L16) or a [provider generator method](api.md#providers).
@@ -249,12 +266,12 @@ console.log(wallet.provider); // {chainId: 1, ensAddress: "0x314159265dD8dbb3106
 
 ### `sendWithConfirmation()`
 ```js
-SoftwareWallet.sendWithConfirmation(transaction: Object, confirmation: Promise<boolean> | boolean): Promise<string>
+SoftwareWallet.sendWithConfirmation(transactionObject: Object, confirmation: Promise<boolean> | boolean): Promise<string>
 ```
 
 This is a wrapper for the `sendTransaction()` method that adds an extra argument which controls an async transaction confirmation. This is useful for scenarios where you would want to ask a user for approval / acknowledgement before sending a transaction to be mined.
 
-As with `sendTransaction()` it takes a `transaction` object as the first argument, and a `confirmation` as the second one. The `confirmation` must either be a `boolean` type or an method _(sync or async)_ that itself returns a `boolean`. _(Eg: a `Promise`)_.
+As with `sendTransaction()` it takes a `transactionObject` object as the first argument, and a `confirmation` as the second one. The `confirmation` must either be a `boolean` type or an method _(sync or async)_ that itself returns a `boolean`. _(Eg: a `Promise`)_.
 
 If the `confirmation` is truthy _(and the `transaction` object format is valid)_ it will return a `Promise`, which will resolve to the transaction hash as a `string` type. If the `confirmation` fails _(is `false`)_, it will return a `reject`ed `Promise`, and, if we're running in `dev` mode, it will log out a warning to the console.
 
@@ -264,8 +281,8 @@ import { create } from 'colony-wallet/software';
 const wallet = await create();
 
 const transaction = {
-  from: wallet.address,
-  nonce: 10,
+  to: '0x3953cF4eA75a62c6fCD0b39abc1984265006a4CC',
+  inputData: '0x0',
 };
 
 await wallet.sendWithConfirmation(

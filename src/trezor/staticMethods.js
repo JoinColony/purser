@@ -38,7 +38,7 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  * @param {number} nonce the nonce to use for the transaction (as a number)
  * @param {string} to the address to which to transaction is sent
  * @param {string} value the value of the transaction in WEI (as an instance of bigNumber), defaults to 1
- * @param {string} data data appended to the transaction (as a `hex` string)
+ * @param {string} inputData data appended to the transaction (as a `hex` string)
  *
  * All the above params are sent in as props of an {TransactionObjectType} object.
  *

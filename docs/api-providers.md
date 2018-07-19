@@ -21,6 +21,8 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 ## Providers
 
+**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
+
 Create a connection to an Ethereum blockchain. This is achieved differently by the various providers.
 
 HTTP API endpoint for _etherscan_ and _infura_, injected into the webpage in the case of _metamask_, or local RPC connection in the case of _jsonRpc_.
