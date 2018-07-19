@@ -29,6 +29,7 @@ WalletInstance {
   setDefaultAddress(addressIndex: Number): Promise<Boolean>,
   sign(transactionObject: Object): Promise<String>
   signMessage(messageObject: Object): Promise<String>
+  verifyMessage(verificationObject: Object): Promise<Boolean>
 }
 ```
 
@@ -60,6 +61,7 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
     * [`setDefaultAddress()`](#setdefaultaddress)
     * [`sign()`](#sign)
     * [`signMessage()`](#signmessage)
+    * [`verifyMessage()`](#verifymessage)
 
 ## Props
 
@@ -510,7 +512,7 @@ The `messageObject` only has one prop, `message`, but to keep consistency with t
 **`messageObject` format:**
 ```js
 messageObject {
-  message: String // The message you want to sign as a String. Default to the '' empty String
+  message: String // The message you want to sign, as a String. Defaults to the '' empty String
 }
 ```
 
@@ -520,5 +522,36 @@ import { open } from 'colony-wallet/hardware/trezor';
 
 const trezorWallet = await open();
 
-const messageSignature = await trezorWallet.sign({ message: 'Yes, this is me!' });
+const messageSignature = await trezorWallet.signMessage({ message: 'Yes, this is me!' });
+```
+
+### `verifyMessage()`
+```js
+WalletInstance.verifyMessage(verificationObject: Object): Promise<Boolean>
+```
+
+Verify a previously signed message to validate your identity and prove it was indeed signed by your current account.
+
+This method takes in an `verificationObject` Object _(See below)_, and returns a Boolean wrapped inside a `Promise` _(This method is `async`)_.
+
+If the message _(after it gets signed internally)_ matches the provided signature, it will return `true`, otherwise it will return `false` _(And if you're in a `development` environment, also a warning)_.
+
+**`verificationObject` format:**
+```js
+messageObject {
+  message: String // The message you want to verify, as a String. Defaults to the '' empty String
+  signature: String // The signature you want to verify the message against, as a `hex` String.
+}
+```
+
+**Usage:**
+```js
+import { open } from 'colony-wallet/hardware/trezor';
+
+const trezorWallet = await open();
+
+const messageSignature = await trezorWallet.verifyMessage({
+  message: 'Yes, this is me!',
+  signature: '0xa1f7...0b1c'
+});
 ```
