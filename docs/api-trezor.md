@@ -1,4 +1,4 @@
-# API
+# Trezor Wallet API
 
 These docs serve to outline the `API` format and methods provided by `colony-wallet`.
 
@@ -12,15 +12,11 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 ## Contents
 
-* [Wallets](#wallets)
+* Wallets
   * [Hardware](#hardware)
     * [Trezor](#trezor)
       * [`open`](#open-trezor)
 
-
-## Wallets
-
-Open a new wallet via a hardware device.
 
 ### Hardware
 
