@@ -1,16 +1,9 @@
 # Wallet Object
 
-This document describes the format you can expect the `SoftwareWallet` instance object to look like.
+This document describes the format you can expect the `Wallet` instance object to look like.
 
-Instantiating a new wallet:
 ```js
-import { software as wallet } from 'colony-wallet/wallets';
-
-await wallet.create();
-```
-Gives you the following object:
-```js
-SoftwareWallet {
+WalletInstance {
   /*
    * Props
    */
@@ -18,13 +11,14 @@ SoftwareWallet {
   addressQR: Promise<String>, // deprecated
   blockie: Promise<String>, // deprecated
   defaultGasLimit: Number,
-  keystore: Promise<String | undefined>,
-  mnemonic: String | undefined,
+  keystore: Promise<String>,
+  mnemonic: String,
   path?: String, // deprecated, will be renamed to `derivationPath`
-  derivationath?: String,
+  derivationath?: Promise<String>,
   privateKey: String,
   privateKeyQR: Promise<String>, // deprecated
-  provider: Object | Function | undefined, // deprecated
+  provider: Object, // deprecated
+  type: String,
   /*
    * Methods
    */
@@ -32,28 +26,33 @@ SoftwareWallet {
 }
 ```
 
-This is the complete form of the Wallet Object, but in some cases, values are going to be set to undefined due to various constraints.
+This is the complete form of the Wallet Object, but in some cases, values are not going to be set due to various constraints.
 
-_**Example:** Instantiating a wallet using an existing `private key` will set the `mnemonic` to `undefined` since it's value cannot be reversed. But instantiating a wallet using a `mnemonic` phrase will also set the `privateKey`s prop value since that can be reversed._
+_**Example:** Instantiating a software wallet using an existing `private key` will not set the `mnemonic` since it's value cannot be reversed. But instantiating a software wallet using a `mnemonic` phrase will also set the `privateKey`s prop value since that can be reversed._
 
 ## Contents:
 
-* [SoftwareWallet](#wallet-object)
-  * [`address`](#address)
-  * [`addressQR`](#addressqr)
-  * [`blockie`](#blockie)
-  * [`defaultGasLimit`](#defaultgaslimit)
-  * [`keystore`](#keystore)
-  * [`mnemonic`](#mnemonic)
-  * [`path`](#path)
-  * [`privateKey`](#privatekey)
-  * [`privateKeyQR`](#privatekeyqr)
-  * [`provider`](#provider)
-  * [`sendWithConfirmation()`](#sendwithconfirmation)
+* Wallet Object Instance
+  * Props
+    * [`address`](#address)
+    * [`addressQR`](#addressqr)
+    * [`blockie`](#blockie)
+    * [`defaultGasLimit`](#defaultgaslimit)
+    * [`keystore`](#keystore)
+    * [`mnemonic`](#mnemonic)
+    * [`path`](#path)
+    * [`privateKey`](#privatekey)
+    * [`privateKeyQR`](#privatekeyqr)
+    * [`provider`](#provider)
+    * [`type`](#type)
+  * Methods
+    * [`sendWithConfirmation()`](#sendwithconfirmation)
+
+## Props
 
 ### `address`
 ```js
-SoftwareWallet.address: String
+WalletInstance.address: String
 ```
 
 Contains the wallet's public address in the form of `String`.
@@ -70,7 +69,7 @@ console.log(wallet.address); // 0x3953cF4eA75a62c6fCD0b3988b1984265006a4CC
 
 ### `addressQR`
 ```js
-SoftwareWallet.addressQR: Promise<String>
+WalletInstance.addressQR: Promise<String>
 ```
 
 **_The `addressQR` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
@@ -93,7 +92,7 @@ console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... eocA
 
 ### `blockie`
 ```js
-SoftwareWallet.blockie: Promise<String>
+WalletInstance.blockie: Promise<String>
 ```
 
 **_The `blockie` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
@@ -116,7 +115,7 @@ console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... Dw2G
 
 ### `defaultGasLimit`
 ```js
-SoftwareWallet.defaultGasLimit: Number
+WalletInstance.defaultGasLimit: Number
 ```
 
 This is prop has both a `getter` and a `setter` attached to it. The `getter` returns a `Number` value, while the `setter` sets a new one.
@@ -137,7 +136,7 @@ console.log(wallet.defaultGasLimit); // 1600000
 
 ### `keystore`
 ```js
-SoftwareWallet.keystore: Promise<String | undefined>
+WalletInstance.keystore: Promise<String | undefined>
 ```
 
 This is prop has both a `getter` and a `setter` attached to it. The `getter` is `async` and returns a `Promise`, while the `setter` is synchronous and give you the ability to set the encryption password.
@@ -170,7 +169,7 @@ console.log(keystore); // {"address":"3953cf4ea75a62c6fcd0b3988b1984265006a4 ...
 
 ### `mnemonic`
 ```js
-SoftwareWallet.mnemonic: String | undefined
+WalletInstance.mnemonic: String | undefined
 ```
 
 If a _new_ wallet was instantiated, or a new instance was created via a `mnemonic` phrase, this prop will contain that _(or a new)_ phrase in the form of a `String`.
@@ -185,7 +184,7 @@ console.log(wallet.mnemonic); // load blush spray dirt random cash pear illness 
 
 ### `path`
 ```js
-SoftwareWallet.path: String
+WalletInstance.path: String
 ```
 
 **_The `path` prop is deprecated and will be renamed to `derivationPath`, so make sure you don't rely on it too much_**
@@ -204,7 +203,7 @@ console.log(wallet.path); // m/44'/60'/0'/0/0
 
 ### `privateKey`
 ```js
-SoftwareWallet.privateKey: String
+WalletInstance.privateKey: String
 ```
 
 Contains the `private key` for the wallet in `String` form. This will be available in all cases: if you created a new wallet instance, if you opened a wallet instance using either a `mnemonic` or a `private key`.
@@ -221,7 +220,7 @@ console.log(wallet.privateKey); // 0x92745ab44bb19f1e955db11ef7c22f830524691d0be
 
 ### `privateKeyQR`
 ```js
-SoftwareWallet.privateKeyQR: Promise<String>
+WalletInstance.privateKeyQR: Promise<String>
 ```
 
 **_The `privateKeyQR` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
@@ -244,7 +243,7 @@ console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... 5rQk
 
 ### `provider`
 ```js
-SoftwareWallet.provider: Object | Function | undefined
+WalletInstance.provider: Object | Function | undefined
 ```
 
 **_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
@@ -264,9 +263,26 @@ const wallet = await create({ provider: jsonRpc });
 console.log(wallet.provider); // {chainId: 1, ensAddress: "0x314159265dD8dbb310642f98f50C066173C1259b", name: "homestead", _events: {…}, resetEventsBlock: ƒ, …}
 ```
 
+### `type`
+```js
+WalletInstance.type: String
+```
+
+This is just a simple string value that represents the main type for the instantiated wallet object.
+
+```js
+import { create } from 'colony-wallet/software';
+
+const wallet = await create();
+
+console.log(wallet.type); // software
+```
+
+## Methods
+
 ### `sendWithConfirmation()`
 ```js
-SoftwareWallet.sendWithConfirmation(transactionObject: Object, confirmation: Promise<boolean> | boolean): Promise<string>
+WalletInstance.sendWithConfirmation(transactionObject: Object, confirmation: Promise<boolean> | boolean): Promise<string>
 ```
 
 This is a wrapper for the `sendTransaction()` method that adds an extra argument which controls an async transaction confirmation. This is useful for scenarios where you would want to ask a user for approval / acknowledgement before sending a transaction to be mined.
