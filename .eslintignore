@@ -4,4 +4,3 @@ flow-typed
 jest.config.js
 jest-perf.config.js
 webpack.config.js
-src/_*.js
