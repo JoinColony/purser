@@ -77,7 +77,7 @@ export const signTransaction = async ({
   /*
    * Check that the gas limit is a big number
    */
-  bigNumberValidator(gasPrice);
+  bigNumberValidator(gasLimit);
   /*
    * Check if the chain id value is valid (a positive, safe integer)
    */
