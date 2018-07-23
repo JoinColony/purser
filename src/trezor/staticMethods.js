@@ -21,7 +21,7 @@ import {
 } from './normalizers';
 
 import { staticMethodsMessages as messages } from './messages';
-import { STD_ERRORS } from './defaults';
+import { STD_ERRORS, HEX_HASH_TYPE } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
 
 import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
@@ -164,7 +164,9 @@ export const signTransaction = async ({
       s: hexSequenceNormalizer(sSignatureComponent),
       v: hexSequenceNormalizer(bigNumber(recoveryParameter).toString(16)),
     });
-    return hexSequenceNormalizer(signedTransaction.serialize().toString('hex'));
+    return hexSequenceNormalizer(
+      signedTransaction.serialize().toString(HEX_HASH_TYPE),
+    );
   } catch (caughtError) {
     /*
      * Don't throw an error if the user cancelled

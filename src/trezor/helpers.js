@@ -221,7 +221,7 @@ export const derivationPathSerializer = ({
 }: DerivationPathObjectType = {}): string => {
   const { DELIMITER } = PATH;
   return (
-    `m/${purpose}` +
+    `${PATH.HEADER_KEY}/${purpose}` +
     `${DELIMITER}${coinType}` +
     `${DELIMITER}${account}` +
     `${DELIMITER}${change}` +
