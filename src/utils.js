@@ -1,10 +1,14 @@
 /* @flow */
 
 import crypto from 'crypto';
+import BN from 'bn.js';
 
-import type { UtilsExportType } from './flowtypes';
-
-import { ENV } from './defaults';
+import {
+  ENV,
+  WEI_MINIFICATION,
+  GWEI_MINIFICATION,
+  GETTER_PROP_DESCRIPTORS,
+} from './defaults';
 import { utils as messages } from './messages';
 
 /**
@@ -145,16 +149,215 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   throw new Error(messages.getRandomValues.noCryptoLib);
 };
 
-const utils: UtilsExportType = Object.assign(
+/**
+ * Check if an expression is true and, if not, either throw an error or just log a message.
+ *
+ * Just as the `warning()` util above it uses two levels: `high` and `low`. If the set level is high (default),
+ * it will throw an error, else it will just use the `warning()` method (set to `low`) to log the message
+ * as an warning.
+ *
+ * @method assertTruth
+ *
+ * @param {boolean} expression The logic expression to assert
+ * @param {string | Array<string>} message The message to display in case of an error
+ * @param {string} level The log level: high (error) or low (warning)
+ *
+ * The above parameters are sent in as props of an object.
+ *
+ * @return {boolean} true if the expression is valid, false otherwise (and depending on the level, throw an error
+ * or just log the warning)
+ */
+export const assertTruth = ({
+  expression,
+  message,
+  level = 'high',
+}: {
+  expression: boolean,
+  message: string | Array<string>,
+  level?: string,
+} = {}): boolean => {
+  if (expression) {
+    return true;
+  }
+  if (level === 'high') {
+    throw new Error(Array.isArray(message) ? message.join(' ') : message);
+  }
+  if (Array.isArray(message)) {
+    warning(...message);
+  } else {
+    warning(message);
+  }
+  return false;
+};
+
+/**
+ * Wrapper for the `bn.js` constructor to use as an utility for big numbers
+ *
+ * Make sure to inform the users that this is the preffered way of interacting with
+ * big numbers inside this library, as even if the underlying Big Number library will change,
+ * this API will (mostly) stay the same.
+ *
+ * See: BigInt
+ * https://developers.google.com/web/updates/2018/05/bigint
+ *
+ * @TODO Add internal version of methods
+ * Eg: `ifromWei()` and `itoWei`. See BN's docs about prefixes and postfixes
+ *
+ * @method bigNumber
+ *
+ * @param {number | string | BN} value the value to convert to a big number
+ *
+ * @return {BN} The new bignumber instance
+ */
+export const bigNumber = (value: number | string | BN): BN => {
+  const oneWei = new BN(WEI_MINIFICATION.toString());
+  const oneGwei = new BN(GWEI_MINIFICATION.toString());
+  class ExtendedBN extends BN {
+    constructor(...args) {
+      super(...args);
+      const ExtendedBNPrototype = Object.getPrototypeOf(this);
+      Object.defineProperties(ExtendedBNPrototype, {
+        /*
+         * Convert the number to WEI (multiply by 1 to the power of 18)
+         */
+        toWei: Object.assign(
+          {},
+          { value: () => this.imul(oneWei) },
+          GETTER_PROP_DESCRIPTORS,
+        ),
+        /*
+         * Convert the number to WEI (divide by 1 to the power of 18)
+         */
+        fromWei: Object.assign(
+          {},
+          { value: () => this.div(oneWei) },
+          GETTER_PROP_DESCRIPTORS,
+        ),
+        /*
+         * Convert the number to GWEI (multiply by 1 to the power of 9)
+         */
+        toGwei: Object.assign(
+          {},
+          { value: () => this.imul(oneGwei) },
+          GETTER_PROP_DESCRIPTORS,
+        ),
+        /*
+         * Convert the number to GWEI (divide by 1 to the power of 9)
+         */
+        fromGwei: Object.assign(
+          {},
+          { value: () => this.div(oneGwei) },
+          GETTER_PROP_DESCRIPTORS,
+        ),
+      });
+    }
+  }
+  return new ExtendedBN(value);
+};
+
+/**
+ * Convert an object to a key (value) concatenated string.
+ * This is useful to list values inside of error messages, where you can only pass in a string and
+ * not the whole object.
+ *
+ * @method objectToErrorString
+ *
+ * @param {Object} object The object to convert
+ *
+ * @return {string} The string containing the object's key (value) pairs
+ */
+export const objectToErrorString = (object: Object = {}): string =>
+  Object.keys(object)
+    .reduce(
+      (allArgs, key) =>
+        `${allArgs}${key} (${String(JSON.stringify(object[key]))}), `,
+      '',
+    )
+    .replace(/"/g, '')
+    .trim();
+
+/**
+ * Validate an (array) sequence of validation assertions (objects that are to be
+ * directly passed into `assertTruth`)
+ *
+ * This is to reduce code duplication and boilerplate.
+ *
+ * @TODO Validate the validator
+ * So we can have redundancy while being reduntant :)
+ *
+ * @method validatorGenerator
+ *
+ * @param {Array} validationSequenceArray An array containing objects which are in the same format as the one expect by `assertTruth`
+ * @param {string} genericError A generic error message to be used for the catch all error (and if some of the other messages are missing)
+ *
+ * @return {boolean} It only returns true if all the validation assertions pass,
+ * otherwise an Error will be thrown and this will not finish execution.
+ */
+export const validatorGenerator = (
+  validationSequenceArray: Array<{
+    expression: boolean,
+    message: string | Array<string>,
+    level: string,
+  }>,
+  genericError: string,
+): boolean => {
+  const validationTests: Array<boolean> = [];
+  validationSequenceArray.map((validationSequence: Object) =>
+    validationTests.push(
+      assertTruth(
+        /*
+         * If there's no message passed in, use the generic error
+         */
+        Object.assign(
+          {},
+          { message: genericError, level: 'high' },
+          validationSequence,
+        ),
+      ),
+    ),
+  );
+  /*
+   * This is a fail-safe in case anything spills through.
+   * If any of the values are `false` throw a general Error
+   */
+  if (!validationTests.every(testResult => testResult === true)) {
+    throw new Error(genericError);
+  }
+  /*
+   * Everything goes well here. (But most likely this value will be ignored)
+   */
+  return true;
+};
+
+const utils: {
+  warning?: (...*) => void,
+  getRandomValues: (...*) => Uint8Array,
+  verbose?: (...*) => boolean,
+  assertTruth?: (...*) => boolean,
+  bigNumber: (...*) => BN,
+  objectToErrorString?: (...*) => string,
+  validatorGenerator?: (...*) => boolean,
+} = Object.assign(
   {},
   {
     warning,
     getRandomValues,
+    assertTruth,
+    bigNumber,
+    validatorGenerator,
   },
   /*
    * Only export the `verbose` method for testing purpouses
    */
-  ENV === 'test' ? { verbose } : {},
+  ENV === 'test'
+    ? {
+        warning,
+        verbose,
+        assertTruth,
+        objectToErrorString,
+        validatorGenerator,
+      }
+    : {},
 );
 
 export default utils;

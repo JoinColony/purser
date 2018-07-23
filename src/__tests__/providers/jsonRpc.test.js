@@ -2,7 +2,7 @@ import ethersProviders from 'ethers/providers';
 
 import { jsonRpc } from '../../providers';
 import {
-  DEFAULT_NETWORK,
+  MAIN_NETWORK,
   LOCALPROVIDER_HOST as HOST,
   LOCALPROVIDER_PORT as PORT,
   LOCALPROVIDER_PROTOCOL as PROTOCOL,
@@ -21,7 +21,7 @@ describe('`providers` module', () => {
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalled();
       expect(ethersProviders.JsonRpcProvider).toHaveBeenCalledWith(
         `${PROTOCOL}://${HOST}:${PORT}`,
-        DEFAULT_NETWORK,
+        MAIN_NETWORK,
       );
     });
     test('Connects with custom url and network', async () => {

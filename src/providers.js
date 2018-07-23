@@ -7,14 +7,13 @@ import type {
   AsyncProviderType,
   ProviderArgumentsType,
   AsyncProviderGeneratorType,
-  ProvidersExportType,
 } from './flowtypes';
 
 import { warning } from './utils';
 import { providers as messages } from './messages';
 
 import {
-  DEFAULT_NETWORK,
+  MAIN_NETWORK,
   LOCALPROVIDER_PROTOCOL as PROTOCOL,
   LOCALPROVIDER_HOST as HOST,
   LOCALPROVIDER_PORT as PORT,
@@ -35,7 +34,7 @@ import {
  * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const etherscan = async ({
-  network = DEFAULT_NETWORK,
+  network = MAIN_NETWORK,
   apiKey,
 }: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider: ProviderType = PROVIDER_PROTO;
@@ -68,7 +67,7 @@ export const etherscan = async ({
  * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const infura = async ({
-  network = DEFAULT_NETWORK,
+  network = MAIN_NETWORK,
   apiKey,
 }: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
@@ -98,7 +97,7 @@ export const infura = async ({
  * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const metamask = async ({
-  network = DEFAULT_NETWORK,
+  network = MAIN_NETWORK,
 }: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
   try {
@@ -130,7 +129,7 @@ export const metamask = async ({
  * @return {AsyncProviderType} The provider connection object or an empty one if the connection failed.
  */
 export const jsonRpc = async ({
-  network = DEFAULT_NETWORK,
+  network = MAIN_NETWORK,
   url = `${PROTOCOL}://${HOST}:${PORT}`,
 }: ProviderArgumentsType = {}): AsyncProviderType => {
   let provider = PROVIDER_PROTO;
@@ -202,7 +201,13 @@ export const autoselect = async (
   return provider;
 };
 
-const colonyWallet: ProvidersExportType = {
+const colonyWallet: {
+  etherscan: AsyncProviderGeneratorType,
+  infura: AsyncProviderGeneratorType,
+  jsonRpc: AsyncProviderGeneratorType,
+  metamask: AsyncProviderGeneratorType,
+  autoselect: AsyncProviderGeneratorType,
+} = {
   etherscan,
   infura,
   jsonRpc,

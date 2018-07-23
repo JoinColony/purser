@@ -1,11 +1,11 @@
-/* eslint-disable flowtype/require-valid-file-annotation */
+/* @flow */
 
 import type { ProviderType } from './flowtypes';
 
 /*
  * Networks
  */
-export const DEFAULT_NETWORK: string = 'homestead';
+export const MAIN_NETWORK: string = 'homestead';
 export const TEST_NETWORK: string = 'ropsten';
 
 /*
@@ -28,7 +28,7 @@ export const LOCALPROVIDER_PORT: string = '8545';
 export const PROVIDER_PROTO: ProviderType = {
   chainId: 0,
   ensAddress: '',
-  name: DEFAULT_NETWORK,
+  name: MAIN_NETWORK,
   testnet: false,
   url: '',
   _events: {},
@@ -41,6 +41,15 @@ export const PROVIDER_PROTO: ProviderType = {
 export const GETTER_PROP_DESCRIPTORS: Object = {
   enumerable: true,
   configurable: true,
+};
+
+/*
+ * Default class setter props.
+ * Most likely to be used with `Object.defineProperty()`
+ */
+export const SETTER_PROP_DESCRIPTORS: Object = {
+  enumerable: true,
+  writable: true,
 };
 
 /*
@@ -76,19 +85,5 @@ export const BLOCKIE_OPTS: Object = {
   scale: 25,
 };
 
-const defaults: Object = {
-  BLOCKIE_OPTS,
-  DEFAULT_NETWORK,
-  ENV,
-  GETTER_PROP_DESCRIPTORS,
-  LOCALPROVIDER_HOST,
-  LOCALPROVIDER_PORT,
-  LOCALPROVIDER_PROTOCOL,
-  MNEMONIC_PATH,
-  PROVIDER_PROTO,
-  QR_CODE_OPTS,
-  TEST_NETWORK,
-  WALLET_PROP_DESCRIPTORS,
-};
-
-export default defaults;
+export const WEI_MINIFICATION: number = 1e18;
+export const GWEI_MINIFICATION: number = 1e9;

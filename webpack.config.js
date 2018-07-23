@@ -10,7 +10,7 @@ if (process.env.NODE_ENV === 'production') {
 const minimize = process.argv.indexOf('--optimize-minimize') !== -1;
 
 module.exports = {
-  entry: './src/index.js',
+  entry: ['babel-polyfill', './src/index.js'],
   mode,
   output: {
     filename: minimize ? 'colonyWallet.min.js' : 'colonyWallet.js',

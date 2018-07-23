@@ -8,11 +8,11 @@ import type {
   ProviderType,
   WalletObjectType,
   WalletArgumentsType,
-  SoftwareWalletExportType,
+  WalletExportType,
 } from './flowtypes';
 
 import { autoselect } from './providers';
-import { getRandomValues, warning } from './utils';
+import { getRandomValues, warning, objectToErrorString } from './utils';
 import { softwareWallet as messages } from './messages';
 import {
   ENV,
@@ -22,7 +22,7 @@ import {
   WALLET_PROP_DESCRIPTORS,
   MNEMONIC_PATH,
 } from './defaults';
-
+import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './walletTypes';
 /*
  * "Private" variable(s)
  */
@@ -69,6 +69,16 @@ class SoftwareWallet extends EtherWallet {
     Object.defineProperties(this, {
       mnemonic: Object.assign({}, { value: mnemonic }, WALLET_PROP_DESCRIPTORS),
       path: Object.assign({}, { value: path }, WALLET_PROP_DESCRIPTORS),
+      type: Object.assign(
+        {},
+        { value: TYPE_SOFTWARE },
+        WALLET_PROP_DESCRIPTORS,
+      ),
+      subtype: Object.assign(
+        {},
+        { value: SUBTYPE_ETHERS },
+        WALLET_PROP_DESCRIPTORS,
+      ),
     });
   }
 
@@ -239,11 +249,19 @@ class SoftwareWallet extends EtherWallet {
    *
    * @return {WalletType} A new wallet object
    */
-  static async create({
-    provider = autoselect(),
-    password,
-    entropy = new Uint8Array(65536),
-  }: WalletArgumentsType): Promise<WalletObjectType> {
+  static async create(
+    walletArguments: WalletArgumentsType,
+  ): Promise<WalletObjectType> {
+    const {
+      /*
+       * @TODO Add provider deptrecation warning
+       *
+       * As we have roadmapped to separate providers from the actual wallet
+       */
+      provider = await autoselect(),
+      password,
+      entropy = new Uint8Array(65536),
+    } = walletArguments;
     let basicWallet: WalletObjectType;
     try {
       if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
@@ -296,7 +314,12 @@ class SoftwareWallet extends EtherWallet {
      * need to iterate through them in case of an error.
      */
     const {
-      provider = autoselect(),
+      /*
+       * @TODO Add provider deptrecation warning
+       *
+       * As we have roadmapped to separate providers from the actual wallet
+       */
+      provider = await autoselect(),
       password,
       privateKey,
       mnemonic,
@@ -311,7 +334,7 @@ class SoftwareWallet extends EtherWallet {
        * @TODO Detect if existing but not valid keystore, and warn the user
        */
       if (keystore && this.isEncryptedWallet(keystore) && password) {
-        const keystoreWallet: WalletObjectType = await this.fromEncryptedWallet(
+        const keystoreWallet: Object = await this.fromEncryptedWallet(
           keystore,
           password,
         );
@@ -323,9 +346,9 @@ class SoftwareWallet extends EtherWallet {
        * @TODO Detect if existing but not valid mnemonic, and warn the user
        */
       if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
-        const mnemonicWallet: WalletObjectType = HDNode.fromMnemonic(
-          mnemonic,
-        ).derivePath(path);
+        const mnemonicWallet: Object = HDNode.fromMnemonic(mnemonic).derivePath(
+          path,
+        );
         extractedPrivateKey = mnemonicWallet.privateKey;
       }
       /*
@@ -340,16 +363,9 @@ class SoftwareWallet extends EtherWallet {
         keystore,
       );
     } catch (err) {
-      warning(
-        messages.open,
-        Object.keys(walletArguments).reduce(
-          (allArgs, key) =>
-            `${allArgs}${key} (${String(walletArguments[key])}), `,
-          '',
-        ),
-        err,
-        { level: 'high' },
-      );
+      warning(messages.open, objectToErrorString(walletArguments), err, {
+        level: 'high',
+      });
       throw new Error();
     }
   }
@@ -403,7 +419,7 @@ export const open = (
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
  * to us directly for debugging.
  */
-const softwareWallet: SoftwareWalletExportType = Object.assign(
+const softwareWallet: WalletExportType = Object.assign(
   {},
   {
     create,

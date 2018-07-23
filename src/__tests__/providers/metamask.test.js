@@ -1,7 +1,7 @@
 import ethersProviders from 'ethers/providers';
 
 import { metamask } from '../../providers';
-import { DEFAULT_NETWORK, PROVIDER_PROTO } from '../../defaults';
+import { MAIN_NETWORK, PROVIDER_PROTO } from '../../defaults';
 import * as utils from '../../utils';
 
 jest.mock('../../utils');
@@ -20,7 +20,7 @@ describe('`providers` module', () => {
       expect(ethersProviders.Web3Provider).toHaveBeenCalled();
       expect(ethersProviders.Web3Provider).toHaveBeenCalledWith(
         global.web3.currentProvider,
-        DEFAULT_NETWORK,
+        MAIN_NETWORK,
       );
     });
     test('Connects with custom network', async () => {

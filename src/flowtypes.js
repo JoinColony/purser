@@ -4,41 +4,45 @@ export type ProviderType = {
   apiAccessToken?: string,
   apiKey?: string,
   baseUrl?: string,
-  chainId: number,
-  ensAddress: string,
-  name: string,
+  chainId?: number,
+  ensAddress?: string,
+  name?: string,
   polling?: boolean,
   resetEventsBlock?: (blockNumber: number) => void,
-  testnet: boolean,
-  url: string,
+  testnet?: boolean,
+  url?: string,
   _events?: Object,
   _web3Provider?: Object,
 };
 
-export type AsyncProviderType = Promise<ProviderType>;
+export type AsyncProviderType = Promise<ProviderType | void>;
 
 export type AsyncProviderGeneratorType = (...*) => AsyncProviderType;
 
 export type WalletObjectType = {
   address: string,
-  defaultGasLimit: number,
+  defaultGasLimit?: number,
   keystore?: Promise<string>,
-  mnemonic: string,
-  path: string,
-  privateKey: string,
-  provider: ProviderType,
+  mnemonic?: string,
+  path?: string,
+  privateKey?: string,
+  provider?: ProviderType,
   /*
    * @TODO Create Flow transaction types
    */
-  sign: (transaction: *) => string,
+  sign: (...*) => Promise<string>,
 };
 
 export type WalletArgumentsType = {
+  /*
+   * Used to select the address index from the trezor wallet
+   */
+  addressCount?: number,
   privateKey?: string,
   mnemonic?: string,
   path?: string,
   keystore?: string,
-  provider?: AsyncProviderType,
+  provider?: AsyncProviderGeneratorType,
   entropy?: Uint8Array,
   password?: string,
 };
@@ -47,7 +51,7 @@ export type WalletArgumentsType = {
  * Types used for modules exports
  */
 
-export type ColonyWalletExportType = {
+export type LibraryExportType = {
   wallets: Object,
   about: {
     name: string,
@@ -59,42 +63,38 @@ export type ColonyWalletExportType = {
   debug?: Object,
 };
 
-export type DebugExportType = {
-  debug: Object,
-};
-
-export type ProvidersExportType = {
-  etherscan: AsyncProviderGeneratorType,
-  infura: AsyncProviderGeneratorType,
-  metamask: AsyncProviderGeneratorType,
-  jsonRpc: AsyncProviderGeneratorType,
-  autoselect: AsyncProviderGeneratorType,
-};
-
-export type SoftwareWalletExportType = {
-  create: WalletArgumentsType => Promise<WalletObjectType>,
+export type WalletExportType = {
+  create?: WalletArgumentsType => Promise<WalletObjectType | void>,
   open: WalletArgumentsType => Promise<WalletObjectType | void>,
   SoftwareWallet?: Class<*>,
-};
-
-export type UtilsExportType = {
-  warning: (...*) => void,
-  getRandomValues: (...*) => Uint8Array,
-  verbose?: () => boolean,
+  TrezorWallet?: Class<*>,
 };
 
 export type WalletIndexExportType = {
-  software: SoftwareWalletExportType,
-};
-
-export type MessagesExportType = {
-  providers: Object,
-  utils: Object,
-  softwareWallet: Object,
+  software: WalletExportType,
+  hardware: Object,
 };
 
 export type ProviderArgumentsType = {
   network?: string,
   apiKey?: string,
   url?: string,
+};
+
+export type TransactionObjectType = {
+  path: string,
+  chainId?: number,
+  gasPrice?: string,
+  gasLimit?: string,
+  nonce?: number,
+  to?: string,
+  value?: string,
+  inputData?: string | void,
+};
+
+export type MessageObjectType = {
+  path?: string,
+  message?: string,
+  address?: string,
+  signature?: string,
 };

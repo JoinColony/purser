@@ -15,60 +15,60 @@ describe('`software` wallet module', () => {
       const testWallet = await create();
       expect(testWallet).toHaveProperty('sendWithConfirmation');
     });
-  });
-  test('After approval, sends the transaction', async () => {
-    const testWallet = await create();
-    const transactionHash = await testWallet.sendWithConfirmation(
-      testTransactionData,
-      true,
-    );
-    expect(transactionHash).toEqual('0x0transactionhash0');
-    expect(EthersWallet.prototype.sendTransaction).toHaveBeenCalled();
-    expect(EthersWallet.prototype.sendTransaction).toHaveBeenCalledWith(
-      testTransactionData,
-    );
-  });
-  test('User denied, reject the promise and log a warning', async () => {
-    const testWallet = await create();
-    const rejectedTransactionHash = testWallet.sendWithConfirmation(
-      testTransactionData,
-      false,
-    );
-    expect(utils.warning).toHaveBeenCalled();
-    expect(rejectedTransactionHash).rejects.toEqual();
-  });
-  test('If confirmation is ommited, reject by default', async () => {
-    const testWallet = await create();
-    const rejectedTransactionHash = testWallet.sendWithConfirmation(
-      testTransactionData,
-    );
-    expect(utils.warning).toHaveBeenCalled();
-    expect(rejectedTransactionHash).rejects.toEqual();
-  });
-  test('Confirmation should work as a plain boolean', async () => {
-    const testWallet = await create();
-    const approvedTransactionHash = testWallet.sendWithConfirmation(
-      testTransactionData,
-      true,
-    );
-    const rejectedTransactionHash = testWallet.sendWithConfirmation(
-      testTransactionData,
-      false,
-    );
-    expect(approvedTransactionHash).resolves.toEqual('0x0transactionhash0');
-    expect(rejectedTransactionHash).rejects.toEqual();
-  });
-  test('Confirmation should also work as an async function', async () => {
-    const testWallet = await create();
-    const approvedTransactionHash = testWallet.sendWithConfirmation(
-      testTransactionData,
-      Promise.resolve(true),
-    );
-    const rejectedTransactionHash = testWallet.sendWithConfirmation(
-      testTransactionData,
-      Promise.resolve(false),
-    );
-    expect(approvedTransactionHash).resolves.toEqual('0x0transactionhash0');
-    expect(rejectedTransactionHash).rejects.toEqual();
+    test('After approval, sends the transaction', async () => {
+      const testWallet = await create();
+      const transactionHash = await testWallet.sendWithConfirmation(
+        testTransactionData,
+        true,
+      );
+      expect(transactionHash).toEqual('0x0transactionhash0');
+      expect(EthersWallet.prototype.sendTransaction).toHaveBeenCalled();
+      expect(EthersWallet.prototype.sendTransaction).toHaveBeenCalledWith(
+        testTransactionData,
+      );
+    });
+    test('User denied, reject the promise and log a warning', async () => {
+      const testWallet = await create();
+      const rejectedTransactionHash = testWallet.sendWithConfirmation(
+        testTransactionData,
+        false,
+      );
+      expect(utils.warning).toHaveBeenCalled();
+      expect(rejectedTransactionHash).rejects.toEqual();
+    });
+    test('If confirmation is ommited, reject by default', async () => {
+      const testWallet = await create();
+      const rejectedTransactionHash = testWallet.sendWithConfirmation(
+        testTransactionData,
+      );
+      expect(utils.warning).toHaveBeenCalled();
+      expect(rejectedTransactionHash).rejects.toEqual();
+    });
+    test('Confirmation should work as a plain boolean', async () => {
+      const testWallet = await create();
+      const approvedTransactionHash = testWallet.sendWithConfirmation(
+        testTransactionData,
+        true,
+      );
+      const rejectedTransactionHash = testWallet.sendWithConfirmation(
+        testTransactionData,
+        false,
+      );
+      expect(approvedTransactionHash).resolves.toEqual('0x0transactionhash0');
+      expect(rejectedTransactionHash).rejects.toEqual();
+    });
+    test('Confirmation should also work as an async function', async () => {
+      const testWallet = await create();
+      const approvedTransactionHash = testWallet.sendWithConfirmation(
+        testTransactionData,
+        Promise.resolve(true),
+      );
+      const rejectedTransactionHash = testWallet.sendWithConfirmation(
+        testTransactionData,
+        Promise.resolve(false),
+      );
+      expect(approvedTransactionHash).resolves.toEqual('0x0transactionhash0');
+      expect(rejectedTransactionHash).rejects.toEqual();
+    });
   });
 });

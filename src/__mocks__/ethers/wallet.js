@@ -61,9 +61,14 @@ export const HDNode = {
   }),
 };
 
+export const SigningKey = {
+  publicKeyToAddress: jest.fn(buffer => buffer.toString()),
+};
+
 const ethersWallet = {
   Wallet,
   HDNode,
+  SigningKey,
 };
 
 export default ethersWallet;
