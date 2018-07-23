@@ -36,7 +36,7 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  * @param {bigNumber} gasLimit gas limit for the transaction (as an instance of bigNumber), defaults to 21000
  * @param {number} chainId the id of the chain for which this transaction is intended
  * @param {number} nonce the nonce to use for the transaction (as a number)
- * @param {string} to the address to which to transaction is sent
+ * @param {string} to the address to which to the transaction is sent
  * @param {bigNumber} value the value of the transaction in WEI (as an instance of bigNumber), defaults to 1
  * @param {string} inputData data appended to the transaction (as a `hex` string)
  *
@@ -46,13 +46,13 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  */
 export const signTransaction = async ({
   /*
-   * Path defaults to the current selected "default" address path
+   * Path defaults to the "default" derivation path
    */
   path,
   gasPrice = bigNumber(9000000000),
   gasLimit = bigNumber(21000),
   /*
-   * Chain Id defaults to the on set on the provider but it can be overwritten
+   * Chain Id defaults to the one set on the provider but it can be overwritten
    */
   chainId,
   /*
@@ -152,7 +152,7 @@ export const signTransaction = async ({
      *
      * recoveryParam - 35 - (chainId * 2)
      *
-     * If the result is even, then V is 27, if odd, it's 28
+     * If the result is even, then V is 27, if it's odd, it's 28
      */
     const {
       r: rSignatureComponent,
@@ -186,7 +186,7 @@ export const signTransaction = async ({
 };
 
 /**
- * Sign a message and return the signed signature. Usefull for varifying addresses.
+ * Sign a message and return the signature. Useful for verifying addresses.
  * (In conjunction with `verifyMessage`)
  *
  * @method signMessage
@@ -196,11 +196,11 @@ export const signTransaction = async ({
  *
  * All the above params are sent in as props of an {MessageObjectType} object.
  *
- * @return {Promise<string>} The signed message `base64` string (wrapped inside a `Promise`)
+ * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
 export const signMessage = async ({
   /*
-   * Path defaults to the current selected "default" address path
+   * Path defaults to the "default" derivation path
    */
   path,
   message = '',
@@ -238,13 +238,13 @@ export const signMessage = async ({
 };
 
 /**
- * Verify a signed message. Usefull for varifying addresses. (In conjunction with `signMessage`)
+ * Verify a signed message. Useful for verifying addresses. (In conjunction with `signMessage`)
  *
  * @method verifyMessage
  *
  * @param {string} address The address that verified the original message (without the hex `0x` identifier)
  * @param {string} message The message to verify if it was signed correctly
- * @param {string} signature The message signature as a `base64` string (you usually get this via `signMessage`)
+ * @param {string} signature The message signature as a `hex` string (you usually get this via `signMessage`)
  *
  * All the above params are sent in as props of an {MessageObjectType} object.
  *
@@ -268,8 +268,8 @@ export const verifyMessage = async ({
    */
   hexSequenceValidator(signature);
   /*
-   * The Trezor service throws and Error if the signature is invalid.
-   * We warn the user, but not throw and error, just return 'false'.
+   * The Trezor service throws an Error if the signature is invalid.
+   * We warn the user, but not throw an error, just return 'false'.
    *
    * This way you have a consistent return.
    */

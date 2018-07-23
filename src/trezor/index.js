@@ -66,7 +66,7 @@ const trezorWallet: WalletExportType = Object.assign(
         coinType = COIN_TESTNET;
       }
       /*
-       * Get to root derivation path base on the coin type.
+       * Get to root derivation path based on the coin type.
        *
        * Based on this, we will then derive all the needed address indexes
        * (inside the class constructor)
@@ -74,7 +74,7 @@ const trezorWallet: WalletExportType = Object.assign(
       const rootDerivationPath: string = derivationPathSerializer({ coinType });
       /*
        * Modify the default payload to overwrite the path with the new
-       * coid type id derivation
+       * coin type id derivation
        */
       const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_XPUB, {
         path: fromString(rootDerivationPath, true).toPathArray(),

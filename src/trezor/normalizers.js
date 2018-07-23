@@ -52,12 +52,6 @@ export const derivationPathNormalizer = (derivationPath: string): string => {
         }
         case 3: {
           const deviationPathChageIndex = pathSection.split(SPLITTER);
-          /*
-           * Every combination of digits delimited by a slash pass the validator,
-           * Eg: `0/0`, `0/0/0`, `0/0/0/0`
-           *
-           * So we just takes the first two values;
-           */
           return deviationPathChageIndex
             .map(value => parseInt(value, 10))
             .slice(0, 2)

@@ -26,8 +26,6 @@ import type {
  * Ensure the url used to connect to the Trezor service is in the correct
  * format and doesn't contain any XSS shenanigans.
  *
- * @TODO Add error message via warning
- *
  * @method sanitizeUrl
  *
  * @param {string} url The url string to use
@@ -48,7 +46,7 @@ export const sanitizeUrl = (url: string): string => {
 };
 
 /**
- * Take a window features object and serialized into a string form, as this is the
+ * Take a "window features object" and serialize it into a string format, as this is the
  * expected format by the `windows`s `open()` interface.
  *
  * See https://developer.mozilla.org/en-US/docs/Web/API/Window/open#Window_features for
@@ -127,7 +125,7 @@ export const promptGenerator = ({
 }: Object = {}): Object => window.open(serviceUrl, WINDOW_NAME, windowFeatures);
 
 /**
- * This method acomplishes fourt things: spawn an 'message' event listener,
+ * This method acomplishes four things: spawn an 'message' event listener,
  * send (POST) a message, listen for the response, cleanup the event listener.
  *
  * This is usefull to facilitate communication with the Trezor service.
@@ -166,7 +164,7 @@ export const payloadListener = async ({
       const responseIsObject = data && typeof data === 'object';
       /*
        * Intial call will fail as the origin is the local domain
-       * (until the window is open and the instance is initialized).
+       * (until the window is opened and the instance is initialized).
        *
        * So we can't `return` directly and just wait for the handshake
        */
@@ -199,7 +197,7 @@ export const payloadListener = async ({
  *
  * @method derivationPathSerializer
  *
- * @param {number} purpose path purpouse
+ * @param {number} purpose path purpose
  * @param {number} coinType path coin type (and network)
  * @param {number} account path account number
  * @param {number} change path change number

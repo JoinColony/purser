@@ -36,15 +36,16 @@ export const validators: Object = {
     notValidHeaderKey:
       'Derivation path does not start with the correct header key',
     notValidPurpouse:
-      'Derivation path does have the Ethereum reserved Purpouse',
+      'Derivation path does not have the Ethereum reserved Purpouse',
     notValidCoin:
-      'Derivation path does have the correct Coin type Id (Main or Test net)',
-    notValidAccount: 'Derivation path does have the correct account value/type',
+      'Derivation path does not have the correct Coin type Id (Main or Test net)',
+    notValidAccount:
+      'Derivation path does not have the correct account value/type',
     notValidChangeIndex:
-      'Derivation path does have the correct Change value or Account Index',
+      'Derivation path does not have the correct Change value or Account Index',
     notValidAccountIndex:
       'Derivation path should have only one value for the Account Index',
-    genericError: 'Something is wrong with the supplied derivation path:',
+    genericError: 'Something is wrong with the supplied derivation path',
   },
   safeInteger: {
     notNumber: 'The value passed in as an argument is not a number',

@@ -63,7 +63,7 @@ export const WINDOW_FEATURES: WindowFeaturesType = {
   height: PROMPT_HEIGHT,
   /*
    * We need the actual screen size, not the browser window size, since
-   * we want to center the prompt prompt in the middle of the screen.
+   * we want to center the prompt in the middle of the screen.
    */
   left: (window.screen.width - PROMPT_WIDTH) / 2,
   top: (window.screen.height - PROMPT_HEIGHT) / 2,

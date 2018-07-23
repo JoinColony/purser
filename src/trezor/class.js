@@ -29,7 +29,7 @@ import type {
 /*
  * "Private" (internal) variable(s).
  *
- * These are used as return values from getter which don't have an accompanying setter,
+ * These are used as return values from getters which don't have an accompanying setter,
  * but we still want to set them internally.
  */
 let internalPublicKey: string;
@@ -284,10 +284,10 @@ export default class TrezorWallet {
           {},
           {
             /*
-             * Map out the publicKey and derivation path from the `allAddresses`
+             * Map out the publicKey and derivation path from the `otherAddresses`
              * array that gets assigned to the Wallet instance.
              *
-             * The user should only have access to the publicKey and path for the
+             * The user should only have access to `the publicKey` and `derivationPath` from the
              * default account (set via `setDefaultAddress()`)
              */
             value: otherAddresses.map(({ address }) => address),

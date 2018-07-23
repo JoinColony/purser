@@ -43,14 +43,14 @@ export const derivationPathValidator = (derivationPath: any): boolean => {
     );
   }
   /*
-   * We need to asser this in a separate step, otherwise, if the size of the split
+   * We need to assert this in a separate step, otherwise, if the size of the split
    * chunks is not correct the `match()` method call will fail before the
    * validator generator sequence will actually start.
    */
   assertTruth({
     /*
      * It should be composed of (at least) four parts
-     * (purpouse, coin, account, change + index)
+     * (purpouse, coin, account, change and/or index)
      */
     expression: deSerializedDerivationPath.length === 4,
     message: [
@@ -211,11 +211,9 @@ export const bigNumberValidator = (bigNumber: any): boolean => {
  *
  * @TODO Validate the checksum of the address.
  *
- * @TODO Validate also if the address is in the ICAP format
- *
  * @method addressValidator
  *
- * @param {string} address The big number instance to check
+ * @param {string} address The 'hex' address to check
  *
  * @return {boolean} It only returns true if the string is a valid address format,
  * otherwise an Error will be thrown and this will not finish execution.
@@ -259,7 +257,7 @@ export const addressValidator = (address: any): boolean => {
  *
  * @method hexSequenceValidator
  *
- * @param {string} hexSequence The big number instance to check
+ * @param {string} hexSequence The `hex` string to check
  *
  * @return {boolean} It only returns true if the string is a valid hex format,
  * otherwise an Error will be thrown and this will not finish execution.

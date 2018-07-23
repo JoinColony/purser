@@ -150,7 +150,7 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
 };
 
 /**
- * Check if an expression is true and, if not, either throw and error or just log a message.
+ * Check if an expression is true and, if not, either throw an error or just log a message.
  *
  * Just as the `warning()` util above it uses two levels: `high` and `low`. If the set level is high (default),
  * it will throw an error, else it will just use the `warning()` method (set to `low`) to log the message
@@ -226,7 +226,7 @@ export const bigNumber = (value: number | string | BN): BN => {
           GETTER_PROP_DESCRIPTORS,
         ),
         /*
-         * Convert the number to WEI (multiply by 1 to the power of 18)
+         * Convert the number to WEI (divide by 1 to the power of 18)
          */
         fromWei: Object.assign(
           {},
@@ -234,7 +234,7 @@ export const bigNumber = (value: number | string | BN): BN => {
           GETTER_PROP_DESCRIPTORS,
         ),
         /*
-         * Convert the number to GWEI (multiply by 1 to the power of 18)
+         * Convert the number to GWEI (multiply by 1 to the power of 9)
          */
         toGwei: Object.assign(
           {},
@@ -242,7 +242,7 @@ export const bigNumber = (value: number | string | BN): BN => {
           GETTER_PROP_DESCRIPTORS,
         ),
         /*
-         * Convert the number to GWEI (multiply by 1 to the power of 18)
+         * Convert the number to GWEI (divide by 1 to the power of 9)
          */
         fromGwei: Object.assign(
           {},
@@ -257,14 +257,14 @@ export const bigNumber = (value: number | string | BN): BN => {
 
 /**
  * Convert an object to a key (value) concatenated string.
- * This is usefull to list values inside of error messages, where you can only pass in a string and
+ * This is useful to list values inside of error messages, where you can only pass in a string and
  * not the whole object.
  *
  * @method objectToErrorString
  *
  * @param {Object} object The object to convert
  *
- * @return {[type]} The string containing the object's key (value) pairs
+ * @return {string} The string containing the object's key (value) pairs
  */
 export const objectToErrorString = (object: Object = {}): string =>
   Object.keys(object)
@@ -280,7 +280,7 @@ export const objectToErrorString = (object: Object = {}): string =>
  * Validate an (array) sequence of validation assertions (objects that are to be
  * directly passed into `assertTruth`)
  *
- * This it to reduce code duplication and boilerplate.
+ * This is to reduce code duplication and boilerplate.
  *
  * @TODO Validate the validator
  * So we can have redundancy while being reduntant :)
@@ -317,7 +317,7 @@ export const validatorGenerator = (
     ),
   );
   /*
-   * This is a fail-safe in case anything splis through.
+   * This is a fail-safe in case anything spills through.
    * If any of the values are `false` throw a general Error
    */
   if (!validationTests.every(testResult => testResult === true)) {
