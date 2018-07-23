@@ -59,7 +59,7 @@ import { trezor } from 'colony-wallet/hardware'; // await trezor.open();
 await open(walletArguments: Object);
 ```
 
-This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` new `TrezorWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
+This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` a new `TrezorWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
 
 By default it auto-selects the first available provider _(see: [`autoselect`](api-providers.md#autoselect))_, if one was not provided via the argument prop.
 
@@ -79,7 +79,7 @@ Sets the number of addresses to derive from the derivation path. Defaults to `10
 
 It will set first one as the default _(index `0`)_, while the rest will be available through the `otherAddresses` Array, found as a prop on the Wallet Instance _(index `0` through `9` in this case)_.
 
-You will be able to change through them using the `setDefaultAddress()` instance method _(See: [Wallet Object](wallet-object.md) for details))_.
+You will be able to change them using the `setDefaultAddress()` instance method _(See: [Wallet Object](wallet-object.md) for details))_.
 
 **Usage examples:**
 

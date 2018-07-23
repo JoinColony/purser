@@ -40,7 +40,7 @@ bigNumber(Number | String  | bigNumber): bigNumber
 
 This method is a wrapper around the `bn.js` library, so for the full API docs, see [this library's documentation](https://github.com/indutny/bn.js/blob/master/README.md).
 
-This method will return an extended instance of `bn.js` _(already instantiated)_ that has a couple of extra methods added to it's prototype:
+This method will `return` an extended instance of `bn.js` _(already instantiated)_ that has a couple of extra methods added to it's prototype:
 
 `toWei(): bigNumber`: Converts from `ETH` to `WEI` _(1 to the power of 18 multiplication)_. Returns the new value as a `bigNumber` instance.
 

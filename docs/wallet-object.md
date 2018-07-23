@@ -227,7 +227,7 @@ On a hardware wallet, this is read-only, and is used to derive all the address i
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
+const wallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 
 console.log(await wallet.derivationPath); // m/44'/60'/0'/0/0
 ```
@@ -250,11 +250,11 @@ WalletInstance.otherAddresses: Array<String>
 
 _Note: This prop is only available on Hardware Wallet types (Eg: Trezor)_.
 
-It contains an `Array` of all the addresses that were derived _(opened)_ initially when opening the wallet, by specifying a number to the `addressCount` prop. _(The addresses in the `Array` are in `String` format)_.
+It contains an `Array` of all the addresses that were derived initially when opening the wallet, by specifying a number to the `addressCount` prop. _(The addresses in the `Array` are in `String` format)_.
 
 This is useful to see all the addresses that you have access to.
 
-Note, that if only one address was derived _(opened)_ when you opened the wallet _(Eg: `{ addressCount : 1 }`)_, than this prop will be `undefined`. This is because it will only contain one entry, which is also the default selected address _(See: [`setDefaultAddress`](#setdefaultaddress))_, so there's no point, as it will just repeat information.
+Note, that if only one address was derived when you opened the wallet _(Eg: `{ addressCount : 1 }`)_, than this prop will be `undefined`. This is because it will only contain one entry, which is also the default selected address _(See: [`setDefaultAddress`](#setdefaultaddress))_, so there's no point, as it will just repeat information.
 
 **Usage:**
 ```js
@@ -287,7 +287,7 @@ _**Warning:** As the name suggests, this is private. So treat it with caution an
 ```js
 import { open } from 'colony-wallet/software';
 
-const wallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
+const wallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 
 console.log(wallet.privateKey); // 0x9274...f447
 ```
@@ -342,8 +342,6 @@ WalletInstance.provider: Object
 **_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
 
 This is an optional prop that will contain a [provider](api-providers.md) for the wallet to use. It can be set during instantiation _(both `open()` and `create()`)_ and can even be set to `null` or `undefined` if you don't want to have one.
-
-As a value, it can be both a [provider `Object`](../src/flowtypes.js#L3-L16) or a [provider generator method](api-proviers.md).
 
 If one is not set via the argument prop, it defaults to [`autoselect()`](api-providers.md#autoselect), setting the first one available.
 
@@ -428,9 +426,9 @@ WalletInstance.setDefaultAddress(addressIndex: Number): Promise<Boolean>
 
 _Note: This prop is only available on Hardware Wallet types (Eg: Trezor)_.
 
-By default address, we reference the address who's details are available via the `address`, `publicKey` and `derivationPath` props, and which will be used when call-ing the `sign()`, `signMessage()` and `verifyMessage()` methods, as can use only one at a time for these operations.
+By default address, we mean the address who's details are available via the `address`, `publicKey` and `derivationPath` props, and which will be used when call-ing the `sign()`, `signMessage()` and `verifyMessage()` methods, as it can only use one at a time for these operations.
 
-This method takes in an address index argument, as a `Number` _(this corresponds to the [`otherAddresses`](#otheraddresses) Array)_ and sets that addresses value internally.
+This method takes in an address index argument, as a `Number` _(this corresponds to the [`otherAddresses`](#otheraddresses) Array)_ and sets that address's value internally.
 
 If it's can set it successfully, it will return `true`, otherwise it will `throw` an Error. The only case this will fail is if you provide an unavailable address index. _(Eg: if you opened the wallet with `{ addressCount: 1 }`, there's no other `addressIndex` that will work, except `0`)_
 
@@ -461,12 +459,12 @@ The `transactionObject`'s props will be each individually validated, and if ther
 **`transactionObject` format:**
 ```js
 transactionObject {
-  gasPrice: bigNumber // The gas price you're willing to pay for this transaction WEI, as an instance of bigNumber. Defaults to 9000000000 WEI (9 GWEI)
-  gasLimit: bigNumber // The gas limit you want for this transaction As an instance of bigNumber. Defaults to 21000
+  gasPrice: bigNumber // The gas price you're willing to pay for this transaction, in WEI, as an instance of bigNumber. Defaults to 9000000000 WEI (9 GWEI)
+  gasLimit: bigNumber // The gas limit you want for this transaction, as an instance of bigNumber. Defaults to 21000
   chainId: Number // The chain id where the transaction is going to be sent. If this is not set, but a provider is set, it takes it from the provider Object. Defaults to 1.
   nonce: Number // The nonce of the transaction. Defaults to 0.
   to: String // The destination address to send the transaction to, as a hex String. This is the only REQUIRED prop by this library
-  value: bigNumber // The value you want to send to the destination address, In WEI, as an instance of bigNumber. Defaults to 1 WEI
+  value: bigNumber // The value you want to send to the destination address, in WEI, as an instance of bigNumber. Defaults to 1 WEI
   inputData: String // The additional input data to send in the transaction, as a hex String. Defaults to `0x00`
 }
 ```
