@@ -2,7 +2,7 @@
 
 import BN from 'bn.js';
 
-import { assertTruth, validatorGenerator } from '../utils';
+import { assertTruth, validatorGenerator, objectToErrorString } from '../utils';
 import { validators as messages } from './messages';
 import { PATH, MATCH, UNDEFINED, SPLITTER } from './defaults';
 
@@ -195,14 +195,14 @@ export const bigNumberValidator = (bigNumber: any): boolean => {
        * It should be an instance of the BN Class
        */
       expression: BN.isBN(bigNumber),
-      message: `${bigNumberMessages.notBigNumber}: ${JSON.stringify(
+      message: `${bigNumberMessages.notBigNumber}: ${objectToErrorString(
         bigNumber,
       )}`,
     },
   ];
   return validatorGenerator(
     validationSequence,
-    `${bigNumberMessages.genericError}: ${JSON.stringify(bigNumber)}`,
+    `${bigNumberMessages.genericError}: ${objectToErrorString(bigNumber)}`,
   );
 };
 
@@ -228,7 +228,7 @@ export const addressValidator = (address: any): boolean => {
       * It should be a string
       */
       expression: typeof address === 'string',
-      message: `${addressMessages.notStringSequence}: ${JSON.stringify(
+      message: `${addressMessages.notStringSequence}: ${objectToErrorString(
         address,
       ) || UNDEFINED}`,
     },
@@ -272,7 +272,7 @@ export const hexSequenceValidator = (hexSequence: any): boolean => {
       * It should be a string
       */
       expression: typeof hexSequence === 'string',
-      message: `${hexSequenceMessages.notStringSequence}: ${JSON.stringify(
+      message: `${hexSequenceMessages.notStringSequence}: ${objectToErrorString(
         hexSequence,
       ) || UNDEFINED}`,
     },
@@ -293,8 +293,7 @@ export const hexSequenceValidator = (hexSequence: any): boolean => {
       * idea to have "generalized" validator types
       */
       expression: hexSequence.length <= 1024,
-      message: `${hexSequenceMessages.tooBig}: ${JSON.stringify(hexSequence) ||
-        UNDEFINED}`,
+      message: `${hexSequenceMessages.tooBig}: ${hexSequence || UNDEFINED}`,
     },
   ];
   return validatorGenerator(
@@ -324,7 +323,7 @@ export const messageValidator = (string: any): boolean => {
       * It should be a string
       */
       expression: typeof string === 'string',
-      message: `${messageMessages.notString}: ${JSON.stringify(string) ||
+      message: `${messageMessages.notString}: ${objectToErrorString(string) ||
         UNDEFINED}`,
     },
     {
@@ -332,8 +331,7 @@ export const messageValidator = (string: any): boolean => {
       * It should be under (or equal to) 1024 Bytes in size
       */
       expression: string.length <= 1024,
-      message: `${messageMessages.tooBig}: ${JSON.stringify(string) ||
-        UNDEFINED}`,
+      message: `${messageMessages.tooBig}: ${string || UNDEFINED}`,
     },
   ];
   return validatorGenerator(
