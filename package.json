@@ -78,6 +78,7 @@
   },
   "dependencies": {
     "@ledgerhq/hw-app-eth": "^4.19.0",
+    "@ledgerhq/hw-transport-u2f": "^4.20.0",
     "bip32-path": "^0.4.2",
     "bn.js": "^4.11.8",
     "ethereum-blockies": "https://github.com/ethereum/blockies.git",

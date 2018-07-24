@@ -106,6 +106,13 @@
   dependencies:
     "@ledgerhq/hw-transport" "^4.19.0"
 
+"@ledgerhq/hw-transport-u2f@^4.20.0":
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-u2f/-/hw-transport-u2f-4.20.0.tgz#4118ace4dce55e0630db6c69972d8a88c87ed674"
+  dependencies:
+    "@ledgerhq/hw-transport" "^4.19.0"
+    u2f-api "0.2.7"
+
 "@ledgerhq/hw-transport@^4.19.0":
   version "4.19.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-4.19.0.tgz#19a804aee1bfc4abac1dc9a2a7a582e79273f991"
@@ -5835,6 +5842,10 @@ type-check@~0.3.2:
 typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+u2f-api@0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/u2f-api/-/u2f-api-0.2.7.tgz#17bf196b242f6bf72353d9858e6a7566cc192720"
 
 uglify-es@^3.3.4:
   version "3.3.9"
