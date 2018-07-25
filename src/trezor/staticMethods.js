@@ -3,8 +3,6 @@
 import { fromString } from 'bip32-path';
 import EthereumTx from 'ethereumjs-tx';
 
-import { payloadListener } from './helpers';
-import { warning, bigNumber, objectToErrorString } from '../utils';
 import {
   derivationPathValidator,
   safeIntegerValidator,
@@ -12,7 +10,10 @@ import {
   addressValidator,
   hexSequenceValidator,
   messageValidator,
-} from './validators';
+} from '../core/validators';
+
+import { payloadListener } from './helpers';
+import { warning, bigNumber, objectToErrorString } from '../utils';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,

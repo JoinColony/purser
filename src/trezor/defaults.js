@@ -56,30 +56,3 @@ export const STD_ERRORS: Object = {
   CANCEL_TX_SIGN: 'Action cancelled by user',
   INVALID_SIGN: 'Invalid signature',
 };
-
-/*
- * Regex to use when validating strings
- *
- * @TODO Move to core
- * This will most likely maket it's way to the core package / module
- */
-export const MATCH: Object = {
-  DIGITS: /^\d+$/,
-  ADDRESS: /^(0x)?([0-9a-fA-F]{40})$/,
-  /*
-   * Just like the address above, but without the character number limit
-   */
-  HEX_STRING: /^(0x)?([0-9a-fA-F]+)$/,
-  URL: /^.+:\/\/[^‌​/]+/,
-};
-
-/*
- * Used to separate misc. derivation paths or urls
- */
-export const SPLITTER: string = '/';
-
-/*
- * Used to better inform the user when a variable doesn't have a value
- * (Used in Error messsages)
- */
-export const UNDEFINED: string = 'undefined';

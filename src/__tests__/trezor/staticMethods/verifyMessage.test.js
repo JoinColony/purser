@@ -1,12 +1,13 @@
-import * as utils from '../../../utils';
-
-import { verifyMessage } from '../../../trezor/staticMethods';
-import { payloadListener } from '../../../trezor/helpers';
 import {
   addressValidator,
   messageValidator,
   hexSequenceValidator,
-} from '../../../trezor/validators';
+} from '../../../core/validators';
+
+import * as utils from '../../../utils';
+
+import { verifyMessage } from '../../../trezor/staticMethods';
+import { payloadListener } from '../../../trezor/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
@@ -17,7 +18,7 @@ import { PAYLOAD_VERIFYMSG } from '../../../trezor/payloads';
 jest.dontMock('../../../trezor/staticMethods');
 
 jest.mock('../../../trezor/helpers');
-jest.mock('../../../trezor/validators');
+jest.mock('../../../core/validators');
 jest.mock('../../../trezor/normalizers');
 jest.mock('../../../utils');
 
