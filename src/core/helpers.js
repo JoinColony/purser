@@ -26,16 +26,27 @@ export const derivationPathSerializer = ({
   purpose = PATH.PURPOSE,
   coinType = PATH.COIN_MAINNET,
   account = PATH.ACCOUNT,
-  change = PATH.CHANGE,
+  change,
   addressIndex,
 }: DerivationPathObjectType = {}): string => {
   const { DELIMITER } = PATH;
+  const hasChange = change || change === 0;
+  const hasAddressIndex = addressIndex || addressIndex === 0;
   return (
     `${PATH.HEADER_KEY}/${purpose}` +
     `${DELIMITER}${coinType}` +
     `${DELIMITER}${account}` +
-    `${DELIMITER}${change}` +
-    `${addressIndex || addressIndex === 0 ? `/${addressIndex}` : ''}`
+    `${DELIMITER}` +
+    /*
+     * We're already checking if the change and address index has a value, so
+     * we're not coercing `undefined`.
+     *
+     * Flow is overreacting again...
+     */
+    /* $FlowFixMe */
+    `${hasChange ? `${change}` : ''}` +
+    /* $FlowFixMe */
+    `${hasChange && hasAddressIndex ? `/${addressIndex}` : ''}`
   );
 };
 
