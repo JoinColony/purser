@@ -1,7 +1,7 @@
-import { messageValidator } from '../../../trezor/validators';
+import { messageValidator } from '../../../core/validators';
 
 jest.dontMock('../../../utils');
-jest.dontMock('../../../trezor/validators');
+jest.dontMock('../../../core/validators');
 
 describe('`Trezor` Hardware Wallet Module Validators', () => {
   describe('`messageValidator()` validator', () => {

@@ -2,18 +2,9 @@
 
 import BN from 'bn.js';
 
-import { PATH } from '../core/defaults';
-
 import { assertTruth, validatorGenerator, objectToErrorString } from '../utils';
 import { validators as messages } from './messages';
-import { MATCH, UNDEFINED, SPLITTER } from './defaults';
-
-/*
- * @TODO Make validators core methods
- *
- * These validators will most likely be used across all wallet types, so it will
- * make sense that as some point they will become core validators.
- */
+import { PATH, MATCH, UNDEFINED, SPLITTER } from './defaults';
 
 /**
  * Validate a derivation path passed in as a string

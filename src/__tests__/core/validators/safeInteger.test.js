@@ -1,7 +1,7 @@
-import { safeIntegerValidator } from '../../../trezor/validators';
+import { safeIntegerValidator } from '../../../core/validators';
 
 jest.dontMock('../../../utils');
-jest.dontMock('../../../trezor/validators');
+jest.dontMock('../../../core/validators');
 
 describe('`Trezor` Hardware Wallet Module Validators', () => {
   describe('`safeIntegerValidator()` validator', () => {

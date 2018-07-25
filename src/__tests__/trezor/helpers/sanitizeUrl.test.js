@@ -1,9 +1,10 @@
+import { messageValidator } from '../../../core/validators';
+
 import { sanitizeUrl } from '../../../trezor/helpers';
-import { messageValidator } from '../../../trezor/validators';
 
 jest.dontMock('../../../trezor/helpers');
 
-jest.mock('../../../trezor/validators');
+jest.mock('../../../core/validators');
 
 const testUrl = 'http://some-url-location.com';
 const malformedTestUrl = 'some-url-location.com';

@@ -1,6 +1,7 @@
 /* @flow */
 
-import { messageValidator } from './validators';
+import { messageValidator } from '../core/validators';
+import { MATCH } from '../core/defaults';
 
 import {
   SERVICE_DOMAIN,
@@ -9,7 +10,6 @@ import {
   SERVICE_KEY,
   WINDOW_FEATURES,
   WINDOW_NAME,
-  MATCH,
 } from './defaults';
 import { RESPONSE_HANDSHAKE } from './responses';
 

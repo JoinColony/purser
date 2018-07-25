@@ -1,16 +1,17 @@
 import EthereumTx from 'ethereumjs-tx';
 
-import * as utils from '../../../utils';
-
-import { signTransaction } from '../../../trezor/staticMethods';
-import { payloadListener } from '../../../trezor/helpers';
 import {
   derivationPathValidator,
   bigNumberValidator,
   safeIntegerValidator,
   addressValidator,
   hexSequenceValidator,
-} from '../../../trezor/validators';
+} from '../../../core/validators';
+
+import * as utils from '../../../utils';
+
+import { signTransaction } from '../../../trezor/staticMethods';
+import { payloadListener } from '../../../trezor/helpers';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
@@ -26,7 +27,7 @@ jest.dontMock('../../../trezor/staticMethods');
 jest.mock('ethereumjs-tx');
 jest.mock('../../../utils');
 jest.mock('../../../trezor/helpers');
-jest.mock('../../../trezor/validators');
+jest.mock('../../../core/validators');
 jest.mock('../../../trezor/normalizers');
 
 const path = 'mocked-derivation-path';

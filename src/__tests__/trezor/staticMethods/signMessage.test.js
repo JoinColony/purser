@@ -1,9 +1,10 @@
-import { signMessage } from '../../../trezor/staticMethods';
-import { payloadListener } from '../../../trezor/helpers';
 import {
   derivationPathValidator,
   messageValidator,
-} from '../../../trezor/validators';
+} from '../../../core/validators';
+
+import { signMessage } from '../../../trezor/staticMethods';
+import { payloadListener } from '../../../trezor/helpers';
 import {
   derivationPathNormalizer,
   hexSequenceNormalizer,
@@ -13,8 +14,8 @@ import { PAYLOAD_SIGNMSG } from '../../../trezor/payloads';
 
 jest.dontMock('../../../trezor/staticMethods');
 
+jest.mock('../../../core/validators');
 jest.mock('../../../trezor/helpers');
-jest.mock('../../../trezor/validators');
 jest.mock('../../../trezor/normalizers');
 
 const path = 'mocked-derivation-path';

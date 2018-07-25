@@ -16,13 +16,13 @@ import ledgerU2fTransport from '@ledgerhq/hw-transport-u2f';
 /* Core */
 import utils from './utils';
 import coreHelpers from './core/helpers';
+import * as validators from './core/validators';
 
 /* Software */
 import software from './software';
 
 /* Trezor */
 import TrezorWallet from './trezor/class';
-import * as trezorValidators from './trezor/validators';
 import * as trezorNormalizers from './trezor/normalizers';
 import * as trezorHelpers from './trezor/helpers';
 
@@ -56,7 +56,7 @@ const debug: Object = {
       core: coreHelpers,
       trezor: trezorHelpers,
     },
-    validators: trezorValidators,
+    validators,
     normalizers: trezorNormalizers,
     walletClasses: {
       SoftwareWallet: software.SoftwareWallet,

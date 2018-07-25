@@ -3,12 +3,13 @@
 import { SigningKey } from 'ethers/wallet';
 import HDKey from 'hdkey';
 
-import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import {
   safeIntegerValidator,
   hexSequenceValidator,
   addressValidator,
-} from './validators';
+} from '../core/validators';
+
+import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { addressNormalizer, hexSequenceNormalizer } from './normalizers';
 
 import { classMessages as messages } from './messages';

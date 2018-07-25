@@ -1,12 +1,13 @@
 import HDKey from 'hdkey';
 import { SigningKey } from 'ethers/wallet';
 
-import TrezorWalletClass from '../../trezor/class';
 import {
   safeIntegerValidator,
   hexSequenceValidator,
   addressValidator,
-} from '../../trezor/validators';
+} from '../../core/validators';
+
+import TrezorWalletClass from '../../trezor/class';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
@@ -23,7 +24,7 @@ jest.dontMock('../../trezor/class');
 
 jest.mock('hdkey');
 jest.mock('ethers/wallet');
-jest.mock('../../trezor/validators');
+jest.mock('../../core/validators');
 jest.mock('../../trezor/normalizers');
 jest.mock('../../trezor/staticMethods');
 
