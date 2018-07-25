@@ -1,18 +1,32 @@
 /* @flow */
 
+/* Dependencies */
 import ethers from 'ethers';
 import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
+import bip32Path from 'bip32-path';
+import bn from 'bn.js';
+import ethereumJsTx from 'ethereumjs-tx';
+import hdkey from 'hdkey';
+import u2f from 'u2f-api';
+import ledgerEthApp from '@ledgerhq/hw-app-eth';
+import ledgerGenericTransport from '@ledgerhq/hw-transport';
+import ledgerU2fTransport from '@ledgerhq/hw-transport-u2f';
 
+/* Core */
 import utils from './utils';
+import coreHelpers from './core/helpers';
 
+/* Software */
+import software from './software';
+
+/* Trezor */
+import TrezorWallet from './trezor/class';
 import * as trezorValidators from './trezor/validators';
 import * as trezorNormalizers from './trezor/normalizers';
+import * as trezorHelpers from './trezor/helpers';
 
-import { software } from './wallets';
-import TrezorWallet from './trezor/class';
-
-const { SoftwareWallet } = software;
+/* Ledger */
 
 /*
  * This object was extracted in it's own export to not pollute the index,
@@ -20,14 +34,32 @@ const { SoftwareWallet } = software;
  */
 const debug: Object = {
   debug: {
-    ethers,
-    qrcode,
-    blockies,
+    dependencies: {
+      ethers,
+      qrcode,
+      blockies,
+      bip32Path,
+      bn,
+      ethereumJsTx,
+      hdkey,
+      u2f,
+      ledger: {
+        ethApp: ledgerEthApp,
+        transports: {
+          generic: ledgerGenericTransport,
+          u2f: ledgerU2fTransport,
+        },
+      },
+    },
     utils,
+    helpers: {
+      core: coreHelpers,
+      trezor: trezorHelpers,
+    },
     validators: trezorValidators,
     normalizers: trezorNormalizers,
     walletClasses: {
-      SoftwareWallet,
+      SoftwareWallet: software.SoftwareWallet,
       TrezorWallet,
     },
   },
