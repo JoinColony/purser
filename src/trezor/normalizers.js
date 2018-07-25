@@ -1,6 +1,8 @@
 /* @flow */
 
-import { PATH, SPLITTER, MATCH } from './defaults';
+import { PATH } from '../core/defaults';
+
+import { SPLITTER, MATCH } from './defaults';
 
 /*
  * @TODO Make normalizers core methods

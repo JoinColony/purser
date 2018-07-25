@@ -1,6 +1,6 @@
-import { derivationPathSerializer } from '../../../trezor/helpers';
+import { derivationPathSerializer } from '../../../core/helpers';
 
-jest.dontMock('../../../trezor/helpers');
+jest.dontMock('../../../core/helpers');
 
 describe('`Trezor` Hardware Wallet Module Helpers', () => {
   describe('`derivationPathSerializer()` helper', () => {

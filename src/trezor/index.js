@@ -2,14 +2,17 @@
 
 import { fromString } from 'bip32-path';
 
+import { derivationPathSerializer } from '../core/helpers';
+import { PATH } from '../core/defaults';
+
 import TrezorWallet from './class';
 
-import { payloadListener, derivationPathSerializer } from './helpers';
+import { payloadListener } from './helpers';
 import { autoselect } from '../providers';
 import { warning, objectToErrorString } from '../utils';
 
 import { staticMethodsMessages as messages } from './messages';
-import { PATH, STD_ERRORS } from './defaults';
+import { STD_ERRORS } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
 import { MAIN_NETWORK } from '../defaults';
 
