@@ -1,7 +1,7 @@
-import { derivationPathNormalizer } from '../../../trezor/normalizers';
+import { derivationPathNormalizer } from '../../../core/normalizers';
 
 jest.dontMock('../../../utils');
-jest.dontMock('../../../trezor/normalizers');
+jest.dontMock('../../../core/normalizers');
 
 describe('`Trezor` Hardware Wallet Module Normalizers', () => {
   describe('`derivationPathNormalizer()` normalizer', () => {

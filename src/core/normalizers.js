@@ -1,13 +1,6 @@
 /* @flow */
 
-import { PATH, SPLITTER, MATCH } from '../core/defaults';
-
-/*
- * @TODO Make normalizers core methods
- *
- * As with validators, these will most likely be used across all wallet types, so it will
- * make sense that as some point they will become core normalizers.
- */
+import { PATH, SPLITTER, MATCH } from './defaults';
 
 /**
  * Normalize a derivation path passed in as a string

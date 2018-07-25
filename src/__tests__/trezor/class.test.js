@@ -6,12 +6,12 @@ import {
   hexSequenceValidator,
   addressValidator,
 } from '../../core/validators';
-
-import TrezorWalletClass from '../../trezor/class';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../trezor/normalizers';
+} from '../../core/normalizers';
+
+import TrezorWalletClass from '../../trezor/class';
 import {
   signTransaction,
   signMessage,
@@ -25,8 +25,17 @@ jest.dontMock('../../trezor/class');
 jest.mock('hdkey');
 jest.mock('ethers/wallet');
 jest.mock('../../core/validators');
-jest.mock('../../trezor/normalizers');
 jest.mock('../../trezor/staticMethods');
+/*
+ * Manual mocking a manual mock. Yay for Jest being build by Facebook!
+ *
+ * If you need context, see this:
+ * https://github.com/facebook/jest/issues/2070
+ */
+jest.mock('../../core/normalizers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../core/__mocks-required__/normalizers'),
+);
 
 /*
  * Common values

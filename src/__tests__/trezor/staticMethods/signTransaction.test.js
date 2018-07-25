@@ -17,7 +17,7 @@ import {
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../trezor/normalizers';
+} from '../../../core/normalizers';
 
 import { PAYLOAD_SIGNTX } from '../../../trezor/payloads';
 import { STD_ERRORS } from '../../../trezor/defaults';
@@ -28,7 +28,16 @@ jest.mock('ethereumjs-tx');
 jest.mock('../../../utils');
 jest.mock('../../../trezor/helpers');
 jest.mock('../../../core/validators');
-jest.mock('../../../trezor/normalizers');
+/*
+ * Manual mocking a manual mock. Yay for Jest being build by Facebook!
+ *
+ * If you need context, see this:
+ * https://github.com/facebook/jest/issues/2070
+ */
+jest.mock('../../../core/normalizers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../core/__mocks-required__/normalizers'),
+);
 
 const path = 'mocked-derivation-path';
 const chainId = 'mocked-chain-id';
