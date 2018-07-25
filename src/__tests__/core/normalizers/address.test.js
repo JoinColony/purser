@@ -1,7 +1,7 @@
-import { addressNormalizer } from '../../../trezor/normalizers';
+import { addressNormalizer } from '../../../core/normalizers';
 
 jest.dontMock('../../../utils');
-jest.dontMock('../../../trezor/normalizers');
+jest.dontMock('../../../core/normalizers');
 
 const unPrefixedAddress = '586145EBa3A2545cac062EAd7DE0EC184A6C8Af5';
 const prefixedAddress = '0x586145EBa3A2545cac062EAd7DE0EC184A6C8Af5';

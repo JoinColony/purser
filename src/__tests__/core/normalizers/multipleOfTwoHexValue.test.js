@@ -1,7 +1,7 @@
-import { multipleOfTwoHexValueNormalizer } from '../../../trezor/normalizers';
+import { multipleOfTwoHexValueNormalizer } from '../../../core/normalizers';
 
 jest.dontMock('../../../utils');
-jest.dontMock('../../../trezor/normalizers');
+jest.dontMock('../../../core/normalizers');
 
 describe('`Trezor` Hardware Wallet Module Normalizers', () => {
   describe('`multipleOfTwoHexValueNormalizer()` normalizer', () => {

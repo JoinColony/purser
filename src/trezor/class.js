@@ -8,18 +8,19 @@ import {
   hexSequenceValidator,
   addressValidator,
 } from '../core/validators';
+import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
 
-import { signTransaction, signMessage, verifyMessage } from './staticMethods';
-import { addressNormalizer, hexSequenceNormalizer } from './normalizers';
-
-import { classMessages as messages } from './messages';
-import { HEX_HASH_TYPE } from './defaults';
 import {
   WALLET_PROP_DESCRIPTORS,
   GETTER_PROP_DESCRIPTORS,
   SETTER_PROP_DESCRIPTORS,
 } from '../defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
+
+import { signTransaction, signMessage, verifyMessage } from './staticMethods';
+
+import { classMessages as messages } from './messages';
+import { HEX_HASH_TYPE } from './defaults';
 
 import type {
   ProviderType,

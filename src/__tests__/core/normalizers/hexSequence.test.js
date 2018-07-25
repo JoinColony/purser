@@ -1,7 +1,7 @@
-import { hexSequenceNormalizer } from '../../../trezor/normalizers';
+import { hexSequenceNormalizer } from '../../../core/normalizers';
 
 jest.dontMock('../../../utils');
-jest.dontMock('../../../trezor/normalizers');
+jest.dontMock('../../../core/normalizers');
 
 const unPrefixedHexString = 'ead7de0ec184a6c8a';
 const prefixedHexString = '0xead7de0ec184a6c8a';

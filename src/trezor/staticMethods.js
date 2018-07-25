@@ -11,15 +11,16 @@ import {
   hexSequenceValidator,
   messageValidator,
 } from '../core/validators';
-
-import { payloadListener } from './helpers';
-import { warning, bigNumber, objectToErrorString } from '../utils';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
   hexSequenceNormalizer,
-} from './normalizers';
+} from '../core/normalizers';
+
+import { warning, bigNumber, objectToErrorString } from '../utils';
+
+import { payloadListener } from './helpers';
 
 import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS, HEX_HASH_TYPE } from './defaults';

@@ -11,7 +11,7 @@ import { payloadListener } from '../../../trezor/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../trezor/normalizers';
+} from '../../../core/normalizers';
 
 import { PAYLOAD_VERIFYMSG } from '../../../trezor/payloads';
 
@@ -19,8 +19,17 @@ jest.dontMock('../../../trezor/staticMethods');
 
 jest.mock('../../../trezor/helpers');
 jest.mock('../../../core/validators');
-jest.mock('../../../trezor/normalizers');
 jest.mock('../../../utils');
+/*
+ * Manual mocking a manual mock. Yay for Jest being build by Facebook!
+ *
+ * If you need context, see this:
+ * https://github.com/facebook/jest/issues/2070
+ */
+jest.mock('../../../core/normalizers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../core/__mocks-required__/normalizers'),
+);
 
 const address = 'mocked-derivation-address';
 const message = 'mocked-message';
