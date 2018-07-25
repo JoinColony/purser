@@ -74,7 +74,10 @@ const trezorWallet: WalletExportType = Object.assign(
        * Based on this, we will then derive all the needed address indexes
        * (inside the class constructor)
        */
-      const rootDerivationPath: string = derivationPathSerializer({ coinType });
+      const rootDerivationPath: string = derivationPathSerializer({
+        change: PATH.CHANGE,
+        coinType,
+      });
       /*
        * Modify the default payload to overwrite the path with the new
        * coin type id derivation

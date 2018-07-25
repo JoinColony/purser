@@ -5,6 +5,8 @@ import LedgerHwAppETH from '@ledgerhq/hw-app-eth';
 import HDKey from 'hdkey';
 import { SigningKey } from 'ethers/wallet';
 
+import { derivationPathSerializer } from '../core/helpers';
+
 import { HEX_HASH_TYPE } from '../trezor/defaults';
 
 import type { WalletObjectType, WalletExportType } from '../flowtypes';
@@ -20,7 +22,7 @@ const ledgerWallet: WalletExportType = Object.assign(
          * @NOTE Ledger requires a derivation path containing only the account value
          * No change and index
          */
-        "m/44'/60'/0'",
+        derivationPathSerializer(),
         false,
         true,
       );
