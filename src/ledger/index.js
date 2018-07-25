@@ -1,6 +1,6 @@
 /* @flow */
 
-import Transport from '@ledgerhq/hw-transport-u2f';
+import U2fTransport from '@ledgerhq/hw-transport-u2f';
 import LedgerHwAppETH from '@ledgerhq/hw-app-eth';
 import HDKey from 'hdkey';
 import { SigningKey } from 'ethers/wallet';
@@ -13,7 +13,7 @@ const ledgerWallet: WalletExportType = Object.assign(
   {},
   {
     open: async (): Promise<WalletObjectType | void> => {
-      const transport = await Transport.create();
+      const transport = await U2fTransport.create();
       const ethAppConnection = new LedgerHwAppETH(transport);
       const { publicKey, chainCode } = await ethAppConnection.getAddress(
         /*

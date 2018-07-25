@@ -2,9 +2,11 @@
 
 import BN from 'bn.js';
 
+import { PATH } from '../core/defaults';
+
 import { assertTruth, validatorGenerator, objectToErrorString } from '../utils';
 import { validators as messages } from './messages';
-import { PATH, MATCH, UNDEFINED, SPLITTER } from './defaults';
+import { MATCH, UNDEFINED, SPLITTER } from './defaults';
 
 /*
  * @TODO Make validators core methods
