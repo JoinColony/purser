@@ -9,24 +9,18 @@ import {
   addressValidator,
 } from '../core/validators';
 import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
-import {
-  HEX_HASH_TYPE,
-  WALLET_PROP_DESCRIPTORS,
-  GETTER_PROP_DESCRIPTORS,
-  SETTER_PROP_DESCRIPTORS,
-} from '../core/defaults';
+import { HEX_HASH_TYPE, DESCRIPTORS } from '../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
-
-import { signTransaction, signMessage, verifyMessage } from './staticMethods';
-
-import { classMessages as messages } from './messages';
-
 import type {
   TransactionObjectType,
   MessageObjectType,
 } from '../core/flowtypes';
 
+import { signTransaction, signMessage, verifyMessage } from './staticMethods';
+import { classMessages as messages } from './messages';
 import type { ProviderType } from '../flowtypes';
+
+const { GETTERS, SETTERS, WALLET_PROPS } = DESCRIPTORS;
 
 /*
  * "Private" (internal) variable(s).
@@ -151,22 +145,10 @@ export default class TrezorWallet {
      * write a helper method for this.
      */
     Object.defineProperties(this, {
-      address: Object.assign(
-        {},
-        { value: otherAddresses[0].address },
-        SETTER_PROP_DESCRIPTORS,
-      ),
-      type: Object.assign(
-        {},
-        { value: TYPE_HARDWARE },
-        WALLET_PROP_DESCRIPTORS,
-      ),
-      subtype: Object.assign(
-        {},
-        { value: SUBTYPE_TREZOR },
-        WALLET_PROP_DESCRIPTORS,
-      ),
-      provider: Object.assign({}, { value: provider }, WALLET_PROP_DESCRIPTORS),
+      address: Object.assign({}, { value: otherAddresses[0].address }, SETTERS),
+      type: Object.assign({}, { value: TYPE_HARDWARE }, WALLET_PROPS),
+      subtype: Object.assign({}, { value: SUBTYPE_TREZOR }, WALLET_PROPS),
+      provider: Object.assign({}, { value: provider }, WALLET_PROPS),
       /**
        * Set the default address/public key/path one of the (other) addresses from the array.
        * This is usefull since most methods (sign, signMessage) use this props as defaults.
@@ -215,7 +197,7 @@ export default class TrezorWallet {
             );
           },
         },
-        WALLET_PROP_DESCRIPTORS,
+        WALLET_PROPS,
       ),
       /*
        * We need to add the values here as opposed to just passing them to
@@ -243,7 +225,7 @@ export default class TrezorWallet {
             );
           },
         },
-        WALLET_PROP_DESCRIPTORS,
+        WALLET_PROPS,
       ),
       /*
        * We need to add the values here as opposed to just passing them to
@@ -256,7 +238,7 @@ export default class TrezorWallet {
           value: async ({ message }: MessageObjectType = {}) =>
             signMessage({ path: internalDerivationPath, message }),
         },
-        WALLET_PROP_DESCRIPTORS,
+        WALLET_PROPS,
       ),
       /*
        * We need to add the values here as opposed to just passing them to
@@ -269,7 +251,7 @@ export default class TrezorWallet {
           value: async ({ message, signature }: MessageObjectType = {}) =>
             verifyMessage({ address: this.address, message, signature }),
         },
-        WALLET_PROP_DESCRIPTORS,
+        WALLET_PROPS,
       ),
     });
     /*
@@ -294,7 +276,7 @@ export default class TrezorWallet {
              */
             value: otherAddresses.map(({ address }) => address),
           },
-          WALLET_PROP_DESCRIPTORS,
+          WALLET_PROPS,
         ),
       );
     }
@@ -319,6 +301,6 @@ export default class TrezorWallet {
  * When adding them via a `Class` getter/setter it will prevent that by default
  */
 Object.defineProperties((TrezorWallet: any).prototype, {
-  publicKey: GETTER_PROP_DESCRIPTORS,
-  derivationPath: GETTER_PROP_DESCRIPTORS,
+  publicKey: GETTERS,
+  derivationPath: GETTERS,
 });
