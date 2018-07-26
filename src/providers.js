@@ -9,7 +9,7 @@ import type {
   AsyncProviderGeneratorType,
 } from './flowtypes';
 
-import { warning } from './utils';
+import { warning } from './core/utils';
 import { providers as messages } from './messages';
 
 import {

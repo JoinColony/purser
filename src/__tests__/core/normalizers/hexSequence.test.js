@@ -1,6 +1,6 @@
 import { hexSequenceNormalizer } from '../../../core/normalizers';
 
-jest.dontMock('../../../utils');
+jest.dontMock('../../../core/utils');
 jest.dontMock('../../../core/normalizers');
 
 const unPrefixedHexString = 'ead7de0ec184a6c8a';

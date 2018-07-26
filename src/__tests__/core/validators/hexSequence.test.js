@@ -1,6 +1,6 @@
 import { hexSequenceValidator } from '../../../core/validators';
 
-jest.dontMock('../../../utils');
+jest.dontMock('../../../core/utils');
 jest.dontMock('../../../core/validators');
 
 describe('`Trezor` Hardware Wallet Module Validators', () => {

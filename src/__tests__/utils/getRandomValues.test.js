@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 
-import { getRandomValues } from '../../utils';
+import { getRandomValues } from '../../core/utils';
 
 jest.mock('crypto', () => ({}));
-jest.dontMock('../../utils');
+jest.dontMock('../../core/utils');
 
 global.console = {
   warn: jest.fn(),

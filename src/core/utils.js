@@ -8,8 +8,8 @@ import {
   WEI_MINIFICATION,
   GWEI_MINIFICATION,
   GETTER_PROP_DESCRIPTORS,
-} from './defaults';
-import { utils as messages } from './messages';
+} from '../defaults';
+import { utils as messages } from '../messages';
 
 /**
  * Simple helper to determine if we should output messages to the console

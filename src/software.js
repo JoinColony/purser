@@ -10,7 +10,7 @@ import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './core/types';
 import type { WalletObjectType, WalletArgumentsType } from './core/flowtypes';
 
 import { autoselect } from './providers';
-import { getRandomValues, warning, objectToErrorString } from './utils';
+import { getRandomValues, warning, objectToErrorString } from './core/utils';
 import { softwareWallet as messages } from './messages';
 import {
   ENV,

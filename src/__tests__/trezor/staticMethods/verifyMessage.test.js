@@ -4,7 +4,7 @@ import {
   hexSequenceValidator,
 } from '../../../core/validators';
 
-import * as utils from '../../../utils';
+import * as utils from '../../../core/utils';
 
 import { verifyMessage } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
@@ -19,7 +19,6 @@ jest.dontMock('../../../trezor/staticMethods');
 
 jest.mock('../../../trezor/helpers');
 jest.mock('../../../core/validators');
-jest.mock('../../../utils');
 /*
  * Manual mocking a manual mock. Yay for Jest being build by Facebook!
  *
@@ -29,6 +28,10 @@ jest.mock('../../../utils');
 jest.mock('../../../core/normalizers', () =>
   /* eslint-disable-next-line global-require */
   require('../../../core/__mocks-required__/normalizers'),
+);
+jest.mock('../../../core/utils', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../core/__mocks-required__/utils'),
 );
 
 const address = 'mocked-derivation-address';
