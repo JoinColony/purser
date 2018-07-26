@@ -80,3 +80,11 @@ export type LibraryExportType = {
   utils: Object,
   debug?: Object,
 };
+
+export type GenericClassArgumentsType = {
+  publicKey?: string,
+  chainCode?: string,
+  rootDerivationPath?: string,
+  addressCount?: number,
+  provider?: ProviderType | void,
+};

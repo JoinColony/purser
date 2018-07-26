@@ -62,3 +62,8 @@ export const utils: Object = {
       "Could not find any `crypto` libraries. We'll try our best to still provide randomness, but it's not all that good, since it relies on Javascript's internal random number generator",
   },
 };
+
+export const genericClass: Object = {
+  addressIndexOutsideRange:
+    'The address index you provided is outside the address count range you derived when opening the wallet',
+};
