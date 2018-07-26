@@ -23,10 +23,11 @@ import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { classMessages as messages } from './messages';
 
 import type {
-  ProviderType,
   TransactionObjectType,
   MessageObjectType,
-} from '../flowtypes';
+} from '../core/flowtypes';
+
+import type { ProviderType } from '../flowtypes';
 
 /*
  * "Private" (internal) variable(s).

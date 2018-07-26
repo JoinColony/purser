@@ -4,6 +4,7 @@ import { fromString } from 'bip32-path';
 
 import { derivationPathSerializer } from '../core/helpers';
 import { PATH } from '../core/defaults';
+import type { WalletArgumentsType } from '../core/flowtypes';
 
 import TrezorWallet from './class';
 
@@ -16,13 +17,7 @@ import { STD_ERRORS } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
 import { MAIN_NETWORK } from '../defaults';
 
-import type {
-  WalletArgumentsType,
-  WalletObjectType,
-  WalletExportType,
-} from '../flowtypes';
-
-const trezorWallet: WalletExportType = Object.assign(
+const trezorWallet: Object = Object.assign(
   {},
   {
     /**
@@ -44,7 +39,7 @@ const trezorWallet: WalletExportType = Object.assign(
     open: async ({
       addressCount,
       provider = autoselect,
-    }: WalletArgumentsType = {}): Promise<WalletObjectType | void> => {
+    }: WalletArgumentsType = {}): Promise<TrezorWallet | void> => {
       const { COIN_MAINNET, COIN_TESTNET } = PATH;
       /*
        * Get the provider.
@@ -96,7 +91,7 @@ const trezorWallet: WalletExportType = Object.assign(
         const { publicKey, chainCode } = await payloadListener({
           payload: modifiedPayloadObject,
         });
-        const walletInstance: WalletObjectType = new TrezorWallet(
+        const walletInstance: TrezorWallet = new TrezorWallet(
           publicKey,
           chainCode,
           rootDerivationPath,
