@@ -88,4 +88,9 @@ export const DESCRIPTORS: Object = {
     enumerable: true,
     writable: false,
   },
+  GENERIC_PROPS: {
+    enumerable: true,
+    writable: true,
+    configurable: true,
+  },
 };
