@@ -68,54 +68,24 @@ export const UNDEFINED: string = 'undefined';
  */
 export const HEX_HASH_TYPE: string = 'hex';
 
-/*
- * Default class getter props to set on the resulting's object property.
- * Most likely to be used with `Object.defineProperty()`
- */
-export const GETTER_PROP_DESCRIPTORS: Object = {
-  enumerable: true,
-  configurable: true,
-};
-
-/*
- * Default class setter props.
- * Most likely to be used with `Object.defineProperty()`
- */
-export const SETTER_PROP_DESCRIPTORS: Object = {
-  enumerable: true,
-  writable: true,
-};
-
-/*
- * Default wallet instance object props
- * Most likely to be used with `Object.defineProperty()`
- */
-export const WALLET_PROP_DESCRIPTORS: Object = {
-  enumerable: true,
-  writable: false,
-};
-
-/*
- * Default options used to pass down to the QR code generator.
- * Note: They are specific to the `qrcode` library.
- */
-export const QR_CODE_OPTS: Object = {
-  margin: 0,
-  errorCorrectionLevel: 'H',
-  width: 200,
-};
-
-/*
- * Default options used to pass down to the blockie generator.
- * Note: They are specific to the `ethereum-blockie` library/
- * Warning: They git version and the npm package differ (even if they
- * both claim the same version).
- * Be extra careful.
- */
-export const BLOCKIE_OPTS: Object = {
-  size: 8,
-  scale: 25,
-};
-
 export const WEI_MINIFICATION: number = 1e18;
 export const GWEI_MINIFICATION: number = 1e9;
+
+/*
+ * Default class descriptors.
+ * Most likely to be used with `Object.defineProperty()`
+ */
+export const DESCRIPTORS: Object = {
+  GETTERS: {
+    enumerable: true,
+    configurable: true,
+  },
+  SETTERS: {
+    enumerable: true,
+    writable: true,
+  },
+  WALLET_PROPS: {
+    enumerable: true,
+    writable: false,
+  },
+};

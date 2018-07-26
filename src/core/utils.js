@@ -7,7 +7,7 @@ import {
   ENV,
   WEI_MINIFICATION,
   GWEI_MINIFICATION,
-  GETTER_PROP_DESCRIPTORS,
+  DESCRIPTORS,
 } from './defaults';
 import { utils as messages } from './messages';
 
@@ -210,6 +210,7 @@ export const assertTruth = ({
  * @return {BN} The new bignumber instance
  */
 export const bigNumber = (value: number | string | BN): BN => {
+  const { GETTERS } = DESCRIPTORS;
   const oneWei = new BN(WEI_MINIFICATION.toString());
   const oneGwei = new BN(GWEI_MINIFICATION.toString());
   class ExtendedBN extends BN {
@@ -220,34 +221,22 @@ export const bigNumber = (value: number | string | BN): BN => {
         /*
          * Convert the number to WEI (multiply by 1 to the power of 18)
          */
-        toWei: Object.assign(
-          {},
-          { value: () => this.imul(oneWei) },
-          GETTER_PROP_DESCRIPTORS,
-        ),
+        toWei: Object.assign({}, { value: () => this.imul(oneWei) }, GETTERS),
         /*
          * Convert the number to WEI (divide by 1 to the power of 18)
          */
-        fromWei: Object.assign(
-          {},
-          { value: () => this.div(oneWei) },
-          GETTER_PROP_DESCRIPTORS,
-        ),
+        fromWei: Object.assign({}, { value: () => this.div(oneWei) }, GETTERS),
         /*
          * Convert the number to GWEI (multiply by 1 to the power of 9)
          */
-        toGwei: Object.assign(
-          {},
-          { value: () => this.imul(oneGwei) },
-          GETTER_PROP_DESCRIPTORS,
-        ),
+        toGwei: Object.assign({}, { value: () => this.imul(oneGwei) }, GETTERS),
         /*
          * Convert the number to GWEI (divide by 1 to the power of 9)
          */
         fromGwei: Object.assign(
           {},
           { value: () => this.div(oneGwei) },
-          GETTER_PROP_DESCRIPTORS,
+          GETTERS,
         ),
       });
     }

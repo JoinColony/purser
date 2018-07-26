@@ -5,23 +5,18 @@ import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
 
 import { derivationPathSerializer } from '../core/helpers';
-import {
-  PATH,
-  ENV,
-  GETTER_PROP_DESCRIPTORS,
-  QR_CODE_OPTS,
-  BLOCKIE_OPTS,
-  WALLET_PROP_DESCRIPTORS,
-} from '../core/defaults';
+import { PATH, ENV, DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 import type { WalletObjectType, WalletArgumentsType } from '../core/flowtypes';
 
+import { QR_CODE_OPTS, BLOCKIE_OPTS } from './defaults';
 import { classMessages as messages } from './messages';
 
 import { autoselect } from '../providers';
 import { getRandomValues, warning, objectToErrorString } from '../core/utils';
 import type { ProviderType } from '../flowtypes';
 
+const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
 /*
  * "Private" variable(s)
  */
@@ -69,18 +64,10 @@ class SoftwareWallet extends EtherWallet {
      * we can customize the prop's descriptors
      */
     Object.defineProperties(this, {
-      mnemonic: Object.assign({}, { value: mnemonic }, WALLET_PROP_DESCRIPTORS),
-      path: Object.assign({}, { value: path }, WALLET_PROP_DESCRIPTORS),
-      type: Object.assign(
-        {},
-        { value: TYPE_SOFTWARE },
-        WALLET_PROP_DESCRIPTORS,
-      ),
-      subtype: Object.assign(
-        {},
-        { value: SUBTYPE_ETHERS },
-        WALLET_PROP_DESCRIPTORS,
-      ),
+      mnemonic: Object.assign({}, { value: mnemonic }, WALLET_PROPS),
+      path: Object.assign({}, { value: path }, WALLET_PROPS),
+      type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
+      subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
     });
   }
 
@@ -101,7 +88,7 @@ class SoftwareWallet extends EtherWallet {
       Object.defineProperty(
         this,
         'keystore',
-        Object.assign({}, GETTER_PROP_DESCRIPTORS, {
+        Object.assign({}, GETTERS, {
           value:
             (keystoreJson && Promise.resolve(keystoreJson)) ||
             this.encrypt(encryptionPassword),
@@ -143,7 +130,7 @@ class SoftwareWallet extends EtherWallet {
       Object.defineProperty(
         (this: any),
         'addressQR',
-        Object.assign({}, GETTER_PROP_DESCRIPTORS, {
+        Object.assign({}, GETTERS, {
           value: qrcode.toDataURL(this.address, QR_CODE_OPTS),
         }),
       );
@@ -173,7 +160,7 @@ class SoftwareWallet extends EtherWallet {
       Object.defineProperty(
         (this: any),
         'blockie',
-        Object.assign({}, GETTER_PROP_DESCRIPTORS, { value: blockiePromise }),
+        Object.assign({}, GETTERS, { value: blockiePromise }),
       );
       return blockiePromise;
     }
@@ -196,7 +183,7 @@ class SoftwareWallet extends EtherWallet {
       Object.defineProperty(
         (this: any),
         'privateKeyQR',
-        Object.assign({}, GETTER_PROP_DESCRIPTORS, {
+        Object.assign({}, GETTERS, {
           value: qrcode.toDataURL(this.privateKey, QR_CODE_OPTS),
         }),
       );
@@ -381,10 +368,10 @@ class SoftwareWallet extends EtherWallet {
  * When adding them via a `Class` getter/setter it will prevent that by default
  */
 Object.defineProperties((SoftwareWallet: any).prototype, {
-  keystore: GETTER_PROP_DESCRIPTORS,
-  addressQR: GETTER_PROP_DESCRIPTORS,
-  blockie: GETTER_PROP_DESCRIPTORS,
-  privateKeyQR: GETTER_PROP_DESCRIPTORS,
+  keystore: GETTERS,
+  addressQR: GETTERS,
+  blockie: GETTERS,
+  privateKeyQR: GETTERS,
 });
 
 /**
