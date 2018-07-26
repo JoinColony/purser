@@ -4,7 +4,7 @@ import { derivationPathSerializer } from '../../core/helpers';
 import { PATH } from '../../core/defaults';
 
 import { jsonRpc } from '../../providers';
-import * as utils from '../../utils';
+import * as utils from '../../core/utils';
 
 import trezorWallet from '../../trezor';
 import TrezorWalletClass from '../../trezor/class';
@@ -15,7 +15,6 @@ import { STD_ERRORS } from '../../trezor/defaults';
 jest.mock('bip32-path');
 jest.mock('../../trezor/class');
 jest.mock('../../trezor/helpers');
-jest.mock('../../utils');
 
 /*
  * Manual mocking a manual mock. Yay for Jest being build by Facebook!
@@ -26,6 +25,10 @@ jest.mock('../../utils');
 jest.mock('../../core/helpers', () =>
   /* eslint-disable-next-line global-require */
   require('../../core/__mocks-required__/helpers'),
+);
+jest.mock('../../core/utils', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../core/__mocks-required__/utils'),
 );
 
 describe('Trezor` Hardware Wallet Module', () => {

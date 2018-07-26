@@ -1,10 +1,10 @@
 import BN from 'bn.js';
 
-import { bigNumber } from '../../utils';
+import { bigNumber } from '../../core/utils';
 import * as defaults from '../../defaults';
 
 jest.dontMock('bn.js');
-jest.dontMock('../../utils');
+jest.dontMock('../../core/utils');
 
 describe('`Utils` Core Module', () => {
   describe('`bigNumber()` method', () => {

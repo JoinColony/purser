@@ -3,6 +3,7 @@
 import { fromString } from 'bip32-path';
 
 import { derivationPathSerializer } from '../core/helpers';
+import { warning, objectToErrorString } from '../core/utils';
 import { PATH } from '../core/defaults';
 import type { WalletArgumentsType } from '../core/flowtypes';
 
@@ -10,7 +11,6 @@ import TrezorWallet from './class';
 
 import { payloadListener } from './helpers';
 import { autoselect } from '../providers';
-import { warning, objectToErrorString } from '../utils';
 
 import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';

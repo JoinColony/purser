@@ -1,6 +1,6 @@
 import { addressNormalizer } from '../../../core/normalizers';
 
-jest.dontMock('../../../utils');
+jest.dontMock('../../../core/utils');
 jest.dontMock('../../../core/normalizers');
 
 const unPrefixedAddress = '586145EBa3A2545cac062EAd7DE0EC184A6C8Af5';

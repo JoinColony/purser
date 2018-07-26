@@ -8,7 +8,7 @@ import {
   hexSequenceValidator,
 } from '../../../core/validators';
 
-import * as utils from '../../../utils';
+import * as utils from '../../../core/utils';
 
 import { signTransaction } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
@@ -25,7 +25,6 @@ import { STD_ERRORS } from '../../../trezor/defaults';
 jest.dontMock('../../../trezor/staticMethods');
 
 jest.mock('ethereumjs-tx');
-jest.mock('../../../utils');
 jest.mock('../../../trezor/helpers');
 jest.mock('../../../core/validators');
 /*
@@ -37,6 +36,10 @@ jest.mock('../../../core/validators');
 jest.mock('../../../core/normalizers', () =>
   /* eslint-disable-next-line global-require */
   require('../../../core/__mocks-required__/normalizers'),
+);
+jest.mock('../../../core/utils', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../core/__mocks-required__/utils'),
 );
 
 const path = 'mocked-derivation-path';

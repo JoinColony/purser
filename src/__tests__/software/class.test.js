@@ -4,13 +4,22 @@ import { derivationPathSerializer } from '../../core/helpers';
 import { PATH } from '../../core/defaults';
 import software from '../../software';
 import { jsonRpc } from '../../providers';
-import * as utils from '../../utils';
+import * as utils from '../../core/utils';
 import { PROVIDER_PROTO } from '../../defaults';
 
 jest.mock('ethers/wallet');
-jest.mock('../../utils');
 jest.dontMock('../../software');
 jest.dontMock('../../core/helpers');
+/*
+ * Manual mocking a manual mock. Yay for Jest being build by Facebook!
+ *
+ * If you need context, see this:
+ * https://github.com/facebook/jest/issues/2070
+ */
+jest.mock('../../core/utils', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../core/__mocks-required__/utils'),
+);
 
 describe('`software` wallet module', () => {
   afterEach(() => {
