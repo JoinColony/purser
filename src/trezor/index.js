@@ -91,13 +91,13 @@ const trezorWallet: Object = Object.assign(
         const { publicKey, chainCode } = await payloadListener({
           payload: modifiedPayloadObject,
         });
-        const walletInstance: TrezorWallet = new TrezorWallet(
+        const walletInstance: TrezorWallet = new TrezorWallet({
           publicKey,
           chainCode,
           rootDerivationPath,
           addressCount,
           providerMode,
-        );
+        });
         return walletInstance;
       } catch (caughtError) {
         /*
