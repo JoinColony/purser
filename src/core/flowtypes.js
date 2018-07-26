@@ -77,7 +77,6 @@ export type LibraryExportType = {
     version: string,
     environment: string,
   },
-  providers: Object,
   utils: Object,
   debug?: Object,
 };

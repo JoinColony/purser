@@ -2,8 +2,7 @@
 
 import type { LibraryExportType } from './core/flowtypes';
 
-import providers from './providers';
-import utils from './utils';
+import { bigNumber, getRandomValues } from './utils';
 import debug from './debug';
 
 import { ENV } from './defaults';
@@ -21,8 +20,10 @@ const colonyWallet: LibraryExportType = Object.assign(
       trezor,
       ledger,
     },
-    providers,
-    utils,
+    utils: {
+      bigNumber,
+      getRandomValues,
+    },
     about: {
       name,
       version,
