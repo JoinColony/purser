@@ -2,7 +2,6 @@
 
 import type { LibraryExportType } from './core/flowtypes';
 
-import wallets from './wallets';
 import providers from './providers';
 import utils from './utils';
 import debug from './debug';
@@ -10,10 +9,18 @@ import debug from './debug';
 import { ENV } from './defaults';
 import { name, version } from '../package.json';
 
+import software from './software';
+import trezor from './trezor';
+import ledger from './ledger';
+
 const colonyWallet: LibraryExportType = Object.assign(
   {},
   {
-    wallets,
+    wallets: {
+      software,
+      trezor,
+      ledger,
+    },
     providers,
     utils,
     about: {
