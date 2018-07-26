@@ -57,3 +57,8 @@ export const SPLITTER: string = '/';
  * (Used in Error messsages)
  */
 export const UNDEFINED: string = 'undefined';
+
+/*
+ * Hash types
+ */
+export const HEX_HASH_TYPE: string = 'hex';

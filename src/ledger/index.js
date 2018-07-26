@@ -7,7 +7,7 @@ import { SigningKey } from 'ethers/wallet';
 
 import { derivationPathSerializer } from '../core/helpers';
 
-import { HEX_HASH_TYPE } from '../trezor/defaults';
+import { HEX_HASH_TYPE } from '../core/defaults';
 
 import type { WalletObjectType, WalletExportType } from '../flowtypes';
 

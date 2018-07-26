@@ -37,11 +37,6 @@ export const WINDOW_FEATURES: WindowFeaturesType = {
 };
 
 /*
- * Hash types
- */
-export const HEX_HASH_TYPE: string = 'hex';
-
-/*
  * Firmware versions
  *
  * Note: 1.4.0 is the first version that supports ethereum

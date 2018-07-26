@@ -71,8 +71,6 @@ export const QR_CODE_OPTS: Object = {
   width: 200,
 };
 
-export const MNEMONIC_PATH: string = "m/44'/60'/0'/0/0";
-
 /*
  * Default options used to pass down to the blockie generator.
  * Note: They are specific to the `ethereum-blockie` library/

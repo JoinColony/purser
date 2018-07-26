@@ -4,15 +4,13 @@ import { Wallet as EtherWallet, HDNode } from 'ethers/wallet';
 import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
 
-import type {
-  ProviderType,
-  WalletObjectType,
-  WalletArgumentsType,
-  WalletExportType,
-} from './flowtypes';
+import { derivationPathSerializer } from './core/helpers';
+import { PATH } from './core/defaults';
+import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './core/types';
 
 import { autoselect } from './providers';
 import { getRandomValues, warning, objectToErrorString } from './utils';
+
 import { softwareWallet as messages } from './messages';
 import {
   ENV,
@@ -20,9 +18,15 @@ import {
   QR_CODE_OPTS,
   BLOCKIE_OPTS,
   WALLET_PROP_DESCRIPTORS,
-  MNEMONIC_PATH,
 } from './defaults';
-import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './core/types';
+
+import type {
+  ProviderType,
+  WalletObjectType,
+  WalletArgumentsType,
+  WalletExportType,
+} from './flowtypes';
+
 /*
  * "Private" variable(s)
  */
@@ -43,7 +47,10 @@ class SoftwareWallet extends EtherWallet {
     provider: ProviderType | void,
     password: string | void,
     mnemonic: string | void,
-    path: string | void = MNEMONIC_PATH,
+    path: string | void = derivationPathSerializer({
+      change: PATH.CHANGE,
+      addressIndex: PATH.INDEX,
+    }),
     keystore: string | void,
   ) {
     let providerMode = typeof provider === 'function' ? provider() : provider;
@@ -324,7 +331,10 @@ class SoftwareWallet extends EtherWallet {
       privateKey,
       mnemonic,
       keystore,
-      path = MNEMONIC_PATH,
+      path = derivationPathSerializer({
+        change: PATH.CHANGE,
+        addressIndex: PATH.INDEX,
+      }),
     } = walletArguments;
     let extractedPrivateKey: string;
     let extractedMnemonic: string;
