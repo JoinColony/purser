@@ -15,7 +15,7 @@ import {
   GETTER_PROP_DESCRIPTORS,
   SETTER_PROP_DESCRIPTORS,
 } from '../defaults';
-import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../walletTypes';
+import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 
