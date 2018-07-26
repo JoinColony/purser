@@ -58,12 +58,6 @@ export const signTransaction = async ({
    * Chain Id defaults to the one set on the provider but it can be overwritten
    */
   chainId,
-  /*
-   * We can't currently use the object spread operator here because of some
-   * Eslint 5 and airbnb ruleset lack of compatibility.
-   *
-   * @TODO Fix object spread operator
-   */
   nonce = 0,
   to,
   value = bigNumber(1),
