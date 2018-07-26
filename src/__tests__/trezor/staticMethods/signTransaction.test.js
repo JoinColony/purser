@@ -75,24 +75,13 @@ describe('`Trezor` Hardware Wallet Module', () => {
       });
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
-        payload: {
-          /*
-           * We only care about what payload type this method sends
-           */
-          address_n: expect.anything(),
-          chain_id: expect.anything(),
-          data: expect.anything(),
-          gas_limit: expect.anything(),
-          gas_price: expect.anything(),
-          nonce: expect.anything(),
-          to: expect.anything(),
-          value: expect.anything(),
-          /*
-           * These two values should be correct
-           */
+        /*
+        * We only care about what payload type this method sends
+        */
+        payload: expect.objectContaining({
           type,
           requiredFirmware,
-        },
+        }),
       });
     });
     test('Validates transaction input values', async () => {

@@ -43,18 +43,13 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       });
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
-        payload: {
-          /*
-           * We only care about what payload type this method sends
-           */
-          path: expect.anything(),
-          message: expect.anything(),
-          /*
-           * These two values should be correct
-           */
+        /*
+        * We only care about what payload type this method sends
+        */
+        payload: expect.objectContaining({
           type,
           requiredFirmware,
-        },
+        }),
       });
     });
     test('Validates message input values', async () => {

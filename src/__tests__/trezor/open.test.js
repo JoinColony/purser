@@ -59,11 +59,13 @@ describe('Trezor` Hardware Wallet Module', () => {
        */
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
-        payload: {
-          path: expect.anything() /* Don't care about the derivation path */,
+        /*
+        * We only care about what payload type this method sends
+        */
+        payload: expect.objectContaining({
           type,
           requiredFirmware,
-        },
+        }),
       });
     });
     test('Open the wallet with 20 addresss', async () => {
@@ -71,22 +73,24 @@ describe('Trezor` Hardware Wallet Module', () => {
       await trezorWallet.open({ addressCount: addressesToOpen });
       expect(TrezorWalletClass).toHaveBeenCalled();
       expect(TrezorWalletClass).toHaveBeenCalledWith(
-        expect.anything() /* Don't care about the public key */,
-        expect.anything() /* Don't care about the chain code */,
-        expect.anything() /* Don't care about the derivation path */,
-        addressesToOpen,
-        expect.anything() /* Don't care about the provider */,
+        /*
+        * We only care about the address count
+        */
+        expect.objectContaining({
+          addressCount: addressesToOpen,
+        }),
       );
     });
     test('Open the wallet and set a provider', async () => {
       await trezorWallet.open({ provider: jsonRpc });
       expect(TrezorWalletClass).toHaveBeenCalled();
       expect(TrezorWalletClass).toHaveBeenCalledWith(
-        expect.anything() /* Don't care about the public key */,
-        expect.anything() /* Don't care about the chain code */,
-        expect.anything() /* Don't care about the derivation path */,
-        undefined /* Don't care about the address count */,
-        await jsonRpc(),
+        /*
+        * We only care that the provider generator method gets instantiated
+        */
+        expect.objectContaining({
+          providerMode: await jsonRpc(),
+        }),
       );
       /*
        * We have a deprecation warning
