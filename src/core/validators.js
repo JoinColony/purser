@@ -213,6 +213,17 @@ export const bigNumberValidator = (bigNumber: any): boolean => {
  */
 export const addressValidator = (address: any): boolean => {
   const { address: addressMessages } = messages;
+  let addressLength = 0;
+  try {
+    /*
+     * Because length checking is bubbled to the top, we need to to wrap this inside
+     * a separate try-catch block, otherwise the whole thing will fail before the
+     * validation sequence will even start.
+     */
+    addressLength = address.length;
+  } catch (caughtError) {
+    throw new Error(`${addressMessages.notStringSequence}: ${UNDEFINED}`);
+  }
   const validationSequence: Array<Object> = [
     {
       /*
@@ -227,7 +238,7 @@ export const addressValidator = (address: any): boolean => {
       /*
       * It should be the correct length. Either 40 or 42 (with prefix)
       */
-      expression: address.length === 40 || address.length === 42,
+      expression: addressLength === 40 || addressLength === 42,
       message: `${addressMessages.notLength}: ${address || UNDEFINED}`,
     },
     {
