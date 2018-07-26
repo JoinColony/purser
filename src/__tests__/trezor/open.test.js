@@ -44,6 +44,7 @@ describe('Trezor` Hardware Wallet Module', () => {
       expect(derivationPathSerializer).toHaveBeenCalled();
       expect(derivationPathSerializer).toHaveBeenCalledWith({
         coinType: PATH.COIN_MAINNET,
+        change: PATH.CHANGE,
       });
       /*
        * Expect to convert the derivation path into an path array
