@@ -1,6 +1,6 @@
 /* @flow */
 
-import GenericWallet from '../core/genericClass';
+import GenericWallet from '../core/genericWallet';
 import { DESCRIPTORS } from '../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
 import type {

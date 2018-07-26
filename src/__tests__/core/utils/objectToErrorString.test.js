@@ -2,8 +2,8 @@ import { objectToErrorString } from '../../../core/utils';
 
 jest.dontMock('../../../core/utils');
 
-describe('`Utils` Core Module', () => {
-  describe('`objectToErrorString()` method', () => {
+describe('`Core` Module', () => {
+  describe('`objectToErrorString()` util', () => {
     test("Returns 'key (value)' string pairs from a String", () => {
       const objectToSerialize = {
         suit: 'spade',

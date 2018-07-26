@@ -8,8 +8,8 @@ global.console = {
   error: jest.fn(),
 };
 
-describe('`Utils` Core Module', () => {
-  describe('`verbose()` method', () => {
+describe('`Core` Module', () => {
+  describe('`verbose()` util', () => {
     test('Should be verbose if the environment is not defined', () => {
       defaults.ENV = undefined;
       const isVerbose = verbose();

@@ -12,8 +12,8 @@ const badAssertionsArray = [
   { expression: true, message: validErrorMessage },
 ];
 
-describe('`Utils` Core Module', () => {
-  describe('`validatorGenerator()` method', () => {
+describe('`Core` Module', () => {
+  describe('`validatorGenerator()` util', () => {
     test('Stops execution if one of the assertions fails', () => {
       expect(() =>
         validatorGenerator(badAssertionsArray, genericErrorMessage),

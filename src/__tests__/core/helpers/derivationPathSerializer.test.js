@@ -2,7 +2,7 @@ import { derivationPathSerializer } from '../../../core/helpers';
 
 jest.dontMock('../../../core/helpers');
 
-describe('`Trezor` Hardware Wallet Module Helpers', () => {
+describe('`Core` Module', () => {
   describe('`derivationPathSerializer()` helper', () => {
     /*
      * For some reason prettier always suggests a way to fix this that would

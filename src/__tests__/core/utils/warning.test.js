@@ -10,8 +10,8 @@ global.console = {
 
 const message = 'This is a test message';
 
-describe('`Utils` Core Module', () => {
-  describe('`warning()` method', () => {
+describe('`Core` Module', () => {
+  describe('`warning()` util', () => {
     beforeEach(() => {
       defaults.ENV = 'development';
     });

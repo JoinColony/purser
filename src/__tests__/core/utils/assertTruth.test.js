@@ -9,8 +9,8 @@ global.console = {
 
 const errorMessage = 'mocked-error-message';
 
-describe('`Utils` Core Module', () => {
-  describe('`assertTruth()` method', () => {
+describe('`Core` Module', () => {
+  describe('`assertTruth()` util', () => {
     afterEach(() => {
       console.warn.mockReset();
       console.warn.mockRestore();

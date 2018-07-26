@@ -3,7 +3,7 @@ import { derivationPathValidator } from '../../../core/validators';
 jest.dontMock('../../../core/utils');
 jest.dontMock('../../../core/validators');
 
-describe('`Trezor` Hardware Wallet Module Validators', () => {
+describe('`Core` Module', () => {
   describe('`derivationPathValidator()` validator', () => {
     test("Fail if it's an empty String", () => {
       expect(() => derivationPathValidator('')).toThrow();

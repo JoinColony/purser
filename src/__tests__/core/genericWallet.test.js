@@ -1,7 +1,7 @@
 import HDKey from 'hdkey';
 import { SigningKey } from 'ethers/wallet';
 
-import GenericClass from '../../core/genericClass';
+import GenericWallet from '../../core/genericWallet';
 import {
   safeIntegerValidator,
   hexSequenceValidator,
@@ -12,7 +12,7 @@ import {
   hexSequenceNormalizer,
 } from '../../core/normalizers';
 
-jest.dontMock('../../core/genericClass');
+jest.dontMock('../../core/genericWallet');
 
 jest.mock('hdkey');
 jest.mock('ethers/wallet');
@@ -38,27 +38,27 @@ const addressCount = 10;
 const addressCountSingle = 1;
 const mockedProvider = { chainId: 4 };
 
-describe('Core` Module', () => {
+describe('`Core` Module', () => {
   afterEach(() => {
     addressNormalizer.mockClear();
     addressNormalizer.mockRestore();
     hexSequenceNormalizer.mockClear();
     hexSequenceNormalizer.mockRestore();
   });
-  describe('`GenericClass` class', () => {
+  describe('`GenericWallet` class', () => {
     test('Creates a new wallet instance', () => {
-      const genericWallet = new GenericClass({
+      const genericWallet = new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
         addressCount,
         provider: mockedProvider,
       });
-      expect(genericWallet).toBeInstanceOf(GenericClass);
+      expect(genericWallet).toBeInstanceOf(GenericWallet);
     });
     test('Derives the address derivation path from the root path', () => {
       /* eslint-disable-next-line no-new */
-      new GenericClass({
+      new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
@@ -69,7 +69,7 @@ describe('Core` Module', () => {
     });
     test('Generates the address(es) from the public key(s)', () => {
       /* eslint-disable-next-line no-new */
-      new GenericClass({
+      new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
@@ -79,7 +79,7 @@ describe('Core` Module', () => {
       expect(SigningKey.publicKeyToAddress).toHaveBeenCalled();
     });
     test('The Wallet Objet has the required (correct) props', () => {
-      const genericWallet = new GenericClass({
+      const genericWallet = new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
@@ -114,7 +114,7 @@ describe('Core` Module', () => {
     test('Validates values used to instantiate', async () => {
       const addressGeneratedFromPublicKey = 'mocked-hex-address';
       /* eslint-disable-next-line no-new */
-      new GenericClass({
+      new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
@@ -146,7 +146,7 @@ describe('Core` Module', () => {
     });
     test('Normalizes values used to instantiate', async () => {
       /* eslint-disable-next-line no-new */
-      new GenericClass({
+      new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
@@ -167,7 +167,7 @@ describe('Core` Module', () => {
     test('Changes the default address', async () => {
       const addressGeneratedFromPublicKey = 'mocked-hex-address';
       /* eslint-disable-next-line no-new */
-      const genericWallet = new GenericClass({
+      const genericWallet = new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
@@ -224,7 +224,7 @@ describe('Core` Module', () => {
       'Cannot change the default address (single address opened)',
       async () => {
         /* eslint-disable-next-line no-new */
-        const genericWallet = new GenericClass({
+        const genericWallet = new GenericWallet({
           publicKey: rootPublicKey,
           chainCode: rootChainCode,
           rootDerivationPath,
@@ -238,7 +238,7 @@ describe('Core` Module', () => {
       'Has the `otherAddresses` prop if multiple were instantiated',
       async () => {
         /* eslint-disable-next-line no-new */
-        const genericWallet = new GenericClass({
+        const genericWallet = new GenericWallet({
           publicKey: rootPublicKey,
           chainCode: rootChainCode,
           rootDerivationPath,
@@ -253,7 +253,7 @@ describe('Core` Module', () => {
       'Does not have the `otherAddresses` prop if only one was instantiated',
       async () => {
         /* eslint-disable-next-line no-new */
-        const genericWallet = new GenericClass({
+        const genericWallet = new GenericWallet({
           publicKey: rootPublicKey,
           chainCode: rootChainCode,
           rootDerivationPath,
