@@ -22,7 +22,7 @@ import {
   WALLET_PROP_DESCRIPTORS,
   MNEMONIC_PATH,
 } from './defaults';
-import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './walletTypes';
+import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './core/types';
 /*
  * "Private" variable(s)
  */

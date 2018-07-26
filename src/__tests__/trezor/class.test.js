@@ -18,7 +18,7 @@ import {
   verifyMessage,
 } from '../../trezor/staticMethods';
 
-import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../../walletTypes';
+import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../../core/types';
 
 jest.dontMock('../../trezor/class');
 
