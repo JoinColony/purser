@@ -19,7 +19,7 @@ import { utils as messages } from './messages';
  *
  * @return {boolean} Do we output to the console, or not?
  */
-const verbose = (): boolean => {
+export const verbose = (): boolean => {
   if (typeof ENV === 'undefined') {
     return true;
   }
@@ -328,36 +328,3 @@ export const validatorGenerator = (
    */
   return true;
 };
-
-const utils: {
-  warning?: (...*) => void,
-  getRandomValues: (...*) => Uint8Array,
-  verbose?: (...*) => boolean,
-  assertTruth?: (...*) => boolean,
-  bigNumber: (...*) => BN,
-  objectToErrorString?: (...*) => string,
-  validatorGenerator?: (...*) => boolean,
-} = Object.assign(
-  {},
-  {
-    warning,
-    getRandomValues,
-    assertTruth,
-    bigNumber,
-    validatorGenerator,
-  },
-  /*
-   * Only export the `verbose` method for testing purpouses
-   */
-  ENV === 'test'
-    ? {
-        warning,
-        verbose,
-        assertTruth,
-        objectToErrorString,
-        validatorGenerator,
-      }
-    : {},
-);
-
-export default utils;

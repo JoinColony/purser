@@ -1,4 +1,4 @@
-import utils from '../../utils';
+import { verbose } from '../../utils';
 import * as defaults from '../../defaults';
 
 jest.dontMock('../../utils');
@@ -7,8 +7,6 @@ global.console = {
   warn: jest.fn(),
   error: jest.fn(),
 };
-
-const { verbose } = utils;
 
 describe('`Utils` Core Module', () => {
   describe('`verbose()` method', () => {
