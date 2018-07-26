@@ -2,6 +2,8 @@ module.exports = {
   rootDir: 'src',
   collectCoverageFrom: [
     '*.{js}',
+    'core/*.{js}',
+    'software/*.{js}',
     'trezor/*.{js}',
     /*
      * Exports debug objects, no functionality
@@ -11,41 +13,30 @@ module.exports = {
      * String assignments, will always pass
      */
     '!defaults.js',
+    '!core/defaults.js',
+    '!software/defaults.js',
+    '!trezor/defaults.js',
     /*
      * Exports main library objects, no functionality
      */
     '!index.js',
+    '!core/index.js',
+    '!software/index.js',
     /*
      * String assignments, will always pass
      */
     '!messages.js',
-    /*
-     * Exports hardware wallets objects, no functionality
-     */
-    '!hardware.js',
-    /*
-     * Exports all wallets objects, no functionality
-     */
-    '!wallets.js',
-    /*
-     * String assignments, will always pass
-     */
-    '!walletTypes.js',
-    /*
-     * String assignments, will always pass
-     */
-    '!trezor/defaults.js',
-    /*
-     * String assignments, will always pass
-     */
+    '!core/messages.js',
+    '!software/messages.js',
     '!trezor/messages.js',
     /*
      * String assignments, will always pass
      */
-    '!trezor/payloads.js',
+    '!core/types.js',
     /*
      * String assignments, will always pass
      */
+    '!trezor/payloads.js',
     '!trezor/responses.js',
   ],
   coverageDirectory: '../coverage',
