@@ -5,7 +5,7 @@ import type { LibraryExportType } from './core/flowtypes';
 import { bigNumber, getRandomValues } from './core/utils';
 import debug from './debug';
 
-import { ENV } from './defaults';
+import { ENV } from './core/defaults';
 import { name, version } from '../package.json';
 
 import software from './software';

@@ -5,20 +5,20 @@ import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
 
 import { derivationPathSerializer } from './core/helpers';
-import { PATH } from './core/defaults';
+import {
+  PATH,
+  ENV,
+  GETTER_PROP_DESCRIPTORS,
+  QR_CODE_OPTS,
+  BLOCKIE_OPTS,
+  WALLET_PROP_DESCRIPTORS,
+} from './core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './core/types';
 import type { WalletObjectType, WalletArgumentsType } from './core/flowtypes';
 
 import { autoselect } from './providers';
 import { getRandomValues, warning, objectToErrorString } from './core/utils';
 import { softwareWallet as messages } from './messages';
-import {
-  ENV,
-  GETTER_PROP_DESCRIPTORS,
-  QR_CODE_OPTS,
-  BLOCKIE_OPTS,
-  WALLET_PROP_DESCRIPTORS,
-} from './defaults';
 import type { ProviderType } from './flowtypes';
 
 /*

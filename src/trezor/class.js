@@ -9,13 +9,12 @@ import {
   addressValidator,
 } from '../core/validators';
 import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
-import { HEX_HASH_TYPE } from '../core/defaults';
-
 import {
+  HEX_HASH_TYPE,
   WALLET_PROP_DESCRIPTORS,
   GETTER_PROP_DESCRIPTORS,
   SETTER_PROP_DESCRIPTORS,
-} from '../defaults';
+} from '../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
