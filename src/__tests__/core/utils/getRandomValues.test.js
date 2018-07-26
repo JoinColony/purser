@@ -5,8 +5,8 @@ import { getRandomValues } from '../../../core/utils';
 jest.mock('crypto', () => ({}));
 jest.dontMock('../../../core/utils');
 
-describe('`Utils` Core Module', () => {
-  describe('`getRandomValues()` polyfill method', () => {
+describe('`Core` Module', () => {
+  describe('`getRandomValues()` util', () => {
     beforeEach(() => {
       jest.resetModules();
     });

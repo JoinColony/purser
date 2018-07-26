@@ -3,7 +3,7 @@ import { messageValidator } from '../../../core/validators';
 jest.dontMock('../../../core/utils');
 jest.dontMock('../../../core/validators');
 
-describe('`Trezor` Hardware Wallet Module Validators', () => {
+describe('`Core` Module', () => {
   describe('`messageValidator()` validator', () => {
     test("Fail if it's not a String", () => {
       expect(() => messageValidator({})).toThrow();

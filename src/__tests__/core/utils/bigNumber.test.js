@@ -6,8 +6,8 @@ import * as defaults from '../../../core/defaults';
 jest.dontMock('bn.js');
 jest.dontMock('../../../core/utils');
 
-describe('`Utils` Core Module', () => {
-  describe('`bigNumber()` method', () => {
+describe('`Core` Module', () => {
+  describe('`bigNumber()` util', () => {
     test('Returns a (modified) instance of BN', () => {
       expect(bigNumber(0)).toBeInstanceOf(BN);
     });

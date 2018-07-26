@@ -3,7 +3,7 @@ import { multipleOfTwoHexValueNormalizer } from '../../../core/normalizers';
 jest.dontMock('../../../core/utils');
 jest.dontMock('../../../core/normalizers');
 
-describe('`Trezor` Hardware Wallet Module Normalizers', () => {
+describe('`Core` Module', () => {
   describe('`multipleOfTwoHexValueNormalizer()` normalizer', () => {
     test("Makes a hex string's length even by padding it with a '0'", () => {
       const oddLengthHexString = '9ACAeb9';

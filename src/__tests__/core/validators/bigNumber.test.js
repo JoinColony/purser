@@ -4,7 +4,7 @@ import { bigNumberValidator } from '../../../core/validators';
 jest.dontMock('../../../core/utils');
 jest.dontMock('../../../core/validators');
 
-describe('`Trezor` Hardware Wallet Module Validators', () => {
+describe('`Core` Module', () => {
   describe('`bigNumberValidator()` validator', () => {
     test("Fail if it's not an instance of the `bigNumber` util", () => {
       expect(() => bigNumberValidator('')).toThrow();
