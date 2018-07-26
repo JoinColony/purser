@@ -5,11 +5,6 @@ import { getRandomValues } from '../../../core/utils';
 jest.mock('crypto', () => ({}));
 jest.dontMock('../../../core/utils');
 
-global.console = {
-  warn: jest.fn(),
-  error: jest.fn(),
-};
-
 describe('`Utils` Core Module', () => {
   describe('`getRandomValues()` polyfill method', () => {
     beforeEach(() => {
@@ -38,27 +33,14 @@ describe('`Utils` Core Module', () => {
         randomnessArray,
       );
     });
-    test('Selects the nodeJS `crypto` library as a fallack', () => {
-      window.crypto = undefined;
-      window.msCrypto = undefined;
-      const randomnessArray = new Uint8Array(10);
-      crypto.randomBytes = jest.fn(() => randomnessArray);
-      getRandomValues(randomnessArray);
-      expect(crypto.randomBytes).toHaveBeenCalled();
-      expect(crypto.randomBytes).toHaveBeenCalledWith(randomnessArray.length);
-    });
-    test('Using nodeJS `crypto`, throws if array is not an uint8', () => {
-      window.crypto = undefined;
-      window.msCrypto = undefined;
-      const randomnessArray = new Array(10);
-      expect(() => getRandomValues(randomnessArray)).toThrow();
-    });
-    test('If no `crypto` method is found, throw', () => {
+    test('If no `crypto` method is found, generate JS based random', () => {
       window.crypto = undefined;
       window.msCrypto = undefined;
       crypto.randomBytes = undefined;
       const randomnessArray = new Uint8Array(10);
-      expect(() => getRandomValues(randomnessArray)).toThrow();
+      const arraySpy = jest.spyOn(randomnessArray, 'map');
+      getRandomValues(randomnessArray);
+      expect(arraySpy).toHaveBeenCalled();
     });
   });
 });

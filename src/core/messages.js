@@ -59,6 +59,6 @@ export const utils: Object = {
     wrongArgumentType:
       'Expected the argument to be an instance of an Uint8Array typed array.',
     noCryptoLib:
-      'Could not find any `crypto` libraries. Cannot proceed further as we cannot generate randomness',
+      "Could not find any `crypto` libraries. We'll try our best to still provide randomness, but it's not all that good, since it relies on Javascript's internal random number generator",
   },
 };
