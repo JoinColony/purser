@@ -9,9 +9,9 @@ import { derivationPathSerializer } from '../core/helpers';
 
 import { HEX_HASH_TYPE } from '../core/defaults';
 
-import type { WalletObjectType, WalletExportType } from '../flowtypes';
+import type { WalletObjectType } from '../core/flowtypes';
 
-const ledgerWallet: WalletExportType = Object.assign(
+const ledgerWallet: Object = Object.assign(
   {},
   {
     open: async (): Promise<WalletObjectType | void> => {

@@ -7,10 +7,10 @@ import blockies from 'ethereum-blockies';
 import { derivationPathSerializer } from './core/helpers';
 import { PATH } from './core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from './core/types';
+import type { WalletObjectType, WalletArgumentsType } from './core/flowtypes';
 
 import { autoselect } from './providers';
 import { getRandomValues, warning, objectToErrorString } from './utils';
-
 import { softwareWallet as messages } from './messages';
 import {
   ENV,
@@ -19,13 +19,7 @@ import {
   BLOCKIE_OPTS,
   WALLET_PROP_DESCRIPTORS,
 } from './defaults';
-
-import type {
-  ProviderType,
-  WalletObjectType,
-  WalletArgumentsType,
-  WalletExportType,
-} from './flowtypes';
+import type { ProviderType } from './flowtypes';
 
 /*
  * "Private" variable(s)
@@ -429,7 +423,7 @@ export const open = (
  * If we're in dev mode, also export the `SoftwareWallet` class so it's available
  * to us directly for debugging.
  */
-const softwareWallet: WalletExportType = Object.assign(
+const softwareWallet: Object = Object.assign(
   {},
   {
     create,

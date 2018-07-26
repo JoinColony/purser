@@ -18,16 +18,16 @@ import {
   hexSequenceNormalizer,
 } from '../core/normalizers';
 import { HEX_HASH_TYPE } from '../core/defaults';
+import type {
+  TransactionObjectType,
+  MessageObjectType,
+} from '../core/flowtypes';
 
 import { warning, bigNumber, objectToErrorString } from '../utils';
-
 import { payloadListener } from './helpers';
-
 import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
-
-import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
 
 /**
  * Sign a transaction and return the signed transaction.

@@ -3,9 +3,7 @@
 import trezorWallet from './trezor';
 import ledgerWallet from './ledger';
 
-import type { WalletExportType } from './flowtypes';
-
-const hardwareWallet: { trezor: WalletExportType } = Object.assign(
+const hardwareWallet: { trezor: Object } = Object.assign(
   {},
   {
     trezor: trezorWallet,

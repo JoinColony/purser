@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { LibraryExportType } from './flowtypes';
+import type { LibraryExportType } from './core/flowtypes';
 
 import wallets from './wallets';
 import providers from './providers';
