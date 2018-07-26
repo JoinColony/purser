@@ -32,17 +32,6 @@ export const providers: Object = {
   },
 };
 
-export const utils: Object = {
-  getRandomValues: {
-    nodeCryptoFallback:
-      "Your browser doesn't have the `webcrypto` API implemented, falling back to the `cryto` library provided by `node`",
-    wrongArgumentType:
-      'Expected the argument to be an instance of an Uint8Array typed array.',
-    noCryptoLib:
-      'Could not find any `crypto` libraries. Cannot proceed further as we cannot generate randomness',
-  },
-};
-
 export const softwareWallet: Object = {
   noProvider:
     "You did not set a provider. While this is not required for wallet creation, it's highly recommended as it will easier to use later. If you do not need a custom provider, just remove the argument and it will auto-select the first one available.",
@@ -63,11 +52,3 @@ export const softwareWallet: Object = {
   transactionConfirmationFail:
     'The confirmation for this transaction (%s) was rejected. The transaction was not sent.',
 };
-
-const messages: { providers: Object, utils: Object, softwareWallet: Object } = {
-  providers,
-  utils,
-  softwareWallet,
-};
-
-export default messages;

@@ -52,7 +52,13 @@ export const validators: Object = {
   },
 };
 
-const coreMessages: Object = {
-  validators,
+export const utils: Object = {
+  getRandomValues: {
+    nodeCryptoFallback:
+      "Your browser doesn't have the `webcrypto` API implemented, falling back to the `cryto` library provided by `node`",
+    wrongArgumentType:
+      'Expected the argument to be an instance of an Uint8Array typed array.',
+    noCryptoLib:
+      'Could not find any `crypto` libraries. Cannot proceed further as we cannot generate randomness',
+  },
 };
-export default coreMessages;

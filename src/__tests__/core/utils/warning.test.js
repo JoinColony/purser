@@ -1,7 +1,7 @@
-import { warning } from '../../core/utils';
-import * as defaults from '../../defaults';
+import { warning } from '../../../core/utils';
+import * as defaults from '../../../core/defaults';
 
-jest.dontMock('../../core/utils');
+jest.dontMock('../../../core/utils');
 
 global.console = {
   warn: jest.fn(),

@@ -1,6 +1,6 @@
-import { validatorGenerator } from '../../core/utils';
+import { validatorGenerator } from '../../../core/utils';
 
-jest.dontMock('../../core/utils');
+jest.dontMock('../../../core/utils');
 
 const validErrorMessage = 'mocked-valid-error-message';
 const invalidErrorMessage = 'mocked-invalid-error-message';

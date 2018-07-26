@@ -1,6 +1,6 @@
-import { objectToErrorString } from '../../core/utils';
+import { objectToErrorString } from '../../../core/utils';
 
-jest.dontMock('../../core/utils');
+jest.dontMock('../../../core/utils');
 
 describe('`Utils` Core Module', () => {
   describe('`objectToErrorString()` method', () => {
