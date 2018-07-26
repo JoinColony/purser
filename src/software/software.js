@@ -249,16 +249,16 @@ class SoftwareWallet extends EtherWallet {
        */
       provider = await autoselect(),
       password,
-      entropy = new Uint8Array(65536),
+      entropy = getRandomValues(new Uint8Array(65536)),
     } = walletArguments;
     let basicWallet: WalletObjectType;
     try {
       if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
-        warning(messages.noentropy);
+        warning(messages.noEntrophy);
         basicWallet = this.createRandom();
       } else {
         basicWallet = this.createRandom({
-          extraEntropy: getRandomValues(entropy),
+          extraEntropy: entropy,
         });
       }
       return new this(

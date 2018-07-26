@@ -1,6 +1,5 @@
 /* @flow */
 
-import crypto from 'crypto';
 import BN from 'bn.js';
 
 import {
@@ -93,15 +92,15 @@ export const warning = (...args: Array<*>): void => {
  * A very basic polyfill method to generate randomness for use in wallet entropy.
  * This will fall back to nodejs's `crypto` library if the browser that's using this doesn't have the `webcrypto` API implemented yet.
  *
- * @TODO Lazy load the node `crypto` library (that's used as a fallback)
- *
  * @method getRandomValues
  *
  * @param {Uint8Array} typedArray An initial unsigned 8-bit integer array to generate randomness from
  *
  * @return {Uint8Array} A new 8-bit unsigned integer array filled with random bytes
  */
-export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
+export const getRandomValues = (
+  typedArray: Uint8Array = new Uint8Array(10),
+): Uint8Array => {
   /*
    * Check if `webCrypto` is available (Chrome and Firefox browsers)
    *
@@ -128,25 +127,14 @@ export const getRandomValues = (typedArray: Uint8Array): Uint8Array => {
   ) {
     return window.msCrypto.getRandomValues(typedArray);
   }
-  if (crypto && crypto.randomBytes) {
-    /*
-     * We can't find built-in methods so we rely on node's `crypto` library
-     */
-    if (!(typedArray instanceof Uint8Array)) {
-      /*
-       * Besides our instance check, this also has a an implicit check for array lengths bigger than 65536
-       */
-      throw new TypeError(messages.getRandomValues.wrongArgumentType);
-    }
-    warning(messages.getRandomValues.nodeCryptoFallback);
-    const randomBytesArray = crypto.randomBytes(typedArray.length);
-    typedArray.set(randomBytesArray);
-    return typedArray;
-  }
   /*
-   * We can't find any crypto method, we'll abort.
+   * We can't find any crypto method, we'll try to do our own.
+   *
+   * WARNING: This is really not all that secure as it relies on Javascripts'
+   * internal random number generator, which isn't all that good.
    */
-  throw new Error(messages.getRandomValues.noCryptoLib);
+  warning(messages.getRandomValues.noCryptoLib);
+  return typedArray.map(() => Math.floor(Math.random() * 255));
 };
 
 /**
