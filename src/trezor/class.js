@@ -9,6 +9,7 @@ import {
   addressValidator,
 } from '../core/validators';
 import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
+import { HEX_HASH_TYPE } from '../core/defaults';
 
 import {
   WALLET_PROP_DESCRIPTORS,
@@ -20,7 +21,6 @@ import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 
 import { classMessages as messages } from './messages';
-import { HEX_HASH_TYPE } from './defaults';
 
 import type {
   ProviderType,
