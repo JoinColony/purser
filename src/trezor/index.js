@@ -12,6 +12,7 @@ import TrezorWallet from './class';
 import { payloadListener } from './helpers';
 import { autoselect } from '../providers';
 
+import { deprecated as deprecatedMessages } from '../core/messages';
 import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
@@ -51,7 +52,7 @@ const trezorWallet: Object = Object.assign(
       if (typeof provider !== 'object' && typeof provider !== 'function') {
         providerMode = undefined;
       } else {
-        warning(messages.providersDeprecated);
+        warning(deprecatedMessages.providers);
       }
       /*
        * If we're on a testnet set the coin type id to `1`
