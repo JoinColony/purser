@@ -97,7 +97,7 @@ const trezorWallet: Object = Object.assign(
           chainCode,
           rootDerivationPath,
           addressCount,
-          providerMode,
+          provider: providerMode,
         });
         return walletInstance;
       } catch (caughtError) {

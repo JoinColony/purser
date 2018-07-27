@@ -88,7 +88,7 @@ const ledgerWallet: Object = Object.assign(
            * If you want to prompt the user on the device, set the second argument
            * as true.
            */
-          derivationPathSerializer(),
+          rootDerivationPath,
           false,
           true,
         );
@@ -105,7 +105,7 @@ const ledgerWallet: Object = Object.assign(
            */
           rootDerivationPath: `${rootDerivationPath.slice(0, -1)}`,
           addressCount,
-          providerMode,
+          provider: providerMode,
         });
         return walletInstance;
       } catch (caughtError) {
