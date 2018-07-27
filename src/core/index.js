@@ -1,6 +1,6 @@
 /* @flow */
 
-import helpers from './helpers';
+import * as helpers from './helpers';
 import * as validators from './validators';
 import * as defaults from './defaults';
 import * as messages from './messages';

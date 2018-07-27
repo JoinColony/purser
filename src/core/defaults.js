@@ -94,3 +94,14 @@ export const DESCRIPTORS: Object = {
     configurable: true,
   },
 };
+
+/*
+ * Defaults for the transaction object
+ */
+export const TRANSACTION: Object = {
+  GAS_PRICE: 9000000000, // 9 Gwei
+  GAS_LIMIT: 21000,
+  NONCE: 0,
+  VALUE: 1,
+  INPUT_DATA: '00',
+};

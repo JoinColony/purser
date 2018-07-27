@@ -40,7 +40,7 @@ export default class TrezorWallet extends GenericWallet {
             /* eslint-enable prettier/prettier */
             return signTransaction(
               Object.assign({}, transactionObject, {
-                path: await this.derivationPath,
+                derivationPath: await this.derivationPath,
                 chainId,
               }),
             );

@@ -15,7 +15,7 @@ import ledgerU2fTransport from '@ledgerhq/hw-transport-u2f';
 
 /* Core */
 import * as utils from './core/utils';
-import coreHelpers from './core/helpers';
+import * as coreHelpers from './core/helpers';
 import * as validators from './core/validators';
 import * as normalizers from './core/normalizers';
 
