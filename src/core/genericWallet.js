@@ -74,7 +74,7 @@ export default class GenericWallet {
     safeIntegerValidator(addressCount);
     /*
      * Validate the `publicKey` and `chainCode` hex sequences. These come from
-     * Trezor's service, but we still shouldn't trust them.
+     * various external services, and we shouldn't trust them.
      */
     hexSequenceValidator(publicKey);
     hexSequenceValidator(chainCode);
@@ -107,8 +107,7 @@ export default class GenericWallet {
         /* $FlowFixMe */
         addressObject.derivationPath = `${rootDerivationPath}/${index}`;
         /*
-         * This is the derrived public key, not the one originally fetched from
-         * the trezor service
+         * This is the derrived public key, not the one originally fetched one
          */
         const derivedPublicKey = derivationKey.publicKey.toString(
           HEX_HASH_TYPE,
