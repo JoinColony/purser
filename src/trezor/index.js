@@ -26,6 +26,11 @@ const trezorWallet: Object = Object.assign(
      * form the Trezor service after interacting (confirming) with the hardware
      * in real life.
      *
+     * @TODO Reduce code repetition
+     * While I would very much like to refactor this now, it's a little pre-mature
+     * since there's going to be a lot of changes still.
+     * This should be put off until we remove providers.
+     *
      * @method open
      *
      * @param {number} addressCount the number of extra addresses to generate from the derivation path

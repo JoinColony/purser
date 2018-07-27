@@ -11,7 +11,7 @@ import {
 import { addressNormalizer, hexSequenceNormalizer } from './normalizers';
 
 import { genericClass as messages } from './messages';
-import { HEX_HASH_TYPE, DESCRIPTORS } from './defaults';
+import { HEX_HASH_TYPE, DESCRIPTORS, SPLITTER } from './defaults';
 import { TYPE_GENERIC, SUBTYPE_GENERIC } from './types';
 
 import type { GenericClassArgumentsType } from './flowtypes';
@@ -102,10 +102,14 @@ export default class GenericWallet {
         const addressObject = {};
         const derivationKey = hdKey.deriveChild(index);
         /*
-         * Se this individual address's derivation path
+         * Set this individual address's derivation path
          */
-        /* $FlowFixMe */
-        addressObject.derivationPath = `${rootDerivationPath}/${index}`;
+        if (typeof rootDerivationPath === 'string') {
+          addressObject.derivationPath =
+            rootDerivationPath.substr(-1) === SPLITTER
+              ? `${rootDerivationPath}${index}`
+              : `${rootDerivationPath}/${index}`;
+        }
         /*
          * This is the derrived public key, not the one originally fetched one
          */

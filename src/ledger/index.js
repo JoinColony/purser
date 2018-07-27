@@ -23,6 +23,11 @@ const ledgerWallet: Object = Object.assign(
      * Open a new wallet from the public key and chain code, which are received
      * form the Ledger device (after unlocking it and entering the ethereum app)
      *
+     * @TODO Reduce code repetition
+     * While I would very much like to refactor this now, it's a little pre-mature
+     * since there's going to be a lot of changes still.
+     * This should be put off until we remove providers.
+     *
      * @method open
      *
      * @param {number} addressCount the number of extra addresses to generate from the derivation path
@@ -103,7 +108,7 @@ const ledgerWallet: Object = Object.assign(
            * The only alternative would be to re-generate the derivation path inside
            * the class's constructor, but that would mean extra computational resources.
            */
-          rootDerivationPath: `${rootDerivationPath.slice(0, -1)}`,
+          rootDerivationPath,
           addressCount,
           provider: providerMode,
         });
