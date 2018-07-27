@@ -1,13 +1,6 @@
 import EthereumTx from 'ethereumjs-tx';
 
-import {
-  derivationPathValidator,
-  bigNumberValidator,
-  safeIntegerValidator,
-  addressValidator,
-  hexSequenceValidator,
-} from '../../../core/validators';
-
+import { transactionObjectValidator } from '../../../core/helpers';
 import * as utils from '../../../core/utils';
 
 import { signTransaction } from '../../../trezor/staticMethods';
@@ -41,8 +34,16 @@ jest.mock('../../../core/utils', () =>
   /* eslint-disable-next-line global-require */
   require('../../../core/__remocks__/utils'),
 );
+jest.mock('../../../core/helpers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../core/__remocks__/helpers'),
+);
 
-const path = 'mocked-derivation-path';
+/*
+ * These values are not correct. Do not use the as reference.
+ * If the validators wouldn't be mocked, they wouldn't pass.
+ */
+const derivationPath = 'mocked-derivation-path';
 const chainId = 'mocked-chain-id';
 const inputData = 'mocked-data';
 const gasLimit = 'mocked-gas-limit';
@@ -50,6 +51,16 @@ const gasPrice = 'mocked-gas-price';
 const nonce = 'mocked-nonce';
 const to = 'mocked-destination-address';
 const value = 'mocked-transaction-value';
+const mockedTransactionObject = {
+  derivationPath,
+  gasPrice,
+  gasLimit,
+  chainId,
+  nonce,
+  to,
+  value,
+  inputData,
+};
 
 describe('`Trezor` Hardware Wallet Module', () => {
   afterEach(() => {
@@ -59,20 +70,7 @@ describe('`Trezor` Hardware Wallet Module', () => {
   describe('`signTransacion()` static method Static Methods', () => {
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNTX;
-      await signTransaction({
-        /*
-         * These values are not correct. Do not use the as reference.
-         * If the validators wouldn't be mocked, they wouldn't pass.
-         */
-        path,
-        chainId,
-        inputData,
-        gasLimit,
-        gasPrice,
-        nonce,
-        to,
-        value,
-      });
+      await signTransaction(mockedTransactionObject);
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
         /*
@@ -85,76 +83,21 @@ describe('`Trezor` Hardware Wallet Module', () => {
       });
     });
     test('Validates transaction input values', async () => {
+      await signTransaction(mockedTransactionObject);
       /*
-       * These values are not correct. Do not use the as reference.
-       * If the validators wouldn't be mocked, they wouldn't pass.
+       * Calls the validation helper with the correct values
        */
-      await signTransaction({
-        path,
-        chainId,
-        inputData,
-        gasLimit,
-        gasPrice,
-        nonce,
-        to,
-        value,
-      });
-      /*
-       * Validates the derivation path
-       */
-      expect(derivationPathValidator).toHaveBeenCalled();
-      expect(derivationPathValidator).toHaveBeenCalledWith(path);
-      /*
-       * Validates gas price and gas limit
-       */
-      expect(bigNumberValidator).toHaveBeenCalled();
-      expect(bigNumberValidator).toHaveBeenCalledWith(gasPrice);
-      expect(bigNumberValidator).toHaveBeenCalledWith(gasLimit);
-      /*
-       * Validates the chain Id
-       */
-      expect(safeIntegerValidator).toHaveBeenCalled();
-      expect(safeIntegerValidator).toHaveBeenCalledWith(chainId);
-      /*
-       * Validates the nonce
-       */
-      expect(safeIntegerValidator).toHaveBeenCalled();
-      expect(safeIntegerValidator).toHaveBeenCalledWith(nonce);
-      /*
-       * Validates the destination address
-       */
-      expect(addressValidator).toHaveBeenCalled();
-      expect(addressValidator).toHaveBeenCalledWith(to);
-      /*
-       * Validates the transaction value
-       */
-      expect(bigNumberValidator).toHaveBeenCalled();
-      expect(bigNumberValidator).toHaveBeenCalledWith(value);
-      /*
-       * Validates the transaction input data
-       */
-      expect(hexSequenceValidator).toHaveBeenCalled();
-      expect(hexSequenceValidator).toHaveBeenCalledWith(inputData);
+      expect(transactionObjectValidator).toHaveBeenCalled();
+      expect(transactionObjectValidator).toHaveBeenCalledWith(
+        mockedTransactionObject,
+      );
     });
     test('Normalizes transaction input values', async () => {
+      await signTransaction(mockedTransactionObject);
       /*
-       * These values are not correct. Do not use the as reference.
-       * If the validators wouldn't be mocked, they wouldn't pass.
+       * The derivation path is already normalized, so don't do it again
        */
-      await signTransaction({
-        path,
-        inputData,
-        gasLimit,
-        gasPrice,
-        nonce,
-        to,
-        value,
-      });
-      /*
-       * Normalizes the derivation path
-       */
-      expect(derivationPathNormalizer).toHaveBeenCalled();
-      expect(derivationPathNormalizer).toHaveBeenCalledWith(path);
+      expect(derivationPathNormalizer).not.toHaveBeenCalled();
       /*
        * Normalizes gas price and gas limit
        */
@@ -195,7 +138,7 @@ describe('`Trezor` Hardware Wallet Module', () => {
         s: sComponent,
         v: recoveryParam,
       }));
-      await signTransaction();
+      await signTransaction(mockedTransactionObject);
       expect(EthereumTx).toHaveBeenCalled();
       expect(EthereumTx).toHaveBeenCalledWith({
         r: rComponent,
@@ -221,7 +164,7 @@ describe('`Trezor` Hardware Wallet Module', () => {
       payloadListener.mockImplementation(() =>
         Promise.reject(new Error(STD_ERRORS.CANCEL_TX_SIGN)),
       );
-      await signTransaction();
+      await signTransaction(mockedTransactionObject);
       expect(EthereumTx).not.toHaveBeenCalled();
       /*
        * User cancelled, so we don't throw

@@ -32,10 +32,6 @@ import type {
 /**
  * Sign a transaction and return the signed transaction.
  *
- * @TODO Fix unit tests after refactor
- * This means stripping out most of them since individual value validation unit testing
- * is oflloaded to the helper. This method will only check if the helper was called.
- *
  * @method signTransaction
  *
  * @param {string} derivationPath the derivation path for the account with which to sign the transaction

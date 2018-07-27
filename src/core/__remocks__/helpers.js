@@ -6,4 +6,6 @@
 
 export const derivationPathSerializer = jest.fn(() => 'mocked-derivation-path');
 
-export default derivationPathSerializer;
+export const transactionObjectValidator = jest.fn(
+  (transactionObject = {}) => transactionObject,
+);
