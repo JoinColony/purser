@@ -17,18 +17,18 @@ jest.mock('../../trezor/class');
 jest.mock('../../trezor/helpers');
 
 /*
- * Manual mocking a manual mock. Yay for Jest being build by Facebook!
+ * Manual mocking a manual mock. Yay for Jest being built by Facebook!
  *
  * If you need context, see this:
  * https://github.com/facebook/jest/issues/2070
  */
 jest.mock('../../core/helpers', () =>
   /* eslint-disable-next-line global-require */
-  require('../../core/__mocks-required__/helpers'),
+  require('../../core/__remocks__/helpers'),
 );
 jest.mock('../../core/utils', () =>
   /* eslint-disable-next-line global-require */
-  require('../../core/__mocks-required__/utils'),
+  require('../../core/__remocks__/utils'),
 );
 
 describe('Trezor` Hardware Wallet Module', () => {

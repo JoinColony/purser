@@ -17,14 +17,14 @@ jest.dontMock('../../../trezor/staticMethods');
 jest.mock('../../../core/validators');
 jest.mock('../../../trezor/helpers');
 /*
- * Manual mocking a manual mock. Yay for Jest being build by Facebook!
+ * Manual mocking a manual mock. Yay for Jest being built by Facebook!
  *
  * If you need context, see this:
  * https://github.com/facebook/jest/issues/2070
  */
 jest.mock('../../../core/normalizers', () =>
   /* eslint-disable-next-line global-require */
-  require('../../../core/__mocks-required__/normalizers'),
+  require('../../../core/__remocks__/normalizers'),
 );
 
 const path = 'mocked-derivation-path';
