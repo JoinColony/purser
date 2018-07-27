@@ -89,7 +89,7 @@ describe('Trezor` Hardware Wallet Module', () => {
         * We only care that the provider generator method gets instantiated
         */
         expect.objectContaining({
-          providerMode: await jsonRpc(),
+          provider: await jsonRpc(),
         }),
       );
       /*
