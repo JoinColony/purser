@@ -88,7 +88,7 @@ describe('Trezor` Hardware Wallet Module', () => {
         expect(signTransaction).toHaveBeenCalled();
         expect(signTransaction).toHaveBeenCalledWith({
           chainId: mockedProvider.chainId,
-          path: defaultDerivationPath,
+          derivationPath: defaultDerivationPath,
         });
       },
     );
