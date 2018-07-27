@@ -22,9 +22,6 @@ export default class TrezorWallet extends GenericWallet {
        */
       type: Object.assign({}, { value: TYPE_HARDWARE }, WALLET_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_TREZOR }, WALLET_PROPS),
-      /*
-       * Overwrite the generic, empty, `sign()` method
-       */
       sign: Object.assign(
         {},
         {
@@ -48,9 +45,6 @@ export default class TrezorWallet extends GenericWallet {
         },
         WALLET_PROPS,
       ),
-      /*
-       * Overwrite the generic, empty, `signMessage()` method
-       */
       signMessage: Object.assign(
         {},
         {
@@ -62,9 +56,6 @@ export default class TrezorWallet extends GenericWallet {
         },
         WALLET_PROPS,
       ),
-      /*
-       * Overwrite the generic, empty, `verifyMessage()` method
-       */
       verifyMessage: Object.assign(
         {},
         {

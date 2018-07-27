@@ -30,7 +30,7 @@ import type {
 } from '../core/flowtypes';
 
 /**
- * Sign a transaction and return the signed transaction.
+ * Sign a transaction object and return the serialized signature (as a hex string)
  *
  * @method signTransaction
  *
@@ -45,7 +45,7 @@ import type {
  *
  * All the above params are sent in as props of an {TransactionObjectType} object.
  *
- * @return {Promise<string>} the signed hex transaction string
+ * @return {Promise<string>} the hex signature string
  */
 export const signTransaction = async (
   transactionObject: TransactionObjectType,
