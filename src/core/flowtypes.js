@@ -22,7 +22,7 @@ export type DerivationPathDefaultType = {
 };
 
 export type TransactionObjectType = {
-  path: string,
+  derivationPath: string,
   chainId?: number,
   gasPrice?: string,
   gasLimit?: string,

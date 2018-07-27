@@ -5,8 +5,6 @@ import EthereumTx from 'ethereumjs-tx';
 
 import {
   derivationPathValidator,
-  safeIntegerValidator,
-  bigNumberValidator,
   addressValidator,
   hexSequenceValidator,
   messageValidator,
@@ -18,23 +16,29 @@ import {
   hexSequenceNormalizer,
 } from '../core/normalizers';
 import { warning, bigNumber, objectToErrorString } from '../core/utils';
+import { transactionObjectValidator } from '../core/helpers';
 import { HEX_HASH_TYPE } from '../core/defaults';
-import type {
-  TransactionObjectType,
-  MessageObjectType,
-} from '../core/flowtypes';
 
 import { payloadListener } from './helpers';
 import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
 
+import type {
+  TransactionObjectType,
+  MessageObjectType,
+} from '../core/flowtypes';
+
 /**
  * Sign a transaction and return the signed transaction.
  *
+ * @TODO Fix unit tests after refactor
+ * This means stripping out most of them since individual value validation unit testing
+ * is oflloaded to the helper. This method will only check if the helper was called.
+ *
  * @method signTransaction
  *
- * @param {string} path the derivation path for the account with which to sign the transaction
+ * @param {string} derivationPath the derivation path for the account with which to sign the transaction
  * @param {bigNumber} gasPrice gas price for the transaction in WEI (as an instance of bigNumber), defaults to 9000000000 (9 GWEI)
  * @param {bigNumber} gasLimit gas limit for the transaction (as an instance of bigNumber), defaults to 21000
  * @param {number} chainId the id of the chain for which this transaction is intended
@@ -47,54 +51,19 @@ import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
  *
  * @return {Promise<string>} the signed hex transaction string
  */
-export const signTransaction = async ({
-  /*
-   * Path defaults to the "default" derivation path
-   */
-  path,
-  gasPrice = bigNumber(9000000000),
-  gasLimit = bigNumber(21000),
-  /*
-   * Chain Id defaults to the one set on the provider but it can be overwritten
-   */
-  chainId,
-  nonce = 0,
-  to,
-  value = bigNumber(1),
-  inputData = '0x00',
-}: TransactionObjectType = {}) => {
-  /*
-   * Check if the derivation path is in the correct format
-   */
-  derivationPathValidator(path);
-  /*
-   * Check that the gas price is a big number
-   */
-  bigNumberValidator(gasPrice);
-  /*
-   * Check that the gas limit is a big number
-   */
-  bigNumberValidator(gasLimit);
-  /*
-   * Check if the chain id value is valid (a positive, safe integer)
-   */
-  safeIntegerValidator(chainId);
-  /*
-   * Check if the nonce value is valid (a positive, safe integer)
-   */
-  safeIntegerValidator(nonce);
-  /*
-   * Check if the address (`to` prop) is in the correct format
-   */
-  addressValidator(to);
-  /*
-   * Check that the value is a big number
-   */
-  bigNumberValidator(value);
-  /*
-   * Check that the input data prop is a valid hex string sequence
-   */
-  hexSequenceValidator(inputData);
+export const signTransaction = async (
+  transactionObject: TransactionObjectType,
+) => {
+  const {
+    derivationPath,
+    gasPrice,
+    gasLimit,
+    chainId,
+    nonce,
+    to,
+    value,
+    inputData,
+  } = transactionObjectValidator(transactionObject);
   /*
    * Modify the default payload to set the transaction details
    */
@@ -106,7 +75,7 @@ export const signTransaction = async ({
      * the default value of `path` and assumes it's undefined -- it can be,
      * but it will not pass the validator)
      */
-    address_n: fromString(derivationPathNormalizer(path), true).toPathArray(),
+    address_n: fromString(derivationPath, true).toPathArray(),
     /*
      * We could really do with some BN.js flow types declarations :(
      */
@@ -119,6 +88,7 @@ export const signTransaction = async ({
      * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
      * Eg: '3' to be '03', `12c` to be `012c`
      */
+    /* $FlowFixMe */
     nonce: multipleOfTwoHexValueNormalizer(nonce.toString(16)),
     /*
      * Trezor service requires the prefix from the address to be stripped
