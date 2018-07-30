@@ -24,7 +24,7 @@
     "lint:fix": "eslint src --fix",
     "lint:ci": "eslint --format junit -o reports/eslint/eslint-results.xml src",
     "test": "NODE_ENV=test jest",
-    "test:watch": "NODE_ENV=test jest --watchAll",
+    "test:watch": "NODE_ENV=test jest --watchAll --verbose",
     "test:coverage": "NODE_ENV=test jest --coverage",
     "test:ci": "jest --clearCache && NODE_ENV=test jest --ci --bail --coverage --verbose=true --reporters='jest-junit'",
     "lockfile:update": "greenkeeper-lockfile-update",
