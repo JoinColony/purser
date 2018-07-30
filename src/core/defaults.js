@@ -48,7 +48,7 @@ export const MATCH: Object = {
   /*
    * Just like the address above, but without the character number limit
    */
-  HEX_STRING: /^(0x)?([0-9a-fA-F]+)$/,
+  HEX_STRING: /^(0x)?([0-9a-fA-F]*)$/,
   URL: /^.+:\/\/[^‌​/]+/,
 };
 
@@ -102,6 +102,14 @@ export const TRANSACTION: Object = {
   GAS_PRICE: 9000000000, // 9 Gwei
   GAS_LIMIT: 21000,
   NONCE: 0,
-  VALUE: 1,
-  INPUT_DATA: '00',
+  VALUE: 0,
+  INPUT_DATA: '',
+};
+
+/*
+ * Values used to seed the initial signature object
+ */
+export const SIGNATURE: Object = {
+  R: 0,
+  S: 0,
 };

@@ -11,7 +11,7 @@ import {
 } from '../core/normalizers';
 import { warning, objectToErrorString } from '../core/utils';
 import { transactionObjectValidator } from '../core/helpers';
-import { HEX_HASH_TYPE } from '../core/defaults';
+import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 
 import { staticMethods as messages } from './messages';
 
@@ -73,27 +73,53 @@ export const signTransaction = async (
       /*
        * We could really do with some BN.js flow types declarations :(
        */
-      /* $FlowFixMe */
-      gas_price: multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
-      /* $FlowFixMe */
-      gas_limit: multipleOfTwoHexValueNormalizer(gasLimit.toString(16)),
-      chain_id: chainId,
+      gasPrice: hexSequenceNormalizer(
+        /* $FlowFixMe */
+        multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
+      ),
+      gasLimit: hexSequenceNormalizer(
+        /* $FlowFixMe */
+        multipleOfTwoHexValueNormalizer(gasLimit.toString(16)),
+      ),
+      chainId,
       /*
        * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
        * Eg: '3' to be '03', `12c` to be `012c`
        */
-      /* $FlowFixMe */
-      nonce: multipleOfTwoHexValueNormalizer(nonce.toString(16)),
+      nonce: hexSequenceNormalizer(
+        /* $FlowFixMe */
+        multipleOfTwoHexValueNormalizer(nonce.toString(16)),
+      ),
       /*
        * Trezor service requires the prefix from the address to be stripped
        */
       to: addressNormalizer(to),
-      /* $FlowFixMe */
-      value: multipleOfTwoHexValueNormalizer(value.toString(16)),
+      value: hexSequenceNormalizer(
+        /* $FlowFixMe */
+        multipleOfTwoHexValueNormalizer(value.toString(16)),
+      ),
+      // value: '0x00',
       /*
        * Trezor service requires the prefix from the input data to be stripped
        */
       data: hexSequenceNormalizer(inputData),
+      /*
+       * The transaction object needs to be seeded with the (R) and (S) signature components with
+       * empty data, and the Reco(V)ery param as the chain id (all, im hex string format).
+       *
+       * See this issue for context:
+       * https://github.com/LedgerHQ/ledgerjs/issues/43
+       */
+      r: hexSequenceNormalizer(
+        multipleOfTwoHexValueNormalizer(String(SIGNATURE.R)),
+      ),
+      s: hexSequenceNormalizer(
+        multipleOfTwoHexValueNormalizer(String(SIGNATURE.S)),
+      ),
+      v: hexSequenceNormalizer(
+        /* $FlowFixMe */
+        multipleOfTwoHexValueNormalizer(chainId.toString(16)),
+      ),
     });
     /*
      * Sign the transaction object via your Ledger Wallet
@@ -110,30 +136,15 @@ export const signTransaction = async (
       unsignedTransaction.serialize().toString(HEX_HASH_TYPE),
     );
     /*
-     * Get the transaction object from the R, S, V signature components
+     * Proving that we signed the above transaction.
      *
-     * Sadly Flow doesn't have the correct types for node's Buffer Object
+     * @NOTE We need to modify the original transaction
+     * Otherwise EthereumTx will complain because internally it checks for the valid instance
      */
-    const unserializedSignedTransaction = await new EthereumTx({
-      r: Buffer.from(rSignatureComponent, HEX_HASH_TYPE),
-      s: Buffer.from(sSignatureComponent, HEX_HASH_TYPE),
-      v: Buffer.from(
-        /* $FlowFixMe */
-        multipleOfTwoHexValueNormalizer(
-          /*
-           * Ledger needs the current chain Id (as a hex string) added to the
-           * current recovery param, that's coming from the signed transaction.
-           */
-          /* $FlowFixMe */
-          recoveryParameter + chainId.toString(16),
-        ),
-        HEX_HASH_TYPE,
-      ),
-    });
-    /*
-     * Serialize the signed transaction object
-     */
-    const serializedSignedTransaction = unserializedSignedTransaction
+    unsignedTransaction.r = hexSequenceNormalizer(rSignatureComponent);
+    unsignedTransaction.s = hexSequenceNormalizer(sSignatureComponent);
+    unsignedTransaction.v = hexSequenceNormalizer(recoveryParameter);
+    const serializedSignedTransaction = unsignedTransaction
       .serialize()
       .toString(HEX_HASH_TYPE);
     /*
