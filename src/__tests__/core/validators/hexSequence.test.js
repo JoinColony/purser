@@ -6,7 +6,6 @@ jest.dontMock('../../../core/validators');
 describe('`Core` Module', () => {
   describe('`hexSequenceValidator()` validator', () => {
     test("Fail if it's not a String", () => {
-      expect(() => hexSequenceValidator('')).toThrow();
       expect(() => hexSequenceValidator({})).toThrow();
       expect(() => hexSequenceValidator(12)).toThrow();
       expect(() => hexSequenceValidator([])).toThrow();
@@ -22,6 +21,7 @@ describe('`Core` Module', () => {
       expect(hexSequenceValidator('9d1E3242221f34f7413a')).toBeTruthy();
       expect(hexSequenceValidator('12c')).toBeTruthy();
       expect(hexSequenceValidator('3')).toBeTruthy();
+      expect(hexSequenceValidator('')).toBeTruthy();
     });
   });
 });
