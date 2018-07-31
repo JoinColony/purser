@@ -28,6 +28,8 @@ const ledgerWallet: Object = Object.assign(
      * since there's going to be a lot of changes still.
      * This should be put off until we remove providers.
      *
+     * @TODO Add unit tests
+     *
      * @method open
      *
      * @param {number} addressCount the number of extra addresses to generate from the derivation path

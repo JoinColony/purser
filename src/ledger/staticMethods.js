@@ -4,14 +4,16 @@ import U2fTransport from '@ledgerhq/hw-transport-u2f';
 import LedgerHwAppETH from '@ledgerhq/hw-app-eth';
 import EthereumTx from 'ethereumjs-tx';
 
-import { derivationPathValidator, messageValidator } from '../core/validators';
 import {
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
   hexSequenceNormalizer,
 } from '../core/normalizers';
 import { warning, objectToErrorString } from '../core/utils';
-import { transactionObjectValidator } from '../core/helpers';
+import {
+  transactionObjectValidator,
+  messageObjectValidator,
+} from '../core/helpers';
 import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 
 import { staticMethods as messages } from './messages';
@@ -167,6 +169,8 @@ export const signTransaction = async (
 /**
  * Sign a message and return the signature. Useful for verifying identities.
  *
+ * @TODO Add unit tests
+ *
  * @method signMessage
  *
  * @param {string} derivationPath the derivation path for the account with which to sign the message
@@ -176,22 +180,8 @@ export const signTransaction = async (
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async ({
-  derivationPath,
-  message = '',
-}: MessageObjectType) => {
-  /*
-   * Check if the derivation path is in the correct format
-   *
-   * Flow doesn't even let us validate it.
-   * It shoots first, asks questions later.
-   */
-  /* $FlowFixMe */
-  derivationPathValidator(derivationPath);
-  /*
-   * Check if the messages is in the correct format
-   */
-  messageValidator(message);
+export const signMessage = async (messageObject: MessageObjectType) => {
+  const { derivationPath, message } = messageObjectValidator(messageObject);
   const transport = await U2fTransport.create();
   const ethAppConnection = new LedgerHwAppETH(transport);
   /*
