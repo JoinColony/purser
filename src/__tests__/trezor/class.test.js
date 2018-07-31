@@ -115,7 +115,7 @@ describe('Trezor` Hardware Wallet Module', () => {
          */
         expect(signMessage).toHaveBeenCalled();
         expect(signMessage).toHaveBeenCalledWith({
-          path: defaultDerivationPath,
+          derivationPath: defaultDerivationPath,
         });
       },
     );

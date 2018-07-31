@@ -1,14 +1,8 @@
-import {
-  derivationPathValidator,
-  messageValidator,
-} from '../../../core/validators';
+import { messageObjectValidator } from '../../../core/helpers';
 
 import { signMessage } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
-import {
-  derivationPathNormalizer,
-  hexSequenceNormalizer,
-} from '../../../core/normalizers';
+import { hexSequenceNormalizer } from '../../../core/normalizers';
 
 import { PAYLOAD_SIGNMSG } from '../../../trezor/payloads';
 
@@ -26,8 +20,16 @@ jest.mock('../../../core/normalizers', () =>
   /* eslint-disable-next-line global-require */
   require('../../../core/__remocks__/normalizers'),
 );
+jest.mock('../../../core/helpers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../core/__remocks__/helpers'),
+);
 
 const path = 'mocked-derivation-path';
+const mockedMessageObject = {
+  derivationPath: path,
+  message: 'mocked-message',
+};
 
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   describe('`signMessage()` static method', () => {
@@ -57,35 +59,12 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      const message = 'mocked-message';
-      await signMessage({
-        path,
-        message,
-      });
+      await signMessage(mockedMessageObject);
       /*
        * Validates the derivation path
        */
-      expect(derivationPathValidator).toHaveBeenCalled();
-      expect(derivationPathValidator).toHaveBeenCalledWith(path);
-      /*
-       * Validates the message that is to be signed
-       */
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(message);
-    });
-    test('Normalizes message input values', async () => {
-      /*
-       * These values are not correct. Do not use the as reference.
-       * If the validators wouldn't be mocked, they wouldn't pass.
-       */
-      await signMessage({
-        path,
-      });
-      /*
-       * Normalizes the derivation path
-       */
-      expect(derivationPathNormalizer).toHaveBeenCalled();
-      expect(derivationPathNormalizer).toHaveBeenCalledWith(path);
+      expect(messageObjectValidator).toHaveBeenCalled();
+      expect(messageObjectValidator).toHaveBeenCalledWith(mockedMessageObject);
     });
     test('Normalizes the return hex string', async () => {
       const returnedHexString = '48656c6c6f20796f75';
