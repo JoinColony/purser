@@ -9,3 +9,7 @@ export const derivationPathSerializer = jest.fn(() => 'mocked-derivation-path');
 export const transactionObjectValidator = jest.fn(
   (transactionObject = {}) => transactionObject,
 );
+
+export const messageObjectValidator = jest.fn(
+  (messageObject = {}) => messageObject,
+);
