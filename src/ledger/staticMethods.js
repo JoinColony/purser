@@ -4,6 +4,7 @@ import U2fTransport from '@ledgerhq/hw-transport-u2f';
 import LedgerHwAppETH from '@ledgerhq/hw-app-eth';
 import EthereumTx from 'ethereumjs-tx';
 
+import { derivationPathValidator, messageValidator } from '../core/validators';
 import {
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
@@ -15,7 +16,10 @@ import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 
 import { staticMethods as messages } from './messages';
 
-import type { TransactionObjectType } from '../core/flowtypes';
+import type {
+  TransactionObjectType,
+  MessageObjectType,
+} from '../core/flowtypes';
 
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
@@ -160,4 +164,61 @@ export const signTransaction = async (
   }
 };
 
-export default signTransaction;
+/**
+ * Sign a message and return the signature. Useful for verifying identities.
+ *
+ * @method signMessage
+ *
+ * @param {string} derivationPath the derivation path for the account with which to sign the message
+ * @param {string} message the message you want to sign
+ *
+ * All the above params are sent in as props of an {MessageObjectType} object.
+ *
+ * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
+ */
+export const signMessage = async ({
+  derivationPath,
+  message = '',
+}: MessageObjectType) => {
+  /*
+   * Check if the derivation path is in the correct format
+   *
+   * Flow doesn't even let us validate it.
+   * It shoots first, asks questions later.
+   */
+  /* $FlowFixMe */
+  derivationPathValidator(derivationPath);
+  /*
+   * Check if the messages is in the correct format
+   */
+  messageValidator(message);
+  const transport = await U2fTransport.create();
+  const ethAppConnection = new LedgerHwAppETH(transport);
+  /*
+   * Sign the message object via your Ledger Wallet
+   *
+   * We also warn the user here, since the device will need confirmation, but only in dev mode.
+   */
+  warning(messages.userSignMessageInteractionWarning);
+  const {
+    r: rSignatureComponent,
+    s: sSignatureComponent,
+    v: recoveryParameter,
+  } = await ethAppConnection.signPersonalMessage(
+    derivationPath,
+    /*
+     * The message needs to be sent in as an hex Buffer
+     */
+    /* $FlowFixMe */
+    Buffer.from(message).toString(HEX_HASH_TYPE),
+  );
+  /*
+   * Combine the (R), and (S) signature components, alogn with the reco(V)ery param (that
+   * gets converted into `hex`)
+   */
+  return hexSequenceNormalizer(
+    `${rSignatureComponent}` +
+      `${sSignatureComponent}` +
+      `${recoveryParameter.toString(16)}`,
+  );
+};
