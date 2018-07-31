@@ -6,6 +6,7 @@ import {
   bigNumberValidator,
   addressValidator,
   hexSequenceValidator,
+  messageValidator,
 } from './validators';
 import { derivationPathNormalizer } from './normalizers';
 import { bigNumber } from './utils';
@@ -15,6 +16,7 @@ import { PATH, TRANSACTION } from './defaults';
 import type {
   DerivationPathObjectType,
   TransactionObjectType,
+  MessageObjectType,
 } from './flowtypes';
 
 /**
@@ -149,5 +151,52 @@ export const transactionObjectValidator = ({
     to,
     value,
     inputData,
+  };
+};
+
+/**
+ * Validate a message verification (message to be signed) object
+ *
+ * @TODO Add unit tests
+ *
+ * @method messageObjectValidator
+ *
+ * @param {string} derivationPath The derivation path for the account with which to sign the transaction
+ * @param {string} message The message string you want to sign
+ *
+ * All the above params are sent in as props of an {MessageObjectType} object.
+ *
+ * @return {Object} The serialized path
+ */
+export const messageObjectValidator = ({
+  /*
+   * Path defaults to the "default" derivation path
+   */
+  derivationPath,
+  /*
+   * For the Ledger wallet implementation we can't pass in an empty string, so
+   * we try with the next best thing.
+   */
+  message = ' ',
+}: MessageObjectType = {}): MessageObjectType => {
+  /*
+   * Check if the derivation path is in the correct format
+   *
+   * Flow doesn't even let us validate it.
+   * It shoots first, asks questions later.
+   */
+  /* $FlowFixMe */
+  derivationPathValidator(derivationPath);
+  /*
+   * Check if the messages is in the correct format
+   */
+  messageValidator(message);
+  /*
+   * Normalize the values and return them
+   */
+  return {
+    /* $FlowFixMe */
+    derivationPath: derivationPathNormalizer(derivationPath),
+    message,
   };
 };
