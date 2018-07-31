@@ -6,9 +6,10 @@ import { TYPE_HARDWARE, SUBTYPE_LEDGER } from '../core/types';
 import type {
   GenericClassArgumentsType,
   TransactionObjectType,
+  MessageObjectType,
 } from '../core/flowtypes';
 
-import { signTransaction } from './staticMethods';
+import { signTransaction, signMessage } from './staticMethods';
 
 const { WALLET_PROPS } = DESCRIPTORS;
 
@@ -41,6 +42,17 @@ export default class LedgerWallet extends GenericWallet {
               }),
             );
           },
+        },
+        WALLET_PROPS,
+      ),
+      signMessage: Object.assign(
+        {},
+        {
+          value: async ({ message }: MessageObjectType = {}) =>
+            signMessage({
+              derivationPath: await this.derivationPath,
+              message,
+            }),
         },
         WALLET_PROPS,
       ),
