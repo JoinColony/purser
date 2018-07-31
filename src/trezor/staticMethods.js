@@ -4,7 +4,6 @@ import { fromString } from 'bip32-path';
 import EthereumTx from 'ethereumjs-tx';
 
 import {
-  derivationPathValidator,
   addressValidator,
   hexSequenceValidator,
   messageValidator,
@@ -16,7 +15,10 @@ import {
   hexSequenceNormalizer,
 } from '../core/normalizers';
 import { warning, bigNumber, objectToErrorString } from '../core/utils';
-import { transactionObjectValidator } from '../core/helpers';
+import {
+  transactionObjectValidator,
+  messageObjectValidator,
+} from '../core/helpers';
 import { HEX_HASH_TYPE } from '../core/defaults';
 
 import { payloadListener } from './helpers';
@@ -161,25 +163,8 @@ export const signTransaction = async (
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async ({
-  /*
-   * Path defaults to the "default" derivation path
-   */
-  path,
-  message = '',
-}: MessageObjectType) => {
-  /*
-   * Check if the derivation path is in the correct format
-   *
-   * Flow doesn't even let us validate it.
-   * It shoots first, asks questions later.
-   */
-  /* $FlowFixMe */
-  derivationPathValidator(path);
-  /*
-   * Check if the messages is in the correct format
-   */
-  messageValidator(message);
+export const signMessage = async (messageObject: MessageObjectType) => {
+  const { derivationPath, message } = messageObjectValidator(messageObject);
   const { signature: signedMessage } = await payloadListener({
     payload: Object.assign({}, PAYLOAD_SIGNMSG, {
       /*
@@ -189,8 +174,11 @@ export const signMessage = async ({
        * the default value value of `path` and assumes it's undefined -- it can be,
        * but it will not pass the validator)
        */
-      /* $FlowFixMe */
-      path: fromString(derivationPathNormalizer(path), true).toPathArray(),
+      path: fromString(
+        /* $FlowFixMe */
+        derivationPathNormalizer(derivationPath),
+        true,
+      ).toPathArray(),
       message,
     }),
   });

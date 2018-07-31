@@ -50,7 +50,7 @@ export default class TrezorWallet extends GenericWallet {
         {
           value: async ({ message }: MessageObjectType = {}) =>
             signMessage({
-              path: await this.derivationPath,
+              derivationPath: await this.derivationPath,
               message,
             }),
         },
