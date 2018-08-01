@@ -7,9 +7,10 @@ import type {
   GenericClassArgumentsType,
   TransactionObjectType,
   MessageObjectType,
+  MessageVerificationObjectType,
 } from '../core/flowtypes';
 
-import { signTransaction, signMessage } from './staticMethods';
+import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 
 const { WALLET_PROPS } = DESCRIPTORS;
 
@@ -55,6 +56,21 @@ export default class LedgerWallet extends GenericWallet {
             signMessage({
               derivationPath: await this.derivationPath,
               message,
+            }),
+        },
+        WALLET_PROPS,
+      ),
+      verifyMessage: Object.assign(
+        {},
+        {
+          value: async ({
+            message,
+            signature,
+          }: MessageVerificationObjectType = {}) =>
+            verifyMessage({
+              publicKey: await this.publicKey,
+              message,
+              signature,
             }),
         },
         WALLET_PROPS,
