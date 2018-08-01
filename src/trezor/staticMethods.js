@@ -51,7 +51,7 @@ import type {
  */
 export const signTransaction = async (
   transactionObject: TransactionObjectType,
-) => {
+): Promise<string | void> => {
   const {
     derivationPath,
     gasPrice,
@@ -163,7 +163,9 @@ export const signTransaction = async (
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async (messageObject: MessageObjectType) => {
+export const signMessage = async (
+  messageObject: MessageObjectType,
+): Promise<string> => {
   const { derivationPath, message } = messageObjectValidator(messageObject);
   const { signature: signedMessage } = await payloadListener({
     payload: Object.assign({}, PAYLOAD_SIGNMSG, {
@@ -205,7 +207,7 @@ export const verifyMessage = async ({
   address,
   message = '',
   signature = '',
-}: MessageObjectType) => {
+}: MessageObjectType): Promise<boolean> => {
   /*
    * Check if the address is in the correct format
    */
