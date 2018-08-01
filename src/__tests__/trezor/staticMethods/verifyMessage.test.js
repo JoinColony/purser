@@ -1,10 +1,5 @@
-import {
-  addressValidator,
-  messageValidator,
-  hexSequenceValidator,
-} from '../../../core/validators';
-
 import * as utils from '../../../core/utils';
+import { messageVerificationObjectValidator } from '../../../core/helpers';
 
 import { verifyMessage } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
@@ -33,10 +28,19 @@ jest.mock('../../../core/utils', () =>
   /* eslint-disable-next-line global-require */
   require('../../../core/__remocks__/utils'),
 );
+jest.mock('../../../core/helpers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../core/__remocks__/helpers'),
+);
 
 const address = 'mocked-derivation-address';
 const message = 'mocked-message';
 const signature = 'mocked-signature';
+const mockedSignatureMessage = {
+  address,
+  message,
+  signature,
+};
 
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   describe('`verifyMessage()` static method', () => {
@@ -67,26 +71,14 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      await verifyMessage({
-        address,
-        message,
-        signature,
-      });
+      await verifyMessage(mockedSignatureMessage);
       /*
-       * Validates the address
+       * Calls the validator helper
        */
-      expect(addressValidator).toHaveBeenCalled();
-      expect(addressValidator).toHaveBeenCalledWith(address);
-      /*
-       * Validates the message that is to be signed
-       */
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(message);
-      /*
-       * Validates the hex signature
-       */
-      expect(hexSequenceValidator).toHaveBeenCalled();
-      expect(hexSequenceValidator).toHaveBeenCalledWith(signature);
+      expect(messageVerificationObjectValidator).toHaveBeenCalled();
+      expect(messageVerificationObjectValidator).toHaveBeenCalledWith(
+        mockedSignatureMessage,
+      );
     });
     test('Normalizes message/signature input values', async () => {
       /*

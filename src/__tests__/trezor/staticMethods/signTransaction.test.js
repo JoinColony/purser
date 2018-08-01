@@ -82,7 +82,7 @@ describe('`Trezor` Hardware Wallet Module', () => {
         }),
       });
     });
-    test('Validates transaction input values', async () => {
+    test('Validates the message input values', async () => {
       await signTransaction(mockedTransactionObject);
       /*
        * Calls the validation helper with the correct values
@@ -92,7 +92,7 @@ describe('`Trezor` Hardware Wallet Module', () => {
         mockedTransactionObject,
       );
     });
-    test('Normalizes transaction input values', async () => {
+    test('Normalizes the message input values', async () => {
       await signTransaction(mockedTransactionObject);
       /*
        * The derivation path is already normalized, so don't do it again
