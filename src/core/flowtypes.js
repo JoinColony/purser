@@ -68,6 +68,13 @@ export type MessageObjectType = {
   signature?: string,
 };
 
+export type MessageVerificationObjectType = {
+  address?: string,
+  publicKey?: string,
+  message: string,
+  signature: string,
+};
+
 /*
  * Types used for modules exports
  */

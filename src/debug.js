@@ -7,6 +7,7 @@ import blockies from 'ethereum-blockies';
 import bip32Path from 'bip32-path';
 import bn from 'bn.js';
 import ethereumJsTx from 'ethereumjs-tx';
+import ethereumJsUtil from 'ethereumjs-util';
 import hdkey from 'hdkey';
 import u2f from 'u2f-api';
 import ledgerEthApp from '@ledgerhq/hw-app-eth';
@@ -44,6 +45,7 @@ const debug: Object = {
       bip32Path,
       bn,
       ethereumJsTx,
+      ethereumJsUtil,
       hdkey,
       u2f,
       ledger: {

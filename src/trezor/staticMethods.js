@@ -117,7 +117,7 @@ export const signTransaction = async (
      *
      * recoveryParam - 35 - (chainId * 2)
      *
-     * If the result is even, then V is 27, if it's odd, it's 28
+     * If the result is odd, then V is 27, if it's even, it's 28
      */
     const {
       r: rSignatureComponent,

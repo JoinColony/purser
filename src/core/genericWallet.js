@@ -125,7 +125,7 @@ export default class GenericWallet {
            * Sadly Flow doesn't have the correct types for node's Buffer Object
            */
           /* $FlowFixMe */
-          Buffer.from(derivationKey.publicKey, HEX_HASH_TYPE),
+          derivationKey.publicKey,
         );
         /*
          * Also validate the address that comes from the `HDKey` library.

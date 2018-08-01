@@ -1,5 +1,7 @@
 /* @flow */
 
+import { hashPersonalMessage, ecrecover } from 'ethereumjs-util';
+
 import {
   derivationPathValidator,
   safeIntegerValidator,
@@ -8,15 +10,17 @@ import {
   hexSequenceValidator,
   messageValidator,
 } from './validators';
-import { derivationPathNormalizer } from './normalizers';
-import { bigNumber } from './utils';
+import { derivationPathNormalizer, hexSequenceNormalizer } from './normalizers';
+import { bigNumber, warning } from './utils';
 
-import { PATH, TRANSACTION } from './defaults';
+import { helpers as helperMessages } from './messages';
+import { PATH, TRANSACTION, HEX_HASH_TYPE, SIGNATURE } from './defaults';
 
 import type {
   DerivationPathObjectType,
   TransactionObjectType,
   MessageObjectType,
+  MessageVerificationObjectType,
 } from './flowtypes';
 
 /**
@@ -63,6 +67,117 @@ export const derivationPathSerializer = ({
     /* $FlowFixMe */
     `${hasChange && hasAddressIndex ? `/${addressIndex}` : ''}`
   );
+};
+
+/*
+ * Verify a signed message.
+ * By extracting it's public key from the signature and comparing it with a provided one.
+ *
+ * @NOTE Further optimization
+ *
+ * This can be further optimized by writing our own recovery mechanism since we already
+ * do most of the cleanup, checking and coversions.
+ *
+ * All that is left to do is to use `secp256k1` to convert and recover the public key
+ * from the signature points (components).
+ *
+ * But since most of our dependencies already use `ethereumjs-util` under the hood anyway,
+ * it's easier just use it as well.
+ *
+ * @method verifyMessageSignature
+ *
+ * @param {string} publicKey Public key to check against, as a 'hex' string
+ * @param {string} message The message string to hash for the signature verification procedure
+ * @param {string} signature The signature to recover the private key from, as a `hex` string
+ *
+ * See the defaults file for some more information regarding the format of the
+ * ethereum deviation path.
+ *
+ * All the above params are sent in as props of an {DerivationPathObjectType} object.
+ *
+ */
+export const verifyMessageSignature = ({
+  publicKey,
+  message,
+  signature,
+}: MessageVerificationObjectType): boolean => {
+  const { verifyMessageSignature: messages } = helperMessages;
+  try {
+    const signatureBuffer = Buffer.from(
+      /* $FlowFixMe */
+      hexSequenceNormalizer(signature.toLowerCase(), false),
+      HEX_HASH_TYPE,
+    );
+    /*
+     * It should be 65 bits in legth:
+     * - 32 for the (R) point (component)
+     * - 32 for the (S) point (component)
+     * - 1 for the reco(V)ery param
+     */
+    if (signatureBuffer.length !== 65) {
+      warning(messages.wrongLength, { level: 'high' });
+      return false;
+    }
+    /*
+     * Normalize (and fix if necessary) the recovery param (The 64th bit of the signature Buffer).
+     *
+     * This will basically overide the recovery param in either case, with the expected values.
+     * If the recovery param is odd, then it's 27, if it's even it's 28
+     *
+     * See EIP-155 for the 27 and 28 magic numbers expected in the recovery parameter:
+     * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
+     */
+    const recoveryParam =
+      signatureBuffer[64] % 2
+        ? SIGNATURE.RECOVERY_EVEN
+        : SIGNATURE.RECOVERY_ODD;
+    const rComponent = signatureBuffer.slice(0, 32);
+    const sComponent = signatureBuffer.slice(32, 64);
+    const messageHash = hashPersonalMessage(Buffer.from(message));
+    /*
+     * Elliptic curve recovery.
+     *
+     * @NOTE `ecrecover` is just a helper method
+     * Around `secp256k1`'s `recover()` and `publicKeyConvert()` methods
+     *
+     */
+    const recoveredPublicKeyBuffer = ecrecover(
+      messageHash,
+      recoveryParam,
+      rComponent,
+      sComponent,
+    );
+    /*
+     * Only take the first 64 bits of the recovered public key
+     *
+     * @NOTE we're using 32 when `slice()`-ing since this in Buffer format.
+     */
+    const recoveredPublicKey = recoveredPublicKeyBuffer
+      .slice(0, 32)
+      .toString(HEX_HASH_TYPE);
+    /*
+     * Remove the prefix (0x) and the header (first two bits) from the public key we
+     * want to test against
+     */
+    const normalizedPublicKey = hexSequenceNormalizer(publicKey, false).slice(
+      2,
+    );
+    /*
+     * Last 64 bits of the private should match the first 64 bits of the recovered public key
+     *
+     * @TODO Compare by matching
+     *
+     * This could be refactored to use regex for matching the two private keys (no more slicing bits).
+     * For bonus points, the matcher could also ignore case, so we won't have to deal with
+     * converting everything to lowecase just to prevent checksum mismatches.
+     */
+    return normalizedPublicKey === recoveredPublicKey;
+  } catch (caughtError) {
+    warning(`${messages.somethingWentWrong}. Error: ${caughtError.message}`, {
+      level: 'high',
+    });
+    return false;
+  }
 };
 
 /**
