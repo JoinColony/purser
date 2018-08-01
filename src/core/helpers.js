@@ -10,7 +10,11 @@ import {
   hexSequenceValidator,
   messageValidator,
 } from './validators';
-import { derivationPathNormalizer, hexSequenceNormalizer } from './normalizers';
+import {
+  addressNormalizer,
+  derivationPathNormalizer,
+  hexSequenceNormalizer,
+} from './normalizers';
 import { bigNumber, warning } from './utils';
 
 import { helpers as helperMessages } from './messages';
@@ -73,6 +77,8 @@ export const derivationPathSerializer = ({
  * Verify a signed message.
  * By extracting it's public key from the signature and comparing it with a provided one.
  *
+ * @TODO Add unit tests
+ *
  * @NOTE Further optimization
  *
  * This can be further optimized by writing our own recovery mechanism since we already
@@ -94,6 +100,8 @@ export const derivationPathSerializer = ({
  * ethereum deviation path.
  *
  * All the above params are sent in as props of an {DerivationPathObjectType} object.
+ *
+ * @return {boolean} true or false depending if the signature is valid or not
  *
  */
 export const verifyMessageSignature = ({
@@ -129,8 +137,8 @@ export const verifyMessageSignature = ({
      */
     const recoveryParam =
       signatureBuffer[64] % 2
-        ? SIGNATURE.RECOVERY_EVEN
-        : SIGNATURE.RECOVERY_ODD;
+        ? SIGNATURE.RECOVERY_ODD
+        : SIGNATURE.RECOVERY_EVEN;
     const rComponent = signatureBuffer.slice(0, 32);
     const sComponent = signatureBuffer.slice(32, 64);
     const messageHash = hashPersonalMessage(Buffer.from(message));
@@ -204,7 +212,7 @@ export const verifyMessageSignature = ({
  *
  * All the above params are sent in as props of an {TransactionObjectType} object.
  *
- * @return {Object} The serialized path
+ * @return {Object} The validated transaction object containing the exact passed in values
  */
 export const transactionObjectValidator = ({
   /*
@@ -281,7 +289,7 @@ export const transactionObjectValidator = ({
  *
  * All the above params are sent in as props of an {MessageObjectType} object.
  *
- * @return {Object} The serialized path
+ * @return {Object} The validated message object containing the exact passed in values
  */
 export const messageObjectValidator = ({
   /*
@@ -314,4 +322,75 @@ export const messageObjectValidator = ({
     derivationPath: derivationPathNormalizer(derivationPath),
     message,
   };
+};
+
+/**
+ * Validate a signature verification message object
+ *
+ * @TODO Add unit tests
+ *
+ * @method messageVerificationObjectValidator
+ *
+ * @param {string} address The address of the account that signed the message. Optional.
+ * @param {string} publicKey The public key of the account that signed the message. Optional.
+ * @param {string} message The message string to check the signature against
+ * @param {string} signature The signature of the message.
+ *
+ * All the above params are sent in as props of an {MessageVerificationObjectType} object.
+ *
+ * @return {Object} The validated signature object containing the exact passed in values
+ */
+export const messageVerificationObjectValidator = ({
+  /*
+   * Path defaults to the "default" address and/or publicKey
+   */
+  address,
+  publicKey,
+  /*
+   * For the Ledger wallet implementation we can't pass in an empty string, so
+   * we try with the next best thing.
+   */
+  message,
+  signature,
+}: MessageVerificationObjectType = {}): MessageVerificationObjectType => {
+  const normalizedMessageVerificationObject: Object = {
+    message,
+  };
+  if (address) {
+    /*
+     * Check if the address is in the correct format
+     */
+    addressValidator(address);
+    /*
+     * Ensure the address has the hex `0x` prefix
+     */
+    normalizedMessageVerificationObject.address = addressNormalizer(address);
+  }
+  if (publicKey) {
+    /*
+     * Check if the public key is in the correct format
+     */
+    hexSequenceValidator(publicKey);
+    /*
+     * Ensure the public has the hex `0x` prefix
+     */
+    normalizedMessageVerificationObject.publicKey = hexSequenceNormalizer(
+      publicKey,
+    );
+  }
+  /*
+   * Check if the messages is in the correct format
+   */
+  messageValidator(message);
+  /*
+   * Check if the signature is in the correct format
+   */
+  hexSequenceValidator(signature);
+  /*
+   * Ensure the signature has the hex `0x` prefix
+   */
+  normalizedMessageVerificationObject.signature = hexSequenceNormalizer(
+    signature,
+  );
+  return normalizedMessageVerificationObject;
 };
