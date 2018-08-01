@@ -7,6 +7,7 @@ import type {
   TransactionObjectType,
   MessageObjectType,
   GenericClassArgumentsType,
+  MessageVerificationObjectType,
 } from '../core/flowtypes';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
@@ -59,7 +60,10 @@ export default class TrezorWallet extends GenericWallet {
       verifyMessage: Object.assign(
         {},
         {
-          value: async ({ message, signature }: MessageObjectType = {}) =>
+          value: async ({
+            message,
+            signature,
+          }: MessageVerificationObjectType = {}) =>
             verifyMessage({ address: this.address, message, signature }),
         },
         WALLET_PROPS,

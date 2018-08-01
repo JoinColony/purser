@@ -9,8 +9,10 @@ import {
   addressNormalizer,
   hexSequenceNormalizer,
 } from '../core/normalizers';
+import { hexSequenceValidator, messageValidator } from '../core/validators';
 import { warning, objectToErrorString } from '../core/utils';
 import {
+  verifyMessageSignature,
   transactionObjectValidator,
   messageObjectValidator,
 } from '../core/helpers';
@@ -21,6 +23,7 @@ import { staticMethods as messages } from './messages';
 import type {
   TransactionObjectType,
   MessageObjectType,
+  MessageVerificationObjectType,
 } from '../core/flowtypes';
 
 /**
@@ -45,7 +48,7 @@ import type {
  */
 export const signTransaction = async (
   transactionObject: TransactionObjectType,
-) => {
+): Promise<string> => {
   const transport = await U2fTransport.create();
   const ethAppConnection = new LedgerHwAppETH(transport);
   const {
@@ -180,7 +183,9 @@ export const signTransaction = async (
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async (messageObject: MessageObjectType) => {
+export const signMessage = async (
+  messageObject: MessageObjectType,
+): Promise<string> => {
   const { derivationPath, message } = messageObjectValidator(messageObject);
   const transport = await U2fTransport.create();
   const ethAppConnection = new LedgerHwAppETH(transport);
@@ -211,4 +216,47 @@ export const signMessage = async (messageObject: MessageObjectType) => {
       `${sSignatureComponent}` +
       `${recoveryParameter.toString(16)}`,
   );
+};
+
+/**
+ * Verify a signed message. Useful for verifying identity. (In conjunction with `signMessage`)
+ *
+ * @method verifyMessage
+ *
+ * @param {string} publicKey The public key to verify the signature agains (this is coming from the wallet instance)
+ * @param {string} message The message to verify if it was signed correctly
+ * @param {string} signature The message signature as a `hex` string (you usually get this via `signMessage`)
+ *
+ * All the above params are sent in as props of an {MessageVerificationObjectType} object.
+ *
+ * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
+ */
+export const verifyMessage = async ({
+  publicKey,
+  message,
+  signature,
+}: MessageVerificationObjectType): Promise<boolean> => {
+  /*
+   * Check if the address is in the correct format
+   */
+  hexSequenceValidator(publicKey);
+  /*
+   * Check if the messages is in the correct format
+   */
+  messageValidator(message);
+  /*
+   * Check if the signature is in the correct format
+   */
+  hexSequenceValidator(signature);
+  return verifyMessageSignature({
+    /*
+     * Ensure the public key has the `0x` prefix
+     */
+    publicKey: hexSequenceNormalizer(publicKey),
+    message,
+    /*
+     * Ensure the signature has the `0x` prefix
+     */
+    signature: hexSequenceNormalizer(signature),
+  });
 };

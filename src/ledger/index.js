@@ -79,9 +79,6 @@ const ledgerWallet: Object = Object.assign(
       const rootDerivationPath: string = derivationPathSerializer({
         coinType,
       });
-      /*
-       * We need to catch the cancelled error since it's part of a normal user workflow
-       */
       try {
         /*
          * Get the harware wallet's root public key and chain code, to use
@@ -116,9 +113,6 @@ const ledgerWallet: Object = Object.assign(
         });
         return walletInstance;
       } catch (caughtError) {
-        /*
-         * But throw otherwise, so we can see what's going on
-         */
         throw new Error(
           `${messages.userExportGenericError}: ${rootDerivationPath} ${
             caughtError.message
