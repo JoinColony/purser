@@ -9,12 +9,12 @@ import {
   addressNormalizer,
   hexSequenceNormalizer,
 } from '../core/normalizers';
-import { hexSequenceValidator, messageValidator } from '../core/validators';
 import { warning, objectToErrorString } from '../core/utils';
 import {
   verifyMessageSignature,
   transactionObjectValidator,
   messageObjectValidator,
+  messageVerificationObjectValidator,
 } from '../core/helpers';
 import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 
@@ -231,32 +231,7 @@ export const signMessage = async (
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = async ({
-  publicKey,
-  message,
-  signature,
-}: MessageVerificationObjectType): Promise<boolean> => {
-  /*
-   * Check if the address is in the correct format
-   */
-  hexSequenceValidator(publicKey);
-  /*
-   * Check if the messages is in the correct format
-   */
-  messageValidator(message);
-  /*
-   * Check if the signature is in the correct format
-   */
-  hexSequenceValidator(signature);
-  return verifyMessageSignature({
-    /*
-     * Ensure the public key has the `0x` prefix
-     */
-    publicKey: hexSequenceNormalizer(publicKey),
-    message,
-    /*
-     * Ensure the signature has the `0x` prefix
-     */
-    signature: hexSequenceNormalizer(signature),
-  });
-};
+export const verifyMessage = async (
+  signatureMessage: MessageVerificationObjectType,
+): Promise<boolean> =>
+  verifyMessageSignature(messageVerificationObjectValidator(signatureMessage));

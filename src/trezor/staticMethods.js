@@ -4,11 +4,6 @@ import { fromString } from 'bip32-path';
 import EthereumTx from 'ethereumjs-tx';
 
 import {
-  addressValidator,
-  hexSequenceValidator,
-  messageValidator,
-} from '../core/validators';
-import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
@@ -18,6 +13,7 @@ import { warning, bigNumber, objectToErrorString } from '../core/utils';
 import {
   transactionObjectValidator,
   messageObjectValidator,
+  messageVerificationObjectValidator,
 } from '../core/helpers';
 import { HEX_HASH_TYPE } from '../core/defaults';
 
@@ -29,6 +25,7 @@ import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
 import type {
   TransactionObjectType,
   MessageObjectType,
+  MessageVerificationObjectType,
 } from '../core/flowtypes';
 
 /**
@@ -203,29 +200,12 @@ export const signMessage = async (
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = async ({
-  address,
-  message = '',
-  signature = '',
-}: MessageObjectType): Promise<boolean> => {
-  /*
-   * Check if the address is in the correct format
-   */
-  addressValidator(address);
-  /*
-   * Check if the messages is in the correct format
-   */
-  messageValidator(message);
-  /*
-   * Check if the signature is in the correct format
-   */
-  hexSequenceValidator(signature);
-  /*
-   * The Trezor service throws an Error if the signature is invalid.
-   * We warn the user, but not throw an error, just return 'false'.
-   *
-   * This way you have a consistent return.
-   */
+export const verifyMessage = async (
+  signatureMessage: MessageVerificationObjectType,
+): Promise<boolean> => {
+  const { address, message, signature } = messageVerificationObjectValidator(
+    signatureMessage,
+  );
   try {
     const { success: isMessageValid } = await payloadListener({
       payload: Object.assign({}, PAYLOAD_VERIFYMSG, {
