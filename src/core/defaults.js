@@ -112,4 +112,6 @@ export const TRANSACTION: Object = {
 export const SIGNATURE: Object = {
   R: 0,
   S: 0,
+  RECOVERY_ODD: 27,
+  RECOVERY_EVEN: 28,
 };
