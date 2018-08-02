@@ -18,25 +18,19 @@ import { STD_ERRORS } from '../../../trezor/defaults';
 jest.dontMock('../../../trezor/staticMethods');
 
 jest.mock('ethereumjs-tx');
-jest.mock('../../../trezor/helpers');
 jest.mock('../../../core/validators');
+jest.mock('../../../core/normalizers');
+jest.mock('../../../core/utils');
+jest.mock('../../../core/helpers');
 /*
  * Manual mocking a manual mock. Yay for Jest being built by Facebook!
  *
  * If you need context, see this:
  * https://github.com/facebook/jest/issues/2070
  */
-jest.mock('../../../core/normalizers', () =>
+jest.mock('../../../trezor/helpers', () =>
   /* eslint-disable-next-line global-require */
-  require('../../../core/__remocks__/normalizers'),
-);
-jest.mock('../../../core/utils', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../../core/__remocks__/utils'),
-);
-jest.mock('../../../core/helpers', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../../core/__remocks__/helpers'),
+  require('../../../trezor/__remocks__/helpers'),
 );
 
 /*

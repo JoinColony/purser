@@ -9,20 +9,17 @@ import { PAYLOAD_SIGNMSG } from '../../../trezor/payloads';
 jest.dontMock('../../../trezor/staticMethods');
 
 jest.mock('../../../core/validators');
-jest.mock('../../../trezor/helpers');
+jest.mock('../../../core/normalizers');
+jest.mock('../../../core/helpers');
 /*
  * Manual mocking a manual mock. Yay for Jest being built by Facebook!
  *
  * If you need context, see this:
  * https://github.com/facebook/jest/issues/2070
  */
-jest.mock('../../../core/normalizers', () =>
+jest.mock('../../../trezor/helpers', () =>
   /* eslint-disable-next-line global-require */
-  require('../../../core/__remocks__/normalizers'),
-);
-jest.mock('../../../core/helpers', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../../core/__remocks__/helpers'),
+  require('../../../trezor/__remocks__/helpers'),
 );
 
 const path = 'mocked-derivation-path';

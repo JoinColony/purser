@@ -14,21 +14,17 @@ import { STD_ERRORS } from '../../trezor/defaults';
 
 jest.mock('bip32-path');
 jest.mock('../../trezor/class');
-jest.mock('../../trezor/helpers');
-
+jest.mock('../../core/helpers');
+jest.mock('../../core/utils');
 /*
  * Manual mocking a manual mock. Yay for Jest being built by Facebook!
  *
  * If you need context, see this:
  * https://github.com/facebook/jest/issues/2070
  */
-jest.mock('../../core/helpers', () =>
+jest.mock('../../trezor/helpers', () =>
   /* eslint-disable-next-line global-require */
-  require('../../core/__remocks__/helpers'),
-);
-jest.mock('../../core/utils', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../core/__remocks__/utils'),
+  require('../../trezor/__remocks__/helpers'),
 );
 
 describe('Trezor` Hardware Wallet Module', () => {
