@@ -15,7 +15,6 @@ import {
   hexSequenceNormalizer,
 } from '../../../core/normalizers';
 
-// import { PAYLOAD_SIGNTX } from '../../../trezor/payloads';
 import { SIGNATURE } from '../../../core/defaults';
 
 jest.dontMock('../../../trezor/staticMethods');
