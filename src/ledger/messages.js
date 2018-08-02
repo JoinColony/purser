@@ -15,8 +15,11 @@ export const staticMethods: Object = {
     'We need your confirmation before we can sign the message. Check your Ledger Wallet!',
 };
 
-const ledgerMessages = {
-  staticMethods,
+export const transportErrors: Object = {
+  notSupported:
+    'Your browser does not support the U2F transport protocol (required by your Ledger device)',
+  notSecure:
+    'The U2F transport protocol (required by your Ledger device) only works across a secure browser connection (https)',
+  timeout:
+    "Your Ledger device is either locked or you didn't enter the Ethereum app. Either unlock it or enter the app, then you can try again.",
 };
-
-export default ledgerMessages;

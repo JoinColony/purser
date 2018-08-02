@@ -115,3 +115,5 @@ export const SIGNATURE: Object = {
   RECOVERY_ODD: 27,
   RECOVERY_EVEN: 28,
 };
+
+export const HTTPS_PROTOCOL: string = 'https:';
