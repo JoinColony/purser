@@ -4,6 +4,7 @@ import U2fTransport from '@ledgerhq/hw-transport-u2f';
 import LedgerHwAppETH from '@ledgerhq/hw-app-eth';
 import EthereumTx from 'ethereumjs-tx';
 
+import { ledgerConnection, handleLedgerConnectionError } from './helpers';
 import {
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
@@ -48,9 +49,8 @@ import type {
  */
 export const signTransaction = async (
   transactionObject: TransactionObjectType,
-): Promise<string> => {
-  const transport = await U2fTransport.create();
-  const ethAppConnection = new LedgerHwAppETH(transport);
+): Promise<string | void> => {
+  const ledger = await ledgerConnection();
   const {
     derivationPath,
     gasPrice,
@@ -140,7 +140,7 @@ export const signTransaction = async (
       r: rSignatureComponent,
       s: sSignatureComponent,
       v: recoveryParameter,
-    } = await ethAppConnection.signTransaction(
+    } = await ledger.signTransaction(
       derivationPath,
       unsignedTransaction.serialize().toString(HEX_HASH_TYPE),
     );
@@ -161,7 +161,8 @@ export const signTransaction = async (
      */
     return hexSequenceNormalizer(serializedSignedTransaction);
   } catch (caughtError) {
-    throw new Error(
+    return handleLedgerConnectionError(
+      caughtError,
       `${messages.userSignTxGenericError}: ${objectToErrorString(
         transactionObject,
       )} ${caughtError.message}`,
