@@ -1,16 +1,7 @@
 import software from '../../software';
 import * as utils from '../../core/utils';
 
-/*
- * Manual mocking a manual mock. Yay for Jest being built by Facebook!
- *
- * If you need context, see this:
- * https://github.com/facebook/jest/issues/2070
- */
-jest.mock('../../core/utils', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../core/__remocks__/utils'),
-);
+jest.mock('../../core/utils');
 
 describe('`software` wallet module', () => {
   describe('`SoftwareWallet` Keystore', () => {
