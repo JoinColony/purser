@@ -1,15 +1,15 @@
-import TrezorWalletClass from '../../trezor/class';
+import LedgerWalletClass from '../../ledger/class';
 import {
   signTransaction,
   signMessage,
   verifyMessage,
-} from '../../trezor/staticMethods';
+} from '../../ledger/staticMethods';
 
-import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../../core/types';
+import { TYPE_HARDWARE, SUBTYPE_LEDGER } from '../../core/types';
 
-jest.dontMock('../../trezor/class');
+jest.dontMock('../../ledger/class');
 
-jest.mock('../../trezor/staticMethods');
+jest.mock('../../ledger/staticMethods');
 jest.mock('../../core/validators');
 jest.mock('../../core/normalizers');
 
@@ -22,20 +22,20 @@ const rootDerivationPath = 'mocked-root-derivation-path';
 const addressCount = 10;
 const mockedProvider = { chainId: 4 };
 
-describe('Trezor` Hardware Wallet Module', () => {
-  describe('`TrezorWallet` class', () => {
+describe('Ledger` Hardware Wallet Module', () => {
+  describe('`LedgerWallet` class', () => {
     test('Creates a new wallet instance', () => {
-      const trezorWallet = new TrezorWalletClass({
+      const ledgerWallet = new LedgerWalletClass({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
         addressCount,
         provider: mockedProvider,
       });
-      expect(trezorWallet).toBeInstanceOf(TrezorWalletClass);
+      expect(ledgerWallet).toBeInstanceOf(LedgerWalletClass);
     });
     test('The Wallet Objet has the correct types props', () => {
-      const trezorWallet = new TrezorWalletClass({
+      const ledgerWallet = new LedgerWalletClass({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
         rootDerivationPath,
@@ -46,8 +46,8 @@ describe('Trezor` Hardware Wallet Module', () => {
        * We already check for the others in the generic class tests, we just need to
        * ensure that the correct type and subtype are set.
        */
-      expect(trezorWallet).toHaveProperty('type', TYPE_HARDWARE);
-      expect(trezorWallet).toHaveProperty('subtype', SUBTYPE_TREZOR);
+      expect(ledgerWallet).toHaveProperty('type', TYPE_HARDWARE);
+      expect(ledgerWallet).toHaveProperty('subtype', SUBTYPE_LEDGER);
     });
     /*
      * For some reason prettier always suggests a way to fix this that would
@@ -58,19 +58,19 @@ describe('Trezor` Hardware Wallet Module', () => {
       "Calls the `signTransaction()` static method from the instance's methods",
       async () => {
         /* eslint-disable-next-line no-new */
-        const trezorWallet = new TrezorWalletClass({
+        const ledgerWallet = new LedgerWalletClass({
           publicKey: rootPublicKey,
           chainCode: rootChainCode,
           rootDerivationPath,
           addressCount,
           provider: mockedProvider,
         });
-        const defaultDerivationPath = await trezorWallet.derivationPath;
+        const defaultDerivationPath = await ledgerWallet.derivationPath;
         /*
          * Should have the `sign()` internal method set on the instance
          */
-        expect(trezorWallet).toHaveProperty('sign');
-        await trezorWallet.sign();
+        expect(ledgerWallet).toHaveProperty('sign');
+        await ledgerWallet.sign();
         /*
          * `sign()` internal method, which is mapped to the
          * static `signTransaction()` method
@@ -86,19 +86,19 @@ describe('Trezor` Hardware Wallet Module', () => {
       "Calls the `signMessage()` static method from the instance's methods",
       async () => {
         /* eslint-disable-next-line no-new */
-        const trezorWallet = new TrezorWalletClass({
+        const ledgerWallet = new LedgerWalletClass({
           publicKey: rootPublicKey,
           chainCode: rootChainCode,
           rootDerivationPath,
           addressCount,
           provider: mockedProvider,
         });
-        const defaultDerivationPath = await trezorWallet.derivationPath;
+        const defaultDerivationPath = await ledgerWallet.derivationPath;
         /*
          * Should have the `signMessage()` internal method set on the instance
          */
-        expect(trezorWallet).toHaveProperty('signMessage');
-        await trezorWallet.signMessage();
+        expect(ledgerWallet).toHaveProperty('signMessage');
+        await ledgerWallet.signMessage();
         /*
          * `signMessage()` internal method, which is mapped to the
          * static `signMessage()` method
@@ -113,25 +113,26 @@ describe('Trezor` Hardware Wallet Module', () => {
       "Calls the `verifyMessage()` static method from the instance's methods",
       async () => {
         /* eslint-disable-next-line no-new */
-        const trezorWallet = new TrezorWalletClass({
+        const ledgerWallet = new LedgerWalletClass({
           publicKey: rootPublicKey,
           chainCode: rootChainCode,
           rootDerivationPath,
           addressCount,
           provider: mockedProvider,
         });
+        const defaultPublicKey = await ledgerWallet.publicKey;
         /*
          * Should have the `verifyMessage()` internal method set on the instance
          */
-        expect(trezorWallet).toHaveProperty('verifyMessage');
-        await trezorWallet.verifyMessage();
+        expect(ledgerWallet).toHaveProperty('verifyMessage');
+        await ledgerWallet.verifyMessage();
         /*
          * `signMessage()` internal method, which is mapped to the
          * static `signMessage()` method
          */
         expect(verifyMessage).toHaveBeenCalled();
         expect(verifyMessage).toHaveBeenCalledWith({
-          address: trezorWallet.address,
+          publicKey: defaultPublicKey,
         });
       },
     );
