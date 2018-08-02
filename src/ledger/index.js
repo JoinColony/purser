@@ -12,6 +12,7 @@ import { deprecated as deprecatedMessages } from '../core/messages';
 import { PATH } from '../core/defaults';
 import { MAIN_NETWORK } from '../defaults';
 
+import type { LedgerInstanceType } from './flowtypes';
 import type { WalletArgumentsType } from '../core/flowtypes';
 
 const ledgerWallet: Object = Object.assign(
@@ -44,7 +45,6 @@ const ledgerWallet: Object = Object.assign(
       provider = autoselect,
     }: WalletArgumentsType = {}): Promise<LedgerWallet | void> => {
       const { COIN_MAINNET, COIN_TESTNET } = PATH;
-      const ledger = await ledgerConnection();
       /*
        * Get the provider.
        * If it's a provider generator, execute the function and get it's return
@@ -77,6 +77,7 @@ const ledgerWallet: Object = Object.assign(
         coinType,
       });
       try {
+        const ledger: LedgerInstanceType = await ledgerConnection();
         /*
          * Get the harware wallet's root public key and chain code, to use
          * for deriving the rest of the accounts

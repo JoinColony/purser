@@ -1,7 +1,5 @@
 /* @flow */
 
-import U2fTransport from '@ledgerhq/hw-transport-u2f';
-import LedgerHwAppETH from '@ledgerhq/hw-app-eth';
 import EthereumTx from 'ethereumjs-tx';
 
 import { ledgerConnection, handleLedgerConnectionError } from './helpers';
@@ -21,6 +19,7 @@ import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 
 import { staticMethods as messages } from './messages';
 
+import type { LedgerInstanceType } from './flowtypes';
 import type {
   TransactionObjectType,
   MessageObjectType,
@@ -50,7 +49,6 @@ import type {
 export const signTransaction = async (
   transactionObject: TransactionObjectType,
 ): Promise<string | void> => {
-  const ledger = await ledgerConnection();
   const {
     derivationPath,
     gasPrice,
@@ -62,6 +60,7 @@ export const signTransaction = async (
     inputData,
   } = transactionObjectValidator(transactionObject);
   try {
+    const ledger: LedgerInstanceType = await ledgerConnection();
     /*
      * Ledger needs the unsigned "raw" transaction hex, which it will sign and
      * return the (R) and (S) signature components alog with the reco(V)ery param.
@@ -186,37 +185,54 @@ export const signTransaction = async (
  */
 export const signMessage = async (
   messageObject: MessageObjectType,
-): Promise<string> => {
+): Promise<string | void> => {
   const { derivationPath, message } = messageObjectValidator(messageObject);
-  const transport = await U2fTransport.create();
-  const ethAppConnection = new LedgerHwAppETH(transport);
-  /*
-   * Sign the message object via your Ledger Wallet
-   *
-   * We also warn the user here, since the device will need confirmation, but only in dev mode.
-   */
-  warning(messages.userSignMessageInteractionWarning);
-  const {
-    r: rSignatureComponent,
-    s: sSignatureComponent,
-    v: recoveryParameter,
-  } = await ethAppConnection.signPersonalMessage(
-    derivationPath,
+  try {
+    const ledger: LedgerInstanceType = await ledgerConnection();
     /*
-     * The message needs to be sent in as an hex Buffer
+     * Sign the message object via your Ledger Wallet
+     *
+     * We also warn the user here, since the device will need confirmation, but only in dev mode.
      */
-    /* $FlowFixMe */
-    Buffer.from(message).toString(HEX_HASH_TYPE),
-  );
-  /*
-   * Combine the (R), and (S) signature components, alogn with the reco(V)ery param (that
-   * gets converted into `hex`)
-   */
-  return hexSequenceNormalizer(
-    `${rSignatureComponent}` +
-      `${sSignatureComponent}` +
-      `${recoveryParameter.toString(16)}`,
-  );
+    warning(messages.userSignMessageInteractionWarning);
+    const {
+      r: rSignatureComponent,
+      s: sSignatureComponent,
+      v: recoveryParameter,
+      /*
+       * Flow bugs out here claiming the `r` property is not available on the return object.
+       */
+      /* $FlowFixMe */
+    } = await ledger.signPersonalMessage(
+      /*
+       * This is because Flow doesn't yet support types inside desctructuring statements.
+       * See: https://github.com/facebook/flow/issues/235
+       */
+      /* $FlowFixMe */
+      derivationPath,
+      /*
+       * The message needs to be sent in as an hex string
+       */
+      /* $FlowFixMe */
+      Buffer.from(message).toString(HEX_HASH_TYPE),
+    );
+    /*
+     * Combine the (R), and (S) signature components, alogn with the reco(V)ery param (that
+     * gets converted into `hex`)
+     */
+    return hexSequenceNormalizer(
+      `${rSignatureComponent}` +
+        `${sSignatureComponent}` +
+        `${recoveryParameter.toString(16)}`,
+    );
+  } catch (caughtError) {
+    return handleLedgerConnectionError(
+      caughtError,
+      `${messages.userSignTxGenericError}: ${objectToErrorString(
+        messageObject,
+      )} ${caughtError.message}`,
+    );
+  }
 };
 
 /**
