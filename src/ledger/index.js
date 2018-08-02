@@ -1,16 +1,14 @@
 /* @flow */
 
-import U2fTransport from '@ledgerhq/hw-transport-u2f';
-import LedgerHwAppETH from '@ledgerhq/hw-app-eth';
-
 import LedgerWallet from './class';
+import { ledgerConnection, handleLedgerConnectionError } from './helpers';
 
 import { derivationPathSerializer } from '../core/helpers';
 import { warning } from '../core/utils';
 import { autoselect } from '../providers';
+import { staticMethods as messages } from './messages';
 
 import { deprecated as deprecatedMessages } from '../core/messages';
-import { staticMethods as messages } from './messages';
 import { PATH } from '../core/defaults';
 import { MAIN_NETWORK } from '../defaults';
 
@@ -46,8 +44,7 @@ const ledgerWallet: Object = Object.assign(
       provider = autoselect,
     }: WalletArgumentsType = {}): Promise<LedgerWallet | void> => {
       const { COIN_MAINNET, COIN_TESTNET } = PATH;
-      const transport = await U2fTransport.create();
-      const ethAppConnection = new LedgerHwAppETH(transport);
+      const ledger = await ledgerConnection();
       /*
        * Get the provider.
        * If it's a provider generator, execute the function and get it's return
@@ -84,7 +81,7 @@ const ledgerWallet: Object = Object.assign(
          * Get the harware wallet's root public key and chain code, to use
          * for deriving the rest of the accounts
          */
-        const { publicKey, chainCode } = await ethAppConnection.getAddress(
+        const { publicKey, chainCode } = await ledger.getAddress(
           /*
            * @NOTE Ledger requires a derivation path containing only the account value
            * No change and index
@@ -113,7 +110,8 @@ const ledgerWallet: Object = Object.assign(
         });
         return walletInstance;
       } catch (caughtError) {
-        throw new Error(
+        return handleLedgerConnectionError(
+          caughtError,
           `${messages.userExportGenericError}: ${rootDerivationPath} ${
             caughtError.message
           }`,
