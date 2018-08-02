@@ -9,9 +9,7 @@ import bn from 'bn.js';
 import ethereumJsTx from 'ethereumjs-tx';
 import ethereumJsUtil from 'ethereumjs-util';
 import hdkey from 'hdkey';
-import u2f from 'u2f-api';
 import ledgerEthApp from '@ledgerhq/hw-app-eth';
-import ledgerGenericTransport from '@ledgerhq/hw-transport';
 import ledgerU2fTransport from '@ledgerhq/hw-transport-u2f';
 
 /* Core */
@@ -47,11 +45,9 @@ const debug: Object = {
       ethereumJsTx,
       ethereumJsUtil,
       hdkey,
-      u2f,
       ledger: {
         ethApp: ledgerEthApp,
         transports: {
-          generic: ledgerGenericTransport,
           u2f: ledgerU2fTransport,
         },
       },
