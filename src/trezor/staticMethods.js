@@ -153,7 +153,7 @@ export const signTransaction = async (
  *
  * @method signMessage
  *
- * @param {string} path the derivation path for the account with which to sign the message
+ * @param {string} derivationPath the derivation path for the account with which to sign the message
  * @param {string} message the message you want to sign
  *
  * All the above params are sent in as props of an {MessageObjectType} object.
