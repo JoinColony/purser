@@ -56,12 +56,12 @@ const mockedTransactionObject = {
   inputData,
 };
 
-describe('`Trezor` Hardware Wallet Module', () => {
+describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     EthereumTx.mockClear();
     EthereumTx.mockRestore();
   });
-  describe('`signTransacion()` static method Static Methods', () => {
+  describe('`signTransaction()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNTX;
       await signTransaction(mockedTransactionObject);
@@ -76,7 +76,7 @@ describe('`Trezor` Hardware Wallet Module', () => {
         }),
       });
     });
-    test('Validates the message input values', async () => {
+    test('Validates the transaction input values', async () => {
       await signTransaction(mockedTransactionObject);
       /*
        * Calls the validation helper with the correct values
@@ -86,7 +86,7 @@ describe('`Trezor` Hardware Wallet Module', () => {
         mockedTransactionObject,
       );
     });
-    test('Normalizes the message input values', async () => {
+    test('Normalizes the transaction input values', async () => {
       await signTransaction(mockedTransactionObject);
       /*
        * The derivation path is already normalized, so don't do it again
