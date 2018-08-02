@@ -17,3 +17,5 @@ export const messageObjectValidator = jest.fn(
 export const messageVerificationObjectValidator = jest.fn(
   (signedMessageObject = {}) => signedMessageObject,
 );
+
+export const verifyMessageSignature = jest.fn();
