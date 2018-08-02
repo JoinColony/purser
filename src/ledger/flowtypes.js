@@ -9,12 +9,29 @@ type GetAddressReturnType = {
   address: string,
 };
 /*
- * See: http://ledgerhq.github.io/ledgerjs/docs/#ethsigntransaction
+ * This is the same (in terms of types) for both a transaction signature and
+ * a message signature.
  */
-type SignTransactionReturnType = {
+type SignatureReturnType = {
   r: string,
   s: string,
+  v: number,
+};
+/*
+ * But the transaction signature returns  the recovery param as a `String`.
+ * See: http://ledgerhq.github.io/ledgerjs/docs/#ethsigntransaction
+ */
+type TransactionSignatureReturnType = {
+  ...SignatureReturnType,
   v: string,
+};
+/*
+ * Whereas the message signature returns  the recovery param as a `Number`.
+ * See: http://ledgerhq.github.io/ledgerjs/docs/#ethsignpersonalmessage
+ */
+type MessageSignatureReturnType = {
+  ...SignatureReturnType,
+  v: number,
 };
 
 export type LedgerInstanceType = {
@@ -41,7 +58,17 @@ export type LedgerInstanceType = {
      * The `hex` hash of the transaction before being signed (eg: unsigned transaction)
      */
     unsignedTransactionHash: string,
-  ) => Promise<SignTransactionReturnType>,
+  ) => Promise<TransactionSignatureReturnType>,
+  signPersonalMessage: (
+    /*
+     * The individual address's derivation path (after it was derived with the address index)
+     */
+    derivationPath: string,
+    /*
+     * The `hex` hash of the massage that's going to be singed
+     */
+    messageHash: string,
+  ) => Promise<MessageSignatureReturnType>,
 };
 
 /*
