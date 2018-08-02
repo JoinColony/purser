@@ -10,12 +10,19 @@ const signTransaction = jest.fn(() => ({
   v: 'mocked-recovery-param',
 }));
 
+const signPersonalMessage = jest.fn(() => ({
+  r: 'mocked-R-signature-component',
+  s: 'mocked-S-signature-component',
+  v: 'mocked-recovery-param',
+}));
+
 export const ledgerConnection = jest.fn(() => ({
   getAddress: jest.fn(() => ({
     publicKey: 'mocked-public-key',
     chainCode: 'mocked-chain-code',
   })),
   signTransaction,
+  signPersonalMessage,
 }));
 
 /*
@@ -27,5 +34,6 @@ export const ledgerConnection = jest.fn(() => ({
  * code to call (mocked).
  */
 ledgerConnection.signTransaction = signTransaction;
+ledgerConnection.signPersonalMessage = signPersonalMessage;
 
 export const handleLedgerConnectionError = jest.fn();
