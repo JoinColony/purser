@@ -8,6 +8,14 @@ type GetAddressReturnType = {
   chainCode: string,
   address: string,
 };
+/*
+ * See: http://ledgerhq.github.io/ledgerjs/docs/#ethsigntransaction
+ */
+type SignTransactionReturnType = {
+  r: string,
+  s: string,
+  v: string,
+};
 
 export type LedgerInstanceType = {
   getAddress: (
@@ -24,6 +32,16 @@ export type LedgerInstanceType = {
      */
     returnChainCode: boolean,
   ) => Promise<GetAddressReturnType>,
+  signTransaction: (
+    /*
+     * The individual address's derivation path (after it was derived with the address index)
+     */
+    derivationPath: string,
+    /*
+     * The `hex` hash of the transaction before being signed (eg: unsigned transaction)
+     */
+    unsignedTransactionHash: string,
+  ) => Promise<SignTransactionReturnType>,
 };
 
 /*
