@@ -6,6 +6,7 @@ jest.dontMock('../../../core/validators');
 describe('`Core` Module', () => {
   describe('`addressValidator()` validator', () => {
     test("Fail if it's not a String", () => {
+      expect(() => addressValidator()).toThrow();
       expect(() => addressValidator({})).toThrow();
       expect(() => addressValidator(12)).toThrow();
       expect(() => addressValidator([])).toThrow();
