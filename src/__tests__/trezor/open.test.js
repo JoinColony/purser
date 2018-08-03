@@ -31,6 +31,8 @@ describe('Trezor` Hardware Wallet Module', () => {
   afterEach(() => {
     TrezorWalletClass.mockReset();
     TrezorWalletClass.mockRestore();
+    utils.warning.mockReset();
+    utils.warning.mockRestore();
   });
   describe('`open()` static method with defaults', () => {
     test('Open the wallet with defaults', async () => {
@@ -107,7 +109,7 @@ describe('Trezor` Hardware Wallet Module', () => {
       /*
        * We have a deprecation warning
        */
-      expect(utils.warning).toHaveBeenCalled();
+      expect(utils.warning).not.toHaveBeenCalled();
     });
     test('Log a warning if the user cancels', async () => {
       /*
