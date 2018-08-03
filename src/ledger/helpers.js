@@ -60,6 +60,6 @@ export const handleLedgerConnectionError = async (
     if (u2fSupport && errorInstance.id === U2F_TRANSPORT_ERROR.TIMEOUT) {
       errorMessage = messages.timeout;
     }
-    throw new Error(errorMessage);
   }
+  throw new Error(errorMessage);
 };
