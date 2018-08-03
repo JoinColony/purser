@@ -16,7 +16,6 @@ When building with `NODE_ENV=production` all output will be silenced.
   * Trezor
     * [`open`](#open)
 
-
 ### Hardware
 
 A hardware device that gives you access to it's internal stored account(s). Usually enforced by a hardware true random number generator.
