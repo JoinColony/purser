@@ -191,10 +191,6 @@ export const verifyMessageSignature = ({
 /**
  * Validate an transaction object
  *
- * @TODO Add unit tests
- * This will most likely be moving the existing ones from the Trezor sign method here.
- * Also, this method will need to be manually mocked for others to test agains it.
- *
  * @NOTE We can only validate here, we can't also normalize (with the exception of the derivation path).
  * This is because different wallet types expect different value formats so we must normalize them
  * on a case by case basis.

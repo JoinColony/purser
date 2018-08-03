@@ -12,8 +12,6 @@ import type { LedgerInstanceType, U2FTransportError } from './flowtypes';
 /**
  * Create a new Ledger U2F transaport and connection to the Ethereum App
  *
- * @TODO Add unit tests
- *
  * @method ledgerConnection
  *
  * @return {Promise<Object>} If successfull. a new instance of the Ledger Ethereum App Class
@@ -25,8 +23,6 @@ export const ledgerConnection = async (): Promise<LedgerInstanceType> => {
 
 /**
  * Handle Errors thrown by the Ledger U2F transaport
- *
- * @TODO Add unit tests
  *
  * @NOTE This method is designed to handle the Error after it has been caught,
  * not to handle the actual catching itself.
