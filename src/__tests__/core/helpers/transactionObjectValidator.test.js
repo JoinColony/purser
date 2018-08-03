@@ -7,11 +7,15 @@ import {
   hexSequenceValidator,
 } from '../../../core/validators';
 import { derivationPathNormalizer } from '../../../core/normalizers';
+import { bigNumber } from '../../../core/utils';
+
+import { TRANSACTION } from '../../../core/defaults';
 
 jest.dontMock('../../../core/helpers');
 
 jest.mock('../../../core/validators');
 jest.mock('../../../core/normalizers');
+jest.mock('../../../core/utils');
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -97,6 +101,30 @@ describe('`Core` Module', () => {
       expect(validatedTransactionObject).toHaveProperty('to');
       expect(validatedTransactionObject).toHaveProperty('value');
       expect(validatedTransactionObject).toHaveProperty('inputData');
+    });
+    test('Has defaults for most object values', async () => {
+      bigNumber.mockImplementation(number => number);
+      const validatedTransactionObject = transactionObjectValidator();
+      expect(validatedTransactionObject).toHaveProperty(
+        'gasPrice',
+        TRANSACTION.GAS_PRICE,
+      );
+      expect(validatedTransactionObject).toHaveProperty(
+        'gasLimit',
+        TRANSACTION.GAS_LIMIT,
+      );
+      expect(validatedTransactionObject).toHaveProperty(
+        'nonce',
+        TRANSACTION.NONCE,
+      );
+      expect(validatedTransactionObject).toHaveProperty(
+        'value',
+        TRANSACTION.VALUE,
+      );
+      expect(validatedTransactionObject).toHaveProperty(
+        'inputData',
+        TRANSACTION.INPUT_DATA,
+      );
     });
   });
 });

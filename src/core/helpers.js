@@ -77,8 +77,6 @@ export const derivationPathSerializer = ({
  * Verify a signed message.
  * By extracting it's public key from the signature and comparing it with a provided one.
  *
- * @TODO Add unit tests
- *
  * @NOTE Further optimization
  *
  * This can be further optimized by writing our own recovery mechanism since we already
@@ -127,6 +125,9 @@ export const verifyMessageSignature = ({
       return false;
     }
     /*
+     * @TODO Move to own method
+     * So we can better test it
+     *
      * Normalize (and fix if necessary) the recovery param (The 64th bit of the signature Buffer).
      *
      * This will basically overide the recovery param in either case, with the expected values.
