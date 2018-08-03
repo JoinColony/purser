@@ -19,7 +19,7 @@ import type { LedgerInstanceType, U2FTransportError } from './flowtypes';
  * @return {Promise<Object>} If successfull. a new instance of the Ledger Ethereum App Class
  */
 export const ledgerConnection = async (): Promise<LedgerInstanceType> => {
-  const transport = await U2fTransport.create(1000);
+  const transport = await U2fTransport.create();
   return new LedgerEthApp(transport);
 };
 

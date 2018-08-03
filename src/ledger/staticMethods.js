@@ -29,8 +29,6 @@ import type {
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
  *
- * @TODO Add unit tests
- *
  * @method signTransaction
  *
  * @param {string} derivationPath the derivation path for the account with which to sign the transaction
@@ -171,8 +169,6 @@ export const signTransaction = async (
 
 /**
  * Sign a message and return the signature. Useful for verifying identities.
- *
- * @TODO Add unit tests
  *
  * @method signMessage
  *
