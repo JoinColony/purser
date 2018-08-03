@@ -5,6 +5,7 @@ module.exports = {
     'core/*.{js}',
     'software/*.{js}',
     'trezor/*.{js}',
+    'ledger/*.{js}',
     /*
      * Exports debug objects, no functionality
      */
@@ -16,6 +17,7 @@ module.exports = {
     '!core/defaults.js',
     '!software/defaults.js',
     '!trezor/defaults.js',
+    '!ledger/defaults.js',
     /*
      * Exports main library objects, no functionality
      */
@@ -29,6 +31,7 @@ module.exports = {
     '!core/messages.js',
     '!software/messages.js',
     '!trezor/messages.js',
+    '!ledger/messages.js',
     /*
      * String assignments, will always pass
      */
