@@ -93,6 +93,22 @@ describe('Trezor` Hardware Wallet Module', () => {
        */
       expect(utils.warning).toHaveBeenCalled();
     });
+    test('Open the wallet without a provider', async () => {
+      await trezorWallet.open({ provider: '' });
+      expect(TrezorWalletClass).toHaveBeenCalled();
+      expect(TrezorWalletClass).toHaveBeenCalledWith(
+        /*
+        * We only care that the provider generator method gets instantiated
+        */
+        expect.objectContaining({
+          provider: undefined,
+        }),
+      );
+      /*
+       * We have a deprecation warning
+       */
+      expect(utils.warning).toHaveBeenCalled();
+    });
     test('Log a warning if the user cancels', async () => {
       /*
        * We're re-mocking the helpers just for this test so we can simulate
