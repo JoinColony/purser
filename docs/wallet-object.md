@@ -232,7 +232,7 @@ const wallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 console.log(await wallet.derivationPath); // m/44'/60'/0'/0/0
 ```
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const wallet = await open();
 
@@ -258,7 +258,7 @@ Note, that if only one address was derived when you opened the wallet _(Eg: `{ a
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const multipleAddresesWallet = await open();
 
@@ -267,7 +267,7 @@ console.log(wallet.otherAddress); // [0x56B4...8173, 0x0F91...d9A8, 0x26eB...bAD
 console.log(wallet.otherAddress.length); // 10
 ```
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const multipleAddresesWallet = await open({ addressCount: 1 });
 
@@ -327,7 +327,7 @@ This is useful for cases where you want to prove the wallet's identity without e
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const wallet = await open();
 
@@ -434,7 +434,7 @@ If it's can set it successfully, it will return `true`, otherwise it will `throw
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const multipleAddresesWallet = await open();
 
@@ -471,25 +471,25 @@ transactionObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const trezorWallet = await open();
 
 const transactionSignature = await trezorWallet.sign({ to: '0x3953...a4C1' }); // 0xF990...8d91
 ```
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
-import { bigNumber } from 'colony-wallet/utils';
+import { open } from 'colony-wallet/trezor';
+import { utils } from 'colony-wallet';
 
 const trezorWallet = await open();
 
 const transaction = {
-  gasPrice: bigNumber('0.00000001').toWei(),
-  gasLimit: bigNumber(30000),
+  gasPrice: utils.bigNumber('0.00000001').toWei(),
+  gasLimit: utils.bigNumber(30000),
   chainId: 4,
   nonce: 15987,
   to: '0x3953...a4C1',
-  value: bigNumber(1).toWei(),
+  value: utils.bigNumber(1).toWei(),
   inputData: '0x00',
 };
 
@@ -516,7 +516,7 @@ messageObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const trezorWallet = await open();
 
@@ -544,7 +544,7 @@ messageObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const trezorWallet = await open();
 

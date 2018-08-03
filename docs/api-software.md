@@ -32,9 +32,7 @@ Using `ES5` `require()` statements:
 ```js
 var wallet = require('colony-wallet/software'); // wallet.create().then();
 
-var wallets = require('colony-wallet/wallets'); // wallets.software.create().then();
-
-var wallet = require('colony-wallet/wallets').software; // wallet.create().then();
+var wallets = require('colony-wallet').wallets; // wallets.software.create().then();
 
 var create = require('colony-wallet/software').create; // create().then();
 ```
@@ -43,9 +41,7 @@ Using `ES6` `import` statements:
 ```js
 import wallet from 'colony-wallet/software'; // await wallet.create();
 
-import wallets from 'colony-wallet/wallets'; // await wallets.software.create();
-
-import { software as wallet } from 'colony-wallet/wallets'; // await wallet.create();
+import { wallets } from 'colony-wallet'; // await wallets.software.create();
 
 import { create } from 'colony-wallet/software'; // await create();
 ```
@@ -102,9 +98,9 @@ const newWallet = await create();
 Create a new wallet with manual entropy:
 ```js
 import { create } from 'colony-wallet/software';
-import { getRandomValues } from 'colony-wallet/utils';
+import { utils } from 'colony-wallet';
 
-const newWallet = await create({ entropy: getRandomValues(new Uint8Array(65536)) });
+const newWallet = await create({ entropy: utils.getRandomValues(new Uint8Array(65536)) });
 ```
 
 Create a new wallet and give it a provider:
