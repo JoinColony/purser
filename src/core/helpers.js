@@ -276,8 +276,6 @@ export const transactionObjectValidator = ({
 /**
  * Validate a message verification (message to be signed) object
  *
- * @TODO Add unit tests
- *
  * @method messageObjectValidator
  *
  * @param {string} derivationPath The derivation path for the account with which to sign the transaction
