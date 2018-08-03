@@ -36,6 +36,17 @@ describe('`Core` Module', () => {
       expect(console.warn).toHaveBeenCalledWith(errorMessage);
       expect(badAssertion).toBeFalsy();
     });
+    test('Messages can be passed in as an Array', () => {
+      defaults.ENV = 'development';
+      const errorsArray = [errorMessage, errorMessage, errorMessage];
+      assertTruth({
+        expression: false,
+        message: errorsArray,
+        level: 'low',
+      });
+      expect(console.warn).toHaveBeenCalled();
+      expect(console.warn).toHaveBeenCalledWith(...errorsArray);
+    });
     test('Returns true if the expression is also true', () => {
       const goodAssertion = assertTruth({
         expression: true,
