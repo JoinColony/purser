@@ -51,5 +51,9 @@ describe('`Core` Module', () => {
       expect(validatedMessageObject).toHaveProperty('derivationPath');
       expect(validatedMessageObject).toHaveProperty('message');
     });
+    test('Has a empty string as a message fallback', async () => {
+      const validatedMessageObject = messageObjectValidator();
+      expect(validatedMessageObject).toHaveProperty('message', ' ');
+    });
   });
 });

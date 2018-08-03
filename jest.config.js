@@ -54,6 +54,7 @@ module.exports = {
     '^ethereum-blockies$': '<rootDir>/__mocks__/ethereum-blockies.js',
     '^bip32-path$': '<rootDir>/__mocks__/bip32-path.js',
     '^ethereumjs-tx$': '<rootDir>/__mocks__/ethereumjs-tx.js',
+    '^ethereumjs-util$': '<rootDir>/__mocks__/ethereumjs-util.js',
     '^hdkey$': '<rootDir>/__mocks__/hdkey.js',
     '^@ledgerhq/hw-transport-u2f$': '<rootDir>/__mocks__/ledger-hw-transport-u2f.js',
     '^@ledgerhq/hw-app-eth$': '<rootDir>/__mocks__/ledger-hw-app-eth.js',
