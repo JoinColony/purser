@@ -30,6 +30,8 @@ describe('Ledger` Hardware Wallet Module', () => {
   afterEach(() => {
     LedgerWalletClass.mockReset();
     LedgerWalletClass.mockRestore();
+    utils.warning.mockReset();
+    utils.warning.mockRestore();
   });
   describe('`open()` static method with defaults', () => {
     test('Open the wallet with defaults', async () => {
@@ -78,6 +80,22 @@ describe('Ledger` Hardware Wallet Module', () => {
        * We have a deprecation warning
        */
       expect(utils.warning).toHaveBeenCalled();
+    });
+    test('Open the wallet without setting a provider', async () => {
+      await ledgerWallet.open({ provider: '' });
+      expect(LedgerWalletClass).toHaveBeenCalled();
+      expect(LedgerWalletClass).toHaveBeenCalledWith(
+        /*
+        * We only care that the provider generator method gets instantiated
+        */
+        expect.objectContaining({
+          provider: undefined,
+        }),
+      );
+      /*
+       * We have a deprecation warning
+       */
+      expect(utils.warning).not.toHaveBeenCalled();
     });
     test('Throw if something else goes wrong', async () => {
       /*
