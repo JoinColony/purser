@@ -92,7 +92,7 @@ export type LibraryExportType = {
 export type GenericClassArgumentsType = {
   publicKey?: string,
   chainCode?: string,
-  rootDerivationPath?: string,
+  rootDerivationPath: string,
   addressCount?: number,
   provider?: ProviderType | void,
 };
