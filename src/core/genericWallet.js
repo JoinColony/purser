@@ -104,12 +104,10 @@ export default class GenericWallet {
         /*
          * Set this individual address's derivation path
          */
-        if (typeof rootDerivationPath === 'string') {
-          addressObject.derivationPath =
-            rootDerivationPath.substr(-1) === SPLITTER
-              ? `${rootDerivationPath}${index}`
-              : `${rootDerivationPath}/${index}`;
-        }
+        addressObject.derivationPath =
+          rootDerivationPath.substr(-1) === SPLITTER
+            ? `${rootDerivationPath}${index}`
+            : `${rootDerivationPath}${SPLITTER}${index}`;
         /*
          * This is the derrived public key, not the one originally fetched one
          */

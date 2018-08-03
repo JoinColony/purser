@@ -22,6 +22,7 @@ jest.mock('../../core/normalizers');
 /*
  * Common values
  */
+const addressGeneratedFromPublicKey = 'mocked-hex-address';
 const rootPublicKey = 'mocked-root-public-key';
 const rootChainCode = 'mocked-root-chain-code';
 const rootDerivationPath = 'mocked-root-derivation-path';
@@ -57,6 +58,39 @@ describe('`Core` Module', () => {
         mockedProvider,
       });
       expect(HDKey).toHaveBeenCalled();
+    });
+    test('Adapts to differnt versions of the derivation path', async () => {
+      const firstDerivationPathIndex = `${rootDerivationPath}/0`;
+      /*
+       * A "trezor"-default derivation path, that ends with a digit.
+       * Eg: m/44'/60'/0'/0
+       */
+      const derivationPathWithDigitWallet = new GenericWallet({
+        publicKey: rootPublicKey,
+        chainCode: rootChainCode,
+        rootDerivationPath,
+        addressCount,
+        provider: mockedProvider,
+      });
+      /* eslint-disable-next-line prettier/prettier */
+      const derivationPathWithDigit =
+        await derivationPathWithDigitWallet.derivationPath;
+      expect(derivationPathWithDigit).toEqual(firstDerivationPathIndex);
+      /*
+       * A "ledger"-default derivation path, that ends with a slash.
+       * Eg: m/44'/60'/0'/
+       */
+      const derivationPathWithSpliterWallet = new GenericWallet({
+        publicKey: rootPublicKey,
+        chainCode: rootChainCode,
+        rootDerivationPath: `${rootDerivationPath}/`,
+        addressCount,
+        provider: mockedProvider,
+      });
+      /* eslint-disable-next-line prettier/prettier */
+      const derivationPathWithSplitter =
+        await derivationPathWithSpliterWallet.derivationPath;
+      expect(derivationPathWithSplitter).toEqual(firstDerivationPathIndex);
     });
     test('Generates the address(es) from the public key(s)', () => {
       /* eslint-disable-next-line no-new */
@@ -103,7 +137,6 @@ describe('`Core` Module', () => {
       expect(genericWallet).toHaveProperty('verifyMessage');
     });
     test('Validates values used to instantiate', async () => {
-      const addressGeneratedFromPublicKey = 'mocked-hex-address';
       /* eslint-disable-next-line no-new */
       new GenericWallet({
         publicKey: rootPublicKey,
@@ -156,7 +189,6 @@ describe('`Core` Module', () => {
       expect(hexSequenceNormalizer).toHaveBeenCalledTimes(addressCount);
     });
     test('Changes the default address', async () => {
-      const addressGeneratedFromPublicKey = 'mocked-hex-address';
       /* eslint-disable-next-line no-new */
       const genericWallet = new GenericWallet({
         publicKey: rootPublicKey,
@@ -206,6 +238,40 @@ describe('`Core` Module', () => {
         `${addressGeneratedFromPublicKey}-${newAddressIndex}`,
       );
     });
+    test('Changes the default address with no arguments provided', async () => {
+      /* eslint-disable-next-line no-new */
+      const genericWallet = new GenericWallet({
+        publicKey: rootPublicKey,
+        chainCode: rootChainCode,
+        rootDerivationPath,
+        addressCount,
+        provider: mockedProvider,
+      });
+      /*
+       * Set the initial default account to something later down the array index
+       */
+      const initialAddressIndex = 4;
+      expect(
+        genericWallet.setDefaultAddress(initialAddressIndex),
+      ).resolves.toBeTruthy();
+      expect(genericWallet).toHaveProperty(
+        'address',
+        `${addressGeneratedFromPublicKey}-${initialAddressIndex}`,
+      );
+      /*
+       * Change the default account with no arguments provided, so it defaults
+       * To the the initial values
+       */
+      const defaultAddressIndex = 0;
+      expect(genericWallet.setDefaultAddress()).resolves.toBeTruthy();
+      /*
+       * Now the address should reflec the new index
+       */
+      expect(genericWallet).toHaveProperty(
+        'address',
+        `${addressGeneratedFromPublicKey}-${defaultAddressIndex}`,
+      );
+    });
     /*
      * For some reason prettier always suggests a way to fix this that would
      * violate the 80 max-len rule. Wierd
@@ -240,6 +306,44 @@ describe('`Core` Module', () => {
         expect(genericWallet.otherAddresses.length).toEqual(addressCount);
       },
     );
+    test('Opens the first 10 wallet addresses by default', () => {
+      const genericWallet = new GenericWallet({
+        publicKey: rootPublicKey,
+        chainCode: rootChainCode,
+        rootDerivationPath,
+        provider: mockedProvider,
+      });
+      /*
+       * If no value was passed to the addressCount, it defaults to 10
+       *
+       * This means the otherAddreses prop is available and contains the first
+       * 10 derived addresses
+       */
+      expect(genericWallet).toHaveProperty('otherAddresses');
+      expect(genericWallet.otherAddresses.length).toEqual(addressCount);
+    });
+    test('Falls back to 1 if address count was set to falsy value', () => {
+      const genericWallet = new GenericWallet({
+        publicKey: rootPublicKey,
+        chainCode: rootChainCode,
+        rootDerivationPath,
+        addressCount: false,
+        provider: mockedProvider,
+      });
+      /*
+       * If a falsy value was passed to the addressCount, it bypasses the default,
+       * but it should be caught by the fallback inside the array map (and falls
+       * back to 1)
+       *
+       * This means the otherAddreses prop will not be available, but we still have
+       * one (the first) addres opened.
+       */
+      expect(genericWallet).not.toHaveProperty('otherAddresses');
+      expect(genericWallet).toHaveProperty(
+        'address',
+        `${addressGeneratedFromPublicKey}-0`,
+      );
+    });
     test(
       'Does not have the `otherAddresses` prop if only one was instantiated',
       async () => {
