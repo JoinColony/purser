@@ -14,9 +14,6 @@ import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 
 const { WALLET_PROPS } = DESCRIPTORS;
 
-/*
- * @TODO Add unit tests
- */
 export default class LedgerWallet extends GenericWallet {
   constructor(propObject: GenericClassArgumentsType) {
     super(propObject);
