@@ -15,6 +15,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 * Wallets
   * [Hardware](#hardware)
     * [Trezor](#trezor)
+    * [Ledger](#ledger)
 
 ### Hardware
 
@@ -49,3 +50,7 @@ import { hardware as wallet } from 'colony-wallet/wallets';
 #### Trezor
 
 See the [Trezor Wallet API](api-trezor.md).
+
+#### Ledger
+
+See the [Ledger Wallet API](api-ledger.md).
