@@ -458,6 +458,8 @@ This method takes in an `transactionObject` Object _(See below)_, and returns th
 
 The `transactionObject`'s props will be each individually validated, and if there's something wrong with one of them, it will `throw` and Error.
 
+_**Note**: On hardware wallets this method will require some form of confirmation from the user._
+
 **`transactionObject` format:**
 ```js
 transactionObject {
@@ -509,6 +511,8 @@ This method takes in an `messageObject` Object _(See below)_, and returns the he
 
 The `messageObject` only has one prop, `message`, but to keep consistency with the rest of the library, it is passed in as an Object.
 
+_**Note**: On hardware wallets this method will require some form of confirmation from the user._
+
 **`messageObject` format:**
 ```js
 messageObject {
@@ -535,6 +539,8 @@ Verify a previously signed message to validate your identity and prove it was in
 This method takes in an `verificationObject` Object _(See below)_, and returns a Boolean wrapped inside a `Promise` _(This method is `async`)_.
 
 If the message _(after it gets signed internally)_ matches the provided signature, it will return `true`, otherwise it will return `false` _(And if you're in a `development` environment, also a warning)_.
+
+_**Note**: On hardware wallets this method **may** require some form of confirmation from the user (depending on the hardware wallet type)._
 
 **`verificationObject` format:**
 ```js
