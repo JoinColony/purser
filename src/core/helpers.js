@@ -321,8 +321,6 @@ export const messageObjectValidator = ({
 /**
  * Validate a signature verification message object
  *
- * @TODO Add unit tests
- *
  * @method messageVerificationObjectValidator
  *
  * @param {string} address The address of the account that signed the message. Optional.
