@@ -85,7 +85,7 @@ describe('`Core` Module', () => {
       expect(derivationPathNormalizer).toHaveBeenCalled();
       expect(derivationPathNormalizer).toHaveBeenCalledWith(derivationPath);
     });
-    test('Returns the validated object', async () => {
+    test('Returns the validated transaction object', async () => {
       const validatedTransactionObject = transactionObjectValidator(
         mockedTransactionObject,
       );
