@@ -148,7 +148,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       payloadListener.mockImplementation(() =>
         Promise.reject(new Error('Oh no!')),
       );
-      expect(signTransaction()).rejects.toThrow();
+      expect(signTransaction(mockedTransactionObject)).rejects.toThrow();
     });
     test('Log a warning if the user Cancels signing it', async () => {
       /*
