@@ -136,6 +136,8 @@ console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... Dw2G
 WalletInstance.defaultGasLimit: Number
 ```
 
+**_The `defaultGasLimit` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
+
 This is prop has both a `getter` and a `setter` attached to it. The `getter` returns a `Number` value, while the `setter` sets a new one.
 
 This value will be used if the transaction you wish to send from the wallet does not contain a `gasLimit`.
