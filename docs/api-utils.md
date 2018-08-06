@@ -24,12 +24,12 @@ There are different ways in which you can import the library in your project _(a
 
 Using `ES5` `require()` statements:
 ```js
-var utils = require('colony-wallet/utils'); // utils.getRandomValues();
+var utils = require('colony-wallet').utils; // utils.getRandomValues();
 ```
 
 Using `ES6` `import` statements:
 ```js
-import utils from 'colony-wallet/utils'; // utils.getRandomValues();
+import { utils } from 'colony-wallet'; // utils.getRandomValues();
 ```
 
 ### `bigNumber`
@@ -52,8 +52,10 @@ This method will `return` an extended instance of `bn.js` _(already instantiated
 
 This method is used to work with number values throughout the library:
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
-import { bigNumber } from 'colony-wallet/utils';
+import { open } from 'colony-wallet/trezor';
+import { utils } from 'colony-wallet';
+
+const { bigNumber } = utils;
 
 const gasPrice = bigNumber('0.00000001').toWei(); // {negative: 0, words: Array(4), length: 4, red: null}
 
@@ -79,7 +81,9 @@ This method is used to provide randomness when creating a new wallet:
 ```js
 
 import wallet from 'colony-wallet/software';
-import { getRandomValues } from 'colony-wallet/utils';
+import { utils } from 'colony-wallet';
+
+const { getRandomValues } = utils;
 
 // a bigger array is better, up to a max. of 65536 (the limit of the 8 bit unsigned array)
 

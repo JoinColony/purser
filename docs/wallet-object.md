@@ -136,6 +136,8 @@ console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... Dw2G
 WalletInstance.defaultGasLimit: Number
 ```
 
+**_The `defaultGasLimit` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
+
 This is prop has both a `getter` and a `setter` attached to it. The `getter` returns a `Number` value, while the `setter` sets a new one.
 
 This value will be used if the transaction you wish to send from the wallet does not contain a `gasLimit`.
@@ -232,7 +234,7 @@ const wallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 console.log(await wallet.derivationPath); // m/44'/60'/0'/0/0
 ```
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const wallet = await open();
 
@@ -258,7 +260,7 @@ Note, that if only one address was derived when you opened the wallet _(Eg: `{ a
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const multipleAddresesWallet = await open();
 
@@ -267,7 +269,7 @@ console.log(wallet.otherAddress); // [0x56B4...8173, 0x0F91...d9A8, 0x26eB...bAD
 console.log(wallet.otherAddress.length); // 10
 ```
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const multipleAddresesWallet = await open({ addressCount: 1 });
 
@@ -327,7 +329,7 @@ This is useful for cases where you want to prove the wallet's identity without e
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const wallet = await open();
 
@@ -434,7 +436,7 @@ If it's can set it successfully, it will return `true`, otherwise it will `throw
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const multipleAddresesWallet = await open();
 
@@ -456,6 +458,8 @@ This method takes in an `transactionObject` Object _(See below)_, and returns th
 
 The `transactionObject`'s props will be each individually validated, and if there's something wrong with one of them, it will `throw` and Error.
 
+_**Note**: On hardware wallets this method will require some form of confirmation from the user._
+
 **`transactionObject` format:**
 ```js
 transactionObject {
@@ -471,25 +475,25 @@ transactionObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const trezorWallet = await open();
 
 const transactionSignature = await trezorWallet.sign({ to: '0x3953...a4C1' }); // 0xF990...8d91
 ```
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
-import { bigNumber } from 'colony-wallet/utils';
+import { open } from 'colony-wallet/trezor';
+import { utils } from 'colony-wallet';
 
 const trezorWallet = await open();
 
 const transaction = {
-  gasPrice: bigNumber('0.00000001').toWei(),
-  gasLimit: bigNumber(30000),
+  gasPrice: utils.bigNumber('0.00000001').toWei(),
+  gasLimit: utils.bigNumber(30000),
   chainId: 4,
   nonce: 15987,
   to: '0x3953...a4C1',
-  value: bigNumber(1).toWei(),
+  value: utils.bigNumber(1).toWei(),
   inputData: '0x00',
 };
 
@@ -507,6 +511,8 @@ This method takes in an `messageObject` Object _(See below)_, and returns the he
 
 The `messageObject` only has one prop, `message`, but to keep consistency with the rest of the library, it is passed in as an Object.
 
+_**Note**: On hardware wallets this method will require some form of confirmation from the user._
+
 **`messageObject` format:**
 ```js
 messageObject {
@@ -516,7 +522,7 @@ messageObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const trezorWallet = await open();
 
@@ -534,6 +540,8 @@ This method takes in an `verificationObject` Object _(See below)_, and returns a
 
 If the message _(after it gets signed internally)_ matches the provided signature, it will return `true`, otherwise it will return `false` _(And if you're in a `development` environment, also a warning)_.
 
+_**Note**: On hardware wallets this method **may** require some form of confirmation from the user (depending on the hardware wallet type)._
+
 **`verificationObject` format:**
 ```js
 messageObject {
@@ -544,7 +552,7 @@ messageObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/hardware/trezor';
+import { open } from 'colony-wallet/trezor';
 
 const trezorWallet = await open();
 
