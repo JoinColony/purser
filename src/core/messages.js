@@ -24,7 +24,7 @@ export const validators: Object = {
     notNumber: 'The value passed in as an argument is not a number',
     notPositive: 'The integer value passed in as an argument is not positive',
     notSafe:
-      'The integer value passed in as an argument outside the safe range',
+      'The integer value passed in as an argument, is outside the safe range',
     genericError: 'Something is wrong with the supplied integer',
   },
   bigNumber: {
@@ -54,8 +54,6 @@ export const validators: Object = {
 
 export const utils: Object = {
   getRandomValues: {
-    nodeCryptoFallback:
-      "Your browser doesn't have the `webcrypto` API implemented, falling back to the `cryto` library provided by `node`",
     wrongArgumentType:
       'Expected the argument to be an instance of an Uint8Array typed array',
     noCryptoLib:

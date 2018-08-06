@@ -10,7 +10,7 @@ import { U2F_TRANSPORT_ERROR } from './defaults';
 import type { LedgerInstanceType, U2FTransportError } from './flowtypes';
 
 /**
- * Create a new Ledger U2F transaport and connection to the Ethereum App
+ * Create a new Ledger U2F transport and connection to the Ethereum App
  *
  * @method ledgerConnection
  *

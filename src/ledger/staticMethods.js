@@ -71,9 +71,6 @@ export const signTransaction = async (
      * Also, see EIP-155 for the 27 and 28 magic numbers expected in the recovery
      * parameter:
      * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
-     *
-     * Now, trezor will give you the recovery paramenter already encoded, but if you
-     * want to derive the magic numbers again:
      */
     const unsignedTransaction = await new EthereumTx({
       /*
