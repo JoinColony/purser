@@ -56,6 +56,10 @@ export const derivationPathSerializer = ({
   const hasChange = change || change === 0;
   const hasAddressIndex = addressIndex || addressIndex === 0;
   return (
+    /*
+     * It's using a template in the last spot, eslint just donesn't recognizes it...
+     */
+    /* eslint-disable-next-line prefer-template */
     `${PATH.HEADER_KEY}/${purpose}` +
     `${DELIMITER}${coinType}` +
     `${DELIMITER}${account}` +
@@ -67,9 +71,9 @@ export const derivationPathSerializer = ({
      * Flow is overreacting again...
      */
     /* $FlowFixMe */
-    `${hasChange ? `${change}` : ''}` +
+    `${hasChange ? change : ''}` +
     /* $FlowFixMe */
-    `${hasChange && hasAddressIndex ? `/${addressIndex}` : ''}`
+    (hasChange && hasAddressIndex ? `/${addressIndex}` : '')
   );
 };
 
