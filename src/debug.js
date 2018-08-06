@@ -29,6 +29,10 @@ import TrezorWallet from './trezor/class';
 import * as trezorHelpers from './trezor/helpers';
 
 /* Ledger */
+import LedgerWallet from './ledger/class';
+
+/* Ledger */
+import GenericWallet from './core/genericWallet';
 
 /*
  * This object was extracted in it's own export to not pollute the index,
@@ -61,8 +65,10 @@ const debug: Object = {
     normalizers,
     providers,
     walletClasses: {
+      GenericWallet,
       SoftwareWallet: software.SoftwareWallet,
       TrezorWallet,
+      LedgerWallet,
     },
   },
 };
