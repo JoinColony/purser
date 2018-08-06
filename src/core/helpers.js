@@ -153,6 +153,7 @@ export const verifyMessageSignature = ({
      * @NOTE `ecrecover` is just a helper method
      * Around `secp256k1`'s `recover()` and `publicKeyConvert()` methods
      *
+     * This is to what the function description comment block note is referring  to
      */
     const recoveredPublicKeyBuffer = ecrecover(
       messageHash,

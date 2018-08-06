@@ -16,8 +16,10 @@ export const SUBTYPE_TREZOR: string = 'trezor';
 export const SUBTYPE_LEDGER: string = 'ledger';
 
 const walletTypes: Object = {
+  TYPE_GENERIC,
   TYPE_SOFTWARE,
   TYPE_HARDWARE,
+  SUBTYPE_GENERIC,
   SUBTYPE_ETHERS,
   SUBTYPE_TREZOR,
   SUBTYPE_LEDGER,
