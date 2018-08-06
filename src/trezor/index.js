@@ -2,30 +2,34 @@
 
 import { fromString } from 'bip32-path';
 
+import { derivationPathSerializer } from '../core/helpers';
+import { warning, objectToErrorString } from '../core/utils';
+import { PATH } from '../core/defaults';
+import type { WalletArgumentsType } from '../core/flowtypes';
+
 import TrezorWallet from './class';
 
-import { payloadListener, derivationPathSerializer } from './helpers';
+import { payloadListener } from './helpers';
 import { autoselect } from '../providers';
-import { warning, objectToErrorString } from '../utils';
 
+import { deprecated as deprecatedMessages } from '../core/messages';
 import { staticMethodsMessages as messages } from './messages';
-import { PATH, STD_ERRORS } from './defaults';
+import { STD_ERRORS } from './defaults';
 import { PAYLOAD_XPUB } from './payloads';
 import { MAIN_NETWORK } from '../defaults';
 
-import type {
-  WalletArgumentsType,
-  WalletObjectType,
-  WalletExportType,
-} from '../flowtypes';
-
-const trezorWallet: WalletExportType = Object.assign(
+const trezorWallet: Object = Object.assign(
   {},
   {
     /**
      * Open a new wallet from the public key and chain code, which are received
      * form the Trezor service after interacting (confirming) with the hardware
      * in real life.
+     *
+     * @TODO Reduce code repetition
+     * While I would very much like to refactor this now, it's a little pre-mature
+     * since there's going to be a lot of changes still.
+     * This should be put off until we remove providers.
      *
      * @method open
      *
@@ -41,7 +45,7 @@ const trezorWallet: WalletExportType = Object.assign(
     open: async ({
       addressCount,
       provider = autoselect,
-    }: WalletArgumentsType = {}): Promise<WalletObjectType | void> => {
+    }: WalletArgumentsType = {}): Promise<TrezorWallet | void> => {
       const { COIN_MAINNET, COIN_TESTNET } = PATH;
       /*
        * Get the provider.
@@ -53,7 +57,7 @@ const trezorWallet: WalletExportType = Object.assign(
       if (typeof provider !== 'object' && typeof provider !== 'function') {
         providerMode = undefined;
       } else {
-        warning(messages.providersDeprecated);
+        warning(deprecatedMessages.providers);
       }
       /*
        * If we're on a testnet set the coin type id to `1`
@@ -71,7 +75,10 @@ const trezorWallet: WalletExportType = Object.assign(
        * Based on this, we will then derive all the needed address indexes
        * (inside the class constructor)
        */
-      const rootDerivationPath: string = derivationPathSerializer({ coinType });
+      const rootDerivationPath: string = derivationPathSerializer({
+        change: PATH.CHANGE,
+        coinType,
+      });
       /*
        * Modify the default payload to overwrite the path with the new
        * coin type id derivation
@@ -90,13 +97,13 @@ const trezorWallet: WalletExportType = Object.assign(
         const { publicKey, chainCode } = await payloadListener({
           payload: modifiedPayloadObject,
         });
-        const walletInstance: WalletObjectType = new TrezorWallet(
+        const walletInstance: TrezorWallet = new TrezorWallet({
           publicKey,
           chainCode,
           rootDerivationPath,
           addressCount,
-          providerMode,
-        );
+          provider: providerMode,
+        });
         return walletInstance;
       } catch (caughtError) {
         /*

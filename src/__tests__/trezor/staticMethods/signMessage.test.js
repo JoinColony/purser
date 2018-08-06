@@ -1,23 +1,32 @@
+import { messageObjectValidator } from '../../../core/helpers';
+
 import { signMessage } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
-import {
-  derivationPathValidator,
-  messageValidator,
-} from '../../../trezor/validators';
-import {
-  derivationPathNormalizer,
-  hexSequenceNormalizer,
-} from '../../../trezor/normalizers';
+import { hexSequenceNormalizer } from '../../../core/normalizers';
 
 import { PAYLOAD_SIGNMSG } from '../../../trezor/payloads';
 
 jest.dontMock('../../../trezor/staticMethods');
 
-jest.mock('../../../trezor/helpers');
-jest.mock('../../../trezor/validators');
-jest.mock('../../../trezor/normalizers');
+jest.mock('../../../core/validators');
+jest.mock('../../../core/normalizers');
+jest.mock('../../../core/helpers');
+/*
+ * Manual mocking a manual mock. Yay for Jest being built by Facebook!
+ *
+ * If you need context, see this:
+ * https://github.com/facebook/jest/issues/2070
+ */
+jest.mock('../../../trezor/helpers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../trezor/__remocks__/helpers'),
+);
 
 const path = 'mocked-derivation-path';
+const mockedMessageObject = {
+  derivationPath: path,
+  message: 'mocked-message',
+};
 
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   describe('`signMessage()` static method', () => {
@@ -33,18 +42,13 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       });
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
-        payload: {
-          /*
-           * We only care about what payload type this method sends
-           */
-          path: expect.anything(),
-          message: expect.anything(),
-          /*
-           * These two values should be correct
-           */
+        /*
+        * We only care about what payload type this method sends
+        */
+        payload: expect.objectContaining({
           type,
           requiredFirmware,
-        },
+        }),
       });
     });
     test('Validates message input values', async () => {
@@ -52,35 +56,12 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      const message = 'mocked-message';
-      await signMessage({
-        path,
-        message,
-      });
+      await signMessage(mockedMessageObject);
       /*
        * Validates the derivation path
        */
-      expect(derivationPathValidator).toHaveBeenCalled();
-      expect(derivationPathValidator).toHaveBeenCalledWith(path);
-      /*
-       * Validates the message that is to be signed
-       */
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(message);
-    });
-    test('Normalizes message input values', async () => {
-      /*
-       * These values are not correct. Do not use the as reference.
-       * If the validators wouldn't be mocked, they wouldn't pass.
-       */
-      await signMessage({
-        path,
-      });
-      /*
-       * Normalizes the derivation path
-       */
-      expect(derivationPathNormalizer).toHaveBeenCalled();
-      expect(derivationPathNormalizer).toHaveBeenCalledWith(path);
+      expect(messageObjectValidator).toHaveBeenCalled();
+      expect(messageObjectValidator).toHaveBeenCalledWith(mockedMessageObject);
     });
     test('Normalizes the return hex string', async () => {
       const returnedHexString = '48656c6c6f20796f75';

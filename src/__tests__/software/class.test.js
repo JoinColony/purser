@@ -1,13 +1,17 @@
 import { Wallet as EthersWallet, HDNode } from 'ethers/wallet';
 
+import { derivationPathSerializer } from '../../core/helpers';
+import { PATH } from '../../core/defaults';
 import software from '../../software';
 import { jsonRpc } from '../../providers';
-import * as utils from '../../utils';
-import { PROVIDER_PROTO, MNEMONIC_PATH } from '../../defaults';
+import * as utils from '../../core/utils';
+import { PROVIDER_PROTO } from '../../defaults';
 
 jest.mock('ethers/wallet');
-jest.mock('../../utils');
+jest.mock('../../core/utils');
+
 jest.dontMock('../../software');
+jest.dontMock('../../core/helpers');
 
 describe('`software` wallet module', () => {
   afterEach(() => {
@@ -148,6 +152,10 @@ describe('`software` wallet module', () => {
     });
     test('After open, the wallet should have the `mnemonic` prop', async () => {
       const mnemonic = 'romeo delta india golf';
+      const derivationPath = derivationPathSerializer({
+        change: PATH.CHANGE,
+        addressIndex: PATH.INDEX,
+      });
       const testWalletKey = await software.SoftwareWallet.open({
         privateKey: '0x1',
       });
@@ -157,9 +165,9 @@ describe('`software` wallet module', () => {
       expect(testWalletKey).toBeInstanceOf(software.SoftwareWallet);
       expect(testWalletMnemonic).toBeInstanceOf(software.SoftwareWallet);
       expect(testWalletKey).toHaveProperty('mnemonic', undefined);
-      expect(testWalletKey).toHaveProperty('path', MNEMONIC_PATH);
+      expect(testWalletKey).toHaveProperty('path', derivationPath);
       expect(testWalletMnemonic).toHaveProperty('mnemonic', mnemonic);
-      expect(testWalletMnemonic).toHaveProperty('path', MNEMONIC_PATH);
+      expect(testWalletMnemonic).toHaveProperty('path', derivationPath);
     });
   });
 });

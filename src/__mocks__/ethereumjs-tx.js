@@ -1,6 +1,6 @@
 export const EthereumTx = jest.fn().mockImplementation(() => ({
   serialize: () => ({
-    toString: () => {},
+    toString: () => 'mocked-hex-string',
   }),
 }));
 

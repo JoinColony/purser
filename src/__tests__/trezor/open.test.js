@@ -1,24 +1,38 @@
 import { fromString } from 'bip32-path';
-import TrezorWalletClass from '../../trezor/class';
-import trezorWallet from '../../trezor';
+
+import { derivationPathSerializer } from '../../core/helpers';
+import { PATH } from '../../core/defaults';
+
 import { jsonRpc } from '../../providers';
-import * as utils from '../../utils';
-import {
-  payloadListener,
-  derivationPathSerializer,
-} from '../../trezor/helpers';
+import * as utils from '../../core/utils';
+
+import trezorWallet from '../../trezor';
+import TrezorWalletClass from '../../trezor/class';
+import { payloadListener } from '../../trezor/helpers';
 import { PAYLOAD_XPUB } from '../../trezor/payloads';
-import { PATH, STD_ERRORS } from '../../trezor/defaults';
+import { STD_ERRORS } from '../../trezor/defaults';
 
 jest.mock('bip32-path');
 jest.mock('../../trezor/class');
-jest.mock('../../trezor/helpers');
-jest.mock('../../utils');
+jest.mock('../../core/helpers');
+jest.mock('../../core/utils');
+/*
+ * Manual mocking a manual mock. Yay for Jest being built by Facebook!
+ *
+ * If you need context, see this:
+ * https://github.com/facebook/jest/issues/2070
+ */
+jest.mock('../../trezor/helpers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../trezor/__remocks__/helpers'),
+);
 
 describe('Trezor` Hardware Wallet Module', () => {
   afterEach(() => {
     TrezorWalletClass.mockReset();
     TrezorWalletClass.mockRestore();
+    utils.warning.mockReset();
+    utils.warning.mockRestore();
   });
   describe('`open()` static method with defaults', () => {
     test('Open the wallet with defaults', async () => {
@@ -31,6 +45,7 @@ describe('Trezor` Hardware Wallet Module', () => {
       expect(derivationPathSerializer).toHaveBeenCalled();
       expect(derivationPathSerializer).toHaveBeenCalledWith({
         coinType: PATH.COIN_MAINNET,
+        change: PATH.CHANGE,
       });
       /*
        * Expect to convert the derivation path into an path array
@@ -42,11 +57,13 @@ describe('Trezor` Hardware Wallet Module', () => {
        */
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
-        payload: {
-          path: expect.anything() /* Don't care about the derivation path */,
+        /*
+        * We only care about what payload type this method sends
+        */
+        payload: expect.objectContaining({
           type,
           requiredFirmware,
-        },
+        }),
       });
     });
     test('Open the wallet with 20 addresss', async () => {
@@ -54,27 +71,45 @@ describe('Trezor` Hardware Wallet Module', () => {
       await trezorWallet.open({ addressCount: addressesToOpen });
       expect(TrezorWalletClass).toHaveBeenCalled();
       expect(TrezorWalletClass).toHaveBeenCalledWith(
-        expect.anything() /* Don't care about the public key */,
-        expect.anything() /* Don't care about the chain code */,
-        expect.anything() /* Don't care about the derivation path */,
-        addressesToOpen,
-        expect.anything() /* Don't care about the provider */,
+        /*
+        * We only care about the address count
+        */
+        expect.objectContaining({
+          addressCount: addressesToOpen,
+        }),
       );
     });
     test('Open the wallet and set a provider', async () => {
       await trezorWallet.open({ provider: jsonRpc });
       expect(TrezorWalletClass).toHaveBeenCalled();
       expect(TrezorWalletClass).toHaveBeenCalledWith(
-        expect.anything() /* Don't care about the public key */,
-        expect.anything() /* Don't care about the chain code */,
-        expect.anything() /* Don't care about the derivation path */,
-        undefined /* Don't care about the address count */,
-        await jsonRpc(),
+        /*
+        * We only care that the provider generator method gets instantiated
+        */
+        expect.objectContaining({
+          provider: await jsonRpc(),
+        }),
       );
       /*
        * We have a deprecation warning
        */
       expect(utils.warning).toHaveBeenCalled();
+    });
+    test('Open the wallet without a provider', async () => {
+      await trezorWallet.open({ provider: '' });
+      expect(TrezorWalletClass).toHaveBeenCalled();
+      expect(TrezorWalletClass).toHaveBeenCalledWith(
+        /*
+        * We only care that the provider generator method gets instantiated
+        */
+        expect.objectContaining({
+          provider: undefined,
+        }),
+      );
+      /*
+       * We have a deprecation warning
+       */
+      expect(utils.warning).not.toHaveBeenCalled();
     });
     test('Log a warning if the user cancels', async () => {
       /*

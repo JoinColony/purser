@@ -15,6 +15,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 * Wallets
   * [Hardware](#hardware)
     * [Trezor](#trezor)
+    * [Ledger](#ledger)
 
 ### Hardware
 
@@ -28,24 +29,28 @@ There are different ways in which you can import the library in your project _(a
 
 Using `ES5` `require()` statements:
 ```js
-var wallet = require('colony-wallet/hardware');
+var wallets = require('colony-wallet').wallets;
 
-var wallets = require('colony-wallet/wallets');
+var trezor = require('colony-wallet/trezor');
 
-var wallet = require('colony-wallet/wallets').hardware;
+var ledger = require('colony-wallet/ledger');
 
 ```
 
 Using `ES6` `import` statements:
 ```js
-import wallet from 'colony-wallet/hardware';
+import { wallets } from 'colony-wallet';
 
-import wallets from 'colony-wallet/wallets';
+import trezor from 'colony-wallet/trezor';
 
-import { hardware as wallet } from 'colony-wallet/wallets';
+import ledger from 'colony-wallet/ledger';
 
 ```
 
 #### Trezor
 
 See the [Trezor Wallet API](api-trezor.md).
+
+#### Ledger
+
+See the [Ledger Wallet API](api-ledger.md).

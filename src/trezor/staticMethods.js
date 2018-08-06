@@ -3,35 +3,37 @@
 import { fromString } from 'bip32-path';
 import EthereumTx from 'ethereumjs-tx';
 
-import { payloadListener } from './helpers';
-import { warning, bigNumber, objectToErrorString } from '../utils';
-import {
-  derivationPathValidator,
-  safeIntegerValidator,
-  bigNumberValidator,
-  addressValidator,
-  hexSequenceValidator,
-  messageValidator,
-} from './validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
   hexSequenceNormalizer,
-} from './normalizers';
+} from '../core/normalizers';
+import { warning, bigNumber, objectToErrorString } from '../core/utils';
+import {
+  transactionObjectValidator,
+  messageObjectValidator,
+  messageVerificationObjectValidator,
+} from '../core/helpers';
+import { HEX_HASH_TYPE } from '../core/defaults';
 
+import { payloadListener } from './helpers';
 import { staticMethodsMessages as messages } from './messages';
-import { STD_ERRORS, HEX_HASH_TYPE } from './defaults';
+import { STD_ERRORS } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
 
-import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
+import type {
+  TransactionObjectType,
+  MessageObjectType,
+  MessageVerificationObjectType,
+} from '../core/flowtypes';
 
 /**
- * Sign a transaction and return the signed transaction.
+ * Sign a transaction object and return the serialized signature (as a hex string)
  *
  * @method signTransaction
  *
- * @param {string} path the derivation path for the account with which to sign the transaction
+ * @param {string} derivationPath the derivation path for the account with which to sign the transaction
  * @param {bigNumber} gasPrice gas price for the transaction in WEI (as an instance of bigNumber), defaults to 9000000000 (9 GWEI)
  * @param {bigNumber} gasLimit gas limit for the transaction (as an instance of bigNumber), defaults to 21000
  * @param {number} chainId the id of the chain for which this transaction is intended
@@ -42,62 +44,21 @@ import type { TransactionObjectType, MessageObjectType } from '../flowtypes';
  *
  * All the above params are sent in as props of an {TransactionObjectType} object.
  *
- * @return {Promise<string>} the signed hex transaction string
+ * @return {Promise<string>} the hex signature string
  */
-export const signTransaction = async ({
-  /*
-   * Path defaults to the "default" derivation path
-   */
-  path,
-  gasPrice = bigNumber(9000000000),
-  gasLimit = bigNumber(21000),
-  /*
-   * Chain Id defaults to the one set on the provider but it can be overwritten
-   */
-  chainId,
-  /*
-   * We can't currently use the object spread operator here because of some
-   * Eslint 5 and airbnb ruleset lack of compatibility.
-   *
-   * @TODO Fix object spread operator
-   */
-  nonce = 0,
-  to,
-  value = bigNumber(1),
-  inputData = '0x00',
-}: TransactionObjectType = {}) => {
-  /*
-   * Check if the derivation path is in the correct format
-   */
-  derivationPathValidator(path);
-  /*
-   * Check that the gas price is a big number
-   */
-  bigNumberValidator(gasPrice);
-  /*
-   * Check that the gas limit is a big number
-   */
-  bigNumberValidator(gasLimit);
-  /*
-   * Check if the chain id value is valid (a positive, safe integer)
-   */
-  safeIntegerValidator(chainId);
-  /*
-   * Check if the nonce value is valid (a positive, safe integer)
-   */
-  safeIntegerValidator(nonce);
-  /*
-   * Check if the address (`to` prop) is in the correct format
-   */
-  addressValidator(to);
-  /*
-   * Check that the value is a big number
-   */
-  bigNumberValidator(value);
-  /*
-   * Check that the input data prop is a valid hex string sequence
-   */
-  hexSequenceValidator(inputData);
+export const signTransaction = async (
+  transactionObject: TransactionObjectType,
+): Promise<string | void> => {
+  const {
+    derivationPath,
+    gasPrice,
+    gasLimit,
+    chainId,
+    nonce,
+    to,
+    value,
+    inputData,
+  } = transactionObjectValidator(transactionObject);
   /*
    * Modify the default payload to set the transaction details
    */
@@ -109,7 +70,7 @@ export const signTransaction = async ({
      * the default value of `path` and assumes it's undefined -- it can be,
      * but it will not pass the validator)
      */
-    address_n: fromString(derivationPathNormalizer(path), true).toPathArray(),
+    address_n: fromString(derivationPath, true).toPathArray(),
     /*
      * We could really do with some BN.js flow types declarations :(
      */
@@ -122,6 +83,7 @@ export const signTransaction = async ({
      * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
      * Eg: '3' to be '03', `12c` to be `012c`
      */
+    /* $FlowFixMe */
     nonce: multipleOfTwoHexValueNormalizer(nonce.toString(16)),
     /*
      * Trezor service requires the prefix from the address to be stripped
@@ -152,7 +114,7 @@ export const signTransaction = async ({
      *
      * recoveryParam - 35 - (chainId * 2)
      *
-     * If the result is even, then V is 27, if it's odd, it's 28
+     * If the result is odd, then V is 27, if it's even, it's 28
      */
     const {
       r: rSignatureComponent,
@@ -191,32 +153,17 @@ export const signTransaction = async ({
  *
  * @method signMessage
  *
- * @param {string} path the derivation path for the account with which to sign the message
+ * @param {string} derivationPath the derivation path for the account with which to sign the message
  * @param {string} message the message you want to sign
  *
  * All the above params are sent in as props of an {MessageObjectType} object.
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async ({
-  /*
-   * Path defaults to the "default" derivation path
-   */
-  path,
-  message = '',
-}: MessageObjectType) => {
-  /*
-   * Check if the derivation path is in the correct format
-   *
-   * Flow doesn't even let us validate it.
-   * It shoots first, asks questions later.
-   */
-  /* $FlowFixMe */
-  derivationPathValidator(path);
-  /*
-   * Check if the messages is in the correct format
-   */
-  messageValidator(message);
+export const signMessage = async (
+  messageObject: MessageObjectType,
+): Promise<string> => {
+  const { derivationPath, message } = messageObjectValidator(messageObject);
   const { signature: signedMessage } = await payloadListener({
     payload: Object.assign({}, PAYLOAD_SIGNMSG, {
       /*
@@ -226,8 +173,11 @@ export const signMessage = async ({
        * the default value value of `path` and assumes it's undefined -- it can be,
        * but it will not pass the validator)
        */
-      /* $FlowFixMe */
-      path: fromString(derivationPathNormalizer(path), true).toPathArray(),
+      path: fromString(
+        /* $FlowFixMe */
+        derivationPathNormalizer(derivationPath),
+        true,
+      ).toPathArray(),
       message,
     }),
   });
@@ -250,29 +200,12 @@ export const signMessage = async ({
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = async ({
-  address,
-  message = '',
-  signature = '',
-}: MessageObjectType) => {
-  /*
-   * Check if the address is in the correct format
-   */
-  addressValidator(address);
-  /*
-   * Check if the messages is in the correct format
-   */
-  messageValidator(message);
-  /*
-   * Check if the signature is in the correct format
-   */
-  hexSequenceValidator(signature);
-  /*
-   * The Trezor service throws an Error if the signature is invalid.
-   * We warn the user, but not throw an error, just return 'false'.
-   *
-   * This way you have a consistent return.
-   */
+export const verifyMessage = async (
+  signatureMessage: MessageVerificationObjectType,
+): Promise<boolean> => {
+  const { address, message, signature } = messageVerificationObjectValidator(
+    signatureMessage,
+  );
   try {
     const { success: isMessageValid } = await payloadListener({
       payload: Object.assign({}, PAYLOAD_VERIFYMSG, {

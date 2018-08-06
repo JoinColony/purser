@@ -100,6 +100,25 @@
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@kironeducation/flow-junit-transformer/-/flow-junit-transformer-0.3.0.tgz#ea1e57b01d7096012254a3d3dafc8afc7d97b8fe"
 
+"@ledgerhq/hw-app-eth@^4.19.0":
+  version "4.19.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-app-eth/-/hw-app-eth-4.19.0.tgz#2a76556172b4e9522a9b92357a48b39e10e003a6"
+  dependencies:
+    "@ledgerhq/hw-transport" "^4.19.0"
+
+"@ledgerhq/hw-transport-u2f@^4.20.0":
+  version "4.20.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-u2f/-/hw-transport-u2f-4.20.0.tgz#4118ace4dce55e0630db6c69972d8a88c87ed674"
+  dependencies:
+    "@ledgerhq/hw-transport" "^4.19.0"
+    u2f-api "0.2.7"
+
+"@ledgerhq/hw-transport@^4.19.0":
+  version "4.19.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-4.19.0.tgz#19a804aee1bfc4abac1dc9a2a7a582e79273f991"
+  dependencies:
+    events "^2.0.0"
+
 "@samverschueren/stream-to-observable@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@samverschueren/stream-to-observable/-/stream-to-observable-0.3.0.tgz#ecdf48d532c58ea477acfcab80348424f8d0662f"
@@ -535,7 +554,7 @@ babel-code-frame@^6.26.0:
     esutils "^2.0.2"
     js-tokens "^3.0.2"
 
-babel-core@^6.0.0, babel-core@^6.26.0:
+babel-core@^6.0.0, babel-core@^6.26.0, babel-core@^6.26.3:
   version "6.26.3"
   resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.26.3.tgz#b2e2f09e342d0f0c88e2f02e067794125e75c207"
   dependencies:
@@ -691,9 +710,9 @@ babel-jest@^22.4.4:
     babel-plugin-istanbul "^4.1.5"
     babel-preset-jest "^22.4.4"
 
-babel-jest@^23.0.1:
-  version "23.2.0"
-  resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-23.2.0.tgz#14a9d6a3f4122dfea6069d37085adf26a53a4dba"
+babel-jest@^23.4.2:
+  version "23.4.2"
+  resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-23.4.2.tgz#f276de67798a5d68f2d6e87ff518c2f6e1609877"
   dependencies:
     babel-plugin-istanbul "^4.1.6"
     babel-preset-jest "^23.2.0"
@@ -2214,7 +2233,7 @@ ethereumjs-tx@^1.3.6:
     ethereum-common "^0.0.18"
     ethereumjs-util "^5.0.0"
 
-ethereumjs-util@^5.0.0:
+ethereumjs-util@^5.0.0, ethereumjs-util@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.2.0.tgz#3e0c0d1741471acf1036052d048623dee54ad642"
   dependencies:
@@ -2251,6 +2270,10 @@ ethjs-util@^0.1.3:
 events@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
+
+events@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/events/-/events-2.1.0.tgz#2a9a1e18e6106e0e812aa9ebd4a819b3c29c0ba5"
 
 evp_bytestokey@^1.0.0, evp_bytestokey@^1.0.3:
   version "1.0.3"
@@ -4992,6 +5015,10 @@ regenerator-runtime@^0.11.0:
   version "0.11.1"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
 
+regenerator-runtime@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.12.0.tgz#8052ac952d85b10f3425192cd0c53f45cf65c6cb"
+
 regenerator-transform@^0.10.0:
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.10.1.tgz#1e4996837231da8b7f3cf4114d71b5691a0680dd"
@@ -5819,6 +5846,10 @@ type-check@~0.3.2:
 typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+u2f-api@0.2.7:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/u2f-api/-/u2f-api-0.2.7.tgz#17bf196b242f6bf72353d9858e6a7566cc192720"
 
 uglify-es@^3.3.4:
   version "3.3.9"

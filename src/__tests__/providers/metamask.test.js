@@ -2,10 +2,10 @@ import ethersProviders from 'ethers/providers';
 
 import { metamask } from '../../providers';
 import { MAIN_NETWORK, PROVIDER_PROTO } from '../../defaults';
-import * as utils from '../../utils';
+import * as utils from '../../core/utils';
 
-jest.mock('../../utils');
 jest.mock('ethers/providers');
+jest.mock('../../core/utils');
 
 describe('`providers` module', () => {
   beforeEach(() => {

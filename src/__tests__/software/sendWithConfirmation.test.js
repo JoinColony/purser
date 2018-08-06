@@ -1,8 +1,8 @@
 import { Wallet as EthersWallet } from 'ethers/wallet';
 import { create } from '../../software';
-import * as utils from '../../utils';
+import * as utils from '../../core/utils';
 
-jest.mock('../../utils');
+jest.mock('../../core/utils');
 
 const testTransactionData = {
   from: '0x2',

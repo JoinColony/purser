@@ -1,10 +1,10 @@
 import qrcode from 'qrcode';
 
 import software from '../../software';
-import * as utils from '../../utils';
+import * as utils from '../../core/utils';
 
 jest.mock('qrcode');
-jest.mock('../../utils');
+jest.mock('../../core/utils');
 
 describe('`software` wallet module', () => {
   afterEach(() => {

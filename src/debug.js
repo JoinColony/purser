@@ -1,18 +1,38 @@
 /* @flow */
 
+/* Dependencies */
 import ethers from 'ethers';
 import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
+import bip32Path from 'bip32-path';
+import bn from 'bn.js';
+import ethereumJsTx from 'ethereumjs-tx';
+import ethereumJsUtil from 'ethereumjs-util';
+import hdkey from 'hdkey';
+import ledgerEthApp from '@ledgerhq/hw-app-eth';
+import ledgerU2fTransport from '@ledgerhq/hw-transport-u2f';
 
-import utils from './utils';
+/* Core */
+import * as utils from './core/utils';
+import * as coreHelpers from './core/helpers';
+import * as validators from './core/validators';
+import * as normalizers from './core/normalizers';
 
-import * as trezorValidators from './trezor/validators';
-import * as trezorNormalizers from './trezor/normalizers';
+/* Providers (deprecated) */
+import providers from './providers';
 
-import { software } from './wallets';
+/* Software */
+import software from './software';
+
+/* Trezor */
 import TrezorWallet from './trezor/class';
+import * as trezorHelpers from './trezor/helpers';
 
-const { SoftwareWallet } = software;
+/* Ledger */
+import LedgerWallet from './ledger/class';
+
+/* Ledger */
+import GenericWallet from './core/genericWallet';
 
 /*
  * This object was extracted in it's own export to not pollute the index,
@@ -20,15 +40,35 @@ const { SoftwareWallet } = software;
  */
 const debug: Object = {
   debug: {
-    ethers,
-    qrcode,
-    blockies,
+    dependencies: {
+      ethers,
+      qrcode,
+      blockies,
+      bip32Path,
+      bn,
+      ethereumJsTx,
+      ethereumJsUtil,
+      hdkey,
+      ledger: {
+        ethApp: ledgerEthApp,
+        transports: {
+          u2f: ledgerU2fTransport,
+        },
+      },
+    },
     utils,
-    validators: trezorValidators,
-    normalizers: trezorNormalizers,
+    helpers: {
+      core: coreHelpers,
+      trezor: trezorHelpers,
+    },
+    validators,
+    normalizers,
+    providers,
     walletClasses: {
-      SoftwareWallet,
+      GenericWallet,
+      SoftwareWallet: software.SoftwareWallet,
       TrezorWallet,
+      LedgerWallet,
     },
   },
 };

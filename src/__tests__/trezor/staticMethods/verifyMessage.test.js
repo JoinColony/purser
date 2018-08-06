@@ -1,29 +1,40 @@
-import * as utils from '../../../utils';
+import * as utils from '../../../core/utils';
+import { messageVerificationObjectValidator } from '../../../core/helpers';
 
 import { verifyMessage } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
 import {
-  addressValidator,
-  messageValidator,
-  hexSequenceValidator,
-} from '../../../trezor/validators';
-import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../trezor/normalizers';
+} from '../../../core/normalizers';
 
 import { PAYLOAD_VERIFYMSG } from '../../../trezor/payloads';
 
 jest.dontMock('../../../trezor/staticMethods');
 
-jest.mock('../../../trezor/helpers');
-jest.mock('../../../trezor/validators');
-jest.mock('../../../trezor/normalizers');
-jest.mock('../../../utils');
+jest.mock('../../../core/validators');
+jest.mock('../../../core/normalizers');
+jest.mock('../../../core/utils');
+jest.mock('../../../core/helpers');
+/*
+ * Manual mocking a manual mock. Yay for Jest being built by Facebook!
+ *
+ * If you need context, see this:
+ * https://github.com/facebook/jest/issues/2070
+ */
+jest.mock('../../../trezor/helpers', () =>
+  /* eslint-disable-next-line global-require */
+  require('../../../trezor/__remocks__/helpers'),
+);
 
 const address = 'mocked-derivation-address';
 const message = 'mocked-message';
 const signature = 'mocked-signature';
+const mockedSignatureMessage = {
+  address,
+  message,
+  signature,
+};
 
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   describe('`verifyMessage()` static method', () => {
@@ -40,19 +51,13 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       });
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
-        payload: {
-          /*
-           * We only care about what payload type this method sends
-           */
-          address: expect.anything(),
-          message: expect.anything(),
-          signature: expect.anything(),
-          /*
-           * These two values should be correct
-           */
+        /*
+        * We only care about what payload type this method sends
+        */
+        payload: expect.objectContaining({
           type,
           requiredFirmware,
-        },
+        }),
       });
     });
     test('Validates message/signature input values', async () => {
@@ -60,26 +65,14 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      await verifyMessage({
-        address,
-        message,
-        signature,
-      });
+      await verifyMessage(mockedSignatureMessage);
       /*
-       * Validates the address
+       * Calls the validator helper
        */
-      expect(addressValidator).toHaveBeenCalled();
-      expect(addressValidator).toHaveBeenCalledWith(address);
-      /*
-       * Validates the message that is to be signed
-       */
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(message);
-      /*
-       * Validates the hex signature
-       */
-      expect(hexSequenceValidator).toHaveBeenCalled();
-      expect(hexSequenceValidator).toHaveBeenCalledWith(signature);
+      expect(messageVerificationObjectValidator).toHaveBeenCalled();
+      expect(messageVerificationObjectValidator).toHaveBeenCalledWith(
+        mockedSignatureMessage,
+      );
     });
     test('Normalizes message/signature input values', async () => {
       /*
