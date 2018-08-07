@@ -2,6 +2,8 @@
 
 import { helpers as messages } from './messages';
 
+import type { MetamaskInpageProviderType } from './flowtypes';
+
 /**
  * Detect the injected web3 instance (Injected by Metamask)
  *
@@ -18,8 +20,16 @@ export const detect = (): boolean => {
   throw new Error(messages.cannotDetect);
 };
 
-const metamaskHelpers: Object = {
-  detect,
+/**
+ * If the Metamask injected instance is available, get the in-page provider
+ *
+ * @TODO Add unit tests
+ *
+ * @method getInpageProvider
+ *
+ * @return {Object} The `MetamaskInpageProvider` object instance
+ */
+export const getInpageProvider = (): MetamaskInpageProviderType => {
+  detect();
+  return global.web3.currentProvider;
 };
-
-export default metamaskHelpers;
