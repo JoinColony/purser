@@ -2,7 +2,10 @@
 
 import { helpers as messages } from './messages';
 
-import type { MetamaskInpageProviderType } from './flowtypes';
+import type {
+  MetamaskInpageProviderType,
+  MetamaskStateEventsObserverType,
+} from './flowtypes';
 
 /**
  * Detect the injected web3 instance (Injected by Metamask)
@@ -32,4 +35,20 @@ export const detect = (): boolean => {
 export const getInpageProvider = (): MetamaskInpageProviderType => {
   detect();
   return global.web3.currentProvider;
+};
+
+/**
+ * Add a new observer method to Metamask's state update events
+ *
+ * @TODO Add unit tests
+ *
+ * @method addStateEventObserver
+ */
+export const addStateEventObserver = (
+  observer: MetamaskStateEventsObserverType,
+): void => {
+  const {
+    publicConfigStore: { _events: stateEvents },
+  }: MetamaskInpageProviderType = getInpageProvider();
+  return stateEvents.update.push(observer);
 };

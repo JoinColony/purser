@@ -8,3 +8,5 @@ export type MetamaskInpageProviderType = {
   },
   rpcEngine: Object,
 };
+
+export type MetamaskStateEventsObserverType = (state: Object) => any;
