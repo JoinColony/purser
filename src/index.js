@@ -11,6 +11,7 @@ import { name, version } from '../package.json';
 import software from './software';
 import trezor from './trezor';
 import ledger from './ledger';
+import metamask from './metamask';
 
 const colonyWallet: LibraryExportType = Object.assign(
   {},
@@ -19,6 +20,7 @@ const colonyWallet: LibraryExportType = Object.assign(
       software,
       trezor,
       ledger,
+      metamask,
     },
     utils: {
       bigNumber,
