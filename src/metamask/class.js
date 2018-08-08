@@ -5,7 +5,8 @@ import { addressValidator } from '../core/validators';
 import { DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
-import { addStateEventObserver } from './helpers';
+import { detect, addStateEventObserver } from './helpers';
+import { MetamaskWallet as messages } from './messages';
 
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
 
@@ -42,17 +43,32 @@ export default class MetamaskWallet {
       type: Object.assign({}, { value: TYPE_SOFTWARE }, GENERIC_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_METAMASK }, GENERIC_PROPS),
     });
-    /*
-     * Set the state change observer
-     *
-     * This tracks updates Metamask's states and updates the local address
-     * value if that changes in the UI
-     */
-    addStateEventObserver(state => {
-      if (state && state.selectedAddress) {
-        this.address = state.selectedAddress;
-      }
-    });
+    try {
+      /*
+       * Even though we check for the Metamask injected proxy when calling
+       * `open()`, it might change by the time this part of the constructor
+       * gets called.
+       *
+       * So we must ensure, again, that we have a state update event to hook
+       * our update method onto.
+       */
+      detect();
+      /*
+       * Set the state change observer
+       *
+       * This tracks updates Metamask's states and updates the local address
+       * value if that changes in the UI
+       */
+      addStateEventObserver(state => {
+        if (state && state.selectedAddress) {
+          this.address = state.selectedAddress;
+        }
+      });
+    } catch (caughtError) {
+      throw new Error(
+        `${messages.cannotObserve}. Error: ${caughtError.message}`,
+      );
+    }
   }
 
   /*

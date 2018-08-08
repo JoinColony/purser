@@ -14,3 +14,8 @@ export const helpers: Object = {
     "Metamask's in-page provider does not contain the state. Ensure something is not tampering with the web3 Proxy instance",
   isLocked: "Metamask's instance is locked. Please unlock it from the UI",
 };
+
+export const MetamaskWallet: Object = {
+  cannotObserve:
+    'Cannot listen for Metamask changes. Make sure the Metamask extension is available',
+};
