@@ -1,6 +1,6 @@
 /* @flow */
 
-import { PATH, SPLITTER, MATCH } from './defaults';
+import { PATH, SPLITTER, MATCH, SIGNATURE } from './defaults';
 
 /**
  * Normalize a derivation path passed in as a string
@@ -137,4 +137,39 @@ export const hexSequenceNormalizer = (
     return `0x${matchedString[2]}`;
   }
   return matchedString[2];
+};
+
+/**
+ * Normalize the recovery param of an Ethereum ECDSA signature.
+ *
+ * @TODO Add unit tests
+ *
+ * @NOTE This will only work for Ethereum based signatures since this is using
+ * the values from EIP-155
+ *
+ * This will basically add 27 to the recovery param value if that is either 0 or 1 (odd or even).
+ * If it's any other value, leave it as it is.
+ *
+ * See EIP-155 for the 27 and 28 magic numbers expected in the recovery parameter:
+ * https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
+ *
+ * @method recoveryParamNormalizer
+ *
+ * @param {number} recoveryParam The recovery param value to normalize
+ * (The one extracted from the signature)
+ *
+ * @return {number} The normalized recovery param value
+ */
+export const recoveryParamNormalizer = (recoveryParam: number): number => {
+  if (!recoveryParam || typeof recoveryParam !== 'number') {
+    throw new Error('Recovery param value is not valid');
+  }
+  let normalizedRecoveryParam = recoveryParam;
+  if (recoveryParam === 0) {
+    normalizedRecoveryParam = SIGNATURE.RECOVERY_ODD;
+  }
+  if (recoveryParam === 1) {
+    normalizedRecoveryParam = SIGNATURE.RECOVERY_EVEN;
+  }
+  return normalizedRecoveryParam;
 };
