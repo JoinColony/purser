@@ -144,13 +144,10 @@ export const recoverPublicKey = ({
     sComponent,
   );
   /*
-   * Only take the first 64 bits of the recovered public key.
-   * Also add a `0x` prefix to it.
-   *
-   * @NOTE we're using 32 when `slice()`-ing since this in Buffer format.
+   * Normalize and return the recovered public key
    */
   return hexSequenceNormalizer(
-    recoveredPublicKeyBuffer.slice(0, 32).toString(HEX_HASH_TYPE),
+    recoveredPublicKeyBuffer.toString(HEX_HASH_TYPE),
   );
 };
 
@@ -196,14 +193,8 @@ export const verifyMessageSignature = ({
     ).slice(2);
     /*
      * Last 64 bits of the private should match the first 64 bits of the recovered public key
-     *
-     * @TODO Compare by matching
-     *
-     * This could be refactored to use regex for matching the two private keys (no more slicing bits).
-     * For bonus points, the matcher could also ignore case, so we won't have to deal with
-     * converting everything to lowecase just to prevent checksum mismatches.
      */
-    return normalizedPublicKey === recoveredPublicKey;
+    return !!recoveredPublicKey.includes(normalizedPublicKey);
   } catch (caughtError) {
     warning(`${messages.somethingWentWrong}. Error: ${caughtError.message}`, {
       level: 'high',
