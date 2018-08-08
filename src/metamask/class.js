@@ -1,17 +1,24 @@
 /* @flow */
 
+import isEqual from 'lodash.isequal';
+
 import { addressValidator } from '../core/validators';
 
 import { DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
 import { methodCaller, setStateEventObserver } from './helpers';
+import { validateMetamaskState } from './validators';
 import { MetamaskWallet as messages } from './messages';
 
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
 
 const { SETTERS, GENERIC_PROPS } = DESCRIPTORS;
 
+/*
+ * "Private" (internal) variable(s).
+ */
+let state: Object = {};
 /*
  * @TODO Add unit tests
  */
@@ -59,11 +66,35 @@ export default class MetamaskWallet {
        * value if that changes in the UI
        */
       () =>
-        setStateEventObserver(state => {
-          if (state && state.selectedAddress) {
-            this.address = state.selectedAddress;
-          }
-        }),
+        setStateEventObserver(
+          (newState: Object): boolean => {
+            try {
+              /*
+               * Validate the state object that's coming in.
+               * It should have all the props needed for us to work with.
+               *
+               * If they aren't there, it means that either Metamask is locked,
+               * or somebody tampered with them.
+               */
+              validateMetamaskState(newState);
+              /*
+               * We only update the values if the state has changed.
+               * (We're using lodash here to deep compare the two state objects)
+               */
+              if (!isEqual(state, newState)) {
+                state = newState;
+                this.address = newState.selectedAddress;
+              }
+              return true;
+            } catch (caughtError) {
+              /*
+               * We don't want to throw or stop execution, so in the case that the
+               * state doesn't validate, and update and silently return `false`.
+               */
+              return false;
+            }
+          },
+        ),
       messages.cannotObserve,
     );
   }

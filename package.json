@@ -87,6 +87,7 @@
     "ethereumjs-util": "^5.2.0",
     "ethers": "^3.0.16",
     "hdkey": "^1.0.0",
+    "lodash.isequal": "^4.5.0",
     "qrcode": "^1.2.0"
   }
 }
