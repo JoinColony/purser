@@ -13,6 +13,7 @@ import ledgerEthApp from '@ledgerhq/hw-app-eth';
 import ledgerU2fTransport from '@ledgerhq/hw-transport-u2f';
 
 /* Core */
+import GenericWallet from './core/genericWallet';
 import * as utils from './core/utils';
 import * as coreHelpers from './core/helpers';
 import * as validators from './core/validators';
@@ -30,9 +31,10 @@ import * as trezorHelpers from './trezor/helpers';
 
 /* Ledger */
 import LedgerWallet from './ledger/class';
+import * as ledgerHelpers from './ledger/helpers';
 
-/* Ledger */
-import GenericWallet from './core/genericWallet';
+/* Metamask */
+import * as metamaskHelpers from './metamask/helpers';
 
 /*
  * This object was extracted in it's own export to not pollute the index,
@@ -60,6 +62,8 @@ const debug: Object = {
     helpers: {
       core: coreHelpers,
       trezor: trezorHelpers,
+      ledger: ledgerHelpers,
+      metamask: metamaskHelpers,
     },
     validators,
     normalizers,

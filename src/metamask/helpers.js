@@ -17,10 +17,24 @@ import type {
  * @return {boolean} IF it's imjected it will return true, otherwise it will throw
  */
 export const detect = (): boolean => {
-  if (global && global.web3) {
-    return true;
+  if (!global.web3) {
+    throw new Error(messages.notInjected);
   }
-  throw new Error(messages.cannotDetect);
+  if (
+    !global.web3.currentProvider ||
+    !global.web3.currentProvider.publicConfigStore
+  ) {
+    throw new Error(messages.noInpageProvider);
+  }
+  /* eslint-disable-next-line no-underscore-dangle */
+  if (!global.web3.currentProvider.publicConfigStore._state) {
+    throw new Error(messages.noProviderState);
+  }
+  /* eslint-disable-next-line no-underscore-dangle */
+  if (!global.web3.currentProvider.publicConfigStore._state.selectedAccount) {
+    throw new Error(messages.isLocked);
+  }
+  return true;
 };
 
 /**
