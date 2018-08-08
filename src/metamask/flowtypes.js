@@ -10,3 +10,7 @@ export type MetamaskInpageProviderType = {
 };
 
 export type MetamaskStateEventsObserverType = (state: Object) => any;
+
+export type MetamaskWalletConstructorArgumentsType = {
+  address: string,
+};

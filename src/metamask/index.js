@@ -1,20 +1,36 @@
 /* @flow */
 
-import { detect } from './helpers';
+import MetamaskWallet from './class';
+import { getInpageProvider } from './helpers';
 
 import { staticMethods as messages } from './messages';
+
+import type { MetamaskInpageProviderType } from './flowtypes';
 
 const metamaskWallet: Object = {
   /**
    * Open the Metamask Wallet instance
    *
+   * @TODO Add unit tests
+   *
    * @method open
    *
-   * @return {[type]} [description]
+   * @return {WalletType} The wallet object resulted by instantiating the class
+   * (Object is wrapped in a promise).
    */
-  open: () => {
+  open: async (): Promise<MetamaskWallet> => {
     try {
-      detect();
+      /*
+       * This will also call `detect()`  internally, so we don't need to explicitly
+       * call it ourselves.
+       */
+      const {
+        publicConfigStore: { _state: STATE },
+      }: MetamaskInpageProviderType = getInpageProvider();
+
+      return new MetamaskWallet({
+        address: STATE.selectedAddress,
+      });
     } catch (caughtError) {
       throw new Error(
         `${messages.metamaskNotAvailable}. Error: ${caughtError.message}`,

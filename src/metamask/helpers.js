@@ -31,7 +31,7 @@ export const detect = (): boolean => {
     throw new Error(messages.noProviderState);
   }
   /* eslint-disable-next-line no-underscore-dangle */
-  if (!global.web3.currentProvider.publicConfigStore._state.selectedAccount) {
+  if (!global.web3.currentProvider.publicConfigStore._state.selectedAddress) {
     throw new Error(messages.isLocked);
   }
   return true;
