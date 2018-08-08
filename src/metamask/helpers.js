@@ -38,6 +38,38 @@ export const detect = (): boolean => {
 };
 
 /**
+ * Helper method that wraps a method passed as an argument and first checks
+ * for Metamask's availablity before calling it.
+ *
+ * This is basically a wrapper, so that we can cut down on code repetition, since
+ * this pattern repeats itself every time we try to access the in-page proxy.
+ *
+ * @method methodCaller
+ *
+ * @param {Function} callback The method to call, if Metamask is available
+ * @param {string} errorMessage Optional error message to show to use
+ * (in case Metamask is not available)
+ *
+ * @return {any} It returns the result of the callback execution
+ */
+export const methodCaller = (
+  callback: () => any,
+  errorMessage: string = '',
+): any => {
+  try {
+    /*
+     * Detect if the Metamask injected proxy is (still) available
+     */
+    detect();
+    return callback();
+  } catch (caughtError) {
+    throw new Error(
+      `${errorMessage} ${errorMessage ? ' ' : ''}Error: ${caughtError.message}`,
+    );
+  }
+};
+
+/**
  * If the Metamask injected instance is available, get the in-page provider
  *
  * @TODO Add unit tests
@@ -46,23 +78,25 @@ export const detect = (): boolean => {
  *
  * @return {Object} The `MetamaskInpageProvider` object instance
  */
-export const getInpageProvider = (): MetamaskInpageProviderType => {
-  detect();
-  return global.web3.currentProvider;
-};
+export const getInpageProvider = (): (() => MetamaskInpageProviderType) =>
+  methodCaller(() => global.web3.currentProvider);
 
 /**
  * Add a new observer method to Metamask's state update events
  *
  * @TODO Add unit tests
  *
- * @method addStateEventObserver
+ * @method setStateEventObserver
+ *
+ * @param {Function} observer Function to add the state events update array
+ *
+ * @return {number} the length of the state events update array
  */
-export const addStateEventObserver = (
+export const setStateEventObserver = (
   observer: MetamaskStateEventsObserverType,
 ): void => {
   const {
     publicConfigStore: { _events: stateEvents },
-  }: MetamaskInpageProviderType = getInpageProvider();
+  }: () => MetamaskInpageProviderType = getInpageProvider();
   return stateEvents.update.push(observer);
 };
