@@ -5,6 +5,8 @@ import { addressValidator } from '../core/validators';
 import { DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
+import { addStateEventObserver } from './helpers';
+
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
 
 const { SETTERS, GENERIC_PROPS } = DESCRIPTORS;
@@ -39,6 +41,17 @@ export default class MetamaskWallet {
       address: Object.assign({}, { value: address }, SETTERS),
       type: Object.assign({}, { value: TYPE_SOFTWARE }, GENERIC_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_METAMASK }, GENERIC_PROPS),
+    });
+    /*
+     * Set the state change observer
+     *
+     * This tracks updates Metamask's states and updates the local address
+     * value if that changes in the UI
+     */
+    addStateEventObserver(state => {
+      if (state && state.selectedAddress) {
+        this.address = state.selectedAddress;
+      }
     });
   }
 

@@ -25,11 +25,11 @@ const metamaskWallet: Object = {
        * call it ourselves.
        */
       const {
-        publicConfigStore: { _state: STATE },
+        publicConfigStore: { _state: state },
       }: MetamaskInpageProviderType = getInpageProvider();
 
       return new MetamaskWallet({
-        address: STATE.selectedAddress,
+        address: state.selectedAddress,
       });
     } catch (caughtError) {
       throw new Error(

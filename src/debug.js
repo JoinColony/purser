@@ -34,6 +34,7 @@ import LedgerWallet from './ledger/class';
 import * as ledgerHelpers from './ledger/helpers';
 
 /* Metamask */
+import MetamaskWallet from './metamask/class';
 import * as metamaskHelpers from './metamask/helpers';
 
 /*
@@ -73,6 +74,7 @@ const debug: Object = {
       SoftwareWallet: software.SoftwareWallet,
       TrezorWallet,
       LedgerWallet,
+      MetamaskWallet,
     },
   },
 };
