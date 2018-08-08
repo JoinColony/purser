@@ -15,6 +15,15 @@ export const helpers: Object = {
   isLocked: "Metamask's instance is locked. Please unlock it from the UI",
 };
 
+export const validators: Object = {
+  noState:
+    'The state object does not exist. Check the injected Metamask in-page provider',
+  noStateAddress:
+    'The state object is not a valid Metamask format. It does not contain the address prop',
+  noStateNetwork:
+    'The state object is not a valid Metamask format. It does not contain the chain id',
+};
+
 export const MetamaskWallet: Object = {
   cannotObserve:
     'Cannot listen for Metamask changes. Make sure the Metamask extension is available',

@@ -1,0 +1,34 @@
+/* @flow */
+
+import { validators as messages } from './messages';
+
+/**
+ * Validate Metamask's internal state object.
+ * Basically, it checks for important props to be there.
+ *
+ * @TODO Add unit tests
+ *
+ * @method validateMetamaskState
+ *
+ * @param {Object} stateObject State object who's props to check
+ *
+ * @return {boolean} Throws if object is not valid. I all's good, it returns true.
+ */
+export const validateMetamaskState = (stateObject: Object): boolean => {
+  if (!stateObject || typeof stateObject !== 'object') {
+    throw new Error(messages.noState);
+  }
+  if (!stateObject.selectedAddress) {
+    throw new Error(messages.noStateAddress);
+  }
+  if (!stateObject.networkVersion) {
+    throw new Error(messages.noStateNetwork);
+  }
+  return true;
+};
+
+const metamaskValidators: Object = {
+  validateMetamaskState,
+};
+
+export default metamaskValidators;
