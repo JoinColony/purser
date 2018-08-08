@@ -24,7 +24,6 @@ const { SETTERS, GENERIC_PROPS } = DESCRIPTORS;
  * "Private" (internal) variable(s).
  */
 let state: Object = {};
-/* eslint-disable-next-line no-unused-vars */
 let internalPublicKey: string | void;
 /*
  * @TODO Add unit tests
@@ -91,6 +90,10 @@ export default class MetamaskWallet {
               if (!isEqual(state, newState)) {
                 state = newState;
                 this.address = newState.selectedAddress;
+                /*
+                 * Reset the saved public key, as the address now changed
+                 */
+                internalPublicKey = undefined;
               }
               return true;
             } catch (caughtError) {
@@ -111,7 +114,17 @@ export default class MetamaskWallet {
    */
   /* eslint-disable-next-line class-methods-use-this */
   get publicKey(): Promise<string> {
-    return Promise.resolve('');
+    /*
+     * We can't memoize the getter (as we do in most other such getters)
+     *
+     * This is because the address could change at any time leaving us with a
+     * stale value for the public key, as there is no way (currently) to invalidate
+     * this value.
+     */
+    if (internalPublicKey) {
+      return Promise.resolve(internalPublicKey);
+    }
+    return MetamaskWallet.recoverPublicKey(this.address);
   }
 
   /**
