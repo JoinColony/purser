@@ -27,4 +27,7 @@ export const validators: Object = {
 export const MetamaskWallet: Object = {
   cannotObserve:
     'Cannot listen for Metamask changes. Make sure the Metamask extension is available',
+  cannotGetPublicKey:
+    'Could not sign the message to recover the public key from. Make sure the Metamask extension is available',
+  cancelMessageSign: 'User cancelled signing the message (via Metamask UI)',
 };
