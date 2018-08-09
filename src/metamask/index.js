@@ -11,8 +11,6 @@ const metamaskWallet: Object = {
   /**
    * Open the Metamask Wallet instance
    *
-   * @TODO Add unit tests
-   *
    * @method open
    *
    * @return {WalletType} The wallet object resulted by instantiating the class
