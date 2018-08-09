@@ -33,9 +33,7 @@ const mockedProvider = { chainId: 4 };
 describe('`Core` Module', () => {
   afterEach(() => {
     addressNormalizer.mockClear();
-    addressNormalizer.mockRestore();
     hexSequenceNormalizer.mockClear();
-    hexSequenceNormalizer.mockRestore();
   });
   describe('`GenericWallet` class', () => {
     test('Creates a new wallet instance', () => {

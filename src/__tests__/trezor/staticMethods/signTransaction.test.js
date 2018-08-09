@@ -59,7 +59,6 @@ const mockedTransactionObject = {
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     EthereumTx.mockClear();
-    EthereumTx.mockRestore();
   });
   describe('`signTransaction()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
