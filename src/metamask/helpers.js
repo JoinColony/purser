@@ -57,12 +57,18 @@ export const methodCaller = (
   try {
     /*
      * Detect if the Metamask injected proxy is (still) available
+     *
+     * We need this little go-around trick to mock just one export of
+     * the module, while leaving the rest of the module intact so we can test it
+     *
+     * See: https://github.com/facebook/jest/issues/936
      */
-    detect();
+    /* eslint-disable-next-line no-use-before-define */
+    metamaskHelpers.detect();
     return callback();
   } catch (caughtError) {
     throw new Error(
-      `${errorMessage} ${errorMessage ? ' ' : ''}Error: ${caughtError.message}`,
+      `${errorMessage}${errorMessage ? ' ' : ''}Error: ${caughtError.message}`,
     );
   }
 };
@@ -98,3 +104,16 @@ export const setStateEventObserver = (
   }: () => MetamaskInpageProviderType = getInpageProvider();
   return stateEvents.update.push(observer);
 };
+
+/*
+ * This default export is only here to help us with testing, otherwise
+ * it wound't be needed
+ */
+const metamaskHelpers: Object = {
+  detect,
+  methodCaller,
+  getInpageProvider,
+  setStateEventObserver,
+};
+
+export default metamaskHelpers;

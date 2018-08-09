@@ -405,7 +405,7 @@ export const messageVerificationObjectValidator = ({
 };
 
 /*
- * This default export is only here so we to help us with testing, otherwise
+ * This default export is only here to help us with testing, otherwise
  * it wound't be needed
  */
 const coreHelpers: Object = {
