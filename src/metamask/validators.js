@@ -6,8 +6,6 @@ import { validators as messages } from './messages';
  * Validate Metamask's internal state object.
  * Basically, it checks for important props to be there.
  *
- * @TODO Add unit tests
- *
  * @method validateMetamaskState
  *
  * @param {Object} stateObject State object who's props to check

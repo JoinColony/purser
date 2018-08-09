@@ -138,8 +138,6 @@ export default class MetamaskWallet {
    * components, along with the reco(V)ery param. We then use those values to
    * recover, set internally, and return the public key.
    *
-   * @TODO Add unit tests
-   *
    * @method recoverPublicKey
    *
    * @param {string} currentAddress The current selected address.
