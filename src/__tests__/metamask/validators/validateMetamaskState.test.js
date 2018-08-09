@@ -4,8 +4,6 @@ import { validators as messages } from '../../../metamask/messages';
 
 jest.dontMock('../../../metamask/validators');
 
-// import { methodCaller, getInpageProvider } from '../../metamask/helpers';
-
 /*
  * Manual mocking a manual mock. Yay for Jest being built by Facebook!
  *

@@ -10,8 +10,6 @@ import type {
 /**
  * Detect the injected web3 instance (Injected by Metamask)
  *
- * @TODO Add unit tests
- *
  * @method detect
  *
  * @return {boolean} IF it's imjected it will return true, otherwise it will throw
