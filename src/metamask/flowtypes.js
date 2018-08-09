@@ -1,5 +1,7 @@
 /* @flow */
 
+import type { TransactionObjectType } from '../core/flowtypes';
+
 export type MetamaskInpageProviderType = {
   mux: Object,
   publicConfigStore: {
@@ -8,6 +10,8 @@ export type MetamaskInpageProviderType = {
   },
   rpcEngine: Object,
 };
+
+export type Web3CallbackType = (error: Error, result: string) => any;
 
 export type MetamaskStateEventsObserverType = (state: Object) => any;
 
@@ -18,5 +22,10 @@ export type MetamaskWalletConstructorArgumentsType = {
 export type signMessageMethodType = (
   signature: string,
   currentAddress: string,
-  (error: Error, result: string) => any,
+  callback: Web3CallbackType,
+) => void;
+
+export type signTrasactionMethodType = (
+  transactionObject: TransactionObjectType,
+  callback: Web3CallbackType,
 ) => void;
