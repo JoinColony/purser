@@ -76,19 +76,22 @@ export const methodCaller = (
 /**
  * If the Metamask injected instance is available, get the in-page provider
  *
- * @TODO Add unit tests
- *
  * @method getInpageProvider
  *
  * @return {Object} The `MetamaskInpageProvider` object instance
  */
 export const getInpageProvider = (): (() => MetamaskInpageProviderType) =>
-  methodCaller(() => global.web3.currentProvider);
+  /*
+   * We need this little go-around trick to mock just one export of
+   * the module, while leaving the rest of the module intact so we can test it
+   *
+   * See: https://github.com/facebook/jest/issues/936
+   */
+  /* eslint-disable-next-line no-use-before-define */
+  metamaskHelpers.methodCaller(() => global.web3.currentProvider);
 
 /**
  * Add a new observer method to Metamask's state update events
- *
- * @TODO Add unit tests
  *
  * @method setStateEventObserver
  *
@@ -101,7 +104,15 @@ export const setStateEventObserver = (
 ): void => {
   const {
     publicConfigStore: { _events: stateEvents },
-  }: () => MetamaskInpageProviderType = getInpageProvider();
+  }: () => MetamaskInpageProviderType =
+    /*
+     * We need this little go-around trick to mock just one export of
+     * the module, while leaving the rest of the module intact so we can test it
+     *
+     * See: https://github.com/facebook/jest/issues/936
+     */
+    /* eslint-disable-next-line no-use-before-define */
+    metamaskHelpers.getInpageProvider();
   return stateEvents.update.push(observer);
 };
 
