@@ -142,8 +142,6 @@ export const hexSequenceNormalizer = (
 /**
  * Normalize the recovery param of an Ethereum ECDSA signature.
  *
- * @TODO Add unit tests
- *
  * @NOTE This will only work for Ethereum based signatures since this is using
  * the values from EIP-155
  *
@@ -161,7 +159,7 @@ export const hexSequenceNormalizer = (
  * @return {number} The normalized recovery param value
  */
 export const recoveryParamNormalizer = (recoveryParam: number): number => {
-  if (!recoveryParam || typeof recoveryParam !== 'number') {
+  if (typeof recoveryParam !== 'number') {
     throw new Error('Recovery param value is not valid');
   }
   let normalizedRecoveryParam = recoveryParam;
