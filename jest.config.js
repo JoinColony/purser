@@ -65,5 +65,6 @@ module.exports = {
     '^hdkey$': '<rootDir>/__mocks__/hdkey.js',
     '^@ledgerhq/hw-transport-u2f$': '<rootDir>/__mocks__/ledger-hw-transport-u2f.js',
     '^@ledgerhq/hw-app-eth$': '<rootDir>/__mocks__/ledger-hw-app-eth.js',
+    '^lodash.isequal$': '<rootDir>/__mocks__/lodash-isequal.js',
   },
 };
