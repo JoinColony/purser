@@ -47,5 +47,11 @@ describe('`Core` Module', () => {
         normalDerivationPath,
       );
     });
+    test('Handles abnormal number of derivation sections``', () => {
+      const abnormalDerivationPath = "m/44'/60'/0'/0/1'/0'/0'/0";
+      expect(derivationPathNormalizer(abnormalDerivationPath)).toEqual(
+        abnormalDerivationPath,
+      );
+    });
   });
 });
