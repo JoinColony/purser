@@ -18,7 +18,7 @@ import { MetamaskWallet as messages } from './messages';
 
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
 
-const { SETTERS, GENERIC_PROPS } = DESCRIPTORS;
+const { SETTERS, GETTERS, GENERIC_PROPS } = DESCRIPTORS;
 
 /*
  * "Private" (internal) variable(s).
@@ -205,3 +205,11 @@ export default class MetamaskWallet {
     );
   }
 }
+
+/*
+ * We need to use `defineProperties` to make props enumerable.
+ * When adding them via a `Class` getter/setter it will prevent that by default
+ */
+Object.defineProperties((MetamaskWallet: any).prototype, {
+  publicKey: GETTERS,
+});
