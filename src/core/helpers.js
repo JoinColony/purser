@@ -180,7 +180,14 @@ export const verifyMessageSignature = ({
      * Normalize the recovered public key by removing the `0x` preifx
      */
     const recoveredPublicKey: string = hexSequenceNormalizer(
-      recoverPublicKey({ message, signature }),
+      /*
+       * We need this little go-around trick to mock just one export of
+       * the module, while leaving the rest of the module intact so we can test it
+       *
+       * See: https://github.com/facebook/jest/issues/936
+       */
+      /* eslint-disable-next-line no-use-before-define */
+      coreHelpers.recoverPublicKey({ message, signature }),
       false,
     );
     /*
@@ -401,3 +408,18 @@ export const messageVerificationObjectValidator = ({
   );
   return normalizedMessageVerificationObject;
 };
+
+/*
+ * This default export is only here so we to help us with testing, otherwise
+ * it wound't be needed
+ */
+const coreHelpers: Object = {
+  derivationPathSerializer,
+  recoverPublicKey,
+  verifyMessageSignature,
+  transactionObjectValidator,
+  messageObjectValidator,
+  messageVerificationObjectValidator,
+};
+
+export default coreHelpers;
