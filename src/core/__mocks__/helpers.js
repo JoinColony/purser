@@ -19,3 +19,5 @@ export const messageVerificationObjectValidator = jest.fn(
 );
 
 export const verifyMessageSignature = jest.fn();
+
+export const recoverPublicKey = jest.fn(() => 'recovered-mocked-private-key');

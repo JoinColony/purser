@@ -81,8 +81,6 @@ export const derivationPathSerializer = ({
 /**
  * Recover a public key from a message and the signature of that message.
  *
- * @TODO Add unit tests
- *
  * @NOTE Further optimization
  *
  * This can be further optimized by writing our own recovery mechanism since we already
@@ -154,9 +152,6 @@ export const recoverPublicKey = ({
 /**
  * Verify a signed message.
  * By extracting it's public key from the signature and comparing it with a provided one.
- *
- * @TODO Refactor unit tests
- * After changing the way this method works
  *
  * @method verifyMessageSignature
  *
