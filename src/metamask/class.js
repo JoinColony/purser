@@ -25,9 +25,7 @@ const { SETTERS, GETTERS, GENERIC_PROPS } = DESCRIPTORS;
  */
 let state: Object = {};
 let internalPublicKey: string | void;
-/*
- * @TODO Add unit tests
- */
+
 export default class MetamaskWallet {
   address: string;
 
@@ -66,6 +64,9 @@ export default class MetamaskWallet {
      */
     methodCaller(
       /*
+       * @TODO Move into own (non-anonymous) method
+       * This way we could better test it
+       *
        * Set the state change observer
        *
        * This tracks updates Metamask's states and updates the local address
@@ -73,6 +74,10 @@ export default class MetamaskWallet {
        */
       () =>
         setStateEventObserver(
+          /*
+           * @TODO Move into own (non-anonymous) method
+           * This way we could better test it
+           */
           (newState: Object): boolean => {
             try {
               /*
@@ -144,12 +149,17 @@ export default class MetamaskWallet {
    * @return {Promise} The recovered public key (for the currently selected addresss)
    */
   static async recoverPublicKey(currentAddress: string): Promise<string> {
+    // console.log('called', currentAddress);
     /*
      * We must check for the Metamask injected in-page proxy every time we
      * try to access it. This is because something can change it from the time
      * of last detection until now.
      */
     return methodCaller(
+      /*
+       * @TODO Move into own (non-anonymous) method
+       * This way we could better test it
+       */
       () =>
         new Promise(resolve => {
           /*
@@ -167,6 +177,10 @@ export default class MetamaskWallet {
               Buffer.from(PUBLICKEY_RECOVERY_MESSAGE).toString(HEX_HASH_TYPE),
             ),
             currentAddress,
+            /*
+             * @TODO Move into own (non-anonymous) method
+             * This way we could better test it
+             */
             (error: Error, signature: string) => {
               try {
                 /*

@@ -4,9 +4,6 @@ import { SIGNATURE } from '../../../core/defaults';
 
 jest.dontMock('../../../core/normalizers');
 
-// const unPrefixedHexString = 'ead7de0ec184a6c8a';
-// const prefixedHexString = '0xead7de0ec184a6c8a';
-
 describe('`Core` Module', () => {
   describe('`recoveryParamNormalizer()` normalizer', () => {
     test('Throw if param is not a number', () => {

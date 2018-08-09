@@ -35,14 +35,15 @@ describe('Metamask` Wallet Module', () => {
     });
     test('Open the wallet with defaults', async () => {
       await metamaskWallet.open();
-      const mockedMetamskState = getInpageProvider();
+      const mockedMetamaskProvider = getInpageProvider();
       /*
        * Instantiates the LedgerWallet class
        */
       expect(MetamaskWalletClass).toHaveBeenCalled();
       expect(MetamaskWalletClass).toHaveBeenCalledWith({
-        /* eslint-disable-next-line no-underscore-dangle */
-        address: mockedMetamskState.publicConfigStore._state.selectedAddress,
+        address:
+          /* eslint-disable-next-line no-underscore-dangle */
+          mockedMetamaskProvider.publicConfigStore._state.selectedAddress,
       });
     });
   });

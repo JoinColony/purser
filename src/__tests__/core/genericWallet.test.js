@@ -101,7 +101,7 @@ describe('`Core` Module', () => {
       });
       expect(SigningKey.publicKeyToAddress).toHaveBeenCalled();
     });
-    test('The Wallet Objet has the required (correct) props', () => {
+    test('The Wallet Object has the required (correct) props', () => {
       const genericWallet = new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
