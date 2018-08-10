@@ -179,7 +179,7 @@ export const signTransaction = async ({
 export const signMessage = async ({
   derivationPath,
   message = ' ',
-}: Object): Promise<string> => {
+}: Object = {}): Promise<string | void> => {
   /*
    * Validate input values: derivationPath and message
    *
@@ -188,30 +188,47 @@ export const signMessage = async ({
    */
   derivationPathValidator(derivationPath);
   messageValidator(message);
-  const { signature: signedMessage } = await payloadListener({
-    payload: Object.assign({}, PAYLOAD_SIGNMSG, {
-      /*
-       * Path needs to be sent in as an derivation path array
-       *
-       * We also normalize it first (but for some reason Flow doesn't pick up
-       * the default value value of `path` and assumes it's undefined -- it can be,
-       * but it will not pass the validator)
-       */
-      path: fromString(
+  try {
+    const { signature: signedMessage } = await payloadListener({
+      payload: Object.assign({}, PAYLOAD_SIGNMSG, {
         /*
-         * @TODO Test normalizers and validators
-         * After removing the core `messageObjectValidator`
+         * Path needs to be sent in as an derivation path array
+         *
+         * We also normalize it first (but for some reason Flow doesn't pick up
+         * the default value value of `path` and assumes it's undefined -- it can be,
+         * but it will not pass the validator)
          */
-        derivationPathNormalizer(derivationPath),
-        true,
-      ).toPathArray(),
-      message,
-    }),
-  });
-  /*
-   * Add the hex `0x` prefix
-   */
-  return hexSequenceNormalizer(signedMessage);
+        path: fromString(
+          /*
+           * @TODO Test normalizers and validators
+           * After removing the core `messageObjectValidator`
+           */
+          derivationPathNormalizer(derivationPath),
+          true,
+        ).toPathArray(),
+        message,
+      }),
+    });
+    /*
+     * Add the hex `0x` prefix
+     */
+    return hexSequenceNormalizer(signedMessage);
+  } catch (caughtError) {
+    /*
+     * Don't throw an error if the user cancelled
+     */
+    if (caughtError.message === STD_ERRORS.CANCEL_TX_SIGN) {
+      return warning(messages.userSignTxCancel);
+    }
+    /*
+     * But throw otherwise, so we can see what's going on
+     */
+    throw new Error(
+      `${messages.userSignTxGenericError}: message: (${message}) ${
+        caughtError.message
+      }`,
+    );
+  }
 };
 
 /**
