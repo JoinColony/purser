@@ -60,11 +60,7 @@ export type WalletArgumentsType = {
 };
 
 export type MessageObjectType = {
-  path?: string,
-  derivationPath?: string,
-  message?: string,
-  address?: string,
-  signature?: string,
+  message: string,
 };
 
 export type MessageVerificationObjectType = {

@@ -3,7 +3,7 @@
 import { fromString } from 'bip32-path';
 import EthereumTx from 'ethereumjs-tx';
 
-import { derivationPathValidator } from '../core/validators';
+import { derivationPathValidator, messageValidator } from '../core/validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
@@ -13,7 +13,6 @@ import {
 import { warning, bigNumber, objectToErrorString } from '../core/utils';
 import {
   transactionObjectValidator,
-  messageObjectValidator,
   messageVerificationObjectValidator,
 } from '../core/helpers';
 import { HEX_HASH_TYPE } from '../core/defaults';
@@ -23,10 +22,7 @@ import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
 
-import type {
-  MessageObjectType,
-  MessageVerificationObjectType,
-} from '../core/flowtypes';
+import type { MessageVerificationObjectType } from '../core/flowtypes';
 
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
@@ -176,14 +172,22 @@ export const signTransaction = async ({
  * @param {string} derivationPath the derivation path for the account with which to sign the message
  * @param {string} message the message you want to sign
  *
- * All the above params are sent in as props of an {MessageObjectType} object.
+ * All the above params are sent in as props of an object.
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async (
-  messageObject: MessageObjectType,
-): Promise<string> => {
-  const { derivationPath, message } = messageObjectValidator(messageObject);
+export const signMessage = async ({
+  derivationPath,
+  message = ' ',
+}: Object): Promise<string> => {
+  /*
+   * Validate input values: derivationPath and message
+   *
+   * @TODO Test normalizers and validators
+   * After removing the core `messageObjectValidator`
+   */
+  derivationPathValidator(derivationPath);
+  messageValidator(message);
   const { signature: signedMessage } = await payloadListener({
     payload: Object.assign({}, PAYLOAD_SIGNMSG, {
       /*
@@ -194,7 +198,10 @@ export const signMessage = async (
        * but it will not pass the validator)
        */
       path: fromString(
-        /* $FlowFixMe */
+        /*
+         * @TODO Test normalizers and validators
+         * After removing the core `messageObjectValidator`
+         */
         derivationPathNormalizer(derivationPath),
         true,
       ).toPathArray(),

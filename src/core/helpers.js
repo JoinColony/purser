@@ -3,7 +3,6 @@
 import { hashPersonalMessage, ecrecover } from 'ethereumjs-util';
 
 import {
-  derivationPathValidator,
   safeIntegerValidator,
   bigNumberValidator,
   addressValidator,
@@ -12,7 +11,6 @@ import {
 } from './validators';
 import {
   addressNormalizer,
-  derivationPathNormalizer,
   hexSequenceNormalizer,
   recoveryParamNormalizer,
 } from './normalizers';
@@ -24,7 +22,6 @@ import { PATH, TRANSACTION, HEX_HASH_TYPE } from './defaults';
 import type {
   DerivationPathObjectType,
   TransactionObjectType,
-  MessageObjectType,
   MessageVerificationObjectType,
 } from './flowtypes';
 
@@ -280,51 +277,6 @@ export const transactionObjectValidator = ({
 };
 
 /**
- * Validate a message verification (message to be signed) object
- *
- * @method messageObjectValidator
- *
- * @param {string} derivationPath The derivation path for the account with which to sign the transaction
- * @param {string} message The message string you want to sign
- *
- * All the above params are sent in as props of an {MessageObjectType} object.
- *
- * @return {Object} The validated message object containing the exact passed in values
- */
-export const messageObjectValidator = ({
-  /*
-   * Path defaults to the "default" derivation path
-   */
-  derivationPath,
-  /*
-   * For the Ledger wallet implementation we can't pass in an empty string, so
-   * we try with the next best thing.
-   */
-  message = ' ',
-}: MessageObjectType = {}): MessageObjectType => {
-  /*
-   * Check if the derivation path is in the correct format
-   *
-   * Flow doesn't even let us validate it.
-   * It shoots first, asks questions later.
-   */
-  /* $FlowFixMe */
-  derivationPathValidator(derivationPath);
-  /*
-   * Check if the messages is in the correct format
-   */
-  messageValidator(message);
-  /*
-   * Normalize the values and return them
-   */
-  return {
-    /* $FlowFixMe */
-    derivationPath: derivationPathNormalizer(derivationPath),
-    message,
-  };
-};
-
-/**
  * Validate a signature verification message object
  *
  * @method messageVerificationObjectValidator
@@ -402,7 +354,6 @@ const coreHelpers: Object = {
   recoverPublicKey,
   verifyMessageSignature,
   transactionObjectValidator,
-  messageObjectValidator,
   messageVerificationObjectValidator,
 };
 

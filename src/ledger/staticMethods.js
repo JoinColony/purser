@@ -3,7 +3,7 @@
 import EthereumTx from 'ethereumjs-tx';
 
 import { ledgerConnection, handleLedgerConnectionError } from './helpers';
-import { derivationPathValidator } from '../core/validators';
+import { derivationPathValidator, messageValidator } from '../core/validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
@@ -14,7 +14,6 @@ import { warning, objectToErrorString } from '../core/utils';
 import {
   verifyMessageSignature,
   transactionObjectValidator,
-  messageObjectValidator,
   messageVerificationObjectValidator,
 } from '../core/helpers';
 import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
@@ -22,10 +21,7 @@ import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 import { staticMethods as messages } from './messages';
 
 import type { LedgerInstanceType } from './flowtypes';
-import type {
-  MessageObjectType,
-  MessageVerificationObjectType,
-} from '../core/flowtypes';
+import type { MessageVerificationObjectType } from '../core/flowtypes';
 
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
@@ -203,14 +199,22 @@ export const signTransaction = async ({
  * @param {string} derivationPath the derivation path for the account with which to sign the message
  * @param {string} message the message you want to sign
  *
- * All the above params are sent in as props of an {MessageObjectType} object.
+ * All the above params are sent in as props of an {object.
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async (
-  messageObject: MessageObjectType,
-): Promise<string | void> => {
-  const { derivationPath, message } = messageObjectValidator(messageObject);
+export const signMessage = async ({
+  derivationPath,
+  message = ' ',
+}: Object): Promise<string | void> => {
+  /*
+   * Validate input values: derivationPath and message
+   *
+   * @TODO Test normalizers and validators
+   * After removing the core `messageObjectValidator`
+   */
+  derivationPathValidator(derivationPath);
+  messageValidator(message);
   try {
     const ledger: LedgerInstanceType = await ledgerConnection();
     /*
@@ -229,13 +233,14 @@ export const signMessage = async (
       /* $FlowFixMe */
     } = await ledger.signPersonalMessage(
       /*
-       * This is because Flow doesn't yet support types inside desctructuring statements.
-       * See: https://github.com/facebook/flow/issues/235
+       * @TODO Test normalizers and validators
+       * After removing the core `messageObjectValidator`
        */
-      /* $FlowFixMe */
-      derivationPath,
+      derivationPathNormalizer(derivationPath),
       /*
        * The message needs to be sent in as an hex string
+       *
+       * Also, Flow don't know about Buffer
        */
       /* $FlowFixMe */
       Buffer.from(message).toString(HEX_HASH_TYPE),
@@ -252,9 +257,9 @@ export const signMessage = async (
   } catch (caughtError) {
     return handleLedgerConnectionError(
       caughtError,
-      `${messages.userSignTxGenericError}: ${objectToErrorString(
-        messageObject,
-      )} ${caughtError.message}`,
+      `${messages.userSignTxGenericError}: message: (${message}) ${
+        caughtError.message
+      }`,
     );
   }
 };
