@@ -1,6 +1,12 @@
 import * as utils from '../../../core/utils';
-import { messageObjectValidator } from '../../../core/helpers';
-import { hexSequenceNormalizer } from '../../../core/normalizers';
+import {
+  derivationPathNormalizer,
+  hexSequenceNormalizer,
+} from '../../../core/normalizers';
+import {
+  derivationPathValidator,
+  messageValidator,
+} from '../../../core/validators';
 
 import { signMessage } from '../../../ledger/staticMethods';
 import {
@@ -13,6 +19,7 @@ jest.dontMock('../../../ledger/staticMethods');
 jest.mock('../../../core/utils');
 jest.mock('../../../core/helpers');
 jest.mock('../../../core/normalizers');
+jest.mock('../../../core/validators');
 /*
  * Manual mocking a manual mock. Yay for Jest being built by Facebook!
  *
@@ -25,15 +32,25 @@ jest.mock('../../../ledger/helpers', () =>
 );
 
 const derivationPath = 'mocked-derivation-path';
-const mockedMessageObject = {
+const message = 'mocked-message';
+const mockedArgumentsObject = {
+  message,
   derivationPath,
-  message: 'mocked-message',
 };
 
 describe('`Ledger` Hardware Wallet Module Static Methods', () => {
   describe('`signMessage()` static method', () => {
+    afterEach(() => {
+      derivationPathNormalizer.mockClear();
+      derivationPathValidator.mockClear();
+      hexSequenceNormalizer.mockClear();
+      messageValidator.mockClear();
+      hexSequenceNormalizer.mockClear();
+      ledgerConnection.mockClear();
+      handleLedgerConnectionError.mockClear();
+    });
     test('Calls the correct ledger app method', async () => {
-      await signMessage(mockedMessageObject);
+      await signMessage(mockedArgumentsObject);
       expect(ledgerConnection.signPersonalMessage).toHaveBeenCalled();
       expect(ledgerConnection.signPersonalMessage).toHaveBeenCalledWith(
         /*
@@ -48,15 +65,28 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
        * These values are not correct. Do not use the as reference.
        * If the validators wouldn't be mocked, they wouldn't pass.
        */
-      await signMessage(mockedMessageObject);
+      await signMessage(mockedArgumentsObject);
       /*
        * Validates the derivation path
        */
-      expect(messageObjectValidator).toHaveBeenCalled();
-      expect(messageObjectValidator).toHaveBeenCalledWith(mockedMessageObject);
+      expect(derivationPathValidator).toHaveBeenCalled();
+      expect(derivationPathValidator).toHaveBeenCalledWith(derivationPath);
+      /*
+       * Validates the message string
+       */
+      expect(messageValidator).toHaveBeenCalled();
+      expect(messageValidator).toHaveBeenCalledWith(message);
+    });
+    test('Normalizes the derivation path before sending', async () => {
+      await signMessage(mockedArgumentsObject);
+      /*
+       * Normalizes the derivation path
+       */
+      expect(derivationPathNormalizer).toHaveBeenCalled();
+      expect(derivationPathNormalizer).toHaveBeenCalledWith(derivationPath);
     });
     test('Warns the user to check/confirm the device', async () => {
-      await signMessage(mockedMessageObject);
+      await signMessage(mockedArgumentsObject);
       /*
        * Calls the warning util
        */
@@ -68,7 +98,7 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
         s: sSignatureComponent,
         v: recoveryParameter,
       } = ledgerConnection.signPersonalMessage();
-      await signMessage(mockedMessageObject);
+      await signMessage(mockedArgumentsObject);
       expect(hexSequenceNormalizer).toHaveBeenCalled();
       expect(hexSequenceNormalizer).toHaveBeenCalledWith(
         `${rSignatureComponent}${sSignatureComponent}${recoveryParameter}`,

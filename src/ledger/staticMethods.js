@@ -206,12 +206,9 @@ export const signTransaction = async ({
 export const signMessage = async ({
   derivationPath,
   message = ' ',
-}: Object): Promise<string | void> => {
+}: Object = {}): Promise<string | void> => {
   /*
    * Validate input values: derivationPath and message
-   *
-   * @TODO Test normalizers and validators
-   * After removing the core `messageObjectValidator`
    */
   derivationPathValidator(derivationPath);
   messageValidator(message);
@@ -232,10 +229,6 @@ export const signMessage = async ({
        */
       /* $FlowFixMe */
     } = await ledger.signPersonalMessage(
-      /*
-       * @TODO Test normalizers and validators
-       * After removing the core `messageObjectValidator`
-       */
       derivationPathNormalizer(derivationPath),
       /*
        * The message needs to be sent in as an hex string

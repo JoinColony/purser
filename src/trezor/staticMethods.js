@@ -182,9 +182,6 @@ export const signMessage = async ({
 }: Object = {}): Promise<string | void> => {
   /*
    * Validate input values: derivationPath and message
-   *
-   * @TODO Test normalizers and validators
-   * After removing the core `messageObjectValidator`
    */
   derivationPathValidator(derivationPath);
   messageValidator(message);
@@ -199,10 +196,6 @@ export const signMessage = async ({
          * but it will not pass the validator)
          */
         path: fromString(
-          /*
-           * @TODO Test normalizers and validators
-           * After removing the core `messageObjectValidator`
-           */
           derivationPathNormalizer(derivationPath),
           true,
         ).toPathArray(),
