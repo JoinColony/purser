@@ -74,6 +74,8 @@ Contains the wallet's public address in the form of `String`.
 
 _**Tip:** Across all wallet types and formats this is the only value that you can count on as always present on the object._
 
+_**Note:** For the [Metamask Wallet](api-metamask.md) this will always reflect the address selected from the UI, so you can always count on it to be accurate._
+
 **Usage:**
 ```js
 import { open } from 'colony-wallet/software';
@@ -326,6 +328,8 @@ WalletInstance.publicKey: Promise<String>
 This is a `getter` that returns a `Promise`. Upon resolving, the promise returns the public key for the current address, in `String` form.
 
 This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(Eg: `privateKey`, `mnemonic`...)_.
+
+_**Note:** The [Metamask Wallet](api-metamask.md) does not provide native access to the public key. But we can recover it from a signed message. So in order to access it, you will first have to sign a message (string provided), and than you'll have access to it. It will also be saved locally for future references (current selected address only), so that if you have to use it again, you won't have re-sign the message._
 
 **Usage:**
 ```js
