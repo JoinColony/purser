@@ -3,6 +3,7 @@
 import { fromString } from 'bip32-path';
 import EthereumTx from 'ethereumjs-tx';
 
+import { derivationPathValidator } from '../core/validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
@@ -23,7 +24,6 @@ import { STD_ERRORS } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
 
 import type {
-  TransactionObjectType,
   MessageObjectType,
   MessageVerificationObjectType,
 } from '../core/flowtypes';
@@ -46,11 +46,11 @@ import type {
  *
  * @return {Promise<string>} the hex signature string
  */
-export const signTransaction = async (
-  transactionObject: TransactionObjectType,
-): Promise<string | void> => {
+export const signTransaction = async ({
+  derivationPath,
+  ...transactionObject
+}: Object): Promise<string | void> => {
   const {
-    derivationPath,
     gasPrice,
     gasLimit,
     chainId,
@@ -60,28 +60,50 @@ export const signTransaction = async (
     inputData,
   } = transactionObjectValidator(transactionObject);
   /*
+   * @TODO Unit test validation
+   * This was refactored, so it needs to be tested here
+   */
+  derivationPathValidator(derivationPath);
+  /*
    * Modify the default payload to set the transaction details
    */
   const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_SIGNTX, {
     /*
      * Path needs to be sent in as an derivation path array
-     *
-     * We also normalize it first (but for some reason Flow doesn't pick up
-     * the default value of `path` and assumes it's undefined -- it can be,
-     * but it will not pass the validator)
      */
-    address_n: fromString(derivationPath, true).toPathArray(),
+    address_n: fromString(
+      /*
+       * @TODO Unit test normalizer
+       * This was refactored, so it needs to be tested here
+       */
+      derivationPathNormalizer(derivationPath),
+      true,
+    ).toPathArray(),
     /*
-     * We could really do with some BN.js flow types declarations :(
+     * @TODO Add `bigNumber` `toHexString` wrapper method
+     *
+     * Flow confuses bigNumber's `toString` with the String object
+     * prototype `toString` method
      */
     /* $FlowFixMe */
     gas_price: multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
+    /*
+     * @TODO Add `bigNumber` `toHexString` wrapper method
+     *
+     * Flow confuses bigNumber's `toString` with the String object
+     * prototype `toString` method
+     */
     /* $FlowFixMe */
     gas_limit: multipleOfTwoHexValueNormalizer(gasLimit.toString(16)),
     chain_id: chainId,
     /*
      * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
      * Eg: '3' to be '03', `12c` to be `012c`
+     *
+     * @TODO Add `bigNumber` `toHexString` wrapper method
+     *
+     * Flow confuses bigNumber's `toString` with the String object
+     * prototype `toString` method
      */
     /* $FlowFixMe */
     nonce: multipleOfTwoHexValueNormalizer(nonce.toString(16)),
@@ -89,6 +111,12 @@ export const signTransaction = async (
      * Trezor service requires the prefix from the address to be stripped
      */
     to: addressNormalizer(to, false),
+    /*
+     * @TODO Add `bigNumber` `toHexString` wrapper method
+     *
+     * Flow confuses bigNumber's `toString` with the String object
+     * prototype `toString` method
+     */
     /* $FlowFixMe */
     value: multipleOfTwoHexValueNormalizer(value.toString(16)),
     /*

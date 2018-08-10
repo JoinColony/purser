@@ -22,14 +22,13 @@ export type DerivationPathDefaultType = {
 };
 
 export type TransactionObjectType = {
-  derivationPath: string,
-  chainId?: number,
-  gasPrice?: string,
-  gasLimit?: string,
-  nonce?: number,
-  to?: string,
-  value?: string,
-  inputData?: string | void,
+  chainId: number,
+  gasPrice: string,
+  gasLimit: string,
+  nonce: number,
+  to: string,
+  value: string,
+  inputData: string,
 };
 
 export type WalletObjectType = {
@@ -43,7 +42,7 @@ export type WalletObjectType = {
   privateKey?: string,
   +publicKey?: Promise<string>,
   provider?: ProviderType,
-  sign?: (...*) => Promise<TransactionObjectType>,
+  sign: (...*) => Promise<TransactionObjectType>,
 };
 
 export type WalletArgumentsType = {

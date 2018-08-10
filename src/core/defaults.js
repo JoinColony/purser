@@ -99,6 +99,7 @@ export const DESCRIPTORS: Object = {
  * Defaults for the transaction object
  */
 export const TRANSACTION: Object = {
+  CHAIN_ID: 1,
   GAS_PRICE: 9000000000, // 9 Gwei
   GAS_LIMIT: 21000,
   NONCE: 0,

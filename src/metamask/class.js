@@ -10,15 +10,17 @@ import { hexSequenceNormalizer } from '../core/normalizers';
 import { DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
+import { signTransaction } from './staticMethods';
 import { methodCaller, setStateEventObserver } from './helpers';
 import { validateMetamaskState } from './validators';
 import { signMessage } from './methodLinks';
 import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from './defaults';
 import { MetamaskWallet as messages } from './messages';
 
+import type { TransactionObjectType } from '../core/flowtypes';
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
 
-const { SETTERS, GETTERS, GENERIC_PROPS } = DESCRIPTORS;
+const { SETTERS, GETTERS, GENERIC_PROPS, WALLET_PROPS } = DESCRIPTORS;
 
 /*
  * "Private" (internal) variable(s).
@@ -38,6 +40,14 @@ export default class MetamaskWallet {
 
   subtype: string;
 
+  /*
+   * @TODO Add specific Flow type
+   *
+   * See the core generic wallet for this, since that will implement them.
+   * This will just use the ones declared there.
+   */
+  sign: (...*) => Promise<string>;
+
   constructor({ address }: MetamaskWalletConstructorArgumentsType) {
     /*
      * Validate the address that's coming in from Metamask
@@ -53,6 +63,16 @@ export default class MetamaskWallet {
       address: Object.assign({}, { value: address }, SETTERS),
       type: Object.assign({}, { value: TYPE_SOFTWARE }, GENERIC_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_METAMASK }, GENERIC_PROPS),
+      sign: Object.assign(
+        {},
+        {
+          value: async (transactionObject: TransactionObjectType) =>
+            signTransaction(
+              Object.assign({}, transactionObject, { from: address }),
+            ),
+        },
+        WALLET_PROPS,
+      ),
     });
     /*
      * We must check for the Metamask injected in-page proxy every time we
