@@ -49,7 +49,7 @@ import type {
 export const signTransaction = async ({
   derivationPath,
   ...transactionObject
-}: Object): Promise<string | void> => {
+}: Object = {}): Promise<string | void> => {
   const {
     gasPrice,
     gasLimit,
@@ -59,10 +59,6 @@ export const signTransaction = async ({
     value,
     inputData,
   } = transactionObjectValidator(transactionObject);
-  /*
-   * @TODO Unit test validation
-   * This was refactored, so it needs to be tested here
-   */
   derivationPathValidator(derivationPath);
   /*
    * Modify the default payload to set the transaction details
@@ -72,10 +68,6 @@ export const signTransaction = async ({
      * Path needs to be sent in as an derivation path array
      */
     address_n: fromString(
-      /*
-       * @TODO Unit test normalizer
-       * This was refactored, so it needs to be tested here
-       */
       derivationPathNormalizer(derivationPath),
       true,
     ).toPathArray(),

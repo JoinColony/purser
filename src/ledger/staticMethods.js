@@ -48,7 +48,7 @@ import type {
 export const signTransaction = async ({
   derivationPath,
   ...transactionObject
-}: Object): Promise<string | void> => {
+}: Object = {}): Promise<string | void> => {
   const {
     gasPrice,
     gasLimit,
@@ -60,10 +60,6 @@ export const signTransaction = async ({
   } = transactionObjectValidator(transactionObject);
   try {
     const ledger: LedgerInstanceType = await ledgerConnection();
-    /*
-     * @TODO Unit test validation
-     * This was refactored, so it needs to be tested here
-     */
     derivationPathValidator(derivationPath);
     /*
      * Ledger needs the unsigned "raw" transaction hex, which it will sign and
@@ -170,10 +166,6 @@ export const signTransaction = async ({
       s: sSignatureComponent,
       v: recoveryParameter,
     } = await ledger.signTransaction(
-      /*
-       * @TODO Unit test normalizer
-       * This was refactored, so it needs to be tested here
-       */
       derivationPathNormalizer(derivationPath),
       unsignedTransaction.serialize().toString(HEX_HASH_TYPE),
     );
