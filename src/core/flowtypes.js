@@ -64,8 +64,6 @@ export type MessageObjectType = {
 };
 
 export type MessageVerificationObjectType = {
-  address?: string,
-  publicKey?: string,
   message: string,
   signature: string,
 };

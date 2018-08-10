@@ -9,11 +9,7 @@ import {
   hexSequenceValidator,
   messageValidator,
 } from './validators';
-import {
-  addressNormalizer,
-  hexSequenceNormalizer,
-  recoveryParamNormalizer,
-} from './normalizers';
+import { hexSequenceNormalizer, recoveryParamNormalizer } from './normalizers';
 import { bigNumber, warning } from './utils';
 
 import { helpers as helperMessages } from './messages';
@@ -165,7 +161,7 @@ export const verifyMessageSignature = ({
   publicKey,
   message,
   signature,
-}: MessageVerificationObjectType): boolean => {
+}: Object): boolean => {
   const { verifyMessageSignature: messages } = helperMessages;
   try {
     /*
@@ -279,10 +275,11 @@ export const transactionObjectValidator = ({
 /**
  * Validate a signature verification message object
  *
+ * @TODO Re-do unit tests
+ * Since this was refactored, they will need to be changed
+ *
  * @method messageVerificationObjectValidator
  *
- * @param {string} address The address of the account that signed the message. Optional.
- * @param {string} publicKey The public key of the account that signed the message. Optional.
  * @param {string} message The message string to check the signature against
  * @param {string} signature The signature of the message.
  *
@@ -292,42 +289,12 @@ export const transactionObjectValidator = ({
  */
 export const messageVerificationObjectValidator = ({
   /*
-   * Path defaults to the "default" address and/or publicKey
-   */
-  address,
-  publicKey,
-  /*
    * For the Ledger wallet implementation we can't pass in an empty string, so
    * we try with the next best thing.
    */
   message,
   signature,
 }: MessageVerificationObjectType = {}): MessageVerificationObjectType => {
-  const normalizedMessageVerificationObject: Object = {
-    message,
-  };
-  if (address) {
-    /*
-     * Check if the address is in the correct format
-     */
-    addressValidator(address);
-    /*
-     * Ensure the address has the hex `0x` prefix
-     */
-    normalizedMessageVerificationObject.address = addressNormalizer(address);
-  }
-  if (publicKey) {
-    /*
-     * Check if the public key is in the correct format
-     */
-    hexSequenceValidator(publicKey);
-    /*
-     * Ensure the public has the hex `0x` prefix
-     */
-    normalizedMessageVerificationObject.publicKey = hexSequenceNormalizer(
-      publicKey,
-    );
-  }
   /*
    * Check if the messages is in the correct format
    */
@@ -336,13 +303,13 @@ export const messageVerificationObjectValidator = ({
    * Check if the signature is in the correct format
    */
   hexSequenceValidator(signature);
-  /*
-   * Ensure the signature has the hex `0x` prefix
-   */
-  normalizedMessageVerificationObject.signature = hexSequenceNormalizer(
-    signature,
-  );
-  return normalizedMessageVerificationObject;
+  return {
+    message,
+    /*
+     * Ensure the signature has the hex `0x` prefix
+     */
+    signature: hexSequenceNormalizer(signature),
+  };
 };
 
 /*

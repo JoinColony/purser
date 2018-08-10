@@ -3,7 +3,11 @@
 import { fromString } from 'bip32-path';
 import EthereumTx from 'ethereumjs-tx';
 
-import { derivationPathValidator, messageValidator } from '../core/validators';
+import {
+  addressValidator,
+  derivationPathValidator,
+  messageValidator,
+} from '../core/validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
@@ -21,8 +25,6 @@ import { payloadListener } from './helpers';
 import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
-
-import type { MessageVerificationObjectType } from '../core/flowtypes';
 
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
@@ -237,10 +239,21 @@ export const signMessage = async ({
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = async (
-  signatureMessage: MessageVerificationObjectType,
-): Promise<boolean> => {
-  const { address, message, signature } = messageVerificationObjectValidator(
+export const verifyMessage = async ({
+  address,
+  ...signatureMessage
+}: Object = {}): Promise<boolean> => {
+  /*
+   * Validate the address locally
+   *
+   * @TODO Test validation
+   * Add unit tests to test if the value gets validated (and normalized)
+   */
+  addressValidator(address);
+  /*
+   * Validate the rest of the pros using the core helper
+   */
+  const { message, signature } = messageVerificationObjectValidator(
     signatureMessage,
   );
   try {

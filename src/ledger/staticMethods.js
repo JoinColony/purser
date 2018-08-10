@@ -3,7 +3,11 @@
 import EthereumTx from 'ethereumjs-tx';
 
 import { ledgerConnection, handleLedgerConnectionError } from './helpers';
-import { derivationPathValidator, messageValidator } from '../core/validators';
+import {
+  derivationPathValidator,
+  messageValidator,
+  hexSequenceValidator,
+} from '../core/validators';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
@@ -21,7 +25,6 @@ import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 import { staticMethods as messages } from './messages';
 
 import type { LedgerInstanceType } from './flowtypes';
-import type { MessageVerificationObjectType } from '../core/flowtypes';
 
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
@@ -270,7 +273,32 @@ export const signMessage = async ({
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = async (
-  signatureMessage: MessageVerificationObjectType,
-): Promise<boolean> =>
-  verifyMessageSignature(messageVerificationObjectValidator(signatureMessage));
+export const verifyMessage = async ({
+  publicKey,
+  ...signatureMessage
+}: Object): Promise<boolean> => {
+  /*
+   * Validate the public key locally
+   *
+   * @TODO Test validation
+   * Add unit tests to test if the value gets validated (and normalized)
+   */
+  hexSequenceValidator(publicKey);
+  /*
+   * Validate the rest of the pros using the core helper
+   */
+  const { message, signature } = messageVerificationObjectValidator(
+    signatureMessage,
+  );
+  return verifyMessageSignature({
+    /*
+     * Ensure the public key has the hex `0x` prefix
+     */
+    publicKey: hexSequenceNormalizer(publicKey),
+    message,
+    /*
+     * Ensure the signature has the hex `0x` prefix
+     */
+    signature: hexSequenceNormalizer(signature),
+  });
+};
