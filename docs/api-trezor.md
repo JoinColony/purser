@@ -43,6 +43,8 @@ Using `ES5` `require()` statements:
 var wallets = require('colony-wallet').wallets; // wallets.trezor.open().then();
 
 var trezor = require('colony-wallet/trezor'); // trezor.open().then();
+
+var open = require('colony-wallet/trezor').open; // open().then();
 ```
 
 Using `ES6` `import` statements:

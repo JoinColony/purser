@@ -52,6 +52,8 @@ Using `ES5` `require()` statements:
 var wallets = require('colony-wallet').wallets; // wallets.ledger.open().then();
 
 var ledger = require('colony-wallet/ledger'); // ledger.open().then();
+
+var open = require('colony-wallet/ledger').open; // open().then();
 ```
 
 Using `ES6` `import` statements:
