@@ -275,9 +275,6 @@ export const transactionObjectValidator = ({
 /**
  * Validate a signature verification message object
  *
- * @TODO Re-do unit tests
- * Since this was refactored, they will need to be changed
- *
  * @method messageVerificationObjectValidator
  *
  * @param {string} message The message string to check the signature against

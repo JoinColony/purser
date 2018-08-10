@@ -279,9 +279,6 @@ export const verifyMessage = async ({
 }: Object): Promise<boolean> => {
   /*
    * Validate the public key locally
-   *
-   * @TODO Test validation
-   * Add unit tests to test if the value gets validated (and normalized)
    */
   hexSequenceValidator(publicKey);
   /*

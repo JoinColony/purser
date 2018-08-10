@@ -65,7 +65,6 @@ const mockedArgumentsObject = {
 describe('`Ledger` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     EthereumTx.mockClear();
-    EthereumTx.mockRestore();
   });
   describe('`signTransaction()` static method', () => {
     test('Calls the correct ledger app method', async () => {
