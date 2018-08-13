@@ -2,11 +2,7 @@
 
 import { warning } from '../core/utils';
 import { hexSequenceValidator, addressValidator } from '../core/validators';
-import {
-  multipleOfTwoHexValueNormalizer,
-  addressNormalizer,
-  hexSequenceNormalizer,
-} from '../core/normalizers';
+import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
 import { transactionObjectValidator } from '../core/helpers';
 
 import { methodCaller } from './helpers';
@@ -44,51 +40,18 @@ export const signTransaction = async ({
           {
             from: addressNormalizer(from),
             to: addressNormalizer(to),
-            value: hexSequenceNormalizer(
-              /*
-               * @TODO Add `bigNumber` `toHexString` wrapper method
-               *
-               * Flow confuses bigNumber's `toString` with the String object
-               * prototype `toString` method
-               */
-              /* $FlowFixMe */
-              multipleOfTwoHexValueNormalizer(value.toString(16)),
-            ),
-            gas: hexSequenceNormalizer(
-              /*
-               * @TODO Add `bigNumber` `toHexString` wrapper method
-               *
-               * Flow confuses bigNumber's `toString` with the String object
-               * prototype `toString` method
-               */
-              /* $FlowFixMe */
-              multipleOfTwoHexValueNormalizer(gasLimit.toString(16)),
-            ),
-            gasPrice: hexSequenceNormalizer(
-              /*
-               * @TODO Add `bigNumber` `toHexString` wrapper method
-               *
-               * Flow confuses bigNumber's `toString` with the String object
-               * prototype `toString` method
-               */
-              /* $FlowFixMe */
-              multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
-            ),
+            /*
+            * We don't need to normalize these three values since Metamask accepts
+            * number values directly, so we don't need to convert them to hex
+            */
+            value: value.toString(),
+            gas: gasLimit.toString(),
+            gasPrice: gasPrice.toString(),
             data: hexSequenceNormalizer(inputData),
             /*
-             * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
-             * Eg: '3' to be '03', `12c` to be `012c`
+             * But we do convert the nonce to a String.
              */
-            nonce: hexSequenceNormalizer(
-              /*
-               * @TODO Add `bigNumber` `toHexString` wrapper method
-               *
-               * Flow confuses bigNumber's `toString` with the String object
-               * prototype `toString` method
-               */
-              /* $FlowFixMe */
-              multipleOfTwoHexValueNormalizer(nonce.toString(16)),
-            ),
+            nonce: nonce.toString(),
           },
           /*
            * @TODO Move into own (non-anonymous) method
