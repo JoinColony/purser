@@ -29,4 +29,4 @@ export const signMessage: signMessageMethodType = (...args) =>
  * @method signTransaction
  */
 export const signTransaction: signTrasactionMethodType = (...args) =>
-  global.web3.personal.sendTransaction(...args);
+  global.web3.eth.sendTransaction(...args);
