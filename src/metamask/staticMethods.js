@@ -11,6 +11,32 @@ import { signTransaction as signTransactionMethodLink } from './methodLinks';
 import { STD_ERRORS } from './defaults';
 import { staticMethods as messages } from './messages';
 
+/**
+ * Sign (and send) a transaction object and return the serialized signature (as a hex string)
+ *
+ * @TODO Add unit tests
+ *
+ * @TODO Refactor to only sign the transaction
+ * This is only after Metamask will allow us that functionality (see below)
+ *
+ * Metamask doesn't currentlt allow us to sign a transaction without also broadcasting it to
+ * the network. See this issue for context:
+ * https://github.com/MetaMask/metamask-extension/issues/3475
+ *
+ * @method signTransaction
+ *
+ * @param {string} from the sender address (provided by the Wallet instance)
+ * @param {bigNumber} gasPrice gas price for the transaction in WEI (as an instance of bigNumber), defaults to 9000000000 (9 GWEI)
+ * @param {bigNumber} gasLimit gas limit for the transaction (as an instance of bigNumber), defaults to 21000
+ * @param {number} nonce the nonce to use for the transaction (as a number)
+ * @param {string} to the address to which to the transaction is sent
+ * @param {bigNumber} value the value of the transaction in WEI (as an instance of bigNumber), defaults to 1
+ * @param {string} inputData data appended to the transaction (as a `hex` string)
+ *
+ * All the above params are sent in as props of an object.
+ *
+ * @return {Promise<string>} the hex signature string
+ */
 export const signTransaction = async ({
   from,
   ...transactionObject
