@@ -1,7 +1,5 @@
 /* @flow */
 
-import type { TransactionObjectType } from '../core/flowtypes';
-
 export type MetamaskInpageProviderType = {
   mux: Object,
   publicConfigStore: {
@@ -26,6 +24,6 @@ export type signMessageMethodType = (
 ) => void;
 
 export type signTrasactionMethodType = (
-  transactionObject: TransactionObjectType,
+  transactionObject: Object,
   callback: Web3CallbackType,
 ) => void;

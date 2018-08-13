@@ -15,7 +15,10 @@ import { methodCaller, setStateEventObserver } from './helpers';
 import { validateMetamaskState } from './validators';
 import { signMessage } from './methodLinks';
 import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from './defaults';
-import { MetamaskWallet as messages } from './messages';
+import {
+  MetamaskWallet as messages,
+  staticMethods as staticMethodsMessages,
+} from './messages';
 
 import type { TransactionObjectType } from '../core/flowtypes';
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
@@ -226,7 +229,7 @@ export default class MetamaskWallet {
                  * This is normal UX, not an exception
                  */
                 if (error.message.includes(STD_ERRORS.CANCEL_MSG_SIGN)) {
-                  return warning(messages.cancelMessageSign);
+                  return warning(staticMethodsMessages.cancelMessageSign);
                 }
                 throw new Error(error.message);
               }

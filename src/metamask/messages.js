@@ -4,6 +4,11 @@
 export const staticMethods: Object = {
   metamaskNotAvailable:
     "Metamask extension could not be accessed. Please ensure that it is enabled and it's not locked",
+  cannotSendTransaction:
+    'Cannot send the transaction. Make sure the Metamask extension is available',
+  cancelMessageSign: 'User cancelled signing the message (via Metamask UI)',
+  cancelTransactionSign:
+    'User cancelled signing the transaction (via Metamask UI)',
 };
 
 export const helpers: Object = {
@@ -29,5 +34,4 @@ export const MetamaskWallet: Object = {
     'Cannot listen for Metamask changes. Make sure the Metamask extension is available',
   cannotGetPublicKey:
     'Could not sign the message to recover the public key from. Make sure the Metamask extension is available',
-  cancelMessageSign: 'User cancelled signing the message (via Metamask UI)',
 };
