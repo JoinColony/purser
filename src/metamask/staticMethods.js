@@ -18,8 +18,6 @@ import { staticMethods as messages } from './messages';
 /**
  * Sign (and send) a transaction object and return the serialized signature (as a hex string)
  *
- * @TODO Add unit tests
- *
  * @TODO Refactor to only sign the transaction
  * This is only after Metamask will allow us that functionality (see below)
  *
