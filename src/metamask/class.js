@@ -10,17 +10,20 @@ import { hexSequenceNormalizer } from '../core/normalizers';
 import { DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
-import { signTransaction } from './staticMethods';
+import { signTransaction, signMessage } from './staticMethods';
 import { methodCaller, setStateEventObserver } from './helpers';
 import { validateMetamaskState } from './validators';
-import { signMessage } from './methodLinks';
+import { signMessage as signMessageMethodLink } from './methodLinks';
 import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from './defaults';
 import {
   MetamaskWallet as messages,
   staticMethods as staticMethodsMessages,
 } from './messages';
 
-import type { TransactionObjectType } from '../core/flowtypes';
+import type {
+  TransactionObjectType,
+  MessageObjectType,
+} from '../core/flowtypes';
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
 
 const { SETTERS, GETTERS, GENERIC_PROPS, WALLET_PROPS } = DESCRIPTORS;
@@ -51,6 +54,8 @@ export default class MetamaskWallet {
    */
   sign: (...*) => Promise<string>;
 
+  signMessage: (...*) => Promise<string>;
+
   constructor({ address }: MetamaskWalletConstructorArgumentsType) {
     /*
      * Validate the address that's coming in from Metamask
@@ -66,6 +71,10 @@ export default class MetamaskWallet {
       address: Object.assign({}, { value: address }, SETTERS),
       type: Object.assign({}, { value: TYPE_SOFTWARE }, GENERIC_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_METAMASK }, GENERIC_PROPS),
+      /*
+       * @TODO Add unit tests
+       * The the class for this methods's availability
+       */
       sign: Object.assign(
         {},
         {
@@ -73,6 +82,21 @@ export default class MetamaskWallet {
             signTransaction(
               Object.assign({}, transactionObject, { from: address }),
             ),
+        },
+        WALLET_PROPS,
+      ),
+      /*
+       * @TODO Add unit tests
+       * The the class for this methods's availability
+       */
+      signMessage: Object.assign(
+        {},
+        {
+          value: async ({ message }: MessageObjectType = {}) =>
+            signMessage({
+              currentAddress: address,
+              message,
+            }),
         },
         WALLET_PROPS,
       ),
@@ -186,7 +210,7 @@ export default class MetamaskWallet {
           /*
            * Sign the message. This will prompt the user via Metamask's UI
            */
-          signMessage(
+          signMessageMethodLink(
             /*
              * Ensure the hex string has the `0x` prefix
              */

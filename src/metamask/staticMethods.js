@@ -128,8 +128,18 @@ export const signTransaction = async ({
   );
 };
 
-const metamaskStaticMethods: Object = {
-  signTransaction,
-};
-
-export default metamaskStaticMethods;
+/**
+ * Sign a message and return the signature. Useful for verifying identities.
+ *
+ * @TODO Add unit tests
+ *
+ * @method signMessage
+ *
+ * @param {string} currentAddress The current selected address (in the UI)
+ * @param {string} message the message you want to sign
+ *
+ * All the above params are sent in as props of an {object.
+ *
+ * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
+ */
+export const signMessage = async (messageObject: Object) => messageObject;
