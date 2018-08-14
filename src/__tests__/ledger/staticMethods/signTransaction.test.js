@@ -18,7 +18,7 @@ import { derivationPathValidator } from '../../../core/validators';
 
 import { SIGNATURE } from '../../../core/defaults';
 
-jest.dontMock('../../../trezor/staticMethods');
+jest.dontMock('../../../ledger/staticMethods');
 
 jest.mock('ethereumjs-tx');
 jest.mock('../../../core/validators');
