@@ -1,7 +1,11 @@
 /* @flow */
 
 import { warning } from '../core/utils';
-import { hexSequenceValidator, addressValidator } from '../core/validators';
+import {
+  hexSequenceValidator,
+  addressValidator,
+  safeIntegerValidator,
+} from '../core/validators';
 import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
 import { transactionObjectValidator } from '../core/helpers';
 
@@ -19,7 +23,7 @@ import { staticMethods as messages } from './messages';
  * @TODO Refactor to only sign the transaction
  * This is only after Metamask will allow us that functionality (see below)
  *
- * Metamask doesn't currentlt allow us to sign a transaction without also broadcasting it to
+ * Metamask doesn't currently allow us to sign a transaction without also broadcasting it to
  * the network. See this issue for context:
  * https://github.com/MetaMask/metamask-extension/issues/3475
  *
@@ -39,17 +43,30 @@ import { staticMethods as messages } from './messages';
  */
 export const signTransaction = async ({
   from,
+  nonce: manualNonce,
   ...transactionObject
-}: Object): Promise<string | void> => {
+}: Object = {}): Promise<string | void> => {
   const {
     gasPrice,
     gasLimit,
     to,
     value,
-    nonce,
     inputData,
   } = transactionObjectValidator(transactionObject);
   addressValidator(from);
+  /*
+   * Metamask auto-sets the nonce based on the next one available. You can manually
+   * override it, but it's best to omit it.
+   *
+   * So we only validate if there is one, otherwise we just pass undefined
+   * to the transaction object.
+   *
+   * We also notify (in dev mode) the user about not setting the nonce.
+   */
+  if (manualNonce) {
+    safeIntegerValidator(manualNonce);
+    warning(messages.dontSetNonce);
+  }
   /*
    * We must check for the Metamask injected in-page proxy every time we
    * try to access it. This is because something can change it from the time
@@ -75,9 +92,9 @@ export const signTransaction = async ({
             gasPrice: gasPrice.toString(),
             data: hexSequenceNormalizer(inputData),
             /*
-             * But we do convert the nonce to a String.
+             * Most likely this value is `undefined`, but that is good (see above)
              */
-            nonce: nonce.toString(),
+            nonce: manualNonce,
           },
           /*
            * @TODO Move into own (non-anonymous) method

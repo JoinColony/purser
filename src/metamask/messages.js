@@ -9,6 +9,8 @@ export const staticMethods: Object = {
   cancelMessageSign: 'User cancelled signing the message (via Metamask UI)',
   cancelTransactionSign:
     'User cancelled signing the transaction (via Metamask UI)',
+  dontSetNonce:
+    "Metamask automatically sets the nonce value for you. Unless you want to manually overwrite a pending transaction, it's best you don't set one",
 };
 
 export const helpers: Object = {
