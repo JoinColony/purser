@@ -464,6 +464,8 @@ The `transactionObject`'s props will be each individually validated, and if ther
 
 _**Note**: On hardware wallets this method will require some form of confirmation from the user._
 
+_**Note**: Metamask is designed to handle it's own `nonce` count. You can manually set it, but it's advisable to leave it out of the transaction object. The only case where you would want to do override it, is when you want to change a pending transaction._
+
 **`transactionObject` format:**
 ```js
 transactionObject {
