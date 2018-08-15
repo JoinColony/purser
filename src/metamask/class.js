@@ -71,10 +71,6 @@ export default class MetamaskWallet {
       address: Object.assign({}, { value: address }, SETTERS),
       type: Object.assign({}, { value: TYPE_SOFTWARE }, GENERIC_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_METAMASK }, GENERIC_PROPS),
-      /*
-       * @TODO Add unit tests
-       * The the class for this methods's availability
-       */
       sign: Object.assign(
         {},
         {
@@ -85,10 +81,6 @@ export default class MetamaskWallet {
         },
         WALLET_PROPS,
       ),
-      /*
-       * @TODO Add unit tests
-       * The the class for this methods's availability
-       */
       signMessage: Object.assign(
         {},
         {
