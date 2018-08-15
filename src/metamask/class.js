@@ -194,7 +194,6 @@ export default class MetamaskWallet {
    * @return {Promise} The recovered public key (for the currently selected addresss)
    */
   static async recoverPublicKey(currentAddress: string): Promise<string> {
-    // console.log('called', currentAddress);
     /*
      * We must check for the Metamask injected in-page proxy every time we
      * try to access it. This is because something can change it from the time
