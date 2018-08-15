@@ -219,8 +219,6 @@ export const signMessage = async ({
 /**
  * Verify a signed message. Useful for verifying identity. (In conjunction with `signMessage`)
  *
- * @TODO Add unit tests
- *
  * @method verifyMessage
  *
  * @param {string} message The message to verify if it was signed correctly
@@ -231,10 +229,10 @@ export const signMessage = async ({
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = ({
+export const verifyMessage = async ({
   currentAddress,
   ...messageVerificationObject
-}: Object) => {
+}: Object = {}) => {
   /*
    * Validate the current address
    */
