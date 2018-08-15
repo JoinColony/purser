@@ -136,8 +136,6 @@ export const signTransaction = async ({
 /**
  * Sign a message and return the signature. Useful for verifying identities.
  *
- * @TODO Add unit tests
- *
  * @method signMessage
  *
  * @param {string} currentAddress The current selected address (in the UI)
@@ -150,7 +148,7 @@ export const signTransaction = async ({
 export const signMessage = async ({
   currentAddress,
   message,
-}: Object): Promise<string | void> => {
+}: Object = {}): Promise<string | void> => {
   addressValidator(currentAddress);
   messageValidator(message);
   /*
