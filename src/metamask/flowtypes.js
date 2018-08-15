@@ -27,3 +27,9 @@ export type signTrasactionMethodType = (
   transactionObject: Object,
   callback: Web3CallbackType,
 ) => void;
+
+export type verifyMessageMethodType = (
+  message: string,
+  signature: string,
+  callback: Web3CallbackType,
+) => void;
