@@ -10,7 +10,7 @@ import { hexSequenceNormalizer } from '../core/normalizers';
 import { DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
-import { signTransaction, signMessage } from './staticMethods';
+import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { methodCaller, setStateEventObserver } from './helpers';
 import { validateMetamaskState } from './validators';
 import { signMessage as signMessageMethodLink } from './methodLinks';
@@ -23,6 +23,7 @@ import {
 import type {
   TransactionObjectType,
   MessageObjectType,
+  MessageVerificationObjectType,
 } from '../core/flowtypes';
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
 
@@ -56,6 +57,8 @@ export default class MetamaskWallet {
 
   signMessage: (...*) => Promise<string>;
 
+  verifyMessage: (...*) => Promise<boolean>;
+
   constructor({ address }: MetamaskWalletConstructorArgumentsType) {
     /*
      * Validate the address that's coming in from Metamask
@@ -76,7 +79,7 @@ export default class MetamaskWallet {
         {
           value: async (transactionObject: TransactionObjectType) =>
             signTransaction(
-              Object.assign({}, transactionObject, { from: address }),
+              Object.assign({}, transactionObject, { from: this.address }),
             ),
         },
         WALLET_PROPS,
@@ -86,8 +89,26 @@ export default class MetamaskWallet {
         {
           value: async ({ message }: MessageObjectType = {}) =>
             signMessage({
-              currentAddress: address,
+              currentAddress: this.address,
               message,
+            }),
+        },
+        WALLET_PROPS,
+      ),
+      /*
+       * @TODO Add unit tests
+       * On the class to check for the method's existence, and if it's correctly
+       * called
+       */
+      verifyMessage: Object.assign(
+        {},
+        {
+          value: async (
+            messageVerificationObject: MessageVerificationObjectType,
+          ) =>
+            verifyMessage({
+              currentAddress: this.address,
+              ...messageVerificationObject,
             }),
         },
         WALLET_PROPS,

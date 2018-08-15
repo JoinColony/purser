@@ -8,12 +8,16 @@ import {
   messageValidator,
 } from '../core/validators';
 import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
-import { transactionObjectValidator } from '../core/helpers';
+import {
+  transactionObjectValidator,
+  messageVerificationObjectValidator,
+} from '../core/helpers';
 
 import { methodCaller } from './helpers';
 import {
   signTransaction as signTransactionMethodLink,
   signMessage as signMessageMethodLink,
+  verifyMessage as verifyMessageMethodLink,
 } from './methodLinks';
 
 import { HEX_HASH_TYPE } from '../core/defaults';
@@ -203,6 +207,91 @@ export const signMessage = async ({
               if (error.message.includes(STD_ERRORS.CANCEL_MSG_SIGN)) {
                 return warning(messages.cancelMessageSign);
               }
+              throw new Error(error.message);
+            }
+          },
+        );
+      }),
+    messages.cannotSignMessage,
+  );
+};
+
+/**
+ * Verify a signed message. Useful for verifying identity. (In conjunction with `signMessage`)
+ *
+ * @TODO Add unit tests
+ *
+ * @method verifyMessage
+ *
+ * @param {string} message The message to verify if it was signed correctly
+ * @param {string} signature The message signature as a `hex` string (you usually get this via `signMessage`)
+ * @param {string} currentAddress The current selected address (in the UI)
+ *
+ * All the above params are sent in as props of an object.
+ *
+ * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
+ */
+export const verifyMessage = ({
+  currentAddress,
+  ...messageVerificationObject
+}: Object) => {
+  /*
+   * Validate the current address
+   */
+  addressValidator(currentAddress);
+  /*
+   * Validate the rest of the pros using the core helper
+   */
+  const { message, signature } = messageVerificationObjectValidator(
+    messageVerificationObject,
+  );
+  /*
+   * We must check for the Metamask injected in-page proxy every time we
+   * try to access it. This is because something can change it from the time
+   * of last detection until now.
+   */
+  return methodCaller(
+    /*
+     * @TODO Move into own (non-anonymous) method
+     * This way we could better test it
+     */
+    () =>
+      new Promise(resolve => {
+        /*
+         * Verify the message
+         */
+        verifyMessageMethodLink(
+          message,
+          /*
+           * Ensure the signature has the `0x` prefix
+           */
+          hexSequenceNormalizer(signature),
+          /*
+           * @TODO Move into own (non-anonymous) method
+           * This way we could better test it
+           */
+          (error: Error, recoveredAddress: string) => {
+            try {
+              /*
+               * Validate that the recovered address is correct
+               */
+              addressValidator(recoveredAddress);
+              /*
+               * Add the `0x` prefix to the recovered address
+               */
+              const normalizedRecoveredAddress: string = addressNormalizer(
+                recoveredAddress,
+              );
+              /*
+               * Add the `0x` prefix to the current address
+               */
+              const normalizedCurrentAddress: string = addressNormalizer(
+                currentAddress,
+              );
+              return resolve(
+                normalizedRecoveredAddress === normalizedCurrentAddress,
+              );
+            } catch (caughtError) {
               throw new Error(error.message);
             }
           },
