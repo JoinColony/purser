@@ -1,7 +1,11 @@
 /* @flow */
 
 import MetamaskWallet from './class';
-import { methodCaller, getInpageProvider } from './helpers';
+import {
+  methodCaller,
+  getInpageProvider,
+  detect as detectHelper,
+} from './helpers';
 
 import { staticMethods as messages } from './messages';
 
@@ -25,6 +29,20 @@ const metamaskWallet: Object = {
         address: state.selectedAddress,
       });
     }, messages.metamaskNotAvailable),
+  /**
+   * Check if Metamask's injected web3 proxy instance is available in the
+   * global object.
+   *
+   * Makes use of the `detect()` helper, basically it's a wrapper
+   * that exposes it from the module.
+   *
+   * @TODO Add unit test(s)
+   *
+   * @method detect
+   *
+   * @return {boolean} Only returns true if it's available, otherwise it will throw.
+   */
+  detect: async (): Promise<boolean> => detectHelper(),
 };
 
 export default metamaskWallet;
