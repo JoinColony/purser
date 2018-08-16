@@ -3,9 +3,7 @@ import { Wallet as EthersWallet, HDNode } from 'ethers/wallet';
 import { derivationPathSerializer } from '../../core/helpers';
 import { PATH } from '../../core/defaults';
 import software from '../../software';
-import { jsonRpc } from '../../providers';
 import * as utils from '../../core/utils';
-import { PROVIDER_PROTO } from '../../defaults';
 
 jest.mock('ethers/wallet');
 jest.mock('../../core/utils');
@@ -30,38 +28,6 @@ describe('`software` wallet module', () => {
       expect(testWallet).toBeInstanceOf(software.SoftwareWallet);
       expect(testWallet).toBeInstanceOf(EthersWallet);
     });
-    test('Creates a new wallet with a manual provider', async () => {
-      const provider = await jsonRpc();
-      await software.SoftwareWallet.create({ provider });
-      expect(software.SoftwareWallet).toHaveBeenCalled();
-      /*
-       * `0x1` is the value the `createRandom()` mock returns
-       */
-      expect(software.SoftwareWallet).toHaveBeenCalledWith('0x1', provider);
-    });
-    test('Creates a new wallet with a provider generator method', async () => {
-      const providerMock = jest.fn(() => () => ({ mocked: true }));
-      await software.SoftwareWallet.create({ provider: providerMock });
-      expect(software.SoftwareWallet).toHaveBeenCalled();
-      expect(providerMock).toHaveBeenCalled();
-    });
-    /*
-     * For some reason prettier always suggests a way to fix this that would
-     * violate the 80 max-len rule. Wierd
-     */
-    /* eslint-disable prettier/prettier */
-    test(
-      'Creates a new wallet when provider is set to a falsy value',
-      async () => {
-        await software.SoftwareWallet.create({ provider: false });
-        expect(utils.warning).toHaveBeenCalled();
-        expect(software.SoftwareWallet).toHaveBeenCalled();
-        /*
-         * `0x1` is the value the `createRandom()` mock returns
-         */
-        expect(software.SoftwareWallet).toHaveBeenCalledWith('0x1', undefined);
-      },
-    );
     /* eslint-enable prettier/prettier */
     test('Creates a new wallet with manual entropy', async () => {
       const entropy = new Uint8Array(100);
@@ -100,10 +66,7 @@ describe('`software` wallet module', () => {
       const testWallet = await software.SoftwareWallet.open({ privateKey });
       expect(EthersWallet).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalled();
-      expect(software.SoftwareWallet).toHaveBeenCalledWith(
-        privateKey,
-        PROVIDER_PROTO,
-      );
+      expect(software.SoftwareWallet).toHaveBeenCalledWith(privateKey);
       expect(testWallet).toBeInstanceOf(software.SoftwareWallet);
       expect(testWallet).toBeInstanceOf(EthersWallet);
     });
@@ -115,10 +78,7 @@ describe('`software` wallet module', () => {
       expect(HDNode.fromMnemonic).toHaveBeenCalledWith(mnemonic);
       expect(EthersWallet).toHaveBeenCalled();
       expect(software.SoftwareWallet).toHaveBeenCalled();
-      expect(software.SoftwareWallet).toHaveBeenCalledWith(
-        privateKey,
-        PROVIDER_PROTO,
-      );
+      expect(software.SoftwareWallet).toHaveBeenCalledWith(privateKey);
     });
     test('Opens wallet using a keystore', async () => {
       const keystore = '{"address":"123456"}';
@@ -142,10 +102,7 @@ describe('`software` wallet module', () => {
         expect(HDNode.fromMnemonic).not.toHaveBeenCalled();
         expect(EthersWallet).toHaveBeenCalled();
         expect(software.SoftwareWallet).toHaveBeenCalled();
-        expect(software.SoftwareWallet).toHaveBeenCalledWith(
-          undefined,
-          PROVIDER_PROTO,
-        );
+        expect(software.SoftwareWallet).toHaveBeenCalledWith(undefined);
         expect(utils.warning).toHaveBeenCalled();
         expect(wallet).toEqual(new Error());
       });
