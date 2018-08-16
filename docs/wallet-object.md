@@ -25,7 +25,6 @@ WalletInstance {
   /*
    * Methods
    */
-  sendWithConfirmation(transactionObject: Object, confirmation: Promise<Boolean> | Boolean): Promise<String>,
   setDefaultAddress(addressIndex: Number): Promise<Boolean>,
   sign(transactionObject: Object): Promise<String>
   signMessage(messageObject: Object): Promise<String>
@@ -394,36 +393,6 @@ console.log(wallet.subtype); // ethers
 ```
 
 ## Methods
-
-### `sendWithConfirmation()`
-```js
-WalletInstance.sendWithConfirmation(transactionObject: Object, confirmation: Promise<Boolean> | Boolean): Promise<String>
-```
-
-**_The `sendWithConfirmation` method is deprecated as a result of [Providers](api-providers.md) being deprecated, so make sure you don't rely on it too much. This functionality will be offloaded to the user._**
-
-This is a wrapper for the `sendTransaction()` method that adds an extra argument which controls an async transaction confirmation. This is useful for scenarios where you would want to ask a user for approval / acknowledgement before sending a transaction to be mined.
-
-As with `sendTransaction()` it takes a `transactionObject` object as the first argument, and a `confirmation` as the second one. The `confirmation` must either be a `boolean` type or an method _(sync or async)_ that itself returns a `boolean`. _(Eg: a `Promise`)_.
-
-If the `confirmation` is truthy _(and the `transaction` object format is valid)_ it will return a `Promise`, which will resolve to the transaction hash as a `string` type. If the `confirmation` fails _(is `false`)_, it will return a `reject`ed `Promise`, and, if we're running in `dev` mode, it will log out a warning to the console.
-
-**Usage:**
-```js
-import { create } from 'colony-wallet/software';
-
-const wallet = await create();
-
-const transaction = {
-  to: '0x3953...a4CC',
-  inputData: '0x0',
-};
-
-await wallet.sendWithConfirmation(
-  transaction,
-  window.confirm('Do you want to send this transaction?'),
-);
-```
 
 ### `setDefaultAddress()`
 ```js

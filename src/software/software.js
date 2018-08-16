@@ -192,35 +192,6 @@ class SoftwareWallet extends EtherWallet {
   }
 
   /**
-   * Wrapper method for `sendTransaction()` that waits for confirmation before
-   * sending the transaction.
-   *
-   * @TODO Replace `data` type with a Transaction Type
-   *
-   * @method sendWithConfirmation
-   *
-   * @param {object} data transaction object. Does not work with signed, "hex" transaction data.
-   * @param {Promise|boolean} confirmation A boolean or a promise that returns a boolean.
-   *
-   * @return {Promise} the transactin promise (if it was sent), or a rejected promise if it failed
-   * (failed either by proving wrong transaction data or by denying it)
-   */
-  async sendWithConfirmation(
-    data: Object,
-    confirmation: Promise<boolean> | boolean = false,
-  ) {
-    if (!data || typeof data !== 'object') {
-      warning(messages.transactionData, data, { level: 'high' });
-      return Promise.reject();
-    }
-    if (await confirmation) {
-      return this.sendTransaction(data);
-    }
-    warning(messages.transactionConfirmationFail, [data]);
-    return Promise.reject();
-  }
-
-  /**
    * Create a new wallet.
    *
    * This will use EtherWallet's `createRandom()` (with defaults and entropy)
