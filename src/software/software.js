@@ -12,9 +12,7 @@ import type { WalletObjectType, WalletArgumentsType } from '../core/flowtypes';
 import { QR_CODE_OPTS, BLOCKIE_OPTS } from './defaults';
 import { classMessages as messages } from './messages';
 
-import { autoselect } from '../providers';
 import { getRandomValues, warning, objectToErrorString } from '../core/utils';
-import type { ProviderType } from '../flowtypes';
 
 const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
 /*
@@ -28,13 +26,13 @@ let keystoreJson: string | void;
  * @TODO Expose (enumerate) prototype methods (getTransactionCount, getBalance, ...)
  * @TODO Add Wallet Object documentation for the newly exposed methods
  * @TODO Add Wallet Object documentation for the `sign()` wallet method
+ * @TODO Refactor software wallet have better control over the resulting wallet object
  *
  * @extends EtherWallet
  */
 class SoftwareWallet extends EtherWallet {
   constructor(
     privateKey: string | void,
-    provider: ProviderType | void,
     password: string | void,
     mnemonic: string | void,
     path: string | void = derivationPathSerializer({
@@ -43,7 +41,6 @@ class SoftwareWallet extends EtherWallet {
     }),
     keystore: string | void,
   ) {
-    let providerMode = typeof provider === 'function' ? provider() : provider;
     encryptionPassword = password;
     keystoreJson = keystore;
     /*
@@ -53,12 +50,13 @@ class SoftwareWallet extends EtherWallet {
      * Alternatively take a look at React's code base and see how they've
      * implemented this.
      */
-    if (typeof provider !== 'object' && typeof provider !== 'function') {
-      warning(messages.noProvider);
-      providerMode = undefined;
-    }
-    super(privateKey, providerMode);
-
+    /*
+     * We don't use providers, so set it to undefined.
+     *
+     * Sadly, we can't actually delete the provider prop since it's set to
+     * `configurable: false` in the parent Class
+     */
+    super(privateKey);
     /*
      * We're using `defineProperties` instead of strait up assignment, so that
      * we can customize the prop's descriptors
@@ -230,7 +228,6 @@ class SoftwareWallet extends EtherWallet {
    *
    * @method create
    *
-   * @param {ProviderType} provider An available provider to add to the wallet
    * @param {Uint8Array} entropy An unsigned 8bit integer Array to provide extra randomness
    * @param {string} password Optional password used to generate an encrypted keystore
    *
@@ -242,12 +239,6 @@ class SoftwareWallet extends EtherWallet {
     walletArguments: WalletArgumentsType,
   ): Promise<WalletObjectType> {
     const {
-      /*
-       * @TODO Add provider deptrecation warning
-       *
-       * As we have roadmapped to separate providers from the actual wallet
-       */
-      provider = await autoselect(),
       password,
       entropy = getRandomValues(new Uint8Array(65536)),
     } = walletArguments;
@@ -263,13 +254,12 @@ class SoftwareWallet extends EtherWallet {
       }
       return new this(
         basicWallet.privateKey,
-        await provider,
         password,
         basicWallet.mnemonic,
         basicWallet.path,
       );
     } catch (err) {
-      warning(messages.create, await provider, entropy, err, { level: 'high' });
+      warning(messages.create, entropy, err, { level: 'high' });
       return this.createRandom();
     }
   }
@@ -284,7 +274,6 @@ class SoftwareWallet extends EtherWallet {
    *
    * @method open
    *
-   * @param {ProviderType} provider An available provider to add to the wallet
    * @param {string} password Optional password used to generate an encrypted keystore
    * @param {string} privateKey Optional (in case you pass another type)
    * @param {string} mnemonic Optional (in case you pass another type)
@@ -303,12 +292,6 @@ class SoftwareWallet extends EtherWallet {
      * need to iterate through them in case of an error.
      */
     const {
-      /*
-       * @TODO Add provider deptrecation warning
-       *
-       * As we have roadmapped to separate providers from the actual wallet
-       */
-      provider = await autoselect(),
       password,
       privateKey,
       mnemonic,
@@ -348,7 +331,6 @@ class SoftwareWallet extends EtherWallet {
        */
       return new this(
         privateKey || extractedPrivateKey,
-        await provider,
         password,
         mnemonic || extractedMnemonic,
         path || extractedPath,
