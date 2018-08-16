@@ -18,7 +18,7 @@ jest.mock('../../metamask/helpers', () =>
 );
 
 describe('Metamask` Wallet Module', () => {
-  describe('`open()` static method with defaults', () => {
+  describe('`open()` static method', () => {
     test('Detect the inpage injected proxy before opening', async () => {
       await metamaskWallet.open();
       /*

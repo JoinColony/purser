@@ -36,8 +36,6 @@ const metamaskWallet: Object = {
    * Makes use of the `detect()` helper, basically it's a wrapper
    * that exposes it from the module.
    *
-   * @TODO Add unit test(s)
-   *
    * @method detect
    *
    * @return {boolean} Only returns true if it's available, otherwise it will throw.
