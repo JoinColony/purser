@@ -118,3 +118,13 @@ export const SIGNATURE: Object = {
 };
 
 export const HTTPS_PROTOCOL: string = 'https:';
+
+/*
+ * Chain IDs
+ */
+export const NETWORK_IDS: Object = {
+  HOMESTEAD: 1,
+  ROPSTEN: 3,
+  RINKEBY: 4,
+  KOVAN: 42,
+};

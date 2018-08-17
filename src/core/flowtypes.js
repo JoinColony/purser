@@ -57,6 +57,7 @@ export type WalletArgumentsType = {
   provider?: AsyncProviderGeneratorType,
   entropy?: Uint8Array,
   password?: string,
+  chainId?: number,
 };
 
 export type MessageObjectType = {
@@ -88,4 +89,5 @@ export type GenericClassArgumentsType = {
   rootDerivationPath: string,
   addressCount?: number,
   provider?: ProviderType | void,
+  chainId?: number,
 };
