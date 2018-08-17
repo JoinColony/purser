@@ -3,7 +3,6 @@ import { fromString } from 'bip32-path';
 import { derivationPathSerializer } from '../../core/helpers';
 import { PATH } from '../../core/defaults';
 
-import { jsonRpc } from '../../providers';
 import * as utils from '../../core/utils';
 
 import trezorWallet from '../../trezor';
@@ -78,38 +77,6 @@ describe('Trezor` Hardware Wallet Module', () => {
           addressCount: addressesToOpen,
         }),
       );
-    });
-    test('Open the wallet and set a provider', async () => {
-      await trezorWallet.open({ provider: jsonRpc });
-      expect(TrezorWalletClass).toHaveBeenCalled();
-      expect(TrezorWalletClass).toHaveBeenCalledWith(
-        /*
-        * We only care that the provider generator method gets instantiated
-        */
-        expect.objectContaining({
-          provider: await jsonRpc(),
-        }),
-      );
-      /*
-       * We have a deprecation warning
-       */
-      expect(utils.warning).toHaveBeenCalled();
-    });
-    test('Open the wallet without a provider', async () => {
-      await trezorWallet.open({ provider: '' });
-      expect(TrezorWalletClass).toHaveBeenCalled();
-      expect(TrezorWalletClass).toHaveBeenCalledWith(
-        /*
-        * We only care that the provider generator method gets instantiated
-        */
-        expect.objectContaining({
-          provider: undefined,
-        }),
-      );
-      /*
-       * We have a deprecation warning
-       */
-      expect(utils.warning).not.toHaveBeenCalled();
     });
     test('Log a warning if the user cancels', async () => {
       /*
