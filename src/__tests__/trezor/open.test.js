@@ -1,7 +1,7 @@
 import { fromString } from 'bip32-path';
 
 import { derivationPathSerializer } from '../../core/helpers';
-import { PATH } from '../../core/defaults';
+import { PATH, NETWORK_IDS } from '../../core/defaults';
 
 import * as utils from '../../core/utils';
 
@@ -75,6 +75,30 @@ describe('Trezor` Hardware Wallet Module', () => {
         */
         expect.objectContaining({
           addressCount: addressesToOpen,
+        }),
+      );
+    });
+    test('Sets the derivation path coin to the mainnet type', async () => {
+      await trezorWallet.open({ chainId: NETWORK_IDS.HOMESTEAD });
+      /*
+       * Should set the coin to the mainnet 60 type
+       */
+      expect(derivationPathSerializer).toHaveBeenCalled();
+      expect(derivationPathSerializer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coinType: PATH.COIN_MAINNET,
+        }),
+      );
+    });
+    test('Sets the derivation path coin to the testnet type', async () => {
+      await trezorWallet.open({ chainId: 123123123 });
+      /*
+       * Should set the coin to the testnet 1 type
+       */
+      expect(derivationPathSerializer).toHaveBeenCalled();
+      expect(derivationPathSerializer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          coinType: PATH.COIN_TESTNET,
         }),
       );
     });
