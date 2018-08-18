@@ -63,7 +63,7 @@
     "eslint-plugin-flowtype": "^2.47.1",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-prettier": "^2.5.0",
-    "flow-bin": "^0.79.0",
+    "flow-bin": "^0.79.1",
     "flow-copy-source": "^2.0.0",
     "glow": "^1.2.2",
     "greenkeeper-lockfile": "1",
