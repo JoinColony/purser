@@ -71,11 +71,8 @@ describe('`Metamask` Wallet Module Static Methods', () => {
     methodCaller.mockClear();
     messageVerificationObjectValidator.mockClear();
     addressValidator.mockClear();
-    // safeIntegerValidator.mockClear();
     hexSequenceValidator.mockClear();
-    // warning.mockClear();
     addressNormalizer.mockClear();
-    // hexSequenceNormalizer.mockClear();
   });
   describe('`verifyMessage()` static method', () => {
     test('Calls the correct metamask injected method', async () => {

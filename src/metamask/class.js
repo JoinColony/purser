@@ -95,11 +95,6 @@ export default class MetamaskWallet {
         },
         WALLET_PROPS,
       ),
-      /*
-       * @TODO Add unit tests
-       * On the class to check for the method's existence, and if it's correctly
-       * called
-       */
       verifyMessage: Object.assign(
         {},
         {
