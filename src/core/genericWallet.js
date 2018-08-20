@@ -55,6 +55,11 @@ export default class GenericWallet {
 
   setDefaultAddress: number => Promise<boolean>;
 
+  /*
+   * @TODO Add specific Flow types
+   *
+   * For the three main wallet methods
+   */
   sign: (...*) => Promise<string>;
 
   signMessage: (...*) => Promise<string>;

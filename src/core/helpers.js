@@ -3,19 +3,13 @@
 import { hashPersonalMessage, ecrecover } from 'ethereumjs-util';
 
 import {
-  derivationPathValidator,
   safeIntegerValidator,
   bigNumberValidator,
   addressValidator,
   hexSequenceValidator,
   messageValidator,
 } from './validators';
-import {
-  addressNormalizer,
-  derivationPathNormalizer,
-  hexSequenceNormalizer,
-  recoveryParamNormalizer,
-} from './normalizers';
+import { hexSequenceNormalizer, recoveryParamNormalizer } from './normalizers';
 import { bigNumber, warning } from './utils';
 
 import { helpers as helperMessages } from './messages';
@@ -24,7 +18,6 @@ import { PATH, TRANSACTION, HEX_HASH_TYPE } from './defaults';
 import type {
   DerivationPathObjectType,
   TransactionObjectType,
-  MessageObjectType,
   MessageVerificationObjectType,
 } from './flowtypes';
 
@@ -168,7 +161,7 @@ export const verifyMessageSignature = ({
   publicKey,
   message,
   signature,
-}: MessageVerificationObjectType): boolean => {
+}: Object): boolean => {
   const { verifyMessageSignature: messages } = helperMessages;
   try {
     /*
@@ -208,16 +201,14 @@ export const verifyMessageSignature = ({
 /**
  * Validate an transaction object
  *
- * @NOTE We can only validate here, we can't also normalize (with the exception of the derivation path).
- * This is because different wallet types expect different value formats so we must normalize them
- * on a case by case basis.
+ * @NOTE We can only validate here, we can't also normalize. This is because different
+ * wallet types expect different value formats so we must normalize them on a case by case basis.
  *
  * @method transactionObjectValidator
  *
- * @param {string} derivationPath the derivation path for the account with which to sign the transaction
  * @param {bigNumber} gasPrice gas price for the transaction in WEI (as an instance of bigNumber), defaults to 9000000000 (9 GWEI)
  * @param {bigNumber} gasLimit gas limit for the transaction (as an instance of bigNumber), defaults to 21000
- * @param {number} chainId the id of the chain for which this transaction is intended
+ * @param {number} chainId the id of the chain for which this transaction is intended. Defaults to 1
  * @param {number} nonce the nonce to use for the transaction (as a number)
  * @param {string} to the address to which to the transaction is sent
  * @param {bigNumber} value the value of the transaction in WEI (as an instance of bigNumber), defaults to 1
@@ -225,28 +216,20 @@ export const verifyMessageSignature = ({
  *
  * All the above params are sent in as props of an {TransactionObjectType} object.
  *
- * @return {Object} The validated transaction object containing the exact passed in values
+ * @return {TransactionObjectType} The validated transaction object containing the exact passed in values
  */
 export const transactionObjectValidator = ({
-  /*
-   * Path defaults to the "default" derivation path
-   */
-  derivationPath,
   gasPrice = bigNumber(TRANSACTION.GAS_PRICE),
   gasLimit = bigNumber(TRANSACTION.GAS_LIMIT),
-  /*
-   * Chain Id defaults to the one set on the provider but it can be overwritten
-   */
-  chainId,
+  chainId = TRANSACTION.CHAIN_ID,
   nonce = TRANSACTION.NONCE,
+  /*
+   * The only one prop value actually required to be passed in by the user
+   */
   to,
   value = bigNumber(TRANSACTION.VALUE),
   inputData = TRANSACTION.INPUT_DATA,
 }: TransactionObjectType = {}): TransactionObjectType => {
-  /*
-   * Check if the derivation path is in the correct format
-   */
-  derivationPathValidator(derivationPath);
   /*
    * Check that the gas price is a big number
    */
@@ -279,7 +262,6 @@ export const transactionObjectValidator = ({
    * Normalize the values and return them
    */
   return {
-    derivationPath: derivationPathNormalizer(derivationPath),
     gasPrice,
     gasLimit,
     chainId,
@@ -291,57 +273,10 @@ export const transactionObjectValidator = ({
 };
 
 /**
- * Validate a message verification (message to be signed) object
- *
- * @method messageObjectValidator
- *
- * @param {string} derivationPath The derivation path for the account with which to sign the transaction
- * @param {string} message The message string you want to sign
- *
- * All the above params are sent in as props of an {MessageObjectType} object.
- *
- * @return {Object} The validated message object containing the exact passed in values
- */
-export const messageObjectValidator = ({
-  /*
-   * Path defaults to the "default" derivation path
-   */
-  derivationPath,
-  /*
-   * For the Ledger wallet implementation we can't pass in an empty string, so
-   * we try with the next best thing.
-   */
-  message = ' ',
-}: MessageObjectType = {}): MessageObjectType => {
-  /*
-   * Check if the derivation path is in the correct format
-   *
-   * Flow doesn't even let us validate it.
-   * It shoots first, asks questions later.
-   */
-  /* $FlowFixMe */
-  derivationPathValidator(derivationPath);
-  /*
-   * Check if the messages is in the correct format
-   */
-  messageValidator(message);
-  /*
-   * Normalize the values and return them
-   */
-  return {
-    /* $FlowFixMe */
-    derivationPath: derivationPathNormalizer(derivationPath),
-    message,
-  };
-};
-
-/**
  * Validate a signature verification message object
  *
  * @method messageVerificationObjectValidator
  *
- * @param {string} address The address of the account that signed the message. Optional.
- * @param {string} publicKey The public key of the account that signed the message. Optional.
  * @param {string} message The message string to check the signature against
  * @param {string} signature The signature of the message.
  *
@@ -351,42 +286,12 @@ export const messageObjectValidator = ({
  */
 export const messageVerificationObjectValidator = ({
   /*
-   * Path defaults to the "default" address and/or publicKey
-   */
-  address,
-  publicKey,
-  /*
    * For the Ledger wallet implementation we can't pass in an empty string, so
    * we try with the next best thing.
    */
   message,
   signature,
 }: MessageVerificationObjectType = {}): MessageVerificationObjectType => {
-  const normalizedMessageVerificationObject: Object = {
-    message,
-  };
-  if (address) {
-    /*
-     * Check if the address is in the correct format
-     */
-    addressValidator(address);
-    /*
-     * Ensure the address has the hex `0x` prefix
-     */
-    normalizedMessageVerificationObject.address = addressNormalizer(address);
-  }
-  if (publicKey) {
-    /*
-     * Check if the public key is in the correct format
-     */
-    hexSequenceValidator(publicKey);
-    /*
-     * Ensure the public has the hex `0x` prefix
-     */
-    normalizedMessageVerificationObject.publicKey = hexSequenceNormalizer(
-      publicKey,
-    );
-  }
   /*
    * Check if the messages is in the correct format
    */
@@ -395,13 +300,13 @@ export const messageVerificationObjectValidator = ({
    * Check if the signature is in the correct format
    */
   hexSequenceValidator(signature);
-  /*
-   * Ensure the signature has the hex `0x` prefix
-   */
-  normalizedMessageVerificationObject.signature = hexSequenceNormalizer(
-    signature,
-  );
-  return normalizedMessageVerificationObject;
+  return {
+    message,
+    /*
+     * Ensure the signature has the hex `0x` prefix
+     */
+    signature: hexSequenceNormalizer(signature),
+  };
 };
 
 /*
@@ -413,7 +318,6 @@ const coreHelpers: Object = {
   recoverPublicKey,
   verifyMessageSignature,
   transactionObjectValidator,
-  messageObjectValidator,
   messageVerificationObjectValidator,
 };
 

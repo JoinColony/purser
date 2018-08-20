@@ -9,6 +9,8 @@ export type MetamaskInpageProviderType = {
   rpcEngine: Object,
 };
 
+export type Web3CallbackType = (error: Error, result: string) => any;
+
 export type MetamaskStateEventsObserverType = (state: Object) => any;
 
 export type MetamaskWalletConstructorArgumentsType = {
@@ -18,5 +20,16 @@ export type MetamaskWalletConstructorArgumentsType = {
 export type signMessageMethodType = (
   signature: string,
   currentAddress: string,
-  (error: Error, result: string) => any,
+  callback: Web3CallbackType,
+) => void;
+
+export type signTrasactionMethodType = (
+  transactionObject: Object,
+  callback: Web3CallbackType,
+) => void;
+
+export type verifyMessageMethodType = (
+  message: string,
+  signature: string,
+  callback: Web3CallbackType,
 ) => void;

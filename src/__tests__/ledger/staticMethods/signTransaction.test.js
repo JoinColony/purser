@@ -14,10 +14,11 @@ import {
   addressNormalizer,
   hexSequenceNormalizer,
 } from '../../../core/normalizers';
+import { derivationPathValidator } from '../../../core/validators';
 
 import { SIGNATURE } from '../../../core/defaults';
 
-jest.dontMock('../../../trezor/staticMethods');
+jest.dontMock('../../../ledger/staticMethods');
 
 jest.mock('ethereumjs-tx');
 jest.mock('../../../core/validators');
@@ -48,7 +49,6 @@ const nonce = 'mocked-nonce';
 const to = 'mocked-destination-address';
 const value = 'mocked-transaction-value';
 const mockedTransactionObject = {
-  derivationPath,
   gasPrice,
   gasLimit,
   chainId,
@@ -57,15 +57,18 @@ const mockedTransactionObject = {
   value,
   inputData,
 };
+const mockedArgumentsObject = {
+  ...mockedTransactionObject,
+  derivationPath,
+};
 
 describe('`Ledger` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     EthereumTx.mockClear();
-    EthereumTx.mockRestore();
   });
   describe('`signTransaction()` static method', () => {
     test('Calls the correct ledger app method', async () => {
-      await signTransaction(mockedTransactionObject);
+      await signTransaction(mockedArgumentsObject);
       expect(ledgerConnection.signTransaction).toHaveBeenCalled();
       expect(ledgerConnection.signTransaction).toHaveBeenCalledWith(
         /*
@@ -76,7 +79,7 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
       );
     });
     test('Validates the transaction input values', async () => {
-      await signTransaction(mockedTransactionObject);
+      await signTransaction(mockedArgumentsObject);
       /*
        * Calls the validation helper with the correct values
        */
@@ -85,12 +88,21 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
         mockedTransactionObject,
       );
     });
-    test('Normalizes the transaction input values', async () => {
-      await signTransaction(mockedTransactionObject);
+    test('Validates the derivation path individually', async () => {
+      await signTransaction(mockedArgumentsObject);
       /*
-       * The derivation path is already normalized, so don't do it again
+       * Calls the validation helper with the correct values
        */
-      expect(derivationPathNormalizer).not.toHaveBeenCalled();
+      expect(derivationPathValidator).toHaveBeenCalled();
+      expect(derivationPathValidator).toHaveBeenCalledWith(derivationPath);
+    });
+    test('Normalizes the transaction input values', async () => {
+      await signTransaction(mockedArgumentsObject);
+      /*
+       * Normalizes the derivation path
+       */
+      expect(derivationPathNormalizer).toHaveBeenCalled();
+      expect(derivationPathNormalizer).toHaveBeenCalledWith(derivationPath);
       /*
        * Normalizes gas price and gas limit
        */
@@ -133,14 +145,14 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
       expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(chainId);
     });
     test('Warns the user to check/confirm the device', async () => {
-      await signTransaction(mockedTransactionObject);
+      await signTransaction(mockedArgumentsObject);
       /*
        * Calls the warning util
        */
       expect(utils.warning).toHaveBeenCalled();
     });
     test('Creates the unsigned transaction object', async () => {
-      await signTransaction(mockedTransactionObject);
+      await signTransaction(mockedArgumentsObject);
       /*
        * Creates the unsigned transaction, seeding the R,S and V components
        */

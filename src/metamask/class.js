@@ -10,15 +10,24 @@ import { hexSequenceNormalizer } from '../core/normalizers';
 import { DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
+import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { methodCaller, setStateEventObserver } from './helpers';
 import { validateMetamaskState } from './validators';
-import { signMessage } from './methodLinks';
+import { signMessage as signMessageMethodLink } from './methodLinks';
 import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from './defaults';
-import { MetamaskWallet as messages } from './messages';
+import {
+  MetamaskWallet as messages,
+  staticMethods as staticMethodsMessages,
+} from './messages';
 
+import type {
+  TransactionObjectType,
+  MessageObjectType,
+  MessageVerificationObjectType,
+} from '../core/flowtypes';
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
 
-const { SETTERS, GETTERS, GENERIC_PROPS } = DESCRIPTORS;
+const { SETTERS, GETTERS, GENERIC_PROPS, WALLET_PROPS } = DESCRIPTORS;
 
 /*
  * "Private" (internal) variable(s).
@@ -38,6 +47,18 @@ export default class MetamaskWallet {
 
   subtype: string;
 
+  /*
+   * @TODO Add specific Flow type
+   *
+   * See the core generic wallet for this, since that will implement them.
+   * This will just use the ones declared there.
+   */
+  sign: (...*) => Promise<string>;
+
+  signMessage: (...*) => Promise<string>;
+
+  verifyMessage: (...*) => Promise<boolean>;
+
   constructor({ address }: MetamaskWalletConstructorArgumentsType) {
     /*
      * Validate the address that's coming in from Metamask
@@ -53,6 +74,40 @@ export default class MetamaskWallet {
       address: Object.assign({}, { value: address }, SETTERS),
       type: Object.assign({}, { value: TYPE_SOFTWARE }, GENERIC_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_METAMASK }, GENERIC_PROPS),
+      sign: Object.assign(
+        {},
+        {
+          value: async (transactionObject: TransactionObjectType) =>
+            signTransaction(
+              Object.assign({}, transactionObject, { from: this.address }),
+            ),
+        },
+        WALLET_PROPS,
+      ),
+      signMessage: Object.assign(
+        {},
+        {
+          value: async ({ message }: MessageObjectType = {}) =>
+            signMessage({
+              currentAddress: this.address,
+              message,
+            }),
+        },
+        WALLET_PROPS,
+      ),
+      verifyMessage: Object.assign(
+        {},
+        {
+          value: async (
+            messageVerificationObject: MessageVerificationObjectType,
+          ) =>
+            verifyMessage({
+              currentAddress: this.address,
+              ...messageVerificationObject,
+            }),
+        },
+        WALLET_PROPS,
+      ),
     });
     /*
      * We must check for the Metamask injected in-page proxy every time we
@@ -147,7 +202,6 @@ export default class MetamaskWallet {
    * @return {Promise} The recovered public key (for the currently selected addresss)
    */
   static async recoverPublicKey(currentAddress: string): Promise<string> {
-    // console.log('called', currentAddress);
     /*
      * We must check for the Metamask injected in-page proxy every time we
      * try to access it. This is because something can change it from the time
@@ -163,7 +217,7 @@ export default class MetamaskWallet {
           /*
            * Sign the message. This will prompt the user via Metamask's UI
            */
-          signMessage(
+          signMessageMethodLink(
             /*
              * Ensure the hex string has the `0x` prefix
              */
@@ -206,7 +260,7 @@ export default class MetamaskWallet {
                  * This is normal UX, not an exception
                  */
                 if (error.message.includes(STD_ERRORS.CANCEL_MSG_SIGN)) {
-                  return warning(messages.cancelMessageSign);
+                  return warning(staticMethodsMessages.cancelMessageSign);
                 }
                 throw new Error(error.message);
               }

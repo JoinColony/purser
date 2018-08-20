@@ -10,10 +10,6 @@ export const transactionObjectValidator = jest.fn(
   (transactionObject = {}) => transactionObject,
 );
 
-export const messageObjectValidator = jest.fn(
-  (messageObject = {}) => messageObject,
-);
-
 export const messageVerificationObjectValidator = jest.fn(
   (signedMessageObject = {}) => signedMessageObject,
 );

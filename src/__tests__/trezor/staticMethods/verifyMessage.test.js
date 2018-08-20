@@ -7,6 +7,7 @@ import {
   addressNormalizer,
   hexSequenceNormalizer,
 } from '../../../core/normalizers';
+import { addressValidator } from '../../../core/validators';
 
 import { PAYLOAD_VERIFYMSG } from '../../../trezor/payloads';
 
@@ -27,24 +28,33 @@ jest.mock('../../../trezor/helpers', () =>
   require('../../../trezor/__remocks__/helpers'),
 );
 
+/*
+ * These values are not correct. Do not use the as reference.
+ * If the validators wouldn't be mocked, they wouldn't pass.
+ */
 const address = 'mocked-derivation-address';
 const message = 'mocked-message';
 const signature = 'mocked-signature';
-const mockedSignatureMessage = {
-  address,
+const mockedSignatureObject = {
   message,
   signature,
+};
+const mockedArgumentsObject = {
+  ...mockedSignatureObject,
+  address,
 };
 
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   describe('`verifyMessage()` static method', () => {
+    afterEach(() => {
+      payloadListener.mockClear();
+      addressNormalizer.mockClear();
+      hexSequenceNormalizer.mockClear();
+      addressValidator.mockClear();
+    });
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_VERIFYMSG;
       await verifyMessage({
-        /*
-         * These values are not correct. Do not use the as reference.
-         * If the validators wouldn't be mocked, they wouldn't pass.
-         */
         address: 0,
         mesasge: 0,
         signature: 0,
@@ -61,28 +71,25 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       });
     });
     test('Validates message/signature input values', async () => {
-      /*
-       * These values are not correct. Do not use the as reference.
-       * If the validators wouldn't be mocked, they wouldn't pass.
-       */
-      await verifyMessage(mockedSignatureMessage);
+      await verifyMessage(mockedArgumentsObject);
       /*
        * Calls the validator helper
        */
       expect(messageVerificationObjectValidator).toHaveBeenCalled();
       expect(messageVerificationObjectValidator).toHaveBeenCalledWith(
-        mockedSignatureMessage,
+        mockedSignatureObject,
       );
     });
-    test('Normalizes message/signature input values', async () => {
+    test('Validates the address individually', async () => {
+      await verifyMessage(mockedArgumentsObject);
       /*
-       * These values are not correct. Do not use the as reference.
-       * If the validators wouldn't be mocked, they wouldn't pass.
+       * Validates the address
        */
-      await verifyMessage({
-        address,
-        signature,
-      });
+      expect(addressValidator).toHaveBeenCalled();
+      expect(addressValidator).toHaveBeenCalledWith(address);
+    });
+    test('Normalizes message/signature input values', async () => {
+      await verifyMessage(mockedArgumentsObject);
       /*
        * Normalizes the address
        */
@@ -102,10 +109,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       payloadListener.mockImplementation(() =>
         Promise.reject(new Error('Invalid signature')),
       );
-      const verification = await verifyMessage({
-        address,
-        signature,
-      });
+      const verification = await verifyMessage();
       expect(utils.warning).toHaveBeenCalled();
       expect(verification).toBeFalsy();
     });

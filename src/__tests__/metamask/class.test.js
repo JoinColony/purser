@@ -21,6 +21,11 @@ import {
 } from '../../metamask/helpers';
 import { validateMetamaskState } from '../../metamask/validators';
 import {
+  signTransaction,
+  signMessage,
+  verifyMessage,
+} from '../../metamask/staticMethods';
+import {
   PUBLICKEY_RECOVERY_MESSAGE,
   STD_ERRORS,
 } from '../../metamask/defaults';
@@ -32,6 +37,7 @@ jest.mock('../../core/utils');
 jest.mock('../../core/validators');
 jest.mock('../../core/normalizers');
 jest.mock('../../core/helpers');
+jest.mock('../../metamask/staticMethods');
 
 /*
  * Manual mocking a manual mock. Yay for Jest being built by Facebook!
@@ -207,6 +213,33 @@ describe('Metamask` Wallet Module', () => {
        */
       expect(metamaskWallet).toHaveProperty('type', TYPE_SOFTWARE);
       expect(metamaskWallet).toHaveProperty('subtype', SUBTYPE_METAMASK);
+      /*
+       * `sign()` method
+       */
+      expect(metamaskWallet).toHaveProperty('sign');
+      /*
+       * `signMessage()` method
+       */
+      expect(metamaskWallet).toHaveProperty('signMessage');
+      /*
+       * `verifyMessage()` method
+       */
+      expect(metamaskWallet).toHaveProperty('verifyMessage');
+    });
+    test('Calls the correct method to sign a transaction', async () => {
+      const metamaskWallet = new MetamaskWalletClass({ address });
+      await metamaskWallet.sign();
+      expect(signTransaction).toHaveBeenCalled();
+    });
+    test('Calls the correct method to sign a message', async () => {
+      const metamaskWallet = new MetamaskWalletClass({ address });
+      await metamaskWallet.signMessage();
+      expect(signMessage).toHaveBeenCalled();
+    });
+    test('Calls the correct method to verify a message', async () => {
+      const metamaskWallet = new MetamaskWalletClass({ address });
+      await metamaskWallet.verifyMessage();
+      expect(verifyMessage).toHaveBeenCalled();
     });
     test('Normalizes the recovery message and makes it a hex String', () => {
       MetamaskWalletClass.recoverPublicKey(address);

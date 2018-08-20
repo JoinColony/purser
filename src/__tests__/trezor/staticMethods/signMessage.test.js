@@ -1,16 +1,25 @@
-import { messageObjectValidator } from '../../../core/helpers';
+import {
+  derivationPathNormalizer,
+  hexSequenceNormalizer,
+} from '../../../core/normalizers';
+import {
+  derivationPathValidator,
+  messageValidator,
+} from '../../../core/validators';
+import * as utils from '../../../core/utils';
 
 import { signMessage } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
-import { hexSequenceNormalizer } from '../../../core/normalizers';
 
 import { PAYLOAD_SIGNMSG } from '../../../trezor/payloads';
+import { STD_ERRORS } from '../../../trezor/defaults';
 
 jest.dontMock('../../../trezor/staticMethods');
 
 jest.mock('../../../core/validators');
 jest.mock('../../../core/normalizers');
 jest.mock('../../../core/helpers');
+jest.mock('../../../core/utils');
 /*
  * Manual mocking a manual mock. Yay for Jest being built by Facebook!
  *
@@ -22,14 +31,22 @@ jest.mock('../../../trezor/helpers', () =>
   require('../../../trezor/__remocks__/helpers'),
 );
 
-const path = 'mocked-derivation-path';
+const derivationPath = 'mocked-derivation-path';
+const message = 'mocked-message';
 const mockedMessageObject = {
-  derivationPath: path,
-  message: 'mocked-message',
+  derivationPath,
+  message,
 };
 
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   describe('`signMessage()` static method', () => {
+    afterEach(() => {
+      derivationPathNormalizer.mockClear();
+      derivationPathValidator.mockClear();
+      hexSequenceNormalizer.mockClear();
+      messageValidator.mockClear();
+      hexSequenceNormalizer.mockClear();
+    });
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNMSG;
       await signMessage({
@@ -60,8 +77,21 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       /*
        * Validates the derivation path
        */
-      expect(messageObjectValidator).toHaveBeenCalled();
-      expect(messageObjectValidator).toHaveBeenCalledWith(mockedMessageObject);
+      expect(derivationPathValidator).toHaveBeenCalled();
+      expect(derivationPathValidator).toHaveBeenCalledWith(derivationPath);
+      /*
+       * Validates the message string
+       */
+      expect(messageValidator).toHaveBeenCalled();
+      expect(messageValidator).toHaveBeenCalledWith(message);
+    });
+    test('Normalizes the derivation path before sending', async () => {
+      await signMessage(mockedMessageObject);
+      /*
+       * Normalizes the derivation path
+       */
+      expect(derivationPathNormalizer).toHaveBeenCalled();
+      expect(derivationPathNormalizer).toHaveBeenCalledWith(derivationPath);
     });
     test('Normalizes the return hex string', async () => {
       const returnedHexString = '48656c6c6f20796f75';
@@ -73,13 +103,38 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
         signature: returnedHexString,
       }));
       await signMessage({
-        path,
+        derivationPath,
       });
       /*
        * Normalizes the return string
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
       expect(hexSequenceNormalizer).toHaveBeenCalledWith(returnedHexString);
+    });
+    test('Catches is something goes wrong along the way', async () => {
+      /*
+       * We're re-mocking the helpers just for this test so we can simulate
+       * an error from one of the method
+       */
+      payloadListener.mockImplementation(() =>
+        Promise.reject(new Error('Oh no!')),
+      );
+      expect(signMessage()).rejects.toThrow();
+    });
+    test('Log a warning if the user Cancels signing it', async () => {
+      /*
+       * We're re-mocking the helpers just for this test so we can simulate
+       * a cancel response.
+       */
+      payloadListener.mockImplementation(() =>
+        Promise.reject(new Error(STD_ERRORS.CANCEL_TX_SIGN)),
+      );
+      await signMessage(mockedMessageObject);
+      /*
+       * User cancelled, so we don't throw
+       */
+      expect(utils.warning).toHaveBeenCalled();
+      expect(signMessage(mockedMessageObject)).resolves.not.toThrow();
     });
   });
 });
