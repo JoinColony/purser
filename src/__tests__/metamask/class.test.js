@@ -20,7 +20,11 @@ import {
   triggerUpdateStateEvents,
 } from '../../metamask/helpers';
 import { validateMetamaskState } from '../../metamask/validators';
-import { signTransaction, signMessage } from '../../metamask/staticMethods';
+import {
+  signTransaction,
+  signMessage,
+  verifyMessage,
+} from '../../metamask/staticMethods';
 import {
   PUBLICKEY_RECOVERY_MESSAGE,
   STD_ERRORS,
@@ -217,6 +221,10 @@ describe('Metamask` Wallet Module', () => {
        * `signMessage()` method
        */
       expect(metamaskWallet).toHaveProperty('signMessage');
+      /*
+       * `verifyMessage()` method
+       */
+      expect(metamaskWallet).toHaveProperty('verifyMessage');
     });
     test('Calls the correct method to sign a transaction', async () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
@@ -227,6 +235,11 @@ describe('Metamask` Wallet Module', () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
       await metamaskWallet.signMessage();
       expect(signMessage).toHaveBeenCalled();
+    });
+    test('Calls the correct method to verify a message', async () => {
+      const metamaskWallet = new MetamaskWalletClass({ address });
+      await metamaskWallet.verifyMessage();
+      expect(verifyMessage).toHaveBeenCalled();
     });
     test('Normalizes the recovery message and makes it a hex String', () => {
       MetamaskWalletClass.recoverPublicKey(address);
