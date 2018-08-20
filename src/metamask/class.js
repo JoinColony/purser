@@ -154,8 +154,9 @@ export default class MetamaskWallet {
                  * Reset the saved public key, as the address now changed
                  */
                 internalPublicKey = undefined;
+                return true;
               }
-              return true;
+              return false;
             } catch (caughtError) {
               /*
                * We don't want to throw or stop execution, so in the case that the
