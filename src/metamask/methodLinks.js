@@ -3,6 +3,7 @@
 import type {
   signMessageMethodType,
   signTrasactionMethodType,
+  verifyMessageMethodType,
 } from './flowtypes';
 
 /*
@@ -21,7 +22,7 @@ export const signMessage: signMessageMethodType = (...args) =>
   global.web3.personal.sign(...args);
 
 /**
- * Sign  transaction. Is a wrapper for web3.personal.sendTransaction
+ * Sign transaction. Is a wrapper for web3.eth.signTransaction
  *
  * This not only signs, but also sends the transaction, we can't have it any
  * other way with metamask (for the time being at least...)
@@ -30,3 +31,15 @@ export const signMessage: signMessageMethodType = (...args) =>
  */
 export const signTransaction: signTrasactionMethodType = (...args) =>
   global.web3.eth.sendTransaction(...args);
+
+/**
+ * Verify a signed message. Is a wrapper for web3.personal.ecRecover
+ *
+ * This takes in a message and a signature, and tries to recover the address
+ * that initially signed this message. You than have to compare it to the
+ * current address.
+ *
+ * @method verifyMessage
+ */
+export const verifyMessage: verifyMessageMethodType = (...args) =>
+  global.web3.personal.ecRecover(...args);

@@ -5,13 +5,22 @@ import {
   hexSequenceValidator,
   addressValidator,
   safeIntegerValidator,
+  messageValidator,
 } from '../core/validators';
 import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
-import { transactionObjectValidator } from '../core/helpers';
+import {
+  transactionObjectValidator,
+  messageVerificationObjectValidator,
+} from '../core/helpers';
 
 import { methodCaller } from './helpers';
-import { signTransaction as signTransactionMethodLink } from './methodLinks';
+import {
+  signTransaction as signTransactionMethodLink,
+  signMessage as signMessageMethodLink,
+  verifyMessage as verifyMessageMethodLink,
+} from './methodLinks';
 
+import { HEX_HASH_TYPE } from '../core/defaults';
 import { STD_ERRORS } from './defaults';
 import { staticMethods as messages } from './messages';
 
@@ -128,8 +137,164 @@ export const signTransaction = async ({
   );
 };
 
-const metamaskStaticMethods: Object = {
-  signTransaction,
+/**
+ * Sign a message and return the signature. Useful for verifying identities.
+ *
+ * @method signMessage
+ *
+ * @param {string} currentAddress The current selected address (in the UI)
+ * @param {string} message the message you want to sign
+ *
+ * All the above params are sent in as props of an {object.
+ *
+ * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
+ */
+export const signMessage = async ({
+  currentAddress,
+  message,
+}: Object = {}): Promise<string | void> => {
+  addressValidator(currentAddress);
+  messageValidator(message);
+  /*
+   * We must check for the Metamask injected in-page proxy every time we
+   * try to access it. This is because something can change it from the time
+   * of last detection until now.
+   */
+  return methodCaller(
+    /*
+     * @TODO Move into own (non-anonymous) method
+     * This way we could better test it
+     */
+    () =>
+      new Promise(resolve => {
+        /*
+         * Sign the message. This will prompt the user via Metamask's UI
+         */
+        signMessageMethodLink(
+          /*
+           * Ensure the hex string has the `0x` prefix
+           */
+          hexSequenceNormalizer(
+            /*
+             * We could really do with default Flow types for Buffer...
+             */
+            /* $FlowFixMe */
+            Buffer.from(message).toString(HEX_HASH_TYPE),
+          ),
+          currentAddress,
+          /*
+           * @TODO Move into own (non-anonymous) method
+           * This way we could better test it
+           */
+          (error: Error, messageSignature: string) => {
+            try {
+              /*
+               * Validate that the signature is in the correct format
+               */
+              hexSequenceValidator(messageSignature);
+              /*
+               * Add the `0x` prefix to the message's signature
+               */
+              const normalizedSignature: string = hexSequenceNormalizer(
+                messageSignature,
+              );
+              return resolve(normalizedSignature);
+            } catch (caughtError) {
+              /*
+               * Don't throw an Error if the user just cancels signing the message.
+               * This is normal UX, not an exception
+               */
+              if (error.message.includes(STD_ERRORS.CANCEL_MSG_SIGN)) {
+                return warning(messages.cancelMessageSign);
+              }
+              throw new Error(error.message);
+            }
+          },
+        );
+      }),
+    messages.cannotSignMessage,
+  );
 };
 
-export default metamaskStaticMethods;
+/**
+ * Verify a signed message. Useful for verifying identity. (In conjunction with `signMessage`)
+ *
+ * @method verifyMessage
+ *
+ * @param {string} message The message to verify if it was signed correctly
+ * @param {string} signature The message signature as a `hex` string (you usually get this via `signMessage`)
+ * @param {string} currentAddress The current selected address (in the UI)
+ *
+ * All the above params are sent in as props of an object.
+ *
+ * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
+ */
+export const verifyMessage = async ({
+  currentAddress,
+  ...messageVerificationObject
+}: Object = {}) => {
+  /*
+   * Validate the current address
+   */
+  addressValidator(currentAddress);
+  /*
+   * Validate the rest of the pros using the core helper
+   */
+  const { message, signature } = messageVerificationObjectValidator(
+    messageVerificationObject,
+  );
+  /*
+   * We must check for the Metamask injected in-page proxy every time we
+   * try to access it. This is because something can change it from the time
+   * of last detection until now.
+   */
+  return methodCaller(
+    /*
+     * @TODO Move into own (non-anonymous) method
+     * This way we could better test it
+     */
+    () =>
+      new Promise(resolve => {
+        /*
+         * Verify the message
+         */
+        verifyMessageMethodLink(
+          message,
+          /*
+           * Ensure the signature has the `0x` prefix
+           */
+          hexSequenceNormalizer(signature),
+          /*
+           * @TODO Move into own (non-anonymous) method
+           * This way we could better test it
+           */
+          (error: Error, recoveredAddress: string) => {
+            try {
+              /*
+               * Validate that the recovered address is correct
+               */
+              addressValidator(recoveredAddress);
+              /*
+               * Add the `0x` prefix to the recovered address
+               */
+              const normalizedRecoveredAddress: string = addressNormalizer(
+                recoveredAddress,
+              );
+              /*
+               * Add the `0x` prefix to the current address
+               */
+              const normalizedCurrentAddress: string = addressNormalizer(
+                currentAddress,
+              );
+              return resolve(
+                normalizedRecoveredAddress === normalizedCurrentAddress,
+              );
+            } catch (caughtError) {
+              throw new Error(error.message);
+            }
+          },
+        );
+      }),
+    messages.cannotSignMessage,
+  );
+};
