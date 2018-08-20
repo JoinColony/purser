@@ -10,12 +10,10 @@ export const transactionObjectValidator = jest.fn(
   (transactionObject = {}) => transactionObject,
 );
 
-export const messageObjectValidator = jest.fn(
-  (messageObject = {}) => messageObject,
-);
-
 export const messageVerificationObjectValidator = jest.fn(
   (signedMessageObject = {}) => signedMessageObject,
 );
 
 export const verifyMessageSignature = jest.fn();
+
+export const recoverPublicKey = jest.fn(() => 'recovered-mocked-public-key');

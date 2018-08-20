@@ -4,6 +4,12 @@ import EthereumTx from 'ethereumjs-tx';
 
 import { ledgerConnection, handleLedgerConnectionError } from './helpers';
 import {
+  derivationPathValidator,
+  messageValidator,
+  hexSequenceValidator,
+} from '../core/validators';
+import {
+  derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
   hexSequenceNormalizer,
@@ -12,7 +18,6 @@ import { warning, objectToErrorString } from '../core/utils';
 import {
   verifyMessageSignature,
   transactionObjectValidator,
-  messageObjectValidator,
   messageVerificationObjectValidator,
 } from '../core/helpers';
 import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
@@ -20,18 +25,13 @@ import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 import { staticMethods as messages } from './messages';
 
 import type { LedgerInstanceType } from './flowtypes';
-import type {
-  TransactionObjectType,
-  MessageObjectType,
-  MessageVerificationObjectType,
-} from '../core/flowtypes';
 
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
  *
  * @method signTransaction
  *
- * @param {string} derivationPath the derivation path for the account with which to sign the transaction
+ * @param {string} derivationPath the derivation path for the account with which to sign the transaction (provided by the Wallet instance)
  * @param {bigNumber} gasPrice gas price for the transaction in WEI (as an instance of bigNumber), defaults to 9000000000 (9 GWEI)
  * @param {bigNumber} gasLimit gas limit for the transaction (as an instance of bigNumber), defaults to 21000
  * @param {number} chainId the id of the chain for which this transaction is intended
@@ -44,11 +44,11 @@ import type {
  *
  * @return {Promise<string>} the hex signature string
  */
-export const signTransaction = async (
-  transactionObject: TransactionObjectType,
-): Promise<string | void> => {
+export const signTransaction = async ({
+  derivationPath,
+  ...transactionObject
+}: Object = {}): Promise<string | void> => {
   const {
-    derivationPath,
     gasPrice,
     gasLimit,
     chainId,
@@ -59,6 +59,7 @@ export const signTransaction = async (
   } = transactionObjectValidator(transactionObject);
   try {
     const ledger: LedgerInstanceType = await ledgerConnection();
+    derivationPathValidator(derivationPath);
     /*
      * Ledger needs the unsigned "raw" transaction hex, which it will sign and
      * return the (R) and (S) signature components alog with the reco(V)ery param.
@@ -77,10 +78,22 @@ export const signTransaction = async (
        * We could really do with some BN.js flow types declarations :(
        */
       gasPrice: hexSequenceNormalizer(
+        /*
+         * @TODO Add `bigNumber` `toHexString` wrapper method
+         *
+         * Flow confuses bigNumber's `toString` with the String object
+         * prototype `toString` method
+         */
         /* $FlowFixMe */
         multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
       ),
       gasLimit: hexSequenceNormalizer(
+        /*
+         * @TODO Add `bigNumber` `toHexString` wrapper method
+         *
+         * Flow confuses bigNumber's `toString` with the String object
+         * prototype `toString` method
+         */
         /* $FlowFixMe */
         multipleOfTwoHexValueNormalizer(gasLimit.toString(16)),
       ),
@@ -90,6 +103,12 @@ export const signTransaction = async (
        * Eg: '3' to be '03', `12c` to be `012c`
        */
       nonce: hexSequenceNormalizer(
+        /*
+         * @TODO Add `bigNumber` `toHexString` wrapper method
+         *
+         * Flow confuses bigNumber's `toString` with the String object
+         * prototype `toString` method
+         */
         /* $FlowFixMe */
         multipleOfTwoHexValueNormalizer(nonce.toString(16)),
       ),
@@ -98,10 +117,15 @@ export const signTransaction = async (
        */
       to: addressNormalizer(to),
       value: hexSequenceNormalizer(
+        /*
+         * @TODO Add `bigNumber` `toHexString` wrapper method
+         *
+         * Flow confuses bigNumber's `toString` with the String object
+         * prototype `toString` method
+         */
         /* $FlowFixMe */
         multipleOfTwoHexValueNormalizer(value.toString(16)),
       ),
-      // value: '0x00',
       /*
        * Trezor service requires the prefix from the input data to be stripped
        */
@@ -120,6 +144,12 @@ export const signTransaction = async (
         multipleOfTwoHexValueNormalizer(String(SIGNATURE.S)),
       ),
       v: hexSequenceNormalizer(
+        /*
+         * @TODO Add `bigNumber` `toHexString` wrapper method
+         *
+         * Flow confuses bigNumber's `toString` with the String object
+         * prototype `toString` method
+         */
         /* $FlowFixMe */
         multipleOfTwoHexValueNormalizer(chainId.toString(16)),
       ),
@@ -135,7 +165,7 @@ export const signTransaction = async (
       s: sSignatureComponent,
       v: recoveryParameter,
     } = await ledger.signTransaction(
-      derivationPath,
+      derivationPathNormalizer(derivationPath),
       unsignedTransaction.serialize().toString(HEX_HASH_TYPE),
     );
     /*
@@ -172,14 +202,19 @@ export const signTransaction = async (
  * @param {string} derivationPath the derivation path for the account with which to sign the message
  * @param {string} message the message you want to sign
  *
- * All the above params are sent in as props of an {MessageObjectType} object.
+ * All the above params are sent in as props of an {object.
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async (
-  messageObject: MessageObjectType,
-): Promise<string | void> => {
-  const { derivationPath, message } = messageObjectValidator(messageObject);
+export const signMessage = async ({
+  derivationPath,
+  message = ' ',
+}: Object = {}): Promise<string | void> => {
+  /*
+   * Validate input values: derivationPath and message
+   */
+  derivationPathValidator(derivationPath);
+  messageValidator(message);
   try {
     const ledger: LedgerInstanceType = await ledgerConnection();
     /*
@@ -197,14 +232,11 @@ export const signMessage = async (
        */
       /* $FlowFixMe */
     } = await ledger.signPersonalMessage(
-      /*
-       * This is because Flow doesn't yet support types inside desctructuring statements.
-       * See: https://github.com/facebook/flow/issues/235
-       */
-      /* $FlowFixMe */
-      derivationPath,
+      derivationPathNormalizer(derivationPath),
       /*
        * The message needs to be sent in as an hex string
+       *
+       * Also, Flow don't know about Buffer
        */
       /* $FlowFixMe */
       Buffer.from(message).toString(HEX_HASH_TYPE),
@@ -221,9 +253,9 @@ export const signMessage = async (
   } catch (caughtError) {
     return handleLedgerConnectionError(
       caughtError,
-      `${messages.userSignTxGenericError}: ${objectToErrorString(
-        messageObject,
-      )} ${caughtError.message}`,
+      `${messages.userSignTxGenericError}: message: (${message}) ${
+        caughtError.message
+      }`,
     );
   }
 };
@@ -241,7 +273,29 @@ export const signMessage = async (
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = async (
-  signatureMessage: MessageVerificationObjectType,
-): Promise<boolean> =>
-  verifyMessageSignature(messageVerificationObjectValidator(signatureMessage));
+export const verifyMessage = async ({
+  publicKey,
+  ...signatureMessage
+}: Object): Promise<boolean> => {
+  /*
+   * Validate the public key locally
+   */
+  hexSequenceValidator(publicKey);
+  /*
+   * Validate the rest of the pros using the core helper
+   */
+  const { message, signature } = messageVerificationObjectValidator(
+    signatureMessage,
+  );
+  return verifyMessageSignature({
+    /*
+     * Ensure the public key has the hex `0x` prefix
+     */
+    publicKey: hexSequenceNormalizer(publicKey),
+    message,
+    /*
+     * Ensure the signature has the hex `0x` prefix
+     */
+    signature: hexSequenceNormalizer(signature),
+  });
+};

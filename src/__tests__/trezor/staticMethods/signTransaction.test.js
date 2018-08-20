@@ -11,6 +11,7 @@ import {
   addressNormalizer,
   hexSequenceNormalizer,
 } from '../../../core/normalizers';
+import { derivationPathValidator } from '../../../core/validators';
 
 import { PAYLOAD_SIGNTX } from '../../../trezor/payloads';
 import { STD_ERRORS } from '../../../trezor/defaults';
@@ -46,7 +47,6 @@ const nonce = 'mocked-nonce';
 const to = 'mocked-destination-address';
 const value = 'mocked-transaction-value';
 const mockedTransactionObject = {
-  derivationPath,
   gasPrice,
   gasLimit,
   chainId,
@@ -55,16 +55,19 @@ const mockedTransactionObject = {
   value,
   inputData,
 };
+const mockedArgumentsObject = {
+  ...mockedTransactionObject,
+  derivationPath,
+};
 
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     EthereumTx.mockClear();
-    EthereumTx.mockRestore();
   });
   describe('`signTransaction()` static method', () => {
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNTX;
-      await signTransaction(mockedTransactionObject);
+      await signTransaction(mockedArgumentsObject);
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
         /*
@@ -77,7 +80,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       });
     });
     test('Validates the transaction input values', async () => {
-      await signTransaction(mockedTransactionObject);
+      await signTransaction(mockedArgumentsObject);
       /*
        * Calls the validation helper with the correct values
        */
@@ -86,12 +89,25 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
         mockedTransactionObject,
       );
     });
-    test('Normalizes the transaction input values', async () => {
-      await signTransaction(mockedTransactionObject);
+    test('Validates the derivation path individually', async () => {
+      await signTransaction(mockedArgumentsObject);
       /*
-       * The derivation path is already normalized, so don't do it again
+       * Calls the validation helper with the correct values
        */
-      expect(derivationPathNormalizer).not.toHaveBeenCalled();
+      expect(derivationPathValidator).toHaveBeenCalled();
+      expect(derivationPathValidator).toHaveBeenCalledWith(derivationPath);
+      /*
+       * So it throws if you don't provide one
+       */
+      expect(signTransaction()).rejects.toThrow();
+    });
+    test('Normalizes the transaction input values', async () => {
+      await signTransaction(mockedArgumentsObject);
+      /*
+       * Normalizes the derivation path
+       */
+      expect(derivationPathNormalizer).toHaveBeenCalled();
+      expect(derivationPathNormalizer).toHaveBeenCalledWith(derivationPath);
       /*
        * Normalizes gas price and gas limit
        */
@@ -132,7 +148,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
         s: sComponent,
         v: recoveryParam,
       }));
-      await signTransaction(mockedTransactionObject);
+      await signTransaction(mockedArgumentsObject);
       expect(EthereumTx).toHaveBeenCalled();
       expect(EthereumTx).toHaveBeenCalledWith({
         r: rComponent,
@@ -148,7 +164,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       payloadListener.mockImplementation(() =>
         Promise.reject(new Error('Oh no!')),
       );
-      expect(signTransaction(mockedTransactionObject)).rejects.toThrow();
+      expect(signTransaction(mockedArgumentsObject)).rejects.toThrow();
     });
     test('Log a warning if the user Cancels signing it', async () => {
       /*
@@ -158,7 +174,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       payloadListener.mockImplementation(() =>
         Promise.reject(new Error(STD_ERRORS.CANCEL_TX_SIGN)),
       );
-      await signTransaction(mockedTransactionObject);
+      await signTransaction(mockedArgumentsObject);
       expect(EthereumTx).not.toHaveBeenCalled();
       /*
        * User cancelled, so we don't throw

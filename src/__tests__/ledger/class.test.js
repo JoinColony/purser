@@ -21,27 +21,22 @@ const rootChainCode = 'mocked-root-chain-code';
 const rootDerivationPath = 'mocked-root-derivation-path';
 const addressCount = 10;
 const mockedProvider = { chainId: 4 };
+const mockedInstanceArgument = {
+  publicKey: rootPublicKey,
+  chainCode: rootChainCode,
+  rootDerivationPath,
+  addressCount,
+  provider: mockedProvider,
+};
 
 describe('Ledger` Hardware Wallet Module', () => {
   describe('`LedgerWallet` class', () => {
     test('Creates a new wallet instance', () => {
-      const ledgerWallet = new LedgerWalletClass({
-        publicKey: rootPublicKey,
-        chainCode: rootChainCode,
-        rootDerivationPath,
-        addressCount,
-        provider: mockedProvider,
-      });
+      const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
       expect(ledgerWallet).toBeInstanceOf(LedgerWalletClass);
     });
     test('The Wallet Objet has the correct types props', () => {
-      const ledgerWallet = new LedgerWalletClass({
-        publicKey: rootPublicKey,
-        chainCode: rootChainCode,
-        rootDerivationPath,
-        addressCount,
-        provider: mockedProvider,
-      });
+      const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
       /*
        * We already check for the others in the generic class tests, we just need to
        * ensure that the correct type and subtype are set.
@@ -57,14 +52,7 @@ describe('Ledger` Hardware Wallet Module', () => {
     test(
       "Calls the `signTransaction()` static method from the instance's methods",
       async () => {
-        /* eslint-disable-next-line no-new */
-        const ledgerWallet = new LedgerWalletClass({
-          publicKey: rootPublicKey,
-          chainCode: rootChainCode,
-          rootDerivationPath,
-          addressCount,
-          provider: mockedProvider,
-        });
+        const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
         const defaultDerivationPath = await ledgerWallet.derivationPath;
         /*
          * Should have the `sign()` internal method set on the instance
@@ -83,16 +71,42 @@ describe('Ledger` Hardware Wallet Module', () => {
       },
     );
     test(
-      "Calls the `signMessage()` static method from the instance's methods",
+      "Calls the `signTransaction()` static method passes a new chain Id",
       async () => {
-        /* eslint-disable-next-line no-new */
+        const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
+        const mockedChainId = 26765;
+        /*
+        * Overrides the chainId form the provider
+        */
+        await ledgerWallet.sign({ chainId: mockedChainId });
+        expect(signTransaction).toHaveBeenCalledWith(expect.objectContaining({
+          chainId: mockedChainId,
+        }));
+      },
+    );
+    test(
+      "Calls the `signTransaction()` static method using the fallback chain Id",
+      async () => {
         const ledgerWallet = new LedgerWalletClass({
           publicKey: rootPublicKey,
           chainCode: rootChainCode,
           rootDerivationPath,
           addressCount,
-          provider: mockedProvider,
         });
+        /*
+         * Does not have a chain id from the provider, and we don't pass on in
+         * falls back to the default one
+         */
+        await ledgerWallet.sign();
+        expect(signTransaction).toHaveBeenCalledWith(expect.objectContaining({
+          chainId: 1,
+        }));
+      },
+    );
+    test(
+      "Calls the `signMessage()` static method from the instance's methods",
+      async () => {
+        const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
         const defaultDerivationPath = await ledgerWallet.derivationPath;
         /*
          * Should have the `signMessage()` internal method set on the instance
@@ -112,14 +126,7 @@ describe('Ledger` Hardware Wallet Module', () => {
     test(
       "Calls the `verifyMessage()` static method from the instance's methods",
       async () => {
-        /* eslint-disable-next-line no-new */
-        const ledgerWallet = new LedgerWalletClass({
-          publicKey: rootPublicKey,
-          chainCode: rootChainCode,
-          rootDerivationPath,
-          addressCount,
-          provider: mockedProvider,
-        });
+        const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
         const defaultPublicKey = await ledgerWallet.publicKey;
         /*
          * Should have the `verifyMessage()` internal method set on the instance

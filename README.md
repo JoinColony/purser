@@ -58,11 +58,12 @@ The `es6` version will also bring over the `flow` types used for this project.
 
 - [Wallet Object documentation](docs/wallet-object.md)
 - [Software Wallet documentation](docs/api-software.md)
-- [Providers documentation](docs/api-providers.md) _(deprecated)_
-- [Core utils documentation](docs/api-utils.md)
+- [Metamask Wallet documentation](docs/api-metamask.md)
 - [Hardware Wallet documentation](docs/api-hardware.md)
   - [Trezor Wallet documentation](docs/api-trezor.md)
   - [Ledger Wallet documentation](docs/api-ledger.md)
+- [Providers documentation](docs/api-providers.md) _(deprecated)_
+- [Core utils documentation](docs/api-utils.md)
 
 Or you can find all the API docs files [here](docs/).
 

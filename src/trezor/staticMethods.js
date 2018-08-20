@@ -4,6 +4,11 @@ import { fromString } from 'bip32-path';
 import EthereumTx from 'ethereumjs-tx';
 
 import {
+  addressValidator,
+  derivationPathValidator,
+  messageValidator,
+} from '../core/validators';
+import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
@@ -12,7 +17,6 @@ import {
 import { warning, bigNumber, objectToErrorString } from '../core/utils';
 import {
   transactionObjectValidator,
-  messageObjectValidator,
   messageVerificationObjectValidator,
 } from '../core/helpers';
 import { HEX_HASH_TYPE } from '../core/defaults';
@@ -21,12 +25,6 @@ import { payloadListener } from './helpers';
 import { staticMethodsMessages as messages } from './messages';
 import { STD_ERRORS } from './defaults';
 import { PAYLOAD_SIGNTX, PAYLOAD_SIGNMSG, PAYLOAD_VERIFYMSG } from './payloads';
-
-import type {
-  TransactionObjectType,
-  MessageObjectType,
-  MessageVerificationObjectType,
-} from '../core/flowtypes';
 
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
@@ -46,11 +44,11 @@ import type {
  *
  * @return {Promise<string>} the hex signature string
  */
-export const signTransaction = async (
-  transactionObject: TransactionObjectType,
-): Promise<string | void> => {
+export const signTransaction = async ({
+  derivationPath,
+  ...transactionObject
+}: Object = {}): Promise<string | void> => {
   const {
-    derivationPath,
     gasPrice,
     gasLimit,
     chainId,
@@ -59,29 +57,43 @@ export const signTransaction = async (
     value,
     inputData,
   } = transactionObjectValidator(transactionObject);
+  derivationPathValidator(derivationPath);
   /*
    * Modify the default payload to set the transaction details
    */
   const modifiedPayloadObject: Object = Object.assign({}, PAYLOAD_SIGNTX, {
     /*
      * Path needs to be sent in as an derivation path array
-     *
-     * We also normalize it first (but for some reason Flow doesn't pick up
-     * the default value of `path` and assumes it's undefined -- it can be,
-     * but it will not pass the validator)
      */
-    address_n: fromString(derivationPath, true).toPathArray(),
+    address_n: fromString(
+      derivationPathNormalizer(derivationPath),
+      true,
+    ).toPathArray(),
     /*
-     * We could really do with some BN.js flow types declarations :(
+     * @TODO Add `bigNumber` `toHexString` wrapper method
+     *
+     * Flow confuses bigNumber's `toString` with the String object
+     * prototype `toString` method
      */
     /* $FlowFixMe */
     gas_price: multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
+    /*
+     * @TODO Add `bigNumber` `toHexString` wrapper method
+     *
+     * Flow confuses bigNumber's `toString` with the String object
+     * prototype `toString` method
+     */
     /* $FlowFixMe */
     gas_limit: multipleOfTwoHexValueNormalizer(gasLimit.toString(16)),
     chain_id: chainId,
     /*
      * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
      * Eg: '3' to be '03', `12c` to be `012c`
+     *
+     * @TODO Add `bigNumber` `toHexString` wrapper method
+     *
+     * Flow confuses bigNumber's `toString` with the String object
+     * prototype `toString` method
      */
     /* $FlowFixMe */
     nonce: multipleOfTwoHexValueNormalizer(nonce.toString(16)),
@@ -89,6 +101,12 @@ export const signTransaction = async (
      * Trezor service requires the prefix from the address to be stripped
      */
     to: addressNormalizer(to, false),
+    /*
+     * @TODO Add `bigNumber` `toHexString` wrapper method
+     *
+     * Flow confuses bigNumber's `toString` with the String object
+     * prototype `toString` method
+     */
     /* $FlowFixMe */
     value: multipleOfTwoHexValueNormalizer(value.toString(16)),
     /*
@@ -156,35 +174,56 @@ export const signTransaction = async (
  * @param {string} derivationPath the derivation path for the account with which to sign the message
  * @param {string} message the message you want to sign
  *
- * All the above params are sent in as props of an {MessageObjectType} object.
+ * All the above params are sent in as props of an object.
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async (
-  messageObject: MessageObjectType,
-): Promise<string> => {
-  const { derivationPath, message } = messageObjectValidator(messageObject);
-  const { signature: signedMessage } = await payloadListener({
-    payload: Object.assign({}, PAYLOAD_SIGNMSG, {
-      /*
-       * Path needs to be sent in as an derivation path array
-       *
-       * We also normalize it first (but for some reason Flow doesn't pick up
-       * the default value value of `path` and assumes it's undefined -- it can be,
-       * but it will not pass the validator)
-       */
-      path: fromString(
-        /* $FlowFixMe */
-        derivationPathNormalizer(derivationPath),
-        true,
-      ).toPathArray(),
-      message,
-    }),
-  });
+export const signMessage = async ({
+  derivationPath,
+  message = ' ',
+}: Object = {}): Promise<string | void> => {
   /*
-   * Add the hex `0x` prefix
+   * Validate input values: derivationPath and message
    */
-  return hexSequenceNormalizer(signedMessage);
+  derivationPathValidator(derivationPath);
+  messageValidator(message);
+  try {
+    const { signature: signedMessage } = await payloadListener({
+      payload: Object.assign({}, PAYLOAD_SIGNMSG, {
+        /*
+         * Path needs to be sent in as an derivation path array
+         *
+         * We also normalize it first (but for some reason Flow doesn't pick up
+         * the default value value of `path` and assumes it's undefined -- it can be,
+         * but it will not pass the validator)
+         */
+        path: fromString(
+          derivationPathNormalizer(derivationPath),
+          true,
+        ).toPathArray(),
+        message,
+      }),
+    });
+    /*
+     * Add the hex `0x` prefix
+     */
+    return hexSequenceNormalizer(signedMessage);
+  } catch (caughtError) {
+    /*
+     * Don't throw an error if the user cancelled
+     */
+    if (caughtError.message === STD_ERRORS.CANCEL_TX_SIGN) {
+      return warning(messages.userSignTxCancel);
+    }
+    /*
+     * But throw otherwise, so we can see what's going on
+     */
+    throw new Error(
+      `${messages.userSignTxGenericError}: message: (${message}) ${
+        caughtError.message
+      }`,
+    );
+  }
 };
 
 /**
@@ -200,10 +239,18 @@ export const signMessage = async (
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = async (
-  signatureMessage: MessageVerificationObjectType,
-): Promise<boolean> => {
-  const { address, message, signature } = messageVerificationObjectValidator(
+export const verifyMessage = async ({
+  address,
+  ...signatureMessage
+}: Object = {}): Promise<boolean> => {
+  /*
+   * Validate the address locally
+   */
+  addressValidator(address);
+  /*
+   * Validate the rest of the pros using the core helper
+   */
+  const { message, signature } = messageVerificationObjectValidator(
     signatureMessage,
   );
   try {

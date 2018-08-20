@@ -33,9 +33,7 @@ const mockedProvider = { chainId: 4 };
 describe('`Core` Module', () => {
   afterEach(() => {
     addressNormalizer.mockClear();
-    addressNormalizer.mockRestore();
     hexSequenceNormalizer.mockClear();
-    hexSequenceNormalizer.mockRestore();
   });
   describe('`GenericWallet` class', () => {
     test('Creates a new wallet instance', () => {
@@ -103,7 +101,7 @@ describe('`Core` Module', () => {
       });
       expect(SigningKey.publicKeyToAddress).toHaveBeenCalled();
     });
-    test('The Wallet Objet has the required (correct) props', () => {
+    test('The Wallet Object has the required (correct) props', () => {
       const genericWallet = new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,

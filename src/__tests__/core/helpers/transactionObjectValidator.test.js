@@ -1,12 +1,10 @@
 import { transactionObjectValidator } from '../../../core/helpers';
 import {
-  derivationPathValidator,
   bigNumberValidator,
   safeIntegerValidator,
   addressValidator,
   hexSequenceValidator,
 } from '../../../core/validators';
-import { derivationPathNormalizer } from '../../../core/normalizers';
 import { bigNumber } from '../../../core/utils';
 
 import { TRANSACTION } from '../../../core/defaults';
@@ -14,7 +12,6 @@ import { TRANSACTION } from '../../../core/defaults';
 jest.dontMock('../../../core/helpers');
 
 jest.mock('../../../core/validators');
-jest.mock('../../../core/normalizers');
 jest.mock('../../../core/utils');
 
 /*
@@ -44,11 +41,6 @@ describe('`Core` Module', () => {
   describe('`transactionObjectValidator()` helper', () => {
     test("Validates all the transaction's object values", async () => {
       transactionObjectValidator(mockedTransactionObject);
-      /*
-       * Validates the derivation path
-       */
-      expect(derivationPathValidator).toHaveBeenCalled();
-      expect(derivationPathValidator).toHaveBeenCalledWith(derivationPath);
       /*
        * Validates gas price and gas limit
        */
@@ -81,19 +73,10 @@ describe('`Core` Module', () => {
       expect(hexSequenceValidator).toHaveBeenCalled();
       expect(hexSequenceValidator).toHaveBeenCalledWith(inputData);
     });
-    test('Normalizes the derivation path', async () => {
-      transactionObjectValidator(mockedTransactionObject);
-      /*
-       * Normalizes the derivation path
-       */
-      expect(derivationPathNormalizer).toHaveBeenCalled();
-      expect(derivationPathNormalizer).toHaveBeenCalledWith(derivationPath);
-    });
     test('Returns the validated transaction object', async () => {
       const validatedTransactionObject = transactionObjectValidator(
         mockedTransactionObject,
       );
-      expect(validatedTransactionObject).toHaveProperty('derivationPath');
       expect(validatedTransactionObject).toHaveProperty('gasPrice');
       expect(validatedTransactionObject).toHaveProperty('gasLimit');
       expect(validatedTransactionObject).toHaveProperty('chainId');
@@ -102,7 +85,7 @@ describe('`Core` Module', () => {
       expect(validatedTransactionObject).toHaveProperty('value');
       expect(validatedTransactionObject).toHaveProperty('inputData');
     });
-    test('Has defaults for most object values', async () => {
+    test('Has defaults for all object values (except for `to`)', async () => {
       bigNumber.mockImplementation(number => number);
       const validatedTransactionObject = transactionObjectValidator();
       expect(validatedTransactionObject).toHaveProperty(
@@ -112,6 +95,10 @@ describe('`Core` Module', () => {
       expect(validatedTransactionObject).toHaveProperty(
         'gasLimit',
         TRANSACTION.GAS_LIMIT,
+      );
+      expect(validatedTransactionObject).toHaveProperty(
+        'chainId',
+        TRANSACTION.CHAIN_ID,
       );
       expect(validatedTransactionObject).toHaveProperty(
         'nonce',

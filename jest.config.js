@@ -6,6 +6,7 @@ module.exports = {
     'software/*.{js}',
     'trezor/*.{js}',
     'ledger/*.{js}',
+    'metamask/*.{js}',
     /*
      * Exports debug objects, no functionality
      */
@@ -18,6 +19,7 @@ module.exports = {
     '!software/defaults.js',
     '!trezor/defaults.js',
     '!ledger/defaults.js',
+    '!metamask/defaults.js',
     /*
      * Exports main library objects, no functionality
      */
@@ -32,6 +34,7 @@ module.exports = {
     '!software/messages.js',
     '!trezor/messages.js',
     '!ledger/messages.js',
+    '!metamask/messages.js',
     /*
      * String assignments, will always pass
      */
@@ -41,6 +44,10 @@ module.exports = {
      */
     '!trezor/payloads.js',
     '!trezor/responses.js',
+    /*
+     * Just method wrappers (provide a nicer function name for Metamask's methods)
+     */
+    '!metamask/methodLinks.js',
   ],
   coverageDirectory: '../coverage',
   coverageThreshold: {

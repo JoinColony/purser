@@ -74,6 +74,8 @@ Contains the wallet's public address in the form of `String`.
 
 _**Tip:** Across all wallet types and formats this is the only value that you can count on as always present on the object._
 
+_**Note:** For the [Metamask Wallet](api-metamask.md) this will always reflect the address selected from the UI, so you can always count on it to be accurate._
+
 **Usage:**
 ```js
 import { open } from 'colony-wallet/software';
@@ -327,6 +329,8 @@ This is a `getter` that returns a `Promise`. Upon resolving, the promise returns
 
 This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(Eg: `privateKey`, `mnemonic`...)_.
 
+_**Note:** The [Metamask Wallet](api-metamask.md) does not provide native access to the public key. But we can recover it from a signed message. So in order to access it, you will first have to sign a message (string provided), and than you'll have access to it. It will also be saved locally for future references (current selected address only), so that if you have to use it again, you won't have re-sign the message._
+
 **Usage:**
 ```js
 import { open } from 'colony-wallet/trezor';
@@ -459,6 +463,8 @@ This method takes in an `transactionObject` Object _(See below)_, and returns th
 The `transactionObject`'s props will be each individually validated, and if there's something wrong with one of them, it will `throw` and Error.
 
 _**Note**: On hardware wallets this method will require some form of confirmation from the user._
+
+_**Note**: Metamask is designed to handle it's own `nonce` count. You can manually set it, but it's advisable to leave it out of the transaction object. The only case where you would want to do override it, is when you want to change a pending transaction._
 
 **`transactionObject` format:**
 ```js
