@@ -76,7 +76,7 @@ describe('Trezor` Hardware Wallet Module', () => {
     test(
       "Calls the `signMessage()` static method from the instance's methods",
       async () => {
-        const trezorWallet = new TrezorWalletClass(mockedInstanceArgument;
+        const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
         const defaultDerivationPath = await trezorWallet.derivationPath;
         /*
          * Should have the `signMessage()` internal method set on the instance
