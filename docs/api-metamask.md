@@ -15,6 +15,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 * Wallet
   * Metamask
     * [`open`](#open)
+    * [`detect`](#detect)
 
 ### Metmask
 
@@ -71,4 +72,23 @@ Open the metamask wallet:
 import { open } from 'colony-wallet/metamask';
 
 const wallet = await open();
+```
+
+### `detect`
+
+```js
+await detect();
+```
+
+This is a helper method to detect if the Metamask injected `web3` proxy instance is available. It's not necessary for you to use since it's baked into the library, it's just exposed here for convenience.
+
+This method returns a `Promise` which, after resolving, it will `return` only return `true`, if the Metamask instance is available and can be interacted with _(not locked)_. Otherwise it will `throw` an Error with the specific problem it encountered.
+
+**Usage examples:**
+
+Open the metamask wallet:
+```js
+import { detect as isMetamaskAvailable } from 'colony-wallet/metamask';
+
+await isMetamaskAvailable();
 ```
