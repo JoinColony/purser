@@ -12,7 +12,7 @@ import type {
  *
  * @method detect
  *
- * @return {boolean} IF it's imjected it will return true, otherwise it will throw
+ * @return {boolean} If it's injected it will return true, otherwise it will throw
  */
 export const detect = (): boolean => {
   if (!global.web3) {

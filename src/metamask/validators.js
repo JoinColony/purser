@@ -10,7 +10,7 @@ import { validators as messages } from './messages';
  *
  * @param {Object} stateObject State object who's props to check
  *
- * @return {boolean} Throws if object is not valid. I all's good, it returns true.
+ * @return {boolean} Throws if object is not valid. If it's all good, it returns true.
  */
 export const validateMetamaskState = (stateObject: Object): boolean => {
   if (!stateObject || typeof stateObject !== 'object') {

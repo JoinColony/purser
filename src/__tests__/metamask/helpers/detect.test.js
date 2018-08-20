@@ -44,7 +44,7 @@ describe('Metamask` Wallet Module', () => {
     });
     test('Returns true if we can get to the address', async () => {
       /*
-       * State available, but no address
+       * State available, and we have an address
        */
       global.web3 = {
         currentProvider: {
