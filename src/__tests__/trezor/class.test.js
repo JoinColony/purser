@@ -19,14 +19,13 @@ jest.mock('../../core/normalizers');
 const rootPublicKey = 'mocked-root-public-key';
 const rootChainCode = 'mocked-root-chain-code';
 const rootDerivationPath = 'mocked-root-derivation-path';
+const mockedChainId = 'mocked-chain-id';
 const addressCount = 10;
-const mockedProvider = { chainId: 4 };
 const mockedInstanceArgument = {
   publicKey: rootPublicKey,
   chainCode: rootChainCode,
   rootDerivationPath,
   addressCount,
-  provider: mockedProvider,
 };
 
 describe('Trezor` Hardware Wallet Module', () => {
@@ -53,7 +52,10 @@ describe('Trezor` Hardware Wallet Module', () => {
       "Calls the `signTransaction()` static method from the instance's methods",
       async () => {
         /* eslint-disable-next-line no-new */
-        const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
+        const trezorWallet = new TrezorWalletClass({
+          ...mockedInstanceArgument,
+          chainId: mockedChainId,
+        });
         const defaultDerivationPath = await trezorWallet.derivationPath;
         /*
          * Should have the `sign()` internal method set on the instance
@@ -66,48 +68,14 @@ describe('Trezor` Hardware Wallet Module', () => {
          */
         expect(signTransaction).toHaveBeenCalled();
         expect(signTransaction).toHaveBeenCalledWith({
-          chainId: mockedProvider.chainId,
+          chainId: mockedChainId,
           derivationPath: defaultDerivationPath,
         });
       },
     );
     test(
-      "Calls the `signTransaction()` static method passes a new chain Id",
-      async () => {
-        const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
-        const mockedChainId = 56762;
-        /*
-        * Overrides the chainId form the provider
-        */
-        await trezorWallet.sign({ chainId: mockedChainId });
-        expect(signTransaction).toHaveBeenCalledWith(expect.objectContaining({
-          chainId: mockedChainId,
-        }));
-      },
-    );
-    test(
-      "Calls the `signTransaction()` static method using the fallback chain Id",
-      async () => {
-        const trezorWallet = new TrezorWalletClass({
-          publicKey: rootPublicKey,
-          chainCode: rootChainCode,
-          rootDerivationPath,
-          addressCount,
-        });
-        /*
-         * Does not have a chain id from the provider, and we don't pass on in
-         * falls back to the default one
-         */
-        await trezorWallet.sign();
-        expect(signTransaction).toHaveBeenCalledWith(expect.objectContaining({
-          chainId: 1,
-        }));
-      },
-    );
-    test(
       "Calls the `signMessage()` static method from the instance's methods",
       async () => {
-        /* eslint-disable-next-line no-new */
         const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
         const defaultDerivationPath = await trezorWallet.derivationPath;
         /*
@@ -128,7 +96,6 @@ describe('Trezor` Hardware Wallet Module', () => {
     test(
       "Calls the `verifyMessage()` static method from the instance's methods",
       async () => {
-        /* eslint-disable-next-line no-new */
         const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
         /*
          * Should have the `verifyMessage()` internal method set on the instance

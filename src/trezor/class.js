@@ -15,6 +15,12 @@ import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 const { WALLET_PROPS } = DESCRIPTORS;
 
 export default class TrezorWallet extends GenericWallet {
+  /*
+   * @TODO Add this prop at the GenericWallet class level
+   * And remove from here, after the chainId is added to ledger as well
+   */
+  chainId: number;
+
   constructor(propObject: GenericClassArgumentsType) {
     super(propObject);
     Object.defineProperties(this, {
@@ -23,24 +29,16 @@ export default class TrezorWallet extends GenericWallet {
        */
       type: Object.assign({}, { value: TYPE_HARDWARE }, WALLET_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_TREZOR }, WALLET_PROPS),
+      /*
+       * @TODO Add this prop at the GenericWallet class level
+       * And remove from here, after the chainId is added to ledger as well
+       */
+      chainId: Object.assign({}, { value: propObject.chainId }, WALLET_PROPS),
       sign: Object.assign(
         {},
         {
           value: async (transactionObject: TransactionObjectType) => {
-            /*
-             * @NOTE This is pretty complicated setup
-             *
-             * Needlesly complicated I might add, luckly this will all be removed
-             * when we strip all providers out.
-             *
-             * For some reason prettier always suggests a way to fix this that would
-             * violate the 80 max-len rule. Wierd
-             */
-            /* eslint-disable prettier/prettier */
-            const {
-              chainId = (this.provider && this.provider.chainId) || 1,
-            } = transactionObject || {};
-            /* eslint-enable prettier/prettier */
+            const { chainId = propObject.chainId } = transactionObject || {};
             return signTransaction(
               Object.assign({}, transactionObject, {
                 derivationPath: await this.derivationPath,

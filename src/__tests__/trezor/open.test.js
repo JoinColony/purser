@@ -1,9 +1,8 @@
 import { fromString } from 'bip32-path';
 
 import { derivationPathSerializer } from '../../core/helpers';
-import { PATH } from '../../core/defaults';
+import { PATH, NETWORK_IDS } from '../../core/defaults';
 
-import { jsonRpc } from '../../providers';
 import * as utils from '../../core/utils';
 
 import trezorWallet from '../../trezor';
@@ -79,37 +78,29 @@ describe('Trezor` Hardware Wallet Module', () => {
         }),
       );
     });
-    test('Open the wallet and set a provider', async () => {
-      await trezorWallet.open({ provider: jsonRpc });
-      expect(TrezorWalletClass).toHaveBeenCalled();
-      expect(TrezorWalletClass).toHaveBeenCalledWith(
-        /*
-        * We only care that the provider generator method gets instantiated
-        */
+    test('Sets the derivation path coin to the mainnet type', async () => {
+      await trezorWallet.open({ chainId: NETWORK_IDS.HOMESTEAD });
+      /*
+       * Should set the coin to the mainnet 60 type
+       */
+      expect(derivationPathSerializer).toHaveBeenCalled();
+      expect(derivationPathSerializer).toHaveBeenCalledWith(
         expect.objectContaining({
-          provider: await jsonRpc(),
+          coinType: PATH.COIN_MAINNET,
         }),
       );
-      /*
-       * We have a deprecation warning
-       */
-      expect(utils.warning).toHaveBeenCalled();
     });
-    test('Open the wallet without a provider', async () => {
-      await trezorWallet.open({ provider: '' });
-      expect(TrezorWalletClass).toHaveBeenCalled();
-      expect(TrezorWalletClass).toHaveBeenCalledWith(
-        /*
-        * We only care that the provider generator method gets instantiated
-        */
+    test('Sets the derivation path coin to the testnet type', async () => {
+      await trezorWallet.open({ chainId: 123123123 });
+      /*
+       * Should set the coin to the testnet 1 type
+       */
+      expect(derivationPathSerializer).toHaveBeenCalled();
+      expect(derivationPathSerializer).toHaveBeenCalledWith(
         expect.objectContaining({
-          provider: undefined,
+          coinType: PATH.COIN_TESTNET,
         }),
       );
-      /*
-       * We have a deprecation warning
-       */
-      expect(utils.warning).not.toHaveBeenCalled();
     });
     test('Log a warning if the user cancels', async () => {
       /*
