@@ -27,7 +27,7 @@ export default class LedgerWallet extends GenericWallet {
         {},
         {
           value: async (transactionObject: TransactionObjectType) => {
-            const { chainId = propObject.chainId } = transactionObject || {};
+            const { chainId = this.chainId } = transactionObject || {};
             return signTransaction(
               Object.assign({}, transactionObject, {
                 derivationPath: await this.derivationPath,
