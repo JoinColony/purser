@@ -11,6 +11,7 @@ import {
   addressNormalizer,
   hexSequenceNormalizer,
 } from '../../core/normalizers';
+import { NETWORK_IDS } from '../../core/defaults';
 
 jest.dontMock('../../core/genericWallet');
 
@@ -67,9 +68,10 @@ describe('`Core` Module', () => {
        * A "ledger"-default derivation path, that ends with a slash.
        * Eg: m/44'/60'/0'/
        */
-      const derivationPathWithSpliterWallet = new GenericWallet(
-        mockedArguments,
-      );
+      const derivationPathWithSpliterWallet = new GenericWallet({
+        ...mockedArguments,
+        rootDerivationPath: `${rootDerivationPath}/`,
+      });
       /* eslint-disable-next-line prettier/prettier */
       const derivationPathWithSplitter =
         await derivationPathWithSpliterWallet.derivationPath;
@@ -95,6 +97,10 @@ describe('`Core` Module', () => {
        */
       expect(genericWallet).toHaveProperty('derivationPath');
       /*
+      * Chain Id
+      */
+      expect(genericWallet).toHaveProperty('chainId');
+      /*
        * `sign()` method (but it's empty -- you're supposed to overwrite it)
        */
       expect(genericWallet).toHaveProperty('sign');
@@ -106,6 +112,29 @@ describe('`Core` Module', () => {
        * `verifyMessage()` method (but it's empty -- you're supposed to overwrite it)
        */
       expect(genericWallet).toHaveProperty('verifyMessage');
+    });
+    test('The Wallet Object sets the chain Id correctly', () => {
+      const locallyMockedChainId = 222;
+      const genericWallet = new GenericWallet({
+        ...mockedArguments,
+        chainId: locallyMockedChainId,
+      });
+      /*
+       * Address
+       */
+      expect(genericWallet).toHaveProperty('chainId', locallyMockedChainId);
+    });
+    test('The Wallet Object falls back to the default chainId', () => {
+      const genericWallet = new GenericWallet({
+        publicKey: rootPublicKey,
+        chainCode: rootChainCode,
+        rootDerivationPath,
+        addressCount,
+      });
+      /*
+       * Address
+       */
+      expect(genericWallet).toHaveProperty('chainId', NETWORK_IDS.HOMESTEAD);
     });
     test('Validates values used to instantiate', async () => {
       /* eslint-disable-next-line no-new */
@@ -248,7 +277,12 @@ describe('`Core` Module', () => {
       },
     );
     test('Opens the first 10 wallet addresses by default', () => {
-      const genericWallet = new GenericWallet(mockedArguments);
+      const genericWallet = new GenericWallet({
+        publicKey: rootPublicKey,
+        chainCode: rootChainCode,
+        rootDerivationPath,
+        chainId: mockedChainId,
+      });
       /*
        * If no value was passed to the addressCount, it defaults to 10
        *
