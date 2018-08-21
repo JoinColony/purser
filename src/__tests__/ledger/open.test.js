@@ -1,8 +1,6 @@
 import { derivationPathSerializer } from '../../core/helpers';
-import { PATH } from '../../core/defaults';
+import { PATH, NETWORK_IDS } from '../../core/defaults';
 import * as utils from '../../core/utils';
-
-import { jsonRpc } from '../../providers';
 
 import {
   ledgerConnection,
@@ -65,37 +63,29 @@ describe('Ledger` Hardware Wallet Module', () => {
         }),
       );
     });
-    test('Open the wallet and set a provider', async () => {
-      await ledgerWallet.open({ provider: jsonRpc });
-      expect(LedgerWalletClass).toHaveBeenCalled();
-      expect(LedgerWalletClass).toHaveBeenCalledWith(
-        /*
-        * We only care that the provider generator method gets instantiated
-        */
+    test('Sets the derivation path coin to the mainnet type', async () => {
+      await ledgerWallet.open({ chainId: NETWORK_IDS.HOMESTEAD });
+      /*
+       * Should set the coin to the mainnet 60 type
+       */
+      expect(derivationPathSerializer).toHaveBeenCalled();
+      expect(derivationPathSerializer).toHaveBeenCalledWith(
         expect.objectContaining({
-          provider: await jsonRpc(),
+          coinType: PATH.COIN_MAINNET,
         }),
       );
-      /*
-       * We have a deprecation warning
-       */
-      expect(utils.warning).toHaveBeenCalled();
     });
-    test('Open the wallet without setting a provider', async () => {
-      await ledgerWallet.open({ provider: '' });
-      expect(LedgerWalletClass).toHaveBeenCalled();
-      expect(LedgerWalletClass).toHaveBeenCalledWith(
-        /*
-        * We only care that the provider generator method gets instantiated
-        */
+    test('Sets the derivation path coin to the testnet type', async () => {
+      await ledgerWallet.open({ chainId: 123123123 });
+      /*
+       * Should set the coin to the testnet 1 type
+       */
+      expect(derivationPathSerializer).toHaveBeenCalled();
+      expect(derivationPathSerializer).toHaveBeenCalledWith(
         expect.objectContaining({
-          provider: undefined,
+          coinType: PATH.COIN_TESTNET,
         }),
       );
-      /*
-       * We have a deprecation warning
-       */
-      expect(utils.warning).not.toHaveBeenCalled();
     });
     test('Throw if something else goes wrong', async () => {
       /*
