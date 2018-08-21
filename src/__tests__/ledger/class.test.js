@@ -19,14 +19,13 @@ jest.mock('../../core/normalizers');
 const rootPublicKey = 'mocked-root-public-key';
 const rootChainCode = 'mocked-root-chain-code';
 const rootDerivationPath = 'mocked-root-derivation-path';
+const mockedChainId = 'mocked-chain-id';
 const addressCount = 10;
-const mockedProvider = { chainId: 4 };
 const mockedInstanceArgument = {
   publicKey: rootPublicKey,
   chainCode: rootChainCode,
   rootDerivationPath,
   addressCount,
-  provider: mockedProvider,
 };
 
 describe('Ledger` Hardware Wallet Module', () => {
@@ -52,7 +51,10 @@ describe('Ledger` Hardware Wallet Module', () => {
     test(
       "Calls the `signTransaction()` static method from the instance's methods",
       async () => {
-        const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
+        const ledgerWallet = new LedgerWalletClass({
+          ...mockedInstanceArgument,
+          chainId: mockedChainId,
+        });
         const defaultDerivationPath = await ledgerWallet.derivationPath;
         /*
          * Should have the `sign()` internal method set on the instance
@@ -65,7 +67,7 @@ describe('Ledger` Hardware Wallet Module', () => {
          */
         expect(signTransaction).toHaveBeenCalled();
         expect(signTransaction).toHaveBeenCalledWith({
-          chainId: mockedProvider.chainId,
+          chainId: mockedChainId,
           derivationPath: defaultDerivationPath,
         });
       },
@@ -74,13 +76,13 @@ describe('Ledger` Hardware Wallet Module', () => {
       "Calls the `signTransaction()` static method passes a new chain Id",
       async () => {
         const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
-        const mockedChainId = 26765;
+        const locallyMockedChainId = 26765;
         /*
         * Overrides the chainId form the provider
         */
-        await ledgerWallet.sign({ chainId: mockedChainId });
+        await ledgerWallet.sign({ chainId: locallyMockedChainId });
         expect(signTransaction).toHaveBeenCalledWith(expect.objectContaining({
-          chainId: mockedChainId,
+          chainId: locallyMockedChainId,
         }));
       },
     );
