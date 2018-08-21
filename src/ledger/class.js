@@ -27,20 +27,7 @@ export default class LedgerWallet extends GenericWallet {
         {},
         {
           value: async (transactionObject: TransactionObjectType) => {
-            /*
-             * @NOTE This is pretty complicated setup
-             *
-             * Needlesly complicated I might add, luckly this will all be removed
-             * when we strip all providers out.
-             *
-             * For some reason prettier always suggests a way to fix this that would
-             * violate the 80 max-len rule. Wierd
-             */
-            /* eslint-disable prettier/prettier */
-            const {
-              chainId = (this.provider && this.provider.chainId) || 1,
-            } = transactionObject || {};
-            /* eslint-enable prettier/prettier */
+            const { chainId = propObject.chainId } = transactionObject || {};
             return signTransaction(
               Object.assign({}, transactionObject, {
                 derivationPath: await this.derivationPath,
