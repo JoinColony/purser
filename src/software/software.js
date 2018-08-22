@@ -1,7 +1,6 @@
 /* @flow */
 
 import { Wallet as EtherWallet, HDNode } from 'ethers/wallet';
-import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
 
 import { derivationPathSerializer } from '../core/helpers';
@@ -9,7 +8,7 @@ import { PATH, ENV, DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 import type { WalletObjectType, WalletArgumentsType } from '../core/flowtypes';
 
-import { QR_CODE_OPTS, BLOCKIE_OPTS } from './defaults';
+import { BLOCKIE_OPTS } from './defaults';
 import { classMessages as messages } from './messages';
 
 import { getRandomValues, warning, objectToErrorString } from '../core/utils';
@@ -138,31 +137,6 @@ class SoftwareWallet extends EtherWallet {
       return blockiePromise;
     }
     warning(messages.noAddress, this.address, { level: 'high' });
-    return Promise.reject();
-  }
-
-  /*
-   * Private Key QR Code
-   */
-  privateKeyQR: string;
-
-  get privateKeyQR(): Promise<string | void> {
-    if (this.privateKey) {
-      /*
-       * While this is not a particularly expensive operation (it is, but it's
-       * small potatoes compared to the others), it's still a good approach
-       * to memoize the getter, so we're doing that here as well.
-       */
-      Object.defineProperty(
-        (this: any),
-        'privateKeyQR',
-        Object.assign({}, GETTERS, {
-          value: qrcode.toDataURL(this.privateKey, QR_CODE_OPTS),
-        }),
-      );
-      return qrcode.toDataURL(this.privateKey, QR_CODE_OPTS);
-    }
-    warning(messages.noPrivateKey, this.privateKey, { level: 'high' });
     return Promise.reject();
   }
 

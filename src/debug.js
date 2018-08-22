@@ -2,7 +2,6 @@
 
 /* Dependencies */
 import ethers from 'ethers';
-import qrcode from 'qrcode';
 import blockies from 'ethereum-blockies';
 import bip32Path from 'bip32-path';
 import bn from 'bn.js';
@@ -45,7 +44,6 @@ const debug: Object = {
   debug: {
     dependencies: {
       ethers,
-      qrcode,
       blockies,
       bip32Path,
       bn,
