@@ -1,15 +1,15 @@
 /* @flow */
 
-import { Wallet as EtherWallet, HDNode } from 'ethers/wallet';
+import { Wallet as EtherWallet } from 'ethers/wallet';
 
 import { derivationPathSerializer } from '../core/helpers';
-import { PATH, ENV, DESCRIPTORS } from '../core/defaults';
+import { PATH, DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 import type { WalletObjectType, WalletArgumentsType } from '../core/flowtypes';
 
 import { classMessages as messages } from './messages';
 
-import { getRandomValues, warning, objectToErrorString } from '../core/utils';
+import { getRandomValues, warning } from '../core/utils';
 
 const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
 /*
@@ -27,7 +27,12 @@ let keystoreJson: string | void;
  *
  * @extends EtherWallet
  */
-class SoftwareWallet extends EtherWallet {
+export default class SoftwareWallet extends EtherWallet {
+  /*
+   * Encrypted JSON Keystore
+   */
+  keystore: string;
+
   constructor(
     privateKey: string | void,
     password: string | void,
@@ -41,14 +46,8 @@ class SoftwareWallet extends EtherWallet {
     encryptionPassword = password;
     keystoreJson = keystore;
     /*
-     * @TODO Check for similar prop names
-     *
-     * Eg: paSword vs. paSSword vs. passWRD, maybe find a fuzzy search lib
-     * Alternatively take a look at React's code base and see how they've
-     * implemented this.
-     */
-    /*
-     * We don't use providers, so set it to undefined.
+     * We don't use providers, so set it to undefined
+     * (don't pass anything in, so it's automatically set to undefined).
      *
      * Sadly, we can't actually delete the provider prop since it's set to
      * `configurable: false` in the parent Class
@@ -65,11 +64,6 @@ class SoftwareWallet extends EtherWallet {
       subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
     });
   }
-
-  /*
-   * Encrypted JSON Keystore
-   */
-  keystore: string;
 
   get keystore(): Promise<string | void> {
     if (encryptionPassword) {
@@ -153,86 +147,6 @@ class SoftwareWallet extends EtherWallet {
       return this.createRandom();
     }
   }
-
-  /**
-   * Open an existing wallet
-   * Using either `mnemonic`, `private key` or `encrypted keystore`
-   *
-   * This will try to extract the private key from a mnemonic (if available),
-   * and create a new SoftwareWallet instance using whichever key is available.
-   * (the on passed in or the one extracted from the mnemonic).
-   *
-   * @method open
-   *
-   * @param {string} password Optional password used to generate an encrypted keystore
-   * @param {string} privateKey Optional (in case you pass another type)
-   * @param {string} mnemonic Optional (in case you pass another type)
-   * @param {string} path Optional path for the mnemonic (set by default)
-   *
-   * All the above params are sent in as props of an {WalletArgumentsType} object.
-   *
-   * @return {WalletType} A new wallet object (or undefined) if somehwere along
-   * the line an error is thrown.
-   */
-  static async open(
-    walletArguments: WalletArgumentsType,
-  ): Promise<WalletObjectType | void> {
-    /*
-     * We can't destructure the arguments in the function signature, since we
-     * need to iterate through them in case of an error.
-     */
-    const {
-      password,
-      privateKey,
-      mnemonic,
-      keystore,
-      path = derivationPathSerializer({
-        change: PATH.CHANGE,
-        addressIndex: PATH.INDEX,
-      }),
-    } = walletArguments;
-    let extractedPrivateKey: string;
-    let extractedMnemonic: string;
-    let extractedPath: string;
-    try {
-      /*
-       * @TODO Detect if existing but not valid keystore, and warn the user
-       */
-      if (keystore && this.isEncryptedWallet(keystore) && password) {
-        const keystoreWallet: Object = await this.fromEncryptedWallet(
-          keystore,
-          password,
-        );
-        extractedPrivateKey = keystoreWallet.privateKey;
-        extractedMnemonic = keystoreWallet.mnemonic;
-        extractedPath = keystoreWallet.path;
-      }
-      /*
-       * @TODO Detect if existing but not valid mnemonic, and warn the user
-       */
-      if (mnemonic && HDNode.isValidMnemonic(mnemonic)) {
-        const mnemonicWallet: Object = HDNode.fromMnemonic(mnemonic).derivePath(
-          path,
-        );
-        extractedPrivateKey = mnemonicWallet.privateKey;
-      }
-      /*
-       * @TODO Detect if existing but not valid private key, and warn the user
-       */
-      return new this(
-        privateKey || extractedPrivateKey,
-        password,
-        mnemonic || extractedMnemonic,
-        path || extractedPath,
-        keystore,
-      );
-    } catch (err) {
-      warning(messages.open, objectToErrorString(walletArguments), err, {
-        level: 'high',
-      });
-      throw new Error();
-    }
-  }
 }
 
 /*
@@ -241,9 +155,6 @@ class SoftwareWallet extends EtherWallet {
  */
 Object.defineProperties((SoftwareWallet: any).prototype, {
   keystore: GETTERS,
-  addressQR: GETTERS,
-  blockie: GETTERS,
-  privateKeyQR: GETTERS,
 });
 
 /**
@@ -261,35 +172,3 @@ Object.defineProperties((SoftwareWallet: any).prototype, {
 export const create = (
   walletArguments: WalletArgumentsType = {},
 ): Promise<WalletObjectType> => SoftwareWallet.create(walletArguments);
-
-/**
- * Open (instantiate) a wallet.
- * This method is the one that's actually exposed outside the module.
- *
- * @method open
- *
- * @param {WalletArgumentsType} walletArguments The wallet arguments object
- * This way you can pass in arguments in any order you'd like.
- * Details about it's types can be found inside `flowtypes`
- *
- * @return {WalletType} A new wallet object
- * Will return `undefined` if no suitable method for ooening it was found.
- */
-export const open = (
-  walletArguments: WalletArgumentsType = {},
-): Promise<WalletObjectType | void> => SoftwareWallet.open(walletArguments);
-
-/*
- * If we're in dev mode, also export the `SoftwareWallet` class so it's available
- * to us directly for debugging.
- */
-const softwareWallet: Object = Object.assign(
-  {},
-  {
-    create,
-    open,
-  },
-  ENV === 'development' || ENV === 'test' ? { SoftwareWallet } : {},
-);
-
-export default softwareWallet;
