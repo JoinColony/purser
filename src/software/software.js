@@ -114,31 +114,6 @@ class SoftwareWallet extends EtherWallet {
   }
 
   /*
-   * Address QR Code
-   */
-  addressQR: string;
-
-  get addressQR(): Promise<string | void> {
-    if (this.address) {
-      /*
-       * While this is not a particularly expensive operation (it is, but it's
-       * small potatoes compared to the others), it's still a good approach
-       * to memoize the getter, so we're doing that here as well.
-       */
-      Object.defineProperty(
-        (this: any),
-        'addressQR',
-        Object.assign({}, GETTERS, {
-          value: qrcode.toDataURL(this.address, QR_CODE_OPTS),
-        }),
-      );
-      return qrcode.toDataURL(this.address, QR_CODE_OPTS);
-    }
-    warning(messages.noAddress, this.address, { level: 'high' });
-    return Promise.reject();
-  }
-
-  /*
    * Address Identicon (Blockie)
    */
   blockie: string;
