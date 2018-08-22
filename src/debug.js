@@ -2,7 +2,6 @@
 
 /* Dependencies */
 import ethers from 'ethers';
-import blockies from 'ethereum-blockies';
 import bip32Path from 'bip32-path';
 import bn from 'bn.js';
 import ethereumJsTx from 'ethereumjs-tx';
@@ -44,7 +43,6 @@ const debug: Object = {
   debug: {
     dependencies: {
       ethers,
-      blockies,
       bip32Path,
       bn,
       ethereumJsTx,

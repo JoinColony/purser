@@ -1,14 +1,12 @@
 /* @flow */
 
 import { Wallet as EtherWallet, HDNode } from 'ethers/wallet';
-import blockies from 'ethereum-blockies';
 
 import { derivationPathSerializer } from '../core/helpers';
 import { PATH, ENV, DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 import type { WalletObjectType, WalletArgumentsType } from '../core/flowtypes';
 
-import { BLOCKIE_OPTS } from './defaults';
 import { classMessages as messages } from './messages';
 
 import { getRandomValues, warning, objectToErrorString } from '../core/utils';
@@ -110,34 +108,6 @@ class SoftwareWallet extends EtherWallet {
   /* eslint-disable-next-line class-methods-use-this */
   set keystore(newEncryptionPassword: string): void {
     encryptionPassword = newEncryptionPassword;
-  }
-
-  /*
-   * Address Identicon (Blockie)
-   */
-  blockie: string;
-
-  get blockie(): Promise<string | void> {
-    if (this.address) {
-      const blockiePromise = Promise.resolve(
-        blockies
-          .create(Object.assign({}, BLOCKIE_OPTS, { seed: this.address }))
-          .toDataURL(),
-      );
-      /*
-       * While this is not a particularly expensive operation (it is, but it's
-       * small potatoes compared to the others), it's still a good approach
-       * to memoize the getter, so we're doing that here as well.
-       */
-      Object.defineProperty(
-        (this: any),
-        'blockie',
-        Object.assign({}, GETTERS, { value: blockiePromise }),
-      );
-      return blockiePromise;
-    }
-    warning(messages.noAddress, this.address, { level: 'high' });
-    return Promise.reject();
   }
 
   /**
