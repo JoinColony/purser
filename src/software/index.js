@@ -1,6 +1,6 @@
 /* @flow */
 
-import { HDNode } from 'ethers/wallet';
+import { HDNode, Wallet as EthersWallet } from 'ethers/wallet';
 
 import { derivationPathSerializer } from '../core/helpers';
 import { objectToErrorString, getRandomValues, warning } from '../core/utils';
@@ -25,11 +25,18 @@ const softwareWallet: Object = Object.assign(
      * @TODO Fix unit tests
      * After refactor
      *
+     * @TODO Reduce code repetition
+     *
+     * With some clever refactoring we might be able to only call the SoftwareWallet
+     * constructor a single time for all three methods of opening the wallet
+     *
      * @method open
      *
      * @param {string} password Optional password used to generate an encrypted keystore
-     * @param {string} privateKey Optional (in case you pass another type)
-     * @param {string} mnemonic Optional (in case you pass another type)
+     * @param {string} privateKey Private key to open the wallet with
+     * @param {string} mnemonic Mnemonic string to open the wallet with
+     * @param {string} keystore JSON formatted keystore string to open the wallet with.
+     * Only works if you also send in a password
      *
      * All the above params are sent in as props of an {WalletArgumentsType} object.
      *
@@ -41,14 +48,11 @@ const softwareWallet: Object = Object.assign(
       privateKey,
       mnemonic,
       keystore,
-    }: WalletArgumentsType = {}): Promise<WalletObjectType | void> => {
+    }: WalletArgumentsType = {}): Promise<SoftwareWallet | void> => {
       let extractedPrivateKey: string;
-      let extractedMnemonic: string;
-      let extractedPath: string;
       /*
        * @TODO Re-add use ability to control derivation path
-       * When opening the wallet. But only if this proves to be a needed
-       * feature.
+       * When opening the wallet. But only if this proves to be a needed feature.
        */
       const derivationPath: string = derivationPathSerializer({
         change: PATH.CHANGE,
@@ -58,11 +62,7 @@ const softwareWallet: Object = Object.assign(
         /*
          * @TODO Detect if existing but not valid keystore, and warn the user
          */
-        if (
-          keystore &&
-          SoftwareWallet.isEncryptedWallet(keystore) &&
-          password
-        ) {
+        if (keystore && EthersWallet.isEncryptedWallet(keystore) && password) {
           const keystoreWallet: Object =
             /*
              * Prettier suggests changes that would always result in eslint
@@ -70,10 +70,17 @@ const softwareWallet: Object = Object.assign(
              *
              * Nevertheless, by inserting this comment, it works :)
              */
-            await SoftwareWallet.fromEncryptedWallet(keystore, password);
-          extractedPrivateKey = keystoreWallet.privateKey;
-          extractedMnemonic = keystoreWallet.mnemonic;
-          extractedPath = keystoreWallet.path;
+            await EthersWallet.fromEncryptedWallet(keystore, password);
+          /*
+           * Set the keystore and password props on the instance object.
+           *
+           * So that we can make use of them inside the SoftwareWallet
+           * constructor, as the Ethers Wallet instance object will
+           * be passed down.
+           */
+          keystoreWallet.keystore = keystore;
+          keystoreWallet.password = password;
+          return new SoftwareWallet(keystoreWallet);
         }
         /*
          * @TODO Detect if existing but not valid mnemonic, and warn the user
@@ -87,13 +94,19 @@ const softwareWallet: Object = Object.assign(
         /*
          * @TODO Detect if existing but not valid private key, and warn the user
          */
-        return new SoftwareWallet(
+        const privateKeyWallet = new EthersWallet(
           privateKey || extractedPrivateKey,
-          password,
-          mnemonic || extractedMnemonic,
-          derivationPath || extractedPath,
-          keystore,
         );
+        /*
+         * Set the mnemonic and password props on the instance object.
+         *
+         * So that we can make use of them inside the SoftwareWallet
+         * constructor, as the Ethers Wallet instance object will
+         * be passed down.
+         */
+        privateKeyWallet.mnemonic = mnemonic;
+        privateKeyWallet.password = password;
+        return new SoftwareWallet(privateKeyWallet);
       } catch (caughtError) {
         throw new Error(
           `${messages.open} ${objectToErrorString({
@@ -101,7 +114,6 @@ const softwareWallet: Object = Object.assign(
             privateKey,
             mnemonic,
             keystore,
-            derivationPath,
           })} Error: ${caughtError.message}`,
         );
       }
@@ -127,23 +139,26 @@ const softwareWallet: Object = Object.assign(
     create: async ({
       password,
       entropy = getRandomValues(new Uint8Array(65536)),
-    }: WalletArgumentsType = {}): Promise<WalletObjectType | void> => {
+    }: WalletArgumentsType = {}): Promise<SoftwareWallet | void> => {
       let basicWallet: WalletObjectType;
       try {
         if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
           warning(messages.noEntrophy);
-          basicWallet = SoftwareWallet.createRandom();
+          basicWallet = EthersWallet.createRandom();
         } else {
-          basicWallet = SoftwareWallet.createRandom({
+          basicWallet = EthersWallet.createRandom({
             extraEntropy: entropy,
           });
         }
-        return new SoftwareWallet(
-          basicWallet.privateKey,
-          password,
-          basicWallet.mnemonic,
-          basicWallet.path,
-        );
+        /*
+         * Set the password prop on the instance object.
+         *
+         * So that we can make use of them inside the SoftwareWallet
+         * constructor, as the Ethers Wallet instance object will
+         * be passed down.
+         */
+        basicWallet.password = password;
+        return new SoftwareWallet(basicWallet);
       } catch (caughtError) {
         throw new Error(`${messages.create} Error: ${caughtError.message}`);
       }

@@ -1,6 +1,6 @@
 /* @flow */
 
-import { Wallet as EtherWallet } from 'ethers/wallet';
+import secretStorage from 'ethers/wallet/secret-storage';
 
 import { derivationPathSerializer } from '../core/helpers';
 import { PATH, DESCRIPTORS } from '../core/defaults';
@@ -17,55 +17,79 @@ const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
 let encryptionPassword: string | void;
 let keystoreJson: string | void;
 /**
- * We extend Ethers's Wallet Object so we can add extra functionality
+ * @NOTE We're no longer directly extending the Ethers Wallet Class
  *
- * @TODO Refactor software wallet have better control over the resulting wallet object
+ * This is due to the fact that we need more control over the resulting Class
+ * object (SoftwareWallet in this case).
+ *
+ * We're still shadowing the Ethers Wallet, meaning when opening or creating a new
+ * wallet, we will first create a Ethers Wallet instance than pass that along
+ * to the SoftwareWallet constructor.
+ *
+ * This way we don't have to deal with non-configurable or non-writable props,
+ * or the providers being baked in.
  *
  * @TODO Fix Unit tests
  * After the `open` and `create` Methods were extracted
+ * And after we're no longer extending the Ethers Wallet class
  *
- * @extends EtherWallet
  */
-export default class SoftwareWallet extends EtherWallet {
+export default class SoftwareWallet {
+  privateKey: string;
+
+  mnemonic: string;
+
+  derivationPath: string;
+
   /*
    * Encrypted JSON Keystore
    */
   keystore: string;
 
-  constructor(
-    privateKey: string | void,
-    password: string | void,
-    mnemonic: string | void,
-    derivationPath: string | void = derivationPathSerializer({
-      change: PATH.CHANGE,
-      addressIndex: PATH.INDEX,
-    }),
-    keystore: string | void,
-  ) {
-    encryptionPassword = password;
-    keystoreJson = keystore;
-    /*
-     * We don't use providers, so set it to undefined
-     * (don't pass anything in, so it's automatically set to undefined).
-     *
-     * Sadly, we can't actually delete the provider prop since it's set to
-     * `configurable: false` in the parent Class
-     */
-    super(privateKey);
-    /*
-     * We're using `defineProperties` instead of strait up assignment, so that
-     * we can customize the prop's descriptors
-     */
-    Object.defineProperties(this, {
-      mnemonic: Object.assign({}, { value: mnemonic }, WALLET_PROPS),
-      derivationPath: Object.assign(
-        {},
-        { value: derivationPath },
-        WALLET_PROPS,
-      ),
-      type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
-      subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
-    });
+  type: string;
+
+  subtype: string;
+
+  constructor({ privateKey, password, mnemonic, keystore }: Object) {
+    try {
+      encryptionPassword = password;
+      keystoreJson = keystore;
+      /*
+       * We're using `defineProperties` instead of strait up assignment, so that
+       * we can customize the prop's descriptors
+       */
+      Object.defineProperties(this, {
+        privateKey: Object.assign({}, { value: privateKey }, WALLET_PROPS),
+        derivationPath: Object.assign(
+          {},
+          {
+            value: derivationPathSerializer({
+              change: PATH.CHANGE,
+              addressIndex: PATH.INDEX,
+            }),
+          },
+          WALLET_PROPS,
+        ),
+        type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
+        subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
+      });
+      /*
+       * Only set the `mnemonic` prop if it's available, so it won't show up
+       * as being defined, but set to `undefined`
+       */
+      if (mnemonic) {
+        Object.defineProperty(
+          (this: any),
+          'mnemonic',
+          Object.assign({}, { value: mnemonic }, WALLET_PROPS),
+        );
+      }
+    } catch (caughtError) {
+      /*
+       * @TODO Add proper error message
+       */
+      throw new Error(caughtError.message);
+    }
   }
 
   get keystore(): Promise<string | void> {
@@ -83,12 +107,31 @@ export default class SoftwareWallet extends EtherWallet {
         Object.assign({}, GETTERS, {
           value:
             (keystoreJson && Promise.resolve(keystoreJson)) ||
-            this.encrypt(encryptionPassword),
+            /*
+             * We're usign Ethers's direct secret storage encrypt method to generate
+             * the keystore JSON string
+             *
+             * @TODO Validate the password
+             * The password won't work if it's not a string, so it will be best if
+             * we write a string validator for it
+             */
+            secretStorage.encrypt(
+              this.privateKey,
+              encryptionPassword.toString(),
+            ),
         }),
       );
       return (
         (keystoreJson && Promise.resolve(keystoreJson)) ||
-        this.encrypt(encryptionPassword)
+        /*
+         * We're usign Ethers's direct secret storage encrypt method to generate
+         * the keystore JSON string
+         *
+         * @TODO Validate the password
+         * The password won't work if it's not a string, so it will be best if
+         * we write a string validator for it
+         */
+        secretStorage.encrypt(this.privateKey, encryptionPassword.toString())
       );
     }
     warning(messages.noPassword);
@@ -109,9 +152,11 @@ export default class SoftwareWallet extends EtherWallet {
 }
 
 /*
- * We need to use `defineProperties` to make props enumerable.
- * When adding them via a `Class` getter/setter it will prevent that by default
+ * We need to use `defineProperty` to make the prop enumerable.
+ * When adding them via a `Class` getter/setter it will prevent this by default
  */
-Object.defineProperties((SoftwareWallet: any).prototype, {
-  keystore: GETTERS,
-});
+Object.defineProperty(
+  (SoftwareWallet: any).prototype,
+  'keystore',
+  Object.assign({}, GETTERS),
+);
