@@ -6,6 +6,7 @@ import { privateToPublic } from 'ethereumjs-util';
 import { derivationPathSerializer } from '../core/helpers';
 import { warning } from '../core/utils';
 import { hexSequenceNormalizer } from '../core/normalizers';
+import { addressValidator, hexSequenceValidator } from '../core/validators';
 
 import { PATH, DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
@@ -64,6 +65,11 @@ export default class SoftwareWallet {
     mnemonic,
     keystore,
   }: WalletArgumentsType) {
+    /*
+     * Validate the private key and address that's coming in from ethers.
+     */
+    addressValidator(address);
+    hexSequenceValidator(privateKey);
     try {
       /*
        * If we have a keystore JSON string and encryption password, set them
@@ -199,6 +205,13 @@ export default class SoftwareWallet {
       const reversedPublicKey: string = privateToPublic(privateKey).toString(
         HEX_HASH_TYPE,
       );
+      /*
+       * Validate the reversed public key
+       */
+      hexSequenceValidator(reversedPublicKey);
+      /*
+       * Then normalize it to ensure it has the `0x` prefix
+       */
       const normalizedPublicKey: string = hexSequenceNormalizer(
         reversedPublicKey,
       );

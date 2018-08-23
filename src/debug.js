@@ -21,7 +21,7 @@ import * as normalizers from './core/normalizers';
 import providers from './providers';
 
 /* Software */
-import software from './software';
+import SoftwareWallet from './software/class';
 
 /* Trezor */
 import TrezorWallet from './trezor/class';
@@ -67,7 +67,7 @@ const debug: Object = {
     providers,
     walletClasses: {
       GenericWallet,
-      SoftwareWallet: software.SoftwareWallet,
+      SoftwareWallet,
       TrezorWallet,
       LedgerWallet,
       MetamaskWallet,

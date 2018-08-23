@@ -4,7 +4,7 @@ import { HDNode, Wallet as EthersWallet } from 'ethers/wallet';
 
 import { derivationPathSerializer } from '../core/helpers';
 import { objectToErrorString, getRandomValues, warning } from '../core/utils';
-import SoftwareWallet from './software';
+import SoftwareWallet from './class';
 
 import { PATH } from '../core/defaults';
 import { staticMethods as messages } from './messages';
