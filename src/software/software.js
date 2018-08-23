@@ -17,20 +17,6 @@ const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
  */
 let internalKeystoreJson: string | void;
 let internalEncryptionPassword: string | void;
-/*
- * Set the derivation path to a "internal" variable since we only allow
- * access to it through a getter and not directly via a prop.
- *
- * @TODO Allow users control of the derivation path
- * When instantiating a new class instance. But this is only if the feature
- * turns out to be required.
- */
-const internalDerivationPath: string = derivationPathSerializer({
-  change: PATH.CHANGE,
-  addressIndex: PATH.INDEX,
-});
-let internalPrivateKey: string;
-
 /**
  * @NOTE We're no longer directly extending the Ethers Wallet Class
  *
@@ -85,11 +71,30 @@ export default class SoftwareWallet {
        * Set the private key to a "internal" variable since we only allow
        * access to it through a getter and not directly via a prop.
        */
-      internalPrivateKey = privateKey;
       Object.defineProperties(this, {
         address: Object.assign({}, { value: address }, WALLET_PROPS),
         type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
         subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
+        /*
+         * Getters
+         */
+        privateKey: Object.assign({}, { get: async () => privateKey }, GETTERS),
+        /*
+         * @TODO Allow users control of the derivation path
+         * When instantiating a new class instance. But this is only if the feature
+         * turns out to be required.
+         */
+        derivationPath: Object.assign(
+          {},
+          {
+            get: async () =>
+              derivationPathSerializer({
+                change: PATH.CHANGE,
+                addressIndex: PATH.INDEX,
+              }),
+          },
+          GETTERS,
+        ),
       });
       /*
        * Only set the `mnemonic` prop if it's available, so it won't show up
@@ -99,7 +104,7 @@ export default class SoftwareWallet {
         Object.defineProperty(
           (this: any),
           'mnemonic',
-          Object.assign({}, { value: mnemonic }, WALLET_PROPS),
+          Object.assign({}, { get: async () => mnemonic }, GETTERS),
         );
       }
     } catch (caughtError) {
@@ -170,24 +175,14 @@ export default class SoftwareWallet {
   set keystore(newEncryptionPassword: string): void {
     internalEncryptionPassword = newEncryptionPassword;
   }
-
-  /* eslint-disable-next-line class-methods-use-this */
-  get derivationPath(): Promise<string> {
-    return Promise.resolve(internalDerivationPath);
-  }
-
-  /* eslint-disable-next-line class-methods-use-this */
-  get privateKey(): Promise<string> {
-    return Promise.resolve(internalPrivateKey);
-  }
 }
 
 /*
  * We need to use `defineProperties` to make props enumerable.
  * When adding them via a `Class` getter/setter it will prevent that by default
  */
-Object.defineProperties((SoftwareWallet: any).prototype, {
-  keystore: GETTERS,
-  derivationPath: GETTERS,
-  privateKey: GETTERS,
-});
+Object.defineProperty(
+  (SoftwareWallet: any).prototype,
+  'keystore',
+  Object.assign({}, GETTERS),
+);
