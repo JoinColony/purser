@@ -120,52 +120,61 @@ export default class SoftwareWallet {
   }
 
   get keystore(): Promise<string | void> {
-    if (internalEncryptionPassword) {
-      /*
-       * Memoizing the getter
-       *
-       * This is quite an expensive operation, so we're memoizing it that
-       * on the next call (an the others after that) it won't re-calculate
-       * the value again.
-       */
-      Object.defineProperty(
-        (this: any),
-        'keystore',
-        Object.assign({}, GETTERS, {
-          value:
-            (internalKeystoreJson && Promise.resolve(internalKeystoreJson)) ||
-            /*
-             * We're usign Ethers's direct secret storage encrypt method to generate
-             * the keystore JSON string
-             *
-             * @TODO Validate the password
-             * The password won't work if it's not a string, so it will be best if
-             * we write a string validator for it
-             */
-            secretStorage.encrypt(
-              this.privateKey,
-              internalEncryptionPassword.toString(),
-            ),
-        }),
-      );
-      return (
-        (internalKeystoreJson && Promise.resolve(internalKeystoreJson)) ||
+    /*
+     * We're wrapping the getter (returning actually) in a IIFE so we can
+     * write it using a `async` pattern.
+     */
+    return (async () => {
+      if (internalEncryptionPassword) {
+        const privateKey: string = await this.privateKey;
         /*
-         * We're usign Ethers's direct secret storage encrypt method to generate
-         * the keystore JSON string
+         * Memoizing the getter
          *
-         * @TODO Validate the password
-         * The password won't work if it's not a string, so it will be best if
-         * we write a string validator for it
+         * This is quite an expensive operation, so we're memoizing it that
+         * on the next call (an the others after that) it won't re-calculate
+         * the value again.
          */
-        secretStorage.encrypt(
-          this.privateKey,
-          internalEncryptionPassword.toString(),
-        )
-      );
-    }
-    warning(messages.noPassword);
-    return Promise.reject();
+        Object.defineProperty(
+          (this: any),
+          'keystore',
+          Object.assign({}, GETTERS, {
+            value:
+              (internalKeystoreJson && Promise.resolve(internalKeystoreJson)) ||
+              /*
+               * We're usign Ethers's direct secret storage encrypt method to generate
+               * the keystore JSON string
+               *
+               * @TODO Validate the password
+               *
+               * The password won't work if it's not a string, so it will be best if
+               * we write a string validator for it
+               */
+              secretStorage.encrypt(
+                privateKey,
+                internalEncryptionPassword.toString(),
+              ),
+          }),
+        );
+        return (
+          (internalKeystoreJson && Promise.resolve(internalKeystoreJson)) ||
+          /*
+           * We're usign Ethers's direct secret storage encrypt method to generate
+           * the keystore JSON string
+           *
+           * @TODO Validate the password
+           *
+           * The password won't work if it's not a string, so it will be best if
+           * we write a string validator for it
+           */
+          secretStorage.encrypt(
+            privateKey,
+            internalEncryptionPassword.toString(),
+          )
+        );
+      }
+      warning(messages.noPassword);
+      return Promise.reject();
+    })();
   }
 
   /*
