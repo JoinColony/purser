@@ -1,11 +1,13 @@
 /* @flow */
 
 import secretStorage from 'ethers/wallet/secret-storage';
+import { privateToPublic } from 'ethereumjs-util';
 
 import { derivationPathSerializer } from '../core/helpers';
 import { warning } from '../core/utils';
+import { hexSequenceNormalizer } from '../core/normalizers';
 
-import { PATH, DESCRIPTORS } from '../core/defaults';
+import { PATH, DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 import { walletClass as messages } from './messages';
 
@@ -39,6 +41,8 @@ export default class SoftwareWallet {
   address: string;
 
   privateKey: string;
+
+  publicKey: string;
 
   mnemonic: string;
 
@@ -125,7 +129,7 @@ export default class SoftwareWallet {
        * the value again.
        */
       Object.defineProperty(
-        this,
+        (this: any),
         'keystore',
         Object.assign({}, GETTERS, {
           value:
@@ -175,14 +179,43 @@ export default class SoftwareWallet {
   set keystore(newEncryptionPassword: string): void {
     internalEncryptionPassword = newEncryptionPassword;
   }
+
+  get publicKey(): Promise<string | void> {
+    /*
+     * We're wrapping the getter (returning actually) in a IIFE so we can
+     * write it using a `async` pattern.
+     */
+    return (async () => {
+      const privateKey: string = await this.privateKey;
+      const reversedPublicKey: string = privateToPublic(privateKey).toString(
+        HEX_HASH_TYPE,
+      );
+      const normalizedPublicKey: string = hexSequenceNormalizer(
+        reversedPublicKey,
+      );
+      /*
+       * Memoizing the getter
+       *
+       * While this is not an expensive operation, it's still a good idea
+       * to memoize it so it returns a tiny bit faster.
+       */
+      Object.defineProperty(
+        (this: any),
+        'publicKey',
+        Object.assign({}, GETTERS, {
+          value: Promise.resolve(normalizedPublicKey),
+        }),
+      );
+      return normalizedPublicKey;
+    })();
+  }
 }
 
 /*
  * We need to use `defineProperties` to make props enumerable.
  * When adding them via a `Class` getter/setter it will prevent that by default
  */
-Object.defineProperty(
-  (SoftwareWallet: any).prototype,
-  'keystore',
-  Object.assign({}, GETTERS),
-);
+Object.defineProperties((SoftwareWallet: any).prototype, {
+  publicKey: GETTERS,
+  keystore: GETTERS,
+});
