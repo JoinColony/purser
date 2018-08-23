@@ -7,7 +7,7 @@ import { objectToErrorString, getRandomValues, warning } from '../core/utils';
 import SoftwareWallet from './software';
 
 import { PATH } from '../core/defaults';
-import { walletClass as messages } from './messages';
+import { staticMethods as messages } from './messages';
 
 import type { WalletObjectType, WalletArgumentsType } from '../core/flowtypes';
 
@@ -145,11 +145,7 @@ const softwareWallet: Object = Object.assign(
           basicWallet.path,
         );
       } catch (caughtError) {
-        throw new Error(
-          `${messages.create} ${objectToErrorString(entropy)} Error: ${
-            caughtError.message
-          }`,
-        );
+        throw new Error(`${messages.create} Error: ${caughtError.message}`);
       }
     },
   },

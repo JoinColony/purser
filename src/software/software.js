@@ -6,7 +6,7 @@ import { derivationPathSerializer } from '../core/helpers';
 import { PATH, DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 
-import { staticMethods as messages } from './messages';
+import { walletClass as messages } from './messages';
 
 import { warning } from '../core/utils';
 
