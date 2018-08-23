@@ -29,6 +29,7 @@ const internalDerivationPath: string = derivationPathSerializer({
   change: PATH.CHANGE,
   addressIndex: PATH.INDEX,
 });
+let internalPrivateKey: string;
 
 /**
  * @NOTE We're no longer directly extending the Ethers Wallet Class
@@ -77,13 +78,16 @@ export default class SoftwareWallet {
       /*
        * If we have a keystore JSON string and encryption password, set them
        * to the internal variables.
-       *
        */
       internalEncryptionPassword = password;
       internalKeystoreJson = keystore;
+      /*
+       * Set the private key to a "internal" variable since we only allow
+       * access to it through a getter and not directly via a prop.
+       */
+      internalPrivateKey = privateKey;
       Object.defineProperties(this, {
         address: Object.assign({}, { value: address }, WALLET_PROPS),
-        privateKey: Object.assign({}, { value: privateKey }, WALLET_PROPS),
         type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
         subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
       });
@@ -171,6 +175,11 @@ export default class SoftwareWallet {
   get derivationPath(): Promise<string> {
     return Promise.resolve(internalDerivationPath);
   }
+
+  /* eslint-disable-next-line class-methods-use-this */
+  get privateKey(): Promise<string> {
+    return Promise.resolve(internalPrivateKey);
+  }
 }
 
 /*
@@ -180,4 +189,5 @@ export default class SoftwareWallet {
 Object.defineProperties((SoftwareWallet: any).prototype, {
   keystore: GETTERS,
   derivationPath: GETTERS,
+  privateKey: GETTERS,
 });

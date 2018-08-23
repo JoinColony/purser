@@ -48,7 +48,7 @@ export type WalletArgumentsType = {
    * Used to select the address index from the hardware wallet
    */
   addressCount?: number,
-  privateKey?: string,
+  privateKey: string,
   mnemonic?: string,
   path?: string,
   keystore?: string,
