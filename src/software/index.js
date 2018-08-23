@@ -3,11 +3,11 @@
 import { HDNode } from 'ethers/wallet';
 
 import { derivationPathSerializer } from '../core/helpers';
-import { objectToErrorString } from '../core/utils';
-import SoftwareWallet, { create } from './software';
+import { objectToErrorString, getRandomValues, warning } from '../core/utils';
+import SoftwareWallet from './software';
 
 import { PATH } from '../core/defaults';
-import { classMessages as messages } from './messages';
+import { walletClass as messages } from './messages';
 
 import type { WalletObjectType, WalletArgumentsType } from '../core/flowtypes';
 
@@ -21,6 +21,9 @@ const softwareWallet: Object = Object.assign(
      * This will try to extract the private key from a mnemonic (if available),
      * and create a new SoftwareWallet instance using whichever key is available.
      * (the on passed in or the one extracted from the mnemonic).
+     *
+     * @TODO Fix unit tests
+     * After refactor
      *
      * @method open
      *
@@ -103,7 +106,52 @@ const softwareWallet: Object = Object.assign(
         );
       }
     },
-    create,
+    /**
+     * Create a new wallet.
+     *
+     * This will use EtherWallet's `createRandom()` (with defaults and entropy)
+     * and use the resulting private key to instantiate a new SoftwareWallet.
+     *
+     * @TODO Fix unit tests
+     * After refactor
+     *
+     * @method create
+     *
+     * @param {Uint8Array} entropy An unsigned 8bit integer Array to provide extra randomness
+     * @param {string} password Optional password used to generate an encrypted keystore
+     *
+     * All the above params are sent in as props of an {WalletArgumentsType} object.
+     *
+     * @return {WalletType} A new wallet object
+     */
+    create: async ({
+      password,
+      entropy = getRandomValues(new Uint8Array(65536)),
+    }: WalletArgumentsType = {}): Promise<WalletObjectType | void> => {
+      let basicWallet: WalletObjectType;
+      try {
+        if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
+          warning(messages.noEntrophy);
+          basicWallet = SoftwareWallet.createRandom();
+        } else {
+          basicWallet = SoftwareWallet.createRandom({
+            extraEntropy: entropy,
+          });
+        }
+        return new SoftwareWallet(
+          basicWallet.privateKey,
+          password,
+          basicWallet.mnemonic,
+          basicWallet.path,
+        );
+      } catch (caughtError) {
+        throw new Error(
+          `${messages.create} ${objectToErrorString(entropy)} Error: ${
+            caughtError.message
+          }`,
+        );
+      }
+    },
   },
 );
 
