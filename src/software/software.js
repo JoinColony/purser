@@ -3,19 +3,33 @@
 import secretStorage from 'ethers/wallet/secret-storage';
 
 import { derivationPathSerializer } from '../core/helpers';
+import { warning } from '../core/utils';
+
 import { PATH, DESCRIPTORS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
-
 import { walletClass as messages } from './messages';
 
-import { warning } from '../core/utils';
+import type { WalletArgumentsType } from '../core/flowtypes';
 
 const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
 /*
- * "Private" variable(s)
+ * "Private" (internal) variable(s)
  */
-let encryptionPassword: string | void;
-let keystoreJson: string | void;
+let internalKeystoreJson: string | void;
+let internalEncryptionPassword: string | void;
+/*
+ * Set the derivation path to a "internal" variable since we only allow
+ * access to it through a getter and not directly via a prop.
+ *
+ * @TODO Allow users control of the derivation path
+ * When instantiating a new class instance. But this is only if the feature
+ * turns out to be required.
+ */
+const internalDerivationPath: string = derivationPathSerializer({
+  change: PATH.CHANGE,
+  addressIndex: PATH.INDEX,
+});
+
 /**
  * @NOTE We're no longer directly extending the Ethers Wallet Class
  *
@@ -35,6 +49,8 @@ let keystoreJson: string | void;
  *
  */
 export default class SoftwareWallet {
+  address: string;
+
   privateKey: string;
 
   mnemonic: string;
@@ -50,26 +66,24 @@ export default class SoftwareWallet {
 
   subtype: string;
 
-  constructor({ privateKey, password, mnemonic, keystore }: Object) {
+  constructor({
+    address,
+    privateKey,
+    password,
+    mnemonic,
+    keystore,
+  }: WalletArgumentsType) {
     try {
-      encryptionPassword = password;
-      keystoreJson = keystore;
       /*
-       * We're using `defineProperties` instead of strait up assignment, so that
-       * we can customize the prop's descriptors
+       * If we have a keystore JSON string and encryption password, set them
+       * to the internal variables.
+       *
        */
+      internalEncryptionPassword = password;
+      internalKeystoreJson = keystore;
       Object.defineProperties(this, {
+        address: Object.assign({}, { value: address }, WALLET_PROPS),
         privateKey: Object.assign({}, { value: privateKey }, WALLET_PROPS),
-        derivationPath: Object.assign(
-          {},
-          {
-            value: derivationPathSerializer({
-              change: PATH.CHANGE,
-              addressIndex: PATH.INDEX,
-            }),
-          },
-          WALLET_PROPS,
-        ),
         type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
         subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
       });
@@ -93,7 +107,7 @@ export default class SoftwareWallet {
   }
 
   get keystore(): Promise<string | void> {
-    if (encryptionPassword) {
+    if (internalEncryptionPassword) {
       /*
        * Memoizing the getter
        *
@@ -106,7 +120,7 @@ export default class SoftwareWallet {
         'keystore',
         Object.assign({}, GETTERS, {
           value:
-            (keystoreJson && Promise.resolve(keystoreJson)) ||
+            (internalKeystoreJson && Promise.resolve(internalKeystoreJson)) ||
             /*
              * We're usign Ethers's direct secret storage encrypt method to generate
              * the keystore JSON string
@@ -117,12 +131,12 @@ export default class SoftwareWallet {
              */
             secretStorage.encrypt(
               this.privateKey,
-              encryptionPassword.toString(),
+              internalEncryptionPassword.toString(),
             ),
         }),
       );
       return (
-        (keystoreJson && Promise.resolve(keystoreJson)) ||
+        (internalKeystoreJson && Promise.resolve(internalKeystoreJson)) ||
         /*
          * We're usign Ethers's direct secret storage encrypt method to generate
          * the keystore JSON string
@@ -131,7 +145,10 @@ export default class SoftwareWallet {
          * The password won't work if it's not a string, so it will be best if
          * we write a string validator for it
          */
-        secretStorage.encrypt(this.privateKey, encryptionPassword.toString())
+        secretStorage.encrypt(
+          this.privateKey,
+          internalEncryptionPassword.toString(),
+        )
       );
     }
     warning(messages.noPassword);
@@ -147,16 +164,20 @@ export default class SoftwareWallet {
    */
   /* eslint-disable-next-line class-methods-use-this */
   set keystore(newEncryptionPassword: string): void {
-    encryptionPassword = newEncryptionPassword;
+    internalEncryptionPassword = newEncryptionPassword;
+  }
+
+  /* eslint-disable-next-line class-methods-use-this */
+  get derivationPath(): Promise<string> {
+    return Promise.resolve(internalDerivationPath);
   }
 }
 
 /*
- * We need to use `defineProperty` to make the prop enumerable.
- * When adding them via a `Class` getter/setter it will prevent this by default
+ * We need to use `defineProperties` to make props enumerable.
+ * When adding them via a `Class` getter/setter it will prevent that by default
  */
-Object.defineProperty(
-  (SoftwareWallet: any).prototype,
-  'keystore',
-  Object.assign({}, GETTERS),
-);
+Object.defineProperties((SoftwareWallet: any).prototype, {
+  keystore: GETTERS,
+  derivationPath: GETTERS,
+});
