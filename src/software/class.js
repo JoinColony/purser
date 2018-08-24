@@ -32,11 +32,6 @@ let internalEncryptionPassword: string | void;
  *
  * This way we don't have to deal with non-configurable or non-writable props,
  * or the providers being baked in.
- *
- * @TODO Fix Unit tests
- * After the `open` and `create` Methods were extracted
- * And after we're no longer extending the Ethers Wallet class
- *
  */
 export default class SoftwareWallet {
   address: string;
@@ -64,64 +59,57 @@ export default class SoftwareWallet {
     password,
     mnemonic,
     keystore,
-  }: WalletArgumentsType) {
+  }: WalletArgumentsType = {}) {
     /*
      * Validate the private key and address that's coming in from ethers.
      */
     addressValidator(address);
     hexSequenceValidator(privateKey);
-    try {
+    /*
+     * If we have a keystore JSON string and encryption password, set them
+     * to the internal variables.
+     */
+    internalEncryptionPassword = password;
+    internalKeystoreJson = keystore;
+    /*
+     * Set the private key to a "internal" variable since we only allow
+     * access to it through a getter and not directly via a prop.
+     */
+    Object.defineProperties(this, {
+      address: Object.assign({}, { value: address }, WALLET_PROPS),
+      type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
+      subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
       /*
-       * If we have a keystore JSON string and encryption password, set them
-       * to the internal variables.
+       * Getters
        */
-      internalEncryptionPassword = password;
-      internalKeystoreJson = keystore;
+      privateKey: Object.assign({}, { get: async () => privateKey }, GETTERS),
       /*
-       * Set the private key to a "internal" variable since we only allow
-       * access to it through a getter and not directly via a prop.
+       * @TODO Allow users control of the derivation path
+       * When instantiating a new class instance. But this is only if the feature
+       * turns out to be required.
        */
-      Object.defineProperties(this, {
-        address: Object.assign({}, { value: address }, WALLET_PROPS),
-        type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
-        subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
-        /*
-         * Getters
-         */
-        privateKey: Object.assign({}, { get: async () => privateKey }, GETTERS),
-        /*
-         * @TODO Allow users control of the derivation path
-         * When instantiating a new class instance. But this is only if the feature
-         * turns out to be required.
-         */
-        derivationPath: Object.assign(
-          {},
-          {
-            get: async () =>
-              derivationPathSerializer({
-                change: PATH.CHANGE,
-                addressIndex: PATH.INDEX,
-              }),
-          },
-          GETTERS,
-        ),
-      });
-      /*
-       * Only set the `mnemonic` prop if it's available, so it won't show up
-       * as being defined, but set to `undefined`
-       */
-      if (mnemonic) {
-        Object.defineProperty(
-          (this: any),
-          'mnemonic',
-          Object.assign({}, { get: async () => mnemonic }, GETTERS),
-        );
-      }
-    } catch (caughtError) {
-      /*
-       * @TODO Add proper error message
-       */
-      throw new Error(caughtError.message);
+      derivationPath: Object.assign(
+        {},
+        {
+          get: async () =>
+            derivationPathSerializer({
+              change: PATH.CHANGE,
+              addressIndex: PATH.INDEX,
+            }),
+        },
+        GETTERS,
+      ),
+    });
+    /*
+     * Only set the `mnemonic` prop if it's available, so it won't show up
+     * as being defined, but set to `undefined`
+     */
+    if (mnemonic) {
+      Object.defineProperty(
+        (this: any),
+        'mnemonic',
+        Object.assign({}, { get: async () => mnemonic }, GETTERS),
+      );
     }
   }
 
