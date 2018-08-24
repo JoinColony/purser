@@ -1,60 +1,33 @@
-export const Wallet = jest.fn().mockImplementation((privatekey, provider) => {
-  if (privatekey === '0x0' || !privatekey) {
+export const Wallet = jest.fn().mockImplementation(privateKey => {
+  if (privateKey === '0x0' || !privateKey) {
     throw new Error();
   }
-  /*
-   * A little trick to simulate an error during wallet creation
-   */
-  if (provider && provider.error) {
-    throw new Error();
-  }
-  return this;
+  return {
+    privateKey,
+  };
 });
 
-Wallet.prototype.encrypt = jest.fn(
-  password =>
-    new Promise((resolve, reject) => {
-      if (password) {
-        return resolve(`{}`);
-      }
-      return reject();
-    }),
-);
+Wallet.createRandom = jest.fn(() => ({ privateKey: 'mocked-private-key' }));
 
-Wallet.createRandom = jest.fn(() => ({ privateKey: '0x1' }));
+Wallet.isEncryptedWallet = jest.fn(() => true);
 
-Wallet.isEncryptedWallet = jest.fn(jsonString => {
-  const keystoreObject = JSON.parse(jsonString);
-  if (Object.prototype.hasOwnProperty.call(keystoreObject, 'address')) {
-    return true;
-  }
-  return false;
-});
-
-Wallet.fromEncryptedWallet = jest.fn(keystore => ({
-  privateKey: '0x1',
-  address: JSON.parse(keystore).address,
-  mnemonic: 'romeo delta india golf',
+Wallet.fromEncryptedWallet = jest.fn(() => ({
+  privateKey: 'mocked-private-key',
+  address: 'mocked-address',
+  mnemonic: 'mocked-mnemonic',
 }));
-
-Wallet.prototype.sendTransaction = jest.fn(transactionData => {
-  if (transactionData && transactionData.from && transactionData.nonce) {
-    return Promise.resolve('0x0transactionhash0');
-  }
-  throw new Error();
-});
 
 export const HDNode = {
   fromMnemonic: jest.fn(mnemonic => ({
     derivePath: jest.fn(() => {
-      if (mnemonic === 'romeo delta india golf') {
-        return { privateKey: '0x1' };
+      if (mnemonic === 'mocked-mnemonic') {
+        return { privateKey: 'mocked-private-key' };
       }
-      return { privateKey: '0x0' };
+      return { privateKey: 'another-mocked-private-key' };
     }),
   })),
   isValidMnemonic: jest.fn(mnemonic => {
-    if (mnemonic === 'romeo delta india golf') {
+    if (mnemonic === 'mocked-mnemonic') {
       return true;
     }
     return false;

@@ -22,9 +22,6 @@ const softwareWallet: Object = Object.assign(
      * and create a new SoftwareWallet instance using whichever key is available.
      * (the on passed in or the one extracted from the mnemonic).
      *
-     * @TODO Fix unit tests
-     * After refactor
-     *
      * @TODO Reduce code repetition
      *
      * With some clever refactoring we might be able to only call the SoftwareWallet
