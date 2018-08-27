@@ -35,6 +35,7 @@ const softwareWallet: Object = Object.assign(
      * @param {string} mnemonic Mnemonic string to open the wallet with
      * @param {string} keystore JSON formatted keystore string to open the wallet with.
      * Only works if you also send in a password
+     * @param {number} chainId The id of the network to use, defaults to mainnet (1)
      *
      * All the above params are sent in as props of an {WalletArgumentsType} object.
      *
@@ -51,7 +52,13 @@ const softwareWallet: Object = Object.assign(
         firstArgument: argumentObject,
         requiredEither: REQUIRED_PROPS_SOFTWARE.OPEN_WALLET,
       });
-      const { password, privateKey, mnemonic, keystore } = argumentObject;
+      const {
+        password,
+        privateKey,
+        mnemonic,
+        keystore,
+        chainId = NETWORK_IDS.HOMESTEAD,
+      } = argumentObject;
       let extractedPrivateKey: string;
       /*
        * @TODO Re-add use ability to control derivation path
@@ -83,6 +90,7 @@ const softwareWallet: Object = Object.assign(
            */
           keystoreWallet.keystore = keystore;
           keystoreWallet.password = password;
+          keystoreWallet.chainId = chainId;
           return new SoftwareWallet(keystoreWallet);
         }
         /*
@@ -109,6 +117,7 @@ const softwareWallet: Object = Object.assign(
          */
         privateKeyWallet.mnemonic = mnemonic;
         privateKeyWallet.password = password;
+        privateKeyWallet.chainId = chainId;
         return new SoftwareWallet(privateKeyWallet);
       } catch (caughtError) {
         throw new Error(
@@ -134,6 +143,7 @@ const softwareWallet: Object = Object.assign(
      *
      * @param {Uint8Array} entropy An unsigned 8bit integer Array to provide extra randomness
      * @param {string} password Optional password used to generate an encrypted keystore
+     * @param {number} chainId The id of the network to use, defaults to mainnet (1)
      *
      * All the above params are sent in as props of an {WalletArgumentsType} object.
      *
@@ -151,6 +161,7 @@ const softwareWallet: Object = Object.assign(
       const {
         password,
         entropy = getRandomValues(new Uint8Array(65536)),
+        chainId = NETWORK_IDS.HOMESTEAD,
       } = argumentObject;
       let basicWallet: WalletObjectType;
       try {
@@ -170,6 +181,7 @@ const softwareWallet: Object = Object.assign(
          * be passed down.
          */
         basicWallet.password = password;
+        basicWallet.chainId = chainId;
         return new SoftwareWallet(basicWallet);
       } catch (caughtError) {
         throw new Error(`${messages.create} Error: ${caughtError.message}`);

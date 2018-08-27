@@ -58,6 +58,8 @@ export default class SoftwareWallet {
 
   subtype: string;
 
+  chainId: number;
+
   /*
    * @TODO Add specific Flow types
    *
@@ -71,6 +73,7 @@ export default class SoftwareWallet {
     password,
     mnemonic,
     keystore,
+    chainId,
     sign: ethersSign,
   }: WalletArgumentsType = {}) {
     /*
@@ -92,6 +95,7 @@ export default class SoftwareWallet {
       address: Object.assign({}, { value: address }, WALLET_PROPS),
       type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
+      chainId: Object.assign({}, { value: chainId }, WALLET_PROPS),
       /*
        * Getters
        */
@@ -115,12 +119,16 @@ export default class SoftwareWallet {
       sign: Object.assign(
         {},
         {
-          value: async (transactionObject: TransactionObjectType) =>
-            signTransaction(
+          value: async (transactionObject: TransactionObjectType) => {
+            const { chainId: transactionChainId = this.chainId } =
+              transactionObject || {};
+            return signTransaction(
               Object.assign({}, transactionObject, {
                 callback: ethersSign,
+                chainId: transactionChainId,
               }),
-            ),
+            );
+          },
         },
         WALLET_PROPS,
       ),
