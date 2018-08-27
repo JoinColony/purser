@@ -8,11 +8,16 @@ import { warning } from '../core/utils';
 import { hexSequenceNormalizer } from '../core/normalizers';
 import { addressValidator, hexSequenceValidator } from '../core/validators';
 
+import { signTransaction } from './staticMethods';
+
 import { PATH, DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 import { walletClass as messages } from './messages';
 
-import type { WalletArgumentsType } from '../core/flowtypes';
+import type {
+  WalletArgumentsType,
+  TransactionObjectType,
+} from '../core/flowtypes';
 
 const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
 /*
@@ -53,12 +58,20 @@ export default class SoftwareWallet {
 
   subtype: string;
 
+  /*
+   * @TODO Add specific Flow types
+   *
+   * For the three main wallet methods
+   */
+  sign: (...*) => Promise<string>;
+
   constructor({
     address,
     privateKey,
     password,
     mnemonic,
     keystore,
+    sign: ethersSign,
   }: WalletArgumentsType = {}) {
     /*
      * Validate the private key and address that's coming in from ethers.
@@ -98,6 +111,18 @@ export default class SoftwareWallet {
             }),
         },
         GETTERS,
+      ),
+      sign: Object.assign(
+        {},
+        {
+          value: async (transactionObject: TransactionObjectType) =>
+            signTransaction(
+              Object.assign({}, transactionObject, {
+                callback: ethersSign,
+              }),
+            ),
+        },
+        WALLET_PROPS,
       ),
     });
     /*

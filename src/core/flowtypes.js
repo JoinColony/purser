@@ -55,6 +55,7 @@ export type WalletArgumentsType = {
   entropy?: Uint8Array,
   password?: string,
   chainId?: number,
+  sign?: () => {},
 };
 
 export type MessageObjectType = {
