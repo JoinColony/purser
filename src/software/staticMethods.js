@@ -1,6 +1,12 @@
 /* @flow */
 
+import { bigNumberify } from 'ethers/utils';
+
 import { transactionObjectValidator } from '../core/helpers';
+import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
+import { objectToErrorString } from '../core/utils';
+
+import { staticMethods as messages } from './messages';
 
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
@@ -34,29 +40,31 @@ export const signTransaction = async ({
     inputData,
   } = transactionObjectValidator(transactionObject);
   try {
-    return callback({
+    const signedTransaction: string = await callback({
       /*
-       * Flow cofuses BN.js's toNumber with the String Object
+       * Ethers needs it's own "proprietary" version of bignumber to work.
        */
-      /* $FlowFixMe */
-      gasPrice: gasPrice.toNumber(),
+      gasPrice: bigNumberify(gasPrice.toString()),
       /*
-       * Flow cofuses BN.js's toNumber with the String Object
+       * Ethers needs it's own "proprietary" version of bignumber to work.
        */
-      /* $FlowFixMe */
-      gasLimit: gasLimit.toNumber(),
+      gasLimit: bigNumberify(gasLimit.toString()),
       chainId,
       nonce,
-      to,
+      to: addressNormalizer(to),
       /*
-       * Flow cofuses BN.js's toNumber with the String Object
+       * Ethers needs it's own "proprietary" version of bignumber to work.
        */
-      /* $FlowFixMe */
-      value: value.toNumber(),
-      data: inputData,
+      value: bigNumberify(value.toString()),
+      data: hexSequenceNormalizer(inputData),
     });
+    return hexSequenceNormalizer(signedTransaction);
   } catch (caughtError) {
-    throw new Error(caughtError.message);
+    throw new Error(
+      `${messages.cannotSign} ${objectToErrorString(transactionObject)} ${
+        caughtError.message
+      }`,
+    );
   }
 };
 

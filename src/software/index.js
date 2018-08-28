@@ -87,6 +87,11 @@ const softwareWallet: Object = Object.assign(
            * So that we can make use of them inside the SoftwareWallet
            * constructor, as the Ethers Wallet instance object will
            * be passed down.
+           *
+           * @TODO Better passing of values
+           *
+           * This needs to be refactored to pass values to the SoftwareWallet
+           * class in a less repetitious way
            */
           keystoreWallet.keystore = keystore;
           keystoreWallet.password = password;
@@ -114,6 +119,11 @@ const softwareWallet: Object = Object.assign(
          * So that we can make use of them inside the SoftwareWallet
          * constructor, as the Ethers Wallet instance object will
          * be passed down.
+         *
+         * @TODO Better passing of values
+         *
+         * This needs to be refactored to pass values to the SoftwareWallet
+         * class in a less repetitious way
          */
         privateKeyWallet.mnemonic = mnemonic;
         privateKeyWallet.password = password;
@@ -135,9 +145,6 @@ const softwareWallet: Object = Object.assign(
      *
      * This will use EtherWallet's `createRandom()` (with defaults and entropy)
      * and use the resulting private key to instantiate a new SoftwareWallet.
-     *
-     * @TODO Fix unit tests
-     * After refactor
      *
      * @method create
      *
@@ -179,6 +186,11 @@ const softwareWallet: Object = Object.assign(
          * So that we can make use of them inside the SoftwareWallet
          * constructor, as the Ethers Wallet instance object will
          * be passed down.
+         *
+         * @TODO Better passing of values
+         *
+         * This needs to be refactored to pass values to the SoftwareWallet
+         * class in a less repetitious way
          */
         basicWallet.password = password;
         basicWallet.chainId = chainId;
