@@ -8,7 +8,7 @@ import { warning } from '../core/utils';
 import { hexSequenceNormalizer } from '../core/normalizers';
 import { addressValidator, hexSequenceValidator } from '../core/validators';
 
-import { signTransaction } from './staticMethods';
+import { signTransaction, signMessage } from './staticMethods';
 
 import {
   PATH,
@@ -22,6 +22,7 @@ import { walletClass as messages } from './messages';
 import type {
   WalletArgumentsType,
   TransactionObjectType,
+  MessageObjectType,
 } from '../core/flowtypes';
 
 const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
@@ -72,6 +73,8 @@ export default class SoftwareWallet {
    */
   sign: (...*) => Promise<string>;
 
+  signMessage: (...*) => Promise<string>;
+
   constructor({
     address,
     privateKey,
@@ -80,6 +83,7 @@ export default class SoftwareWallet {
     keystore,
     chainId,
     sign: ethersSign,
+    signMessage: ethersSignMessage,
   }: WalletArgumentsType = {}) {
     /*
      * Validate the private key and address that's coming in from ethers.
@@ -141,6 +145,23 @@ export default class SoftwareWallet {
               }),
             );
           },
+        },
+        WALLET_PROPS,
+      ),
+      /*
+       * @TODO Add unit test
+       *
+       * To check for the availability of this method, and if it calls the
+       * correct static method
+       */
+      signMessage: Object.assign(
+        {},
+        {
+          value: async ({ message }: MessageObjectType = {}) =>
+            signMessage({
+              message,
+              callback: ethersSignMessage,
+            }),
         },
         WALLET_PROPS,
       ),

@@ -68,8 +68,11 @@ export const signTransaction = async ({
   }
 };
 
-const softwareWalletStaticMethods: Object = {
-  signTransaction,
-};
-
-export default softwareWalletStaticMethods;
+/*
+ * @TODO Add method logic
+ *
+ * @TODO Add method commnet block
+ *
+ * @TODO Add unit tests
+ */
+export const signMessage = async (...args: any) => args;
