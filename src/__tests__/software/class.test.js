@@ -13,6 +13,7 @@ import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../../core/types';
 jest.dontMock('../../software/class');
 
 jest.mock('ethereumjs-util');
+jest.mock('ethers/wallet/secret-storage');
 jest.mock('../../core/utils');
 jest.mock('../../core/helpers');
 jest.mock('../../core/normalizers');
