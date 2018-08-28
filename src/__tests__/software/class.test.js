@@ -6,6 +6,8 @@ import { addressValidator, hexSequenceValidator } from '../../core/validators';
 import { hexSequenceNormalizer } from '../../core/normalizers';
 
 import SoftwareWallet from '../../software/class';
+import { signTransaction } from '../../software/staticMethods';
+
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../../core/types';
 
 jest.dontMock('../../software/class');
@@ -15,6 +17,7 @@ jest.mock('../../core/utils');
 jest.mock('../../core/helpers');
 jest.mock('../../core/normalizers');
 jest.mock('../../core/validators');
+jest.mock('../../software/staticMethods');
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -69,34 +72,38 @@ describe('`Software` Wallet Module', () => {
         keystore,
       });
       /*
-      * Address
-      */
+       * Address
+       */
       expect(testWallet).toHaveProperty('address');
       /*
-      * Public Key Getter
-      */
+       * Public Key Getter
+       */
       expect(testWallet).toHaveProperty('publicKey');
       /*
-      * Private Key Getter
-      */
+       * Private Key Getter
+       */
       expect(testWallet).toHaveProperty('privateKey');
       /*
-      * Derivation Path Getter
-      */
+       * Derivation Path Getter
+       */
       expect(testWallet).toHaveProperty('derivationPath');
       /*
-      * Mnemonic Getter
-      */
+       * Mnemonic Getter
+       */
       expect(testWallet).toHaveProperty('mnemonic');
       /*
-      * Keystore Getter (and Setter)
-      */
+       * Keystore Getter (and Setter)
+       */
       expect(testWallet).toHaveProperty('keystore');
       /*
-      * The correct identification type props
-      */
+       * The correct identification type props
+       */
       expect(testWallet).toHaveProperty('type', TYPE_SOFTWARE);
       expect(testWallet).toHaveProperty('subtype', SUBTYPE_ETHERS);
+      /*
+       * Sign transaction method
+       */
+      expect(testWallet).toHaveProperty('sign');
     });
     test('Only has the mnemonic prop if it was opened with it', () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
@@ -189,6 +196,11 @@ describe('`Software` Wallet Module', () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
       testWallet.keystore = password;
       expect(testWallet.keystore).resolves.toEqual(keystore);
+    });
+    test('`sign()` calls the correct static method', async () => {
+      const testWallet = new SoftwareWallet(mockedArgumentsObject);
+      await testWallet.sign();
+      expect(signTransaction).toHaveBeenCalled();
     });
   });
 });

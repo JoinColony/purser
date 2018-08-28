@@ -11,6 +11,8 @@ import { staticMethods as messages } from './messages';
 /**
  * Sign a transaction object and return the serialized signature (as a hex string)
  *
+ * @TODO Add unit tests
+ *
  * @method signTransaction
  *
  * @param {bigNumber} gasPrice gas price for the transaction in WEI (as an instance of bigNumber), defaults to 9000000000 (9 GWEI)
