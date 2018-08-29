@@ -148,18 +148,17 @@ export default class SoftwareWallet {
         },
         WALLET_PROPS,
       ),
-      /*
-       * @TODO Add unit test
-       *
-       * To check for the availability of this method, and if it calls the
-       * correct static method
-       */
       signMessage: Object.assign(
         {},
         {
           value: async ({ message }: MessageObjectType = {}) =>
             signMessage({
               message,
+              /*
+               * Private key needs to be bound since this method doesn't
+               * expect to be destructured from the instance object, and
+               * uses `this` to get the value of the private key
+               */
               callback: (ethersSignMessage: any).bind({ privateKey }),
             }),
         },
