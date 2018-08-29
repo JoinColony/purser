@@ -100,3 +100,5 @@ export const signMessage = async ({ message, callback }: Object = {}): Promise<
     );
   }
 };
+
+export const verifyMessage = async (...args: any) => args;
