@@ -17,6 +17,13 @@ Wallet.fromEncryptedWallet = jest.fn(() => ({
   mnemonic: 'mocked-mnemonic',
 }));
 
+Wallet.verifyMessage = jest.fn((message, signature) => {
+  if (!message || !signature) {
+    throw new Error();
+  }
+  return 'mocked-recovered-address';
+});
+
 export const HDNode = {
   fromMnemonic: jest.fn(mnemonic => ({
     derivePath: jest.fn(() => {

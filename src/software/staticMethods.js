@@ -110,8 +110,6 @@ export const signMessage = async ({ message, callback }: Object = {}): Promise<
  *
  * @method verifyMessage
  *
- * @TODO Add unit tests
- *
  * @param {string} address The wallet address to verify the signature against
  * @param {string} message The message to verify if it was signed correctly
  * @param {string} signature The message signature as a `hex` string (you usually get this via `signMessage`)
@@ -142,7 +140,7 @@ export const verifyMessage = async ({
     /*
      * Validate the recovered address
      */
-    addressValidator(address);
+    addressValidator(recoveredAddress);
     return address === recoveredAddress;
   } catch (caughtError) {
     throw new Error(
