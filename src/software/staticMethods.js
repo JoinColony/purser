@@ -74,8 +74,6 @@ export const signTransaction = async ({
  *
  * @method signMessage
  *
- * @TODO Add unit tests
- *
  * @param {string} message the message you want to sign
  * @param {function} callback Ethers method to call with the validated message string
  *
