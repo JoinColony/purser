@@ -4,6 +4,7 @@ import { bigNumberify } from 'ethers/utils';
 
 import { transactionObjectValidator } from '../core/helpers';
 import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
+import { messageValidator } from '../core/validators';
 import { objectToErrorString } from '../core/utils';
 
 import { staticMethods as messages } from './messages';
@@ -20,7 +21,7 @@ import { staticMethods as messages } from './messages';
  * @param {string} to the address to which to the transaction is sent
  * @param {bigNumber} value the value of the transaction in WEI (as an instance of bigNumber), defaults to 1
  * @param {string} inputData data appended to the transaction (as a `hex` string)
- * @param {function} callback the callback to call with the validated transaction object
+ * @param {function} callback Ethers method to call with the validated transaction object
  *
  * All the above params are sent in as props of an {TransactionObjectType} object.
  *
@@ -29,7 +30,7 @@ import { staticMethods as messages } from './messages';
 export const signTransaction = async ({
   callback,
   ...transactionObject
-}: Object = {}): Promise<string | void> => {
+}: Object = {}): Promise<string> => {
   const {
     gasPrice,
     gasLimit,
@@ -68,11 +69,36 @@ export const signTransaction = async ({
   }
 };
 
-/*
- * @TODO Add method logic
+/**
+ * Sign a message and return the signature. Useful for verifying identities.
  *
- * @TODO Add method commnet block
+ * @method signMessage
  *
  * @TODO Add unit tests
+ *
+ * @param {string} message the message you want to sign
+ * @param {function} callback Ethers method to call with the validated message string
+ *
+ * All the above params are sent in as props of an {object}.
+ *
+ * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async (...args: any) => args;
+export const signMessage = async ({ message, callback }: Object = {}): Promise<
+  string,
+> => {
+  /*
+   * Validate input value
+   */
+  messageValidator(message);
+  try {
+    const messageSignature: string = callback(message);
+    /*
+     * Normalize the message signature
+     */
+    return hexSequenceNormalizer(messageSignature);
+  } catch (caughtError) {
+    throw new Error(
+      `${messages.cannotSignMessage}: ${message} Error: ${caughtError.message}`,
+    );
+  }
+};

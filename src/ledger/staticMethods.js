@@ -202,7 +202,7 @@ export const signTransaction = async ({
  * @param {string} derivationPath the derivation path for the account with which to sign the message
  * @param {string} message the message you want to sign
  *
- * All the above params are sent in as props of an {object.
+ * All the above params are sent in as props of an {object}.
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */

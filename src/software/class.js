@@ -160,7 +160,7 @@ export default class SoftwareWallet {
           value: async ({ message }: MessageObjectType = {}) =>
             signMessage({
               message,
-              callback: ethersSignMessage,
+              callback: (ethersSignMessage: any).bind({ privateKey }),
             }),
         },
         WALLET_PROPS,
