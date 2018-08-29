@@ -85,7 +85,6 @@ export default class SoftwareWallet {
     chainId,
     sign: ethersSign,
     signMessage: ethersSignMessage,
-    verifyMessage: ethersVerifyMessage,
   }: WalletArgumentsType = {}) {
     /*
      * Validate the private key and address that's coming in from ethers.
@@ -188,7 +187,6 @@ export default class SoftwareWallet {
               address,
               message,
               signature,
-              callback: ethersVerifyMessage,
             }),
         },
         WALLET_PROPS,

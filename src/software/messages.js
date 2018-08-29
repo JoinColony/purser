@@ -17,4 +17,6 @@ export const staticMethods: Object = {
     'Cannot sign the transaction. Check the values you are passing in as the Transaction Object',
   cannotSignMessage:
     'Cannot sign the message. Check the message string you are passing in',
+  cannotVerifySignature:
+    'Cannot verify the signed message. Check the message string and signature you are passing in',
 };
