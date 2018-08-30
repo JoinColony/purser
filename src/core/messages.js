@@ -78,4 +78,13 @@ export const helpers: Object = {
     somethingWentWrong:
       'Something went wrong while trying to recover the `publicKey` from your signature',
   },
+  userInputValidator: {
+    argumentsFormatExplanation:
+      "All user facing methods exposed by this library (from a Module or from a Wallet instance object) take they're arguments as props of an Object. Each method has it's own required or optional props that it expects. Please consult the documentation for each indivial's method call details.",
+    notObject:
+      "The method needs to be passed arguments in the form of Object and it's props",
+    notSomeProps:
+      'The object argument requires at least one of the props to be set',
+    notAllProps: 'The object argument requires all of the props to be set',
+  },
 };
