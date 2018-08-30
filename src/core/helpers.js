@@ -314,10 +314,8 @@ export const messageVerificationObjectValidator = ({
  *
  * @method userInputValidator
  *
- * @TODO Add unit tests
- *
  * @param {Array} argumentsAccess The `arguments` variable from which we can extract the first argument
- * @param {Array} requiredEither Array of strings representing prop names of which at least one is required. Take precence over `requiredAll`
+ * @param {Array} requiredEither Array of strings representing prop names of which at least one is required.
  * @param {Array} requiredAll Array of strings representing prop names of which all are required.
  *
  * All the above params are sent in as props of an object.
@@ -330,7 +328,7 @@ export const userInputValidator = ({
   argumentsAccess?: Array<any>,
   requiredAll?: Array<string>,
   requiredEither?: Array<string>,
-}): void => {
+} = {}): void => {
   const { userInputValidator: messages } = helperMessages;
   /*
    * If it's not set, assume an empty Object
