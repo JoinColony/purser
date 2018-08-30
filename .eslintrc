@@ -11,5 +11,6 @@
     "no-console": ["warn", { "allow": ["warn", "error"]}],
     "flowtype/define-flow-type": 1,
     "no-irregular-whitespace": ["error", { "skipRegExps": true }],
+    "prefer-rest-params": [0],
   },
 }
