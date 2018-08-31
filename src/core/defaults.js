@@ -128,3 +128,10 @@ export const NETWORK_IDS: Object = {
   RINKEBY: 4,
   KOVAN: 42,
 };
+
+/*
+ * Prop names used to validate user input against
+ */
+export const REQUIRED_PROPS: Object = {
+  SIGN_TRANSACTION: ['to'],
+};
