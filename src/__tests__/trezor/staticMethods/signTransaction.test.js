@@ -1,6 +1,9 @@
 import EthereumTx from 'ethereumjs-tx';
 
-import { transactionObjectValidator } from '../../../core/helpers';
+import {
+  transactionObjectValidator,
+  userInputValidator,
+} from '../../../core/helpers';
 import * as utils from '../../../core/utils';
 
 import { signTransaction } from '../../../trezor/staticMethods';
@@ -14,6 +17,7 @@ import {
 import { derivationPathValidator } from '../../../core/validators';
 
 import { PAYLOAD_SIGNTX } from '../../../trezor/payloads';
+import { REQUIRED_PROPS } from '../../../core/defaults';
 import { STD_ERRORS } from '../../../trezor/defaults';
 
 jest.dontMock('../../../trezor/staticMethods');
@@ -180,6 +184,14 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
        * User cancelled, so we don't throw
        */
       expect(utils.warning).toHaveBeenCalled();
+    });
+    test("Validate the user's input", async () => {
+      await signTransaction(mockedArgumentsObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        argumentsAccess: [mockedTransactionObject],
+        requiredEither: REQUIRED_PROPS.SIGN_TRANSACTION,
+      });
     });
   });
 });
