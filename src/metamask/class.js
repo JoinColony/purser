@@ -127,11 +127,19 @@ export default class MetamaskWallet {
         {
           value: async (
             messageVerificationObject: MessageVerificationObjectType,
-          ) =>
-            verifyMessage({
+          ) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageVerificationObject,
+              requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+            });
+            return verifyMessage({
               currentAddress: this.address,
               ...messageVerificationObject,
-            }),
+            });
+          },
         },
         WALLET_PROPS,
       ),
