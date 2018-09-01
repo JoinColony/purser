@@ -8,7 +8,7 @@ import {
   userInputValidator,
 } from '../../core/helpers';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../../core/types';
-import { HEX_HASH_TYPE } from '../../core/defaults';
+import { HEX_HASH_TYPE, REQUIRED_PROPS } from '../../core/defaults';
 
 import MetamaskWalletClass from '../../metamask/class';
 import {
@@ -106,6 +106,10 @@ const mockedNewState = {
 const mockedTransactionObject = {
   to: 'mocked-destination-address',
   value: 'mockedValue',
+};
+const mockedMessage = 'mocked-message';
+const mockeMessageObject = {
+  message: mockedMessage,
 };
 
 describe('Metamask` Wallet Module', () => {
@@ -252,6 +256,15 @@ describe('Metamask` Wallet Module', () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
       await metamaskWallet.signMessage();
       expect(signMessage).toHaveBeenCalled();
+    });
+    test('Validates the input befire signing a message', async () => {
+      const metamaskWallet = new MetamaskWalletClass({ address });
+      await metamaskWallet.signMessage(mockeMessageObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockeMessageObject,
+        requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+      });
     });
     test('Calls the correct method to verify a message', async () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
