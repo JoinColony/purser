@@ -3,7 +3,10 @@ import isEqual from 'lodash.isequal';
 import { warning } from '../../core/utils';
 import { hexSequenceNormalizer } from '../../core/normalizers';
 import { hexSequenceValidator } from '../../core/validators';
-import { recoverPublicKey as recoverPublicKeyHelper } from '../../core/helpers';
+import {
+  recoverPublicKey as recoverPublicKeyHelper,
+  userInputValidator,
+} from '../../core/helpers';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../../core/types';
 import { HEX_HASH_TYPE } from '../../core/defaults';
 
@@ -28,6 +31,7 @@ import {
 import {
   PUBLICKEY_RECOVERY_MESSAGE,
   STD_ERRORS,
+  REQUIRED_PROPS as REQUIRED_PROPS_METAMASK,
 } from '../../metamask/defaults';
 
 jest.dontMock('../../metamask/class');
@@ -98,6 +102,10 @@ const mockedState = {
 const mockedNewState = {
   ...mockedState,
   selectedAddress: 'new-mocked-address',
+};
+const mockedTransactionObject = {
+  to: 'mocked-destination-address',
+  value: 'mockedValue',
 };
 
 describe('Metamask` Wallet Module', () => {
@@ -230,6 +238,15 @@ describe('Metamask` Wallet Module', () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
       await metamaskWallet.sign();
       expect(signTransaction).toHaveBeenCalled();
+    });
+    test('Validates the input befire signing a transaction', async () => {
+      const metamaskWallet = new MetamaskWalletClass({ address });
+      await metamaskWallet.sign(mockedTransactionObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedTransactionObject,
+        requiredAll: REQUIRED_PROPS_METAMASK.SIGN_TRANSACTION,
+      });
     });
     test('Calls the correct method to sign a message', async () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
