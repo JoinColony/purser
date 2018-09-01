@@ -4,10 +4,10 @@ import GenericWallet from '../core/genericWallet';
 import { userInputValidator } from '../core/helpers';
 import { DESCRIPTORS, REQUIRED_PROPS } from '../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
+
 import type {
   TransactionObjectType,
   GenericClassArgumentsType,
-  MessageVerificationObjectType,
 } from '../core/flowtypes';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
@@ -78,11 +78,21 @@ export default class TrezorWallet extends GenericWallet {
       verifyMessage: Object.assign(
         {},
         {
-          value: async ({
-            message,
-            signature,
-          }: MessageVerificationObjectType = {}) =>
-            verifyMessage({ address: this.address, message, signature }),
+          value: async (signatureVerificationObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: signatureVerificationObject,
+              requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+            });
+            const { message, signature } = signatureVerificationObject;
+            return verifyMessage({
+              address: this.address,
+              message,
+              signature,
+            });
+          },
         },
         WALLET_PROPS,
       ),
