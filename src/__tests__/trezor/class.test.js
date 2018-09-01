@@ -26,6 +26,7 @@ const rootDerivationPath = 'mocked-root-derivation-path';
 const mockedChainId = 'mocked-chain-id';
 const addressCount = 10;
 const mockedMessage = 'mocked-message';
+const mockedSignature = 'mocked-signature';
 const mockedInstanceArgument = {
   publicKey: rootPublicKey,
   chainCode: rootChainCode,
@@ -39,6 +40,10 @@ const mockedTransactionObject = {
 };
 const mockedMessageObject = {
   message: mockedMessage,
+};
+const mockedSignatureObject = {
+  message: mockedMessage,
+  signature: mockedSignature,
 };
 
 describe('Trezor` Hardware Wallet Module', () => {
@@ -156,5 +161,17 @@ describe('Trezor` Hardware Wallet Module', () => {
       },
     );
     /* eslint-enable prettier/prettier */
+    test('Validate `verifyMessage` method user input', async () => {
+      const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
+      await trezorWallet.verifyMessage(mockedSignatureObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedSignatureObject,
+        requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+      });
+    });
   });
 });
