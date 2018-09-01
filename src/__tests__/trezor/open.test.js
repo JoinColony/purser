@@ -1,6 +1,9 @@
 import { fromString } from 'bip32-path';
 
-import { derivationPathSerializer } from '../../core/helpers';
+import {
+  derivationPathSerializer,
+  userInputValidator,
+} from '../../core/helpers';
 import { PATH, NETWORK_IDS } from '../../core/defaults';
 
 import * as utils from '../../core/utils';
@@ -30,8 +33,8 @@ describe('Trezor` Hardware Wallet Module', () => {
   afterEach(() => {
     TrezorWalletClass.mockReset();
     TrezorWalletClass.mockRestore();
-    utils.warning.mockReset();
-    utils.warning.mockRestore();
+    utils.warning.mockClear();
+    userInputValidator.mockClear();
   });
   describe('`open()` static method with defaults', () => {
     test('Open the wallet with defaults', async () => {
@@ -63,6 +66,16 @@ describe('Trezor` Hardware Wallet Module', () => {
           type,
           requiredFirmware,
         }),
+      });
+    });
+    test("Validate the user's input", async () => {
+      const mockedArgumentsObject = {
+        mockedArgument: 'mocked-argument',
+      };
+      await trezorWallet.open(mockedArgumentsObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedArgumentsObject,
       });
     });
     test('Open the wallet with 20 addresss', async () => {
