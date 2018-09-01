@@ -25,16 +25,20 @@ const rootChainCode = 'mocked-root-chain-code';
 const rootDerivationPath = 'mocked-root-derivation-path';
 const mockedChainId = 'mocked-chain-id';
 const addressCount = 10;
+const mockedMessage = 'mocked-message';
 const mockedInstanceArgument = {
   publicKey: rootPublicKey,
   chainCode: rootChainCode,
   rootDerivationPath,
   addressCount,
 };
-const mockedTransactioNObject = {
+const mockedTransactionObject = {
   to: 'mocked-address',
   nonce: 'mocked-nonce',
   value: 'mocked-transaction-value',
+};
+const mockedMessageObject = {
+  message: mockedMessage,
 };
 
 describe('Trezor` Hardware Wallet Module', () => {
@@ -90,13 +94,13 @@ describe('Trezor` Hardware Wallet Module', () => {
     );
     test('Validate `sign` method user input', async () => {
       const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
-      await trezorWallet.sign(mockedTransactioNObject);
+      await trezorWallet.sign(mockedTransactionObject);
       /*
        * Validate the input
        */
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
-        firstArgument: mockedTransactioNObject,
+        firstArgument: mockedTransactionObject,
         requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
       });
     });
@@ -120,6 +124,18 @@ describe('Trezor` Hardware Wallet Module', () => {
         });
       },
     );
+    test('Validate `signMessage` method user input', async () => {
+      const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
+      await trezorWallet.signMessage(mockedMessageObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedMessageObject,
+        requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+      });
+    });
     test(
       "Calls the `verifyMessage()` static method from the instance's methods",
       async () => {
