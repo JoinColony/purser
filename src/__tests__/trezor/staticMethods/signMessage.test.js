@@ -6,7 +6,7 @@ import {
   derivationPathValidator,
   messageValidator,
 } from '../../../core/validators';
-import * as utils from '../../../core/utils';
+import { warning } from '../../../core/utils';
 
 import { signMessage } from '../../../trezor/staticMethods';
 import { payloadListener } from '../../../trezor/helpers';
@@ -45,7 +45,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       derivationPathValidator.mockClear();
       hexSequenceNormalizer.mockClear();
       messageValidator.mockClear();
-      hexSequenceNormalizer.mockClear();
+      warning.mockClear();
     });
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNMSG;
@@ -133,8 +133,15 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       /*
        * User cancelled, so we don't throw
        */
-      expect(utils.warning).toHaveBeenCalled();
+      expect(warning).toHaveBeenCalled();
       expect(signMessage(mockedMessageObject)).resolves.not.toThrow();
+    });
+    test('Warns the user about proprietary signature format', async () => {
+      await signMessage(mockedMessageObject);
+      /*
+       * Wran the user
+       */
+      expect(warning).toHaveBeenCalled();
     });
   });
 });
