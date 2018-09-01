@@ -11,6 +11,8 @@ export const staticMethodsMessages: Object = {
   userSignTxGenericError:
     'Could not sign the transaction, check the values you are sending to the Trezor service',
   messageSignatureInvalid: 'The message signature is invalid',
+  messageSignatureOnlyTrezor:
+    'Please take note: The message signature produced by a trezor wallet can only be verified using that trezor wallet (verifyMessage method)',
 };
 
 const trezorMessages = {

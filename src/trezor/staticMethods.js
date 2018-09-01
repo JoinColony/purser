@@ -277,6 +277,7 @@ export const signMessage = async ({
    */
   derivationPathValidator(derivationPath);
   messageValidator(message);
+  warning(messages.messageSignatureOnlyTrezor);
   try {
     const { signature: signedMessage } = await payloadListener({
       payload: Object.assign({}, PAYLOAD_SIGNMSG, {
@@ -343,6 +344,7 @@ export const verifyMessage = async ({
   const { message, signature } = messageVerificationObjectValidator(
     signatureMessage,
   );
+  warning(messages.messageSignatureOnlyTrezor);
   try {
     const { success: isMessageValid } = await payloadListener({
       payload: Object.assign({}, PAYLOAD_VERIFYMSG, {
