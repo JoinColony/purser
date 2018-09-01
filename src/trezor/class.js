@@ -6,7 +6,6 @@ import { DESCRIPTORS, REQUIRED_PROPS } from '../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
 import type {
   TransactionObjectType,
-  MessageObjectType,
   GenericClassArgumentsType,
   MessageVerificationObjectType,
 } from '../core/flowtypes';
@@ -60,11 +59,19 @@ export default class TrezorWallet extends GenericWallet {
       signMessage: Object.assign(
         {},
         {
-          value: async ({ message }: MessageObjectType = {}) =>
-            signMessage({
+          value: async (messageObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageObject,
+              requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+            });
+            return signMessage({
               derivationPath: await this.derivationPath,
-              message,
-            }),
+              message: messageObject.message,
+            });
+          },
         },
         WALLET_PROPS,
       ),
