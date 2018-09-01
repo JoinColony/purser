@@ -314,27 +314,22 @@ export const messageVerificationObjectValidator = ({
  *
  * @method userInputValidator
  *
- * @param {Array} argumentsAccess The `arguments` variable from which we can extract the first argument
+ * @param {Object} firstArgument The argument to validate that it's indeed an object, and that it has the required props
  * @param {Array} requiredEither Array of strings representing prop names of which at least one is required.
  * @param {Array} requiredAll Array of strings representing prop names of which all are required.
  *
  * All the above params are sent in as props of an object.
  */
 export const userInputValidator = ({
-  argumentsAccess = [],
+  firstArgument = {},
   requiredEither = [],
   requiredAll = [],
 }: {
-  argumentsAccess?: Array<any>,
+  firstArgument: Object,
   requiredAll?: Array<string>,
   requiredEither?: Array<string>,
 } = {}): void => {
   const { userInputValidator: messages } = helperMessages;
-  /*
-   * If it's not set, assume an empty Object
-   */
-  const firstArgument: Object =
-    Array.prototype.slice.call(argumentsAccess)[0] || {};
   /*
    * First we check if the argument is an Object (also, not an Array)
    */

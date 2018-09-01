@@ -18,9 +18,8 @@ import { warning, bigNumber, objectToErrorString } from '../core/utils';
 import {
   transactionObjectValidator,
   messageVerificationObjectValidator,
-  userInputValidator,
 } from '../core/helpers';
-import { HEX_HASH_TYPE, REQUIRED_PROPS } from '../core/defaults';
+import { HEX_HASH_TYPE } from '../core/defaults';
 
 import { payloadListener } from './helpers';
 import { staticMethodsMessages as messages } from './messages';
@@ -49,13 +48,6 @@ export const signTransaction = async ({
   derivationPath,
   ...transactionObject
 }: Object = {}): Promise<string | void> => {
-  /*
-   * Validate the trasaction object input
-   */
-  userInputValidator({
-    argumentsAccess: [transactionObject],
-    requiredEither: REQUIRED_PROPS.SIGN_TRANSACTION,
-  });
   const {
     gasPrice,
     gasLimit,

@@ -133,5 +133,7 @@ export const NETWORK_IDS: Object = {
  * Prop names used to validate user input against
  */
 export const REQUIRED_PROPS: Object = {
-  SIGN_TRANSACTION: ['to'],
+  SIGN_TRANSACTION: ['to', 'nonce', 'value'],
+  SIGN_MESSAGE: ['message'],
+  VERIFY_MESSAGE: ['message', 'signature'],
 };

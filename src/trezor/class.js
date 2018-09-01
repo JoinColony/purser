@@ -1,7 +1,8 @@
 /* @flow */
 
 import GenericWallet from '../core/genericWallet';
-import { DESCRIPTORS } from '../core/defaults';
+import { userInputValidator } from '../core/helpers';
+import { DESCRIPTORS, REQUIRED_PROPS } from '../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
 import type {
   TransactionObjectType,
@@ -38,6 +39,13 @@ export default class TrezorWallet extends GenericWallet {
         {},
         {
           value: async (transactionObject: TransactionObjectType) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: transactionObject,
+              requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+            });
             const { chainId = propObject.chainId } = transactionObject || {};
             return signTransaction(
               Object.assign({}, transactionObject, {
