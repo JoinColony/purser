@@ -111,6 +111,10 @@ const mockedMessage = 'mocked-message';
 const mockeMessageObject = {
   message: mockedMessage,
 };
+const mockeSignatureObject = {
+  message: mockedMessage,
+  signature: 'mocked-signature',
+};
 
 describe('Metamask` Wallet Module', () => {
   describe('`MetamaskWallet` class', () => {
@@ -243,7 +247,7 @@ describe('Metamask` Wallet Module', () => {
       await metamaskWallet.sign();
       expect(signTransaction).toHaveBeenCalled();
     });
-    test('Validates the input befire signing a transaction', async () => {
+    test('Validates the input before signing a transaction', async () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
       await metamaskWallet.sign(mockedTransactionObject);
       expect(userInputValidator).toHaveBeenCalled();
@@ -257,7 +261,7 @@ describe('Metamask` Wallet Module', () => {
       await metamaskWallet.signMessage();
       expect(signMessage).toHaveBeenCalled();
     });
-    test('Validates the input befire signing a message', async () => {
+    test('Validates the input before signing a message', async () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
       await metamaskWallet.signMessage(mockeMessageObject);
       expect(userInputValidator).toHaveBeenCalled();
@@ -270,6 +274,15 @@ describe('Metamask` Wallet Module', () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
       await metamaskWallet.verifyMessage();
       expect(verifyMessage).toHaveBeenCalled();
+    });
+    test('Validates the input before verifying a signature', async () => {
+      const metamaskWallet = new MetamaskWalletClass({ address });
+      await metamaskWallet.verifyMessage(mockeSignatureObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockeSignatureObject,
+        requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+      });
     });
     test('Normalizes the recovery message and makes it a hex String', () => {
       MetamaskWalletClass.recoverPublicKey(address);
