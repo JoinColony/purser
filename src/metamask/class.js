@@ -10,7 +10,7 @@ import {
 import { addressValidator, hexSequenceValidator } from '../core/validators';
 import { hexSequenceNormalizer } from '../core/normalizers';
 
-import { DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
+import { DESCRIPTORS, HEX_HASH_TYPE, REQUIRED_PROPS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
@@ -29,7 +29,6 @@ import {
 
 import type {
   TransactionObjectType,
-  MessageObjectType,
   MessageVerificationObjectType,
 } from '../core/flowtypes';
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
@@ -107,11 +106,19 @@ export default class MetamaskWallet {
       signMessage: Object.assign(
         {},
         {
-          value: async ({ message }: MessageObjectType = {}) =>
-            signMessage({
+          value: async (messageObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageObject,
+              requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+            });
+            return signMessage({
               currentAddress: this.address,
-              message,
-            }),
+              message: messageObject.message,
+            });
+          },
         },
         WALLET_PROPS,
       ),
