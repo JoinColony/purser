@@ -11,11 +11,9 @@ jest.mock('../../../core/utils');
  */
 const mockedPropValue = 'mocked-prop-value';
 const mockedRequiredProps = ['mockedProp'];
-const mockedArgumentsArray = [
-  {
-    mockedProp: mockedPropValue,
-  },
-];
+const mockedArgument = {
+  mockedProp: mockedPropValue,
+};
 
 describe('`Core` Module', () => {
   describe('`userInputValidator()` helper', () => {
@@ -28,7 +26,7 @@ describe('`Core` Module', () => {
        */
       expect(() =>
         userInputValidator({
-          argumentsAccess: mockedArgumentsArray,
+          firstArgument: mockedArgument,
         }),
       ).not.toThrow();
       /*
@@ -42,12 +40,12 @@ describe('`Core` Module', () => {
        */
       expect(() =>
         userInputValidator({
-          argumentsAccess: [123],
+          firstArgument: [123],
         }),
       ).toThrow();
       expect(() =>
         userInputValidator({
-          argumentsAccess: [['a random string']],
+          firstArgument: ['a random string'],
         }),
       ).toThrow();
       /*
@@ -58,7 +56,7 @@ describe('`Core` Module', () => {
     test('Continues if at least one of the required prop is available', () => {
       expect(() =>
         userInputValidator({
-          argumentsAccess: mockedArgumentsArray,
+          firstArgument: mockedArgument,
           requiredEither: mockedRequiredProps,
         }),
       ).not.toThrow();
@@ -66,7 +64,7 @@ describe('`Core` Module', () => {
     test('Errors out if none of the required prop is available', () => {
       expect(() =>
         userInputValidator({
-          argumentsAccess: [{ mockedPropWithDifferentName: mockedPropValue }],
+          firstArgument: { mockedPropWithDifferentName: mockedPropValue },
           requiredEither: mockedRequiredProps,
         }),
       ).toThrow();
@@ -78,7 +76,7 @@ describe('`Core` Module', () => {
     test('Continues if all of the required prop are available', () => {
       expect(() =>
         userInputValidator({
-          argumentsAccess: mockedArgumentsArray,
+          firstArgument: mockedArgument,
           requiredAll: mockedRequiredProps,
         }),
       ).not.toThrow();
@@ -86,7 +84,7 @@ describe('`Core` Module', () => {
     test('Errors out if one of all required props is not available', () => {
       expect(() =>
         userInputValidator({
-          argumentsAccess: mockedArgumentsArray,
+          firstArgument: mockedArgument,
           requiredAll: [...mockedRequiredProps, 'anotherRequiredProp'],
         }),
       ).toThrow();
