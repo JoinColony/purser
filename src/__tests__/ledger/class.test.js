@@ -24,6 +24,7 @@ const rootChainCode = 'mocked-root-chain-code';
 const rootDerivationPath = 'mocked-root-derivation-path';
 const mockedChainId = 'mocked-chain-id';
 const addressCount = 10;
+const mockedMessage = 'mocked-message';
 const mockedInstanceArgument = {
   publicKey: rootPublicKey,
   chainCode: rootChainCode,
@@ -34,6 +35,9 @@ const mockedTransactionObject = {
   to: 'mocked-address',
   nonce: 'mocked-nonce',
   value: 'mocked-transaction-value',
+};
+const mockedMessageObject = {
+  message: mockedMessage,
 };
 
 describe('Ledger` Hardware Wallet Module', () => {
@@ -145,6 +149,18 @@ describe('Ledger` Hardware Wallet Module', () => {
         });
       },
     );
+    test('Validate `signMessage` method user input', async () => {
+      const trezorWallet = new LedgerWalletClass(mockedInstanceArgument);
+      await trezorWallet.signMessage(mockedMessageObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedMessageObject,
+        requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+      });
+    });
     test(
       "Calls the `verifyMessage()` static method from the instance's methods",
       async () => {
