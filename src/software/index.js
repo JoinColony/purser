@@ -2,11 +2,12 @@
 
 import { HDNode, Wallet as EthersWallet } from 'ethers/wallet';
 
-import { derivationPathSerializer } from '../core/helpers';
+import { derivationPathSerializer, userInputValidator } from '../core/helpers';
 import { objectToErrorString, getRandomValues, warning } from '../core/utils';
 import SoftwareWallet from './class';
 
 import { PATH } from '../core/defaults';
+import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from './defaults';
 import { staticMethods as messages } from './messages';
 
 import type { WalletObjectType, WalletArgumentsType } from '../core/flowtypes';
@@ -40,12 +41,17 @@ const softwareWallet: Object = Object.assign(
      * @return {WalletType} A new wallet object (or undefined) if somehwere along
      * the line an error is thrown.
      */
-    open: async ({
-      password,
-      privateKey,
-      mnemonic,
-      keystore,
-    }: WalletArgumentsType = {}): Promise<SoftwareWallet | void> => {
+    open: async (
+      argumentObject: WalletArgumentsType = {},
+    ): Promise<SoftwareWallet | void> => {
+      /*
+       * Validate the trasaction's object input
+       */
+      userInputValidator({
+        firstArgument: argumentObject,
+        requiredEither: REQUIRED_PROPS_SOFTWARE.OPEN_WALLET,
+      });
+      const { password, privateKey, mnemonic, keystore } = argumentObject;
       let extractedPrivateKey: string;
       /*
        * @TODO Re-add use ability to control derivation path
