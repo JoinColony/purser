@@ -1,10 +1,14 @@
 /* @flow */
 
 import { bigNumberify } from 'ethers/utils';
+import { Wallet as EthersWallet } from 'ethers/wallet';
 
-import { transactionObjectValidator } from '../core/helpers';
+import {
+  transactionObjectValidator,
+  messageVerificationObjectValidator,
+} from '../core/helpers';
 import { addressNormalizer, hexSequenceNormalizer } from '../core/normalizers';
-import { messageValidator } from '../core/validators';
+import { messageValidator, addressValidator } from '../core/validators';
 import { objectToErrorString } from '../core/utils';
 
 import { staticMethods as messages } from './messages';
@@ -62,9 +66,9 @@ export const signTransaction = async ({
     return hexSequenceNormalizer(signedTransaction);
   } catch (caughtError) {
     throw new Error(
-      `${messages.cannotSign} ${objectToErrorString(transactionObject)} ${
-        caughtError.message
-      }`,
+      `${messages.cannotSign} ${objectToErrorString(
+        transactionObject,
+      )} Error: ${caughtError.message}`,
     );
   }
 };
@@ -97,6 +101,52 @@ export const signMessage = async ({ message, callback }: Object = {}): Promise<
   } catch (caughtError) {
     throw new Error(
       `${messages.cannotSignMessage}: ${message} Error: ${caughtError.message}`,
+    );
+  }
+};
+
+/**
+ * Verify a signed message. Useful for verifying identity. (In conjunction with `signMessage`)
+ *
+ * @method verifyMessage
+ *
+ * @param {string} address The wallet address to verify the signature against
+ * @param {string} message The message to verify if it was signed correctly
+ * @param {string} signature The message signature as a `hex` string (you usually get this via `signMessage`)
+ *
+ * All the above params are sent in as props of an {MessageVerificationObjectType} object.
+ *
+ * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
+ */
+export const verifyMessage = async ({
+  address,
+  ...signatureMessage
+}: Object = {}): Promise<boolean> => {
+  /*
+   * Validate the address locally
+   */
+  addressValidator(address);
+  /*
+   * Validate the rest of the pros using the core helper
+   */
+  const { message, signature } = messageVerificationObjectValidator(
+    signatureMessage,
+  );
+  try {
+    const recoveredAddress: string = EthersWallet.verifyMessage(
+      message,
+      signature,
+    );
+    /*
+     * Validate the recovered address
+     */
+    addressValidator(recoveredAddress);
+    return address === recoveredAddress;
+  } catch (caughtError) {
+    throw new Error(
+      `${messages.cannotVerifySignature} ${objectToErrorString(
+        signatureMessage,
+      )} Error: ${caughtError.message}`,
     );
   }
 };

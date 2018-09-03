@@ -8,7 +8,7 @@ import { warning } from '../core/utils';
 import { hexSequenceNormalizer } from '../core/normalizers';
 import { addressValidator, hexSequenceValidator } from '../core/validators';
 
-import { signTransaction, signMessage } from './staticMethods';
+import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 
 import {
   PATH,
@@ -73,6 +73,8 @@ export default class SoftwareWallet {
   sign: (...*) => Promise<string>;
 
   signMessage: (...*) => Promise<string>;
+
+  verifyMessage: (...*) => Promise<string>;
 
   constructor({
     address,
@@ -166,6 +168,27 @@ export default class SoftwareWallet {
                * uses `this` to get the value of the private key
                */
               callback: (ethersSignMessage: any).bind({ privateKey }),
+            });
+          },
+        },
+        WALLET_PROPS,
+      ),
+      verifyMessage: Object.assign(
+        {},
+        {
+          value: async (signatureVerificationObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: signatureVerificationObject,
+              requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+            });
+            const { message, signature } = signatureVerificationObject;
+            return verifyMessage({
+              address,
+              message,
+              signature,
             });
           },
         },

@@ -7,7 +7,11 @@ import { addressValidator, hexSequenceValidator } from '../../core/validators';
 import { hexSequenceNormalizer } from '../../core/normalizers';
 
 import SoftwareWallet from '../../software/class';
-import { signTransaction, signMessage } from '../../software/staticMethods';
+import {
+  signTransaction,
+  signMessage,
+  verifyMessage,
+} from '../../software/staticMethods';
 
 import { REQUIRED_PROPS } from '../../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../../core/types';
@@ -33,6 +37,7 @@ const password = 'mocked-encryption-password';
 const keystore = 'mocked-keystore';
 const derivationPath = 'mocked-derivation-path';
 const mockedMessage = 'mocked-message';
+const mockedSignature = 'mocked-signature';
 const mockedEthersSignMessage = {
   bind: jest.fn(),
 };
@@ -48,6 +53,10 @@ const mockedTransactionObject = {
 const mockedMessageObject = {
   message: mockedMessage,
 };
+const mockedSignatureObject = {
+  message: mockedMessage,
+  signature: mockedSignature,
+};
 
 describe('`Software` Wallet Module', () => {
   afterEach(() => {
@@ -61,6 +70,7 @@ describe('`Software` Wallet Module', () => {
     userInputValidator.mockClear();
     signMessage.mockClear();
     mockedEthersSignMessage.bind.mockClear();
+    verifyMessage.mockClear();
   });
   describe('`SoftwareWallet` Class', () => {
     test('Creates a new wallet', async () => {
@@ -127,6 +137,10 @@ describe('`Software` Wallet Module', () => {
        * Sign message method
        */
       expect(testWallet).toHaveProperty('signMessage');
+      /*
+       * Verify message method
+       */
+      expect(testWallet).toHaveProperty('verifyMessage');
     });
     test('Only has the mnemonic prop if it was opened with it', () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
@@ -269,6 +283,23 @@ describe('`Software` Wallet Module', () => {
       expect(userInputValidator).toHaveBeenCalledWith({
         firstArgument: mockedMessageObject,
         requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+      });
+    });
+    test('`verifyMessages()` calls the correct static method', async () => {
+      const testWallet = new SoftwareWallet(mockedArgumentsObject);
+      await testWallet.verifyMessage();
+      expect(verifyMessage).toHaveBeenCalled();
+    });
+    test('Validate `verifyMessage` method user input', async () => {
+      const trezorWallet = new SoftwareWallet(mockedArgumentsObject);
+      await trezorWallet.verifyMessage(mockedSignatureObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedSignatureObject,
+        requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
       });
     });
   });
