@@ -22,7 +22,6 @@ import { walletClass as messages } from './messages';
 import type {
   WalletArgumentsType,
   TransactionObjectType,
-  MessageObjectType,
 } from '../core/flowtypes';
 
 const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
@@ -151,16 +150,24 @@ export default class SoftwareWallet {
       signMessage: Object.assign(
         {},
         {
-          value: async ({ message }: MessageObjectType = {}) =>
-            signMessage({
-              message,
+          value: async (messageObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageObject,
+              requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+            });
+            return signMessage({
+              message: messageObject.message,
               /*
                * Private key needs to be bound since this method doesn't
                * expect to be destructured from the instance object, and
                * uses `this` to get the value of the private key
                */
               callback: (ethersSignMessage: any).bind({ privateKey }),
-            }),
+            });
+          },
         },
         WALLET_PROPS,
       ),
