@@ -65,6 +65,22 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
     EthereumTx.mockClear();
   });
   describe('`signTransaction()` static method', () => {
+    test('Creates the initial, unsigned signature', async () => {
+      await signTransaction(mockedArgumentsObject);
+      expect(EthereumTx).toHaveBeenCalled();
+      expect(EthereumTx).toHaveBeenCalledWith({
+        gasPrice,
+        gasLimit,
+        chainId,
+        nonce,
+        to,
+        value,
+        data: inputData,
+        r: '0',
+        s: '0',
+        v: chainId,
+      });
+    });
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNTX;
       await signTransaction(mockedArgumentsObject);
@@ -135,27 +151,6 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       expect(hexSequenceNormalizer).toHaveBeenCalled();
       expect(hexSequenceNormalizer).toHaveBeenCalledWith(inputData, false);
     });
-    test('Converts R,S,V ECDSA into a hex signature', async () => {
-      const rComponent = 'mocked-r-signature-component';
-      const sComponent = 'mocked-s-signature-component';
-      const recoveryParam = 'mocked-recovery param';
-      /*
-       * We're re-mocking the helpers just for this test so we can simulate
-       * a different response
-       */
-      payloadListener.mockImplementation(() => ({
-        r: rComponent,
-        s: sComponent,
-        v: recoveryParam,
-      }));
-      await signTransaction(mockedArgumentsObject);
-      expect(EthereumTx).toHaveBeenCalled();
-      expect(EthereumTx).toHaveBeenCalledWith({
-        r: rComponent,
-        s: sComponent,
-        v: recoveryParam,
-      });
-    });
     test('Catches is something goes wrong along the way', async () => {
       /*
        * We're re-mocking the helpers just for this test so we can simulate
@@ -175,7 +170,6 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
         Promise.reject(new Error(STD_ERRORS.CANCEL_TX_SIGN)),
       );
       await signTransaction(mockedArgumentsObject);
-      expect(EthereumTx).not.toHaveBeenCalled();
       /*
        * User cancelled, so we don't throw
        */

@@ -19,7 +19,7 @@ import {
   transactionObjectValidator,
   messageVerificationObjectValidator,
 } from '../core/helpers';
-import { HEX_HASH_TYPE } from '../core/defaults';
+import { HEX_HASH_TYPE, SIGNATURE } from '../core/defaults';
 
 import { payloadListener } from './helpers';
 import { staticMethodsMessages as messages } from './messages';
@@ -58,6 +58,93 @@ export const signTransaction = async ({
     inputData,
   } = transactionObjectValidator(transactionObject);
   derivationPathValidator(derivationPath);
+  /*
+   * @TODO Reduce code repetition
+   *
+   * Between the unsigned EthereumTx signature object values and the values
+   * sent to the Trezor server
+   */
+  const unsignedTransaction = await new EthereumTx({
+    /*
+     * We could really do with some BN.js flow types declarations :(
+     */
+    gasPrice: hexSequenceNormalizer(
+      /*
+       * @TODO Add `bigNumber` `toHexString` wrapper method
+       *
+       * Flow confuses bigNumber's `toString` with the String object
+       * prototype `toString` method
+       */
+      /* $FlowFixMe */
+      multipleOfTwoHexValueNormalizer(gasPrice.toString(16)),
+    ),
+    gasLimit: hexSequenceNormalizer(
+      /*
+       * @TODO Add `bigNumber` `toHexString` wrapper method
+       *
+       * Flow confuses bigNumber's `toString` with the String object
+       * prototype `toString` method
+       */
+      /* $FlowFixMe */
+      multipleOfTwoHexValueNormalizer(gasLimit.toString(16)),
+    ),
+    chainId,
+    /*
+     * Nonces needs to be sent in as a hex string, and to be padded as a multiple of two.
+     * Eg: '3' to be '03', `12c` to be `012c`
+     */
+    nonce: hexSequenceNormalizer(
+      /*
+       * @TODO Add `bigNumber` `toHexString` wrapper method
+       *
+       * Flow confuses bigNumber's `toString` with the String object
+       * prototype `toString` method
+       */
+      /* $FlowFixMe */
+      multipleOfTwoHexValueNormalizer(nonce.toString(16)),
+    ),
+    /*
+     * Trezor service requires the prefix from the address to be stripped
+     */
+    to: addressNormalizer(to),
+    value: hexSequenceNormalizer(
+      /*
+       * @TODO Add `bigNumber` `toHexString` wrapper method
+       *
+       * Flow confuses bigNumber's `toString` with the String object
+       * prototype `toString` method
+       */
+      /* $FlowFixMe */
+      multipleOfTwoHexValueNormalizer(value.toString(16)),
+    ),
+    /*
+     * Trezor service requires the prefix from the input data to be stripped
+     */
+    data: hexSequenceNormalizer(inputData),
+    /*
+     * The transaction object needs to be seeded with the (R) and (S) signature components with
+     * empty data, and the Reco(V)ery param as the chain id (all, im hex string format).
+     *
+     * See this issue for context:
+     * https://github.com/LedgerHQ/ledgerjs/issues/43
+     */
+    r: hexSequenceNormalizer(
+      multipleOfTwoHexValueNormalizer(String(SIGNATURE.R)),
+    ),
+    s: hexSequenceNormalizer(
+      multipleOfTwoHexValueNormalizer(String(SIGNATURE.S)),
+    ),
+    v: hexSequenceNormalizer(
+      /*
+       * @TODO Add `bigNumber` `toHexString` wrapper method
+       *
+       * Flow confuses bigNumber's `toString` with the String object
+       * prototype `toString` method
+       */
+      /* $FlowFixMe */
+      multipleOfTwoHexValueNormalizer(chainId.toString(16)),
+    ),
+  });
   /*
    * Modify the default payload to set the transaction details
    */
@@ -139,13 +226,16 @@ export const signTransaction = async ({
       s: sSignatureComponent,
       v: recoveryParameter,
     }: Object = await payloadListener({ payload: modifiedPayloadObject });
-    const signedTransaction: Object = await new EthereumTx({
-      r: hexSequenceNormalizer(rSignatureComponent),
-      s: hexSequenceNormalizer(sSignatureComponent),
-      v: hexSequenceNormalizer(bigNumber(recoveryParameter).toString(16)),
-    });
+    /*
+     * Add the signature values to the unsigned trasaction
+     */
+    unsignedTransaction.r = hexSequenceNormalizer(rSignatureComponent);
+    unsignedTransaction.s = hexSequenceNormalizer(sSignatureComponent);
+    unsignedTransaction.v = hexSequenceNormalizer(
+      bigNumber(recoveryParameter).toString(16),
+    );
     return hexSequenceNormalizer(
-      signedTransaction.serialize().toString(HEX_HASH_TYPE),
+      unsignedTransaction.serialize().toString(HEX_HASH_TYPE),
     );
   } catch (caughtError) {
     /*
