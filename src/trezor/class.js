@@ -1,13 +1,13 @@
 /* @flow */
 
 import GenericWallet from '../core/genericWallet';
-import { DESCRIPTORS } from '../core/defaults';
+import { userInputValidator } from '../core/helpers';
+import { DESCRIPTORS, REQUIRED_PROPS } from '../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../core/types';
+
 import type {
   TransactionObjectType,
-  MessageObjectType,
   GenericClassArgumentsType,
-  MessageVerificationObjectType,
 } from '../core/flowtypes';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
@@ -38,6 +38,13 @@ export default class TrezorWallet extends GenericWallet {
         {},
         {
           value: async (transactionObject: TransactionObjectType) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: transactionObject,
+              requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+            });
             const { chainId = propObject.chainId } = transactionObject || {};
             return signTransaction(
               Object.assign({}, transactionObject, {
@@ -52,22 +59,40 @@ export default class TrezorWallet extends GenericWallet {
       signMessage: Object.assign(
         {},
         {
-          value: async ({ message }: MessageObjectType = {}) =>
-            signMessage({
+          value: async (messageObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageObject,
+              requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+            });
+            return signMessage({
               derivationPath: await this.derivationPath,
-              message,
-            }),
+              message: messageObject.message,
+            });
+          },
         },
         WALLET_PROPS,
       ),
       verifyMessage: Object.assign(
         {},
         {
-          value: async ({
-            message,
-            signature,
-          }: MessageVerificationObjectType = {}) =>
-            verifyMessage({ address: this.address, message, signature }),
+          value: async (signatureVerificationObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: signatureVerificationObject,
+              requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+            });
+            const { message, signature } = signatureVerificationObject;
+            return verifyMessage({
+              address: this.address,
+              message,
+              signature,
+            });
+          },
         },
         WALLET_PROPS,
       ),

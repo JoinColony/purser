@@ -309,6 +309,73 @@ export const messageVerificationObjectValidator = ({
   };
 };
 
+/**
+ * Check if the user provided input is in the form of an Object and it's required props
+ *
+ * @method userInputValidator
+ *
+ * @param {Object} firstArgument The argument to validate that it's indeed an object, and that it has the required props
+ * @param {Array} requiredEither Array of strings representing prop names of which at least one is required.
+ * @param {Array} requiredAll Array of strings representing prop names of which all are required.
+ *
+ * All the above params are sent in as props of an object.
+ */
+export const userInputValidator = ({
+  firstArgument = {},
+  requiredEither = [],
+  requiredAll = [],
+}: {
+  firstArgument: Object,
+  requiredAll?: Array<string>,
+  requiredEither?: Array<string>,
+} = {}): void => {
+  const { userInputValidator: messages } = helperMessages;
+  /*
+   * First we check if the argument is an Object (also, not an Array)
+   */
+  if (typeof firstArgument !== 'object' || Array.isArray(firstArgument)) {
+    /*
+     * Explain the arguments format (if we're in dev mode), then throw the Error
+     */
+    warning(messages.argumentsFormatExplanation);
+    throw new Error(messages.notObject);
+  }
+  /*
+   * Check if some of the required props are available
+   * Fail if none are available.
+   */
+  if (requiredEither.length) {
+    const availableProps: Array<boolean> = requiredEither.map(propName =>
+      Object.prototype.hasOwnProperty.call(firstArgument, propName),
+    );
+    if (!availableProps.some(propExists => propExists === true)) {
+      /*
+       * Explain the arguments format (if we're in dev mode), then throw the Error
+       */
+      warning(messages.argumentsFormatExplanation);
+      throw new Error(
+        `${messages.notSomeProps}: { '${requiredEither.join(`', '`)}' }`,
+      );
+    }
+  }
+  /*
+   * Check if all required props are present.
+   * Fail after the first one missing.
+   */
+  requiredAll.map(propName => {
+    if (!Object.prototype.hasOwnProperty.call(firstArgument, propName)) {
+      /*
+       * Explain the arguments format (if we're in dev mode), then throw the Error
+       */
+      warning(messages.argumentsFormatExplanation);
+      throw new Error(
+        `${messages.notAllProps}: { '${requiredAll.join(`', '`)}' }`,
+      );
+    }
+    return propName;
+  });
+};
+
 /*
  * This default export is only here to help us with testing, otherwise
  * it wound't be needed
@@ -319,6 +386,7 @@ const coreHelpers: Object = {
   verifyMessageSignature,
   transactionObjectValidator,
   messageVerificationObjectValidator,
+  userInputValidator,
 };
 
 export default coreHelpers;

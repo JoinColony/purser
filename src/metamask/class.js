@@ -3,18 +3,25 @@
 import isEqual from 'lodash.isequal';
 
 import { warning } from '../core/utils';
-import { recoverPublicKey as recoverPublicKeyHelper } from '../core/helpers';
+import {
+  recoverPublicKey as recoverPublicKeyHelper,
+  userInputValidator,
+} from '../core/helpers';
 import { addressValidator, hexSequenceValidator } from '../core/validators';
 import { hexSequenceNormalizer } from '../core/normalizers';
 
-import { DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
+import { DESCRIPTORS, HEX_HASH_TYPE, REQUIRED_PROPS } from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../core/types';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { methodCaller, setStateEventObserver } from './helpers';
 import { validateMetamaskState } from './validators';
 import { signMessage as signMessageMethodLink } from './methodLinks';
-import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from './defaults';
+import {
+  PUBLICKEY_RECOVERY_MESSAGE,
+  STD_ERRORS,
+  REQUIRED_PROPS as REQUIRED_PROPS_METAMASK,
+} from './defaults';
 import {
   MetamaskWallet as messages,
   staticMethods as staticMethodsMessages,
@@ -22,7 +29,6 @@ import {
 
 import type {
   TransactionObjectType,
-  MessageObjectType,
   MessageVerificationObjectType,
 } from '../core/flowtypes';
 import type { MetamaskWalletConstructorArgumentsType } from './flowtypes';
@@ -77,21 +83,42 @@ export default class MetamaskWallet {
       sign: Object.assign(
         {},
         {
-          value: async (transactionObject: TransactionObjectType) =>
-            signTransaction(
+          value: async (transactionObject: TransactionObjectType) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: transactionObject,
+              /*
+               * @NOTE We're using the locally defined Required prop
+               * As opposed to the one imported from core, like we do for the
+               * other two methods
+               */
+              requiredAll: REQUIRED_PROPS_METAMASK.SIGN_TRANSACTION,
+            });
+            return signTransaction(
               Object.assign({}, transactionObject, { from: this.address }),
-            ),
+            );
+          },
         },
         WALLET_PROPS,
       ),
       signMessage: Object.assign(
         {},
         {
-          value: async ({ message }: MessageObjectType = {}) =>
-            signMessage({
+          value: async (messageObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageObject,
+              requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+            });
+            return signMessage({
               currentAddress: this.address,
-              message,
-            }),
+              message: messageObject.message,
+            });
+          },
         },
         WALLET_PROPS,
       ),
@@ -100,11 +127,19 @@ export default class MetamaskWallet {
         {
           value: async (
             messageVerificationObject: MessageVerificationObjectType,
-          ) =>
-            verifyMessage({
+          ) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageVerificationObject,
+              requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+            });
+            return verifyMessage({
               currentAddress: this.address,
               ...messageVerificationObject,
-            }),
+            });
+          },
         },
         WALLET_PROPS,
       ),

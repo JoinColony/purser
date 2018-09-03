@@ -2,8 +2,9 @@
 
 import { fromString } from 'bip32-path';
 
-import { derivationPathSerializer } from '../core/helpers';
+import { derivationPathSerializer, userInputValidator } from '../core/helpers';
 import { warning, objectToErrorString } from '../core/utils';
+
 import { PATH, NETWORK_IDS } from '../core/defaults';
 import type { WalletArgumentsType } from '../core/flowtypes';
 
@@ -33,10 +34,16 @@ const trezorWallet: Object = Object.assign(
      * (Object is wrapped in a promise).
      *
      */
-    open: async ({
-      addressCount,
-      chainId = NETWORK_IDS.HOMESTEAD,
-    }: WalletArgumentsType = {}): Promise<TrezorWallet | void> => {
+    open: async (
+      argumentObject: WalletArgumentsType = {},
+    ): Promise<TrezorWallet | void> => {
+      /*
+       * Validate the trasaction's object input
+       */
+      userInputValidator({
+        firstArgument: argumentObject,
+      });
+      const { addressCount, chainId = NETWORK_IDS.HOMESTEAD } = argumentObject;
       /*
        * @TODO Reduce code repetition
        * By moving this inside a helper. This same patter will be used on the

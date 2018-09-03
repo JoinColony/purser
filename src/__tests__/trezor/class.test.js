@@ -1,3 +1,4 @@
+import { userInputValidator } from '../../core/helpers';
 import TrezorWalletClass from '../../trezor/class';
 import {
   signTransaction,
@@ -5,6 +6,7 @@ import {
   verifyMessage,
 } from '../../trezor/staticMethods';
 
+import { REQUIRED_PROPS } from '../../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_TREZOR } from '../../core/types';
 
 jest.dontMock('../../trezor/class');
@@ -12,24 +14,46 @@ jest.dontMock('../../trezor/class');
 jest.mock('../../trezor/staticMethods');
 jest.mock('../../core/validators');
 jest.mock('../../core/normalizers');
+jest.mock('../../core/helpers');
 
 /*
- * Common values
+ * These values are not correct. Do not use the as reference.
+ * If the validators wouldn't be mocked, they wouldn't pass.
  */
 const rootPublicKey = 'mocked-root-public-key';
 const rootChainCode = 'mocked-root-chain-code';
 const rootDerivationPath = 'mocked-root-derivation-path';
 const mockedChainId = 'mocked-chain-id';
 const addressCount = 10;
+const mockedMessage = 'mocked-message';
+const mockedSignature = 'mocked-signature';
 const mockedInstanceArgument = {
   publicKey: rootPublicKey,
   chainCode: rootChainCode,
   rootDerivationPath,
   addressCount,
 };
+const mockedTransactionObject = {
+  to: 'mocked-address',
+  nonce: 'mocked-nonce',
+  value: 'mocked-transaction-value',
+};
+const mockedMessageObject = {
+  message: mockedMessage,
+};
+const mockedSignatureObject = {
+  message: mockedMessage,
+  signature: mockedSignature,
+};
 
 describe('Trezor` Hardware Wallet Module', () => {
   describe('`TrezorWallet` class', () => {
+    afterEach(() => {
+      signTransaction.mockClear();
+      signMessage.mockClear();
+      verifyMessage.mockClear();
+      userInputValidator.mockClear();
+    });
     test('Creates a new wallet instance', () => {
       const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
       expect(trezorWallet).toBeInstanceOf(TrezorWalletClass);
@@ -73,6 +97,18 @@ describe('Trezor` Hardware Wallet Module', () => {
         });
       },
     );
+    test('Validate `sign` method user input', async () => {
+      const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
+      await trezorWallet.sign(mockedTransactionObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedTransactionObject,
+        requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+      });
+    });
     test(
       "Calls the `signMessage()` static method from the instance's methods",
       async () => {
@@ -93,6 +129,18 @@ describe('Trezor` Hardware Wallet Module', () => {
         });
       },
     );
+    test('Validate `signMessage` method user input', async () => {
+      const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
+      await trezorWallet.signMessage(mockedMessageObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedMessageObject,
+        requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+      });
+    });
     test(
       "Calls the `verifyMessage()` static method from the instance's methods",
       async () => {
@@ -113,5 +161,17 @@ describe('Trezor` Hardware Wallet Module', () => {
       },
     );
     /* eslint-enable prettier/prettier */
+    test('Validate `verifyMessage` method user input', async () => {
+      const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
+      await trezorWallet.verifyMessage(mockedSignatureObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedSignatureObject,
+        requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+      });
+    });
   });
 });
