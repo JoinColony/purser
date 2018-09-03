@@ -8,6 +8,7 @@ WalletInstance {
    * Props
    */
   address: String,
+  chainId: Number,
   keystore: Promise<String>,
   mnemonic: String,
   derivationPath?: Promise<String>,
@@ -35,6 +36,7 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
 * Wallet Object Instance
   * Props
     * [`address`](#address)
+    * [`chainId`](#chainid)
     * [`keystore`](#keystore)
     * [`mnemonic`](#mnemonic)
     * [`derivationPath`](#derivationpath)
@@ -69,6 +71,26 @@ import { open } from 'colony-wallet/software';
 const wallet = await open({ privateKey: `0x9274...f447` });
 
 console.log(wallet.address); // 0x3953...a4CC
+```
+
+### `chainId`
+```js
+WalletInstance.chainId: Number
+```
+
+Contains the `id` of the network the wallet is intended to work on _(eg: `homestead`, `ropsten`, etc)_.
+
+This is used on the hardware wallets to determine the `derivationPath` and on _all_ wallet types as a default if one isn't provided to the object of transaction you wish to [sign](#sign).
+
+_**Note:** For the [Metamask Wallet](api-metamask.md) this is not available as it handles it internally, but can be changed using the UI._
+
+**Usage:**
+```js
+import { open } from 'colony-wallet/ledger';
+
+const wallet = await open({ chainId: 3 });
+
+console.log(wallet.chainId); // 3
 ```
 
 ### `keystore`
