@@ -173,21 +173,24 @@ export default class SoftwareWallet {
         },
         WALLET_PROPS,
       ),
-      /*
-       * @TODO Add unit tests
-       */
       verifyMessage: Object.assign(
         {},
         {
-          value: async ({
-            message,
-            signature,
-          }: MessageVerificationObjectType = {}) =>
-            verifyMessage({
+          value: async (signatureVerificationObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: signatureVerificationObject,
+              requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+            });
+            const { message, signature } = signatureVerificationObject;
+            return verifyMessage({
               address,
               message,
               signature,
-            }),
+            });
+          },
         },
         WALLET_PROPS,
       ),
