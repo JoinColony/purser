@@ -1,6 +1,7 @@
 import { privateToPublic } from 'ethereumjs-util';
 import secretStorage from 'ethers/wallet/secret-storage';
 
+import { userInputValidator } from '../../core/helpers';
 import { warning } from '../../core/utils';
 import { addressValidator, hexSequenceValidator } from '../../core/validators';
 import { hexSequenceNormalizer } from '../../core/normalizers';
@@ -8,6 +9,7 @@ import { hexSequenceNormalizer } from '../../core/normalizers';
 import SoftwareWallet from '../../software/class';
 import { signTransaction } from '../../software/staticMethods';
 
+import { REQUIRED_PROPS } from '../../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../../core/types';
 
 jest.dontMock('../../software/class');
@@ -33,6 +35,11 @@ const derivationPath = 'mocked-derivation-path';
 const mockedArgumentsObject = {
   address,
   privateKey,
+};
+const mockedTransactionObject = {
+  to: 'mocked-address',
+  nonce: 'mocked-nonce',
+  value: 'mocked-transaction-value',
 };
 
 describe('`Software` Wallet Module', () => {
@@ -202,6 +209,18 @@ describe('`Software` Wallet Module', () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
       await testWallet.sign();
       expect(signTransaction).toHaveBeenCalled();
+    });
+    test('Validates `sign` method user input', async () => {
+      const trezorWallet = new SoftwareWallet(mockedArgumentsObject);
+      await trezorWallet.sign(mockedTransactionObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedTransactionObject,
+        requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+      });
     });
   });
 });
