@@ -3,7 +3,7 @@
 import LedgerWallet from './class';
 import { ledgerConnection, handleLedgerConnectionError } from './helpers';
 
-import { derivationPathSerializer } from '../core/helpers';
+import { derivationPathSerializer, userInputValidator } from '../core/helpers';
 import { staticMethods as messages } from './messages';
 
 import { PATH, NETWORK_IDS } from '../core/defaults';
@@ -29,10 +29,16 @@ const ledgerWallet: Object = Object.assign(
      * (Object is wrapped in a promise).
      *
      */
-    open: async ({
-      addressCount,
-      chainId = NETWORK_IDS.HOMESTEAD,
-    }: WalletArgumentsType = {}): Promise<LedgerWallet | void> => {
+    open: async (
+      argumentObject: WalletArgumentsType = {},
+    ): Promise<LedgerWallet | void> => {
+      /*
+       * Validate the trasaction's object input
+       */
+      userInputValidator({
+        firstArgument: argumentObject,
+      });
+      const { addressCount, chainId = NETWORK_IDS.HOMESTEAD } = argumentObject;
       /*
        * @TODO Reduce code repetition
        * By moving this inside a helper. This same patter will be used on the
