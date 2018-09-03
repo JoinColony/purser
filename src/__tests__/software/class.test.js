@@ -32,6 +32,9 @@ const mnemonic = 'mocked-mnemonic';
 const password = 'mocked-encryption-password';
 const keystore = 'mocked-keystore';
 const derivationPath = 'mocked-derivation-path';
+const mockedEthersSignMessage = {
+  bind: jest.fn(),
+};
 const mockedArgumentsObject = {
   address,
   privateKey,
