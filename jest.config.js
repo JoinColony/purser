@@ -16,6 +16,7 @@ module.exports = {
      */
     '!defaults.js',
     '!core/defaults.js',
+    '!software/defaults.js',
     '!trezor/defaults.js',
     '!ledger/defaults.js',
     '!metamask/defaults.js',
