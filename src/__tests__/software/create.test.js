@@ -1,6 +1,7 @@
 import { Wallet as EthersWalletClass } from 'ethers/wallet';
 
 import { getRandomValues, warning } from '../../core/utils';
+import { userInputValidator } from '../../core/helpers';
 
 import SoftwareWalletClass from '../../software/class';
 import softwareWallet from '../../software';
@@ -18,6 +19,9 @@ jest.mock('../../core/utils');
  */
 const password = 'mocked-password';
 const privateKey = 'mocked-private-key';
+const mockedArgumentsObject = {
+  password,
+};
 
 describe('`Software` Wallet Module', () => {
   afterEach(() => {
@@ -25,9 +29,7 @@ describe('`Software` Wallet Module', () => {
     EthersWalletClass.createRandom.mockClear();
     getRandomValues.mockClear();
     warning.mockClear();
-    // HDNode.fromMnemonic.mockClear();
-    // EthersWalletClass.fromEncryptedWallet.mockClear();
-    // EthersWalletClass.isEncryptedWallet.mockClear();
+    userInputValidator.mockClear();
   });
   describe('`create()` static method', async () => {
     test('Create a new wallet with defaults', async () => {
@@ -49,6 +51,13 @@ describe('`Software` Wallet Module', () => {
           privateKey,
         }),
       );
+    });
+    test("Validate the user's input", async () => {
+      await softwareWallet.create(mockedArgumentsObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedArgumentsObject,
+      });
     });
     test('Still creates a wallet even with no entrophy', async () => {
       await softwareWallet.create({ entropy: false });
