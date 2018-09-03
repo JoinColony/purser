@@ -11,11 +11,10 @@ import {
 import { addressNormalizer, hexSequenceNormalizer } from './normalizers';
 
 import { genericClass as messages } from './messages';
-import { HEX_HASH_TYPE, DESCRIPTORS, SPLITTER } from './defaults';
+import { HEX_HASH_TYPE, DESCRIPTORS, SPLITTER, NETWORK_IDS } from './defaults';
 import { TYPE_GENERIC, SUBTYPE_GENERIC } from './types';
 
 import type { GenericClassArgumentsType } from './flowtypes';
-import type { ProviderType } from '../flowtypes';
 
 const { GETTERS, SETTERS, WALLET_PROPS, GENERIC_PROPS } = DESCRIPTORS;
 
@@ -39,6 +38,8 @@ export default class GenericWallet {
 
   otherAddresses: Object[];
 
+  chainId: number;
+
   /*
    * Both `publicKey` and `derivationPath` are getters.
    */
@@ -50,8 +51,6 @@ export default class GenericWallet {
   type: string;
 
   subtype: string;
-
-  provider: ProviderType | void;
 
   setDefaultAddress: number => Promise<boolean>;
 
@@ -71,7 +70,7 @@ export default class GenericWallet {
     chainCode,
     rootDerivationPath,
     addressCount = 10,
-    provider,
+    chainId = NETWORK_IDS.HOMESTEAD,
   }: GenericClassArgumentsType) {
     /*
      * Validate address count (this comes from the end user)
@@ -156,9 +155,9 @@ export default class GenericWallet {
      */
     Object.defineProperties(this, {
       address: Object.assign({}, { value: otherAddresses[0].address }, SETTERS),
+      chainId: Object.assign({}, { value: chainId }, WALLET_PROPS),
       type: Object.assign({}, { value: TYPE_GENERIC }, GENERIC_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_GENERIC }, GENERIC_PROPS),
-      provider: Object.assign({}, { value: provider }, WALLET_PROPS),
       /**
        * Set the default address/public key/path one of the (other) addresses from the array.
        * This is usefull since most methods (sign, signMessage) use this props as defaults.

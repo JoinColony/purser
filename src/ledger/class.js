@@ -1,13 +1,12 @@
 /* @flow */
 
 import GenericWallet from '../core/genericWallet';
-import { DESCRIPTORS } from '../core/defaults';
+import { userInputValidator } from '../core/helpers';
+import { DESCRIPTORS, REQUIRED_PROPS } from '../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_LEDGER } from '../core/types';
 import type {
   GenericClassArgumentsType,
   TransactionObjectType,
-  MessageObjectType,
-  MessageVerificationObjectType,
 } from '../core/flowtypes';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
@@ -28,19 +27,13 @@ export default class LedgerWallet extends GenericWallet {
         {
           value: async (transactionObject: TransactionObjectType) => {
             /*
-             * @NOTE This is pretty complicated setup
-             *
-             * Needlesly complicated I might add, luckly this will all be removed
-             * when we strip all providers out.
-             *
-             * For some reason prettier always suggests a way to fix this that would
-             * violate the 80 max-len rule. Wierd
+             * Validate the trasaction's object input
              */
-            /* eslint-disable prettier/prettier */
-            const {
-              chainId = (this.provider && this.provider.chainId) || 1,
-            } = transactionObject || {};
-            /* eslint-enable prettier/prettier */
+            userInputValidator({
+              firstArgument: transactionObject,
+              requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+            });
+            const { chainId = this.chainId } = transactionObject || {};
             return signTransaction(
               Object.assign({}, transactionObject, {
                 derivationPath: await this.derivationPath,
@@ -54,26 +47,40 @@ export default class LedgerWallet extends GenericWallet {
       signMessage: Object.assign(
         {},
         {
-          value: async ({ message }: MessageObjectType = {}) =>
-            signMessage({
+          value: async (messageObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageObject,
+              requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+            });
+            return signMessage({
               derivationPath: await this.derivationPath,
-              message,
-            }),
+              message: messageObject.message,
+            });
+          },
         },
         WALLET_PROPS,
       ),
       verifyMessage: Object.assign(
         {},
         {
-          value: async ({
-            message,
-            signature,
-          }: MessageVerificationObjectType = {}) =>
-            verifyMessage({
+          value: async (signatureVerificationObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: signatureVerificationObject,
+              requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+            });
+            const { message, signature } = signatureVerificationObject;
+            return verifyMessage({
               publicKey: await this.publicKey,
               message,
               signature,
-            }),
+            });
+          },
         },
         WALLET_PROPS,
       ),

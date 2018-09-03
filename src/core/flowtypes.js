@@ -1,7 +1,5 @@
 /* @flow */
 
-import type { ProviderType, AsyncProviderGeneratorType } from '../flowtypes';
-
 export type DerivationPathObjectType = {|
   purpose?: number,
   coinType?: number,
@@ -41,7 +39,6 @@ export type WalletObjectType = {
   +derivationPath?: Promise<string>,
   privateKey?: string,
   +publicKey?: Promise<string>,
-  provider?: ProviderType,
   sign: (...*) => Promise<TransactionObjectType>,
 };
 
@@ -54,7 +51,6 @@ export type WalletArgumentsType = {
   mnemonic?: string,
   path?: string,
   keystore?: string,
-  provider?: AsyncProviderGeneratorType,
   entropy?: Uint8Array,
   password?: string,
   chainId?: number,
@@ -88,6 +84,5 @@ export type GenericClassArgumentsType = {
   chainCode?: string,
   rootDerivationPath: string,
   addressCount?: number,
-  provider?: ProviderType | void,
   chainId?: number,
 };

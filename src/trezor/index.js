@@ -27,6 +27,7 @@ const trezorWallet: Object = Object.assign(
      * @method open
      *
      * @param {number} addressCount the number of extra addresses to generate from the derivation path
+     * @param {number} chainId The id of the network to use, defaults to mainnet (1)
      *
      * The above param is sent in as a prop of an {WalletArgumentsType} object.
      *

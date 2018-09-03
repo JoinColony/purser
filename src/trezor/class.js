@@ -15,12 +15,6 @@ import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 const { WALLET_PROPS } = DESCRIPTORS;
 
 export default class TrezorWallet extends GenericWallet {
-  /*
-   * @TODO Add this prop at the GenericWallet class level
-   * And remove from here, after the chainId is added to ledger as well
-   */
-  chainId: number;
-
   constructor(propObject: GenericClassArgumentsType) {
     super(propObject);
     Object.defineProperties(this, {
@@ -29,11 +23,6 @@ export default class TrezorWallet extends GenericWallet {
        */
       type: Object.assign({}, { value: TYPE_HARDWARE }, WALLET_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_TREZOR }, WALLET_PROPS),
-      /*
-       * @TODO Add this prop at the GenericWallet class level
-       * And remove from here, after the chainId is added to ledger as well
-       */
-      chainId: Object.assign({}, { value: propObject.chainId }, WALLET_PROPS),
       sign: Object.assign(
         {},
         {
@@ -45,7 +34,7 @@ export default class TrezorWallet extends GenericWallet {
               firstArgument: transactionObject,
               requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
             });
-            const { chainId = propObject.chainId } = transactionObject || {};
+            const { chainId = this.chainId } = transactionObject || {};
             return signTransaction(
               Object.assign({}, transactionObject, {
                 derivationPath: await this.derivationPath,
