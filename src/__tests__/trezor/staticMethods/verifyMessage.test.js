@@ -1,4 +1,4 @@
-import * as utils from '../../../core/utils';
+import { warning } from '../../../core/utils';
 import { messageVerificationObjectValidator } from '../../../core/helpers';
 
 import { verifyMessage } from '../../../trezor/staticMethods';
@@ -110,8 +110,15 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
         Promise.reject(new Error('Invalid signature')),
       );
       const verification = await verifyMessage();
-      expect(utils.warning).toHaveBeenCalled();
+      expect(warning).toHaveBeenCalled();
       expect(verification).toBeFalsy();
+    });
+    test('Warns the user about proprietary signature format', async () => {
+      await verifyMessage(mockedArgumentsObject);
+      /*
+       * Wran the user
+       */
+      expect(warning).toHaveBeenCalled();
     });
   });
 });
