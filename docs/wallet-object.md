@@ -8,16 +8,11 @@ WalletInstance {
    * Props
    */
   address: String,
-  addressQR: Promise<String>, // deprecated
-  blockie: Promise<String>, // deprecated
-  defaultGasLimit: Number,
   keystore: Promise<String>,
   mnemonic: String,
-  path?: String, // deprecated, will be renamed to `derivationPath`
   derivationPath?: Promise<String>,
   otherAddresses: Array<String>,
   privateKey: String,
-  privateKeyQR: Promise<String>, // deprecated
   publicKey: Promise<String>,
   type: String,
   subtype: String,
@@ -40,21 +35,15 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
 * Wallet Object Instance
   * Props
     * [`address`](#address)
-    * [`addressQR`](#addressqr)
-    * [`blockie`](#blockie)
-    * [`defaultGasLimit`](#defaultgaslimit)
     * [`keystore`](#keystore)
     * [`mnemonic`](#mnemonic)
-    * [`path`](#path)
     * [`derivationPath`](#derivationpath)
     * [`otherAddresses`](#otheraddresses)
     * [`privateKey`](#privatekey)
-    * [`privateKeyQR`](#privatekeyqr)
     * [`publicKey`](#publickey)
     * [`type`](#type)
     * [`subtype`](#subtype)
   * Methods
-    * [`sendWithConfirmation()`](#sendwithconfirmation)
     * [`setDefaultAddress()`](#setdefaultaddress)
     * [`sign()`](#sign)
     * [`signMessage()`](#signmessage)
@@ -80,78 +69,6 @@ import { open } from 'colony-wallet/software';
 const wallet = await open({ privateKey: `0x9274...f447` });
 
 console.log(wallet.address); // 0x3953...a4CC
-```
-
-### `addressQR`
-```js
-WalletInstance.addressQR: Promise<String>
-```
-
-**_The `addressQR` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
-
-This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a QR code of the wallet's public address in the form of a `base64`-encoded `String`.
-
-This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
-
-The returned image has a size of `200`x`200` pixels.
-
-**Usage:**
-```js
-import { open } from 'colony-wallet/software';
-
-const wallet = await open({ privateKey: `0x9274...f447` });
-
-const qr = await wallet.addressQR;
-
-console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... eocAAAAAASUVORK5CYII=
-```
-
-### `blockie`
-```js
-WalletInstance.blockie: Promise<String>
-```
-
-**_The `blockie` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
-
-This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a [Blockie _(Identicon)_](https://github.com/rdig/better-ethereum-blockies) of the wallet's public address in the form of a `base64`-encoded `String`.
-
-This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
-
-The returned image has a size of `200`x`200` pixels.
-
-**Usage:**
-```js
-import { open } from 'colony-wallet/software';
-
-const wallet = await open({ privateKey: `0x9274...f447` });
-
-const blockie = await wallet.blockie;
-
-console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... Dw2G0AAAAAElFTkSuQmCC
-```
-
-### `defaultGasLimit`
-```js
-WalletInstance.defaultGasLimit: Number
-```
-
-**_The `defaultGasLimit` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
-
-This is prop has both a `getter` and a `setter` attached to it. The `getter` returns a `Number` value, while the `setter` sets a new one.
-
-This value will be used if the transaction you wish to send from the wallet does not contain a `gasLimit`.
-
-**Usage:**
-```js
-import { open } from 'colony-wallet/software';
-
-const wallet = await open({ privateKey: `0x9274...f447` });
-
-console.log(wallet.defaultGasLimit); // 1500000
-
-wallet.defaultGasLimit = 1600000;
-
-console.log(wallet.defaultGasLimit); // 1600000
 ```
 
 ### `keystore`
@@ -203,15 +120,6 @@ const wallet = await create();
 
 console.log(wallet.mnemonic); // load blush spray dirt random cash pear illness pulse sketch sheriff surge
 ```
-
-### `path`
-```js
-WalletInstance.path: String
-```
-
-**_The `path` prop is deprecated and will be renamed to `derivationPath`, so make sure you don't rely on it too much_**
-
-See: [`derivationPath`](#derivationpath)
 
 ### `derivationPath`
 ```js
@@ -291,30 +199,6 @@ import { open } from 'colony-wallet/software';
 const wallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 
 console.log(wallet.privateKey); // 0x9274...f447
-```
-
-### `privateKeyQR`
-```js
-WalletInstance.privateKeyQR: Promise<String>
-```
-
-**_The `privateKeyQR` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
-
-This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a QR code of the wallet's `private key` address in the form of a `base64`-encoded `String`.
-
-This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
-
-The returned image has a size of `200`x`200` pixels.
-
-**Usage:**
-```js
-import { open } from 'colony-wallet/software';
-
-const wallet = await open({ privateKey: `0x9274...f447` });
-
-const qr = await wallet.privateKeyQR;
-
-console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... 5rQkAAAAASUVORK5CYII=
 ```
 
 ### `publicKey`
