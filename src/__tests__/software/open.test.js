@@ -1,7 +1,17 @@
 import { HDNode, Wallet as EthersWalletClass } from 'ethers/wallet';
 
+import { userInputValidator } from '../../core/helpers';
+
 import SoftwareWalletClass from '../../software/class';
 import softwareWallet from '../../software';
+
+import {
+  /*
+   * Prettier again suggests a fix that would break eslint's max line lenght rule.
+   * So we have to trick it again with a comment :)
+   */
+  REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE,
+} from '../../software/defaults';
 
 jest.dontMock('../../software/index');
 
@@ -18,6 +28,9 @@ const privateKey = 'mocked-private-key';
 const password = 'mocked-password';
 const mnemonic = 'mocked-mnemonic';
 const keystore = 'mocked-keystore';
+const mockedArgumentsObject = {
+  privateKey,
+};
 
 describe('`Software` Wallet Module', () => {
   afterEach(() => {
@@ -26,6 +39,7 @@ describe('`Software` Wallet Module', () => {
     HDNode.fromMnemonic.mockClear();
     EthersWalletClass.fromEncryptedWallet.mockClear();
     EthersWalletClass.isEncryptedWallet.mockClear();
+    userInputValidator.mockClear();
   });
   describe('`open()` static method', async () => {
     test('Open a wallet with a private key', async () => {
@@ -107,6 +121,14 @@ describe('`Software` Wallet Module', () => {
       expect(EthersWalletClass.isEncryptedWallet).toHaveBeenCalledWith(
         keystore,
       );
+    });
+    test("Validate the user's input", async () => {
+      await softwareWallet.open(mockedArgumentsObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedArgumentsObject,
+        requiredEither: REQUIRED_PROPS_SOFTWARE.OPEN_WALLET,
+      });
     });
     test('Throws if no valid method of opening is provided', async () => {
       expect(softwareWallet.open()).rejects.toThrow();
