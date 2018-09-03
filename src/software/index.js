@@ -139,10 +139,19 @@ const softwareWallet: Object = Object.assign(
      *
      * @return {WalletType} A new wallet object
      */
-    create: async ({
-      password,
-      entropy = getRandomValues(new Uint8Array(65536)),
-    }: WalletArgumentsType = {}): Promise<SoftwareWallet | void> => {
+    create: async (
+      argumentObject: WalletArgumentsType = {},
+    ): Promise<SoftwareWallet | void> => {
+      /*
+       * Validate the trasaction's object input
+       */
+      userInputValidator({
+        firstArgument: argumentObject,
+      });
+      const {
+        password,
+        entropy = getRandomValues(new Uint8Array(65536)),
+      } = argumentObject;
       let basicWallet: WalletObjectType;
       try {
         if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
