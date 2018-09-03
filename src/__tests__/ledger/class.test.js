@@ -1,3 +1,4 @@
+import { userInputValidator } from '../../core/helpers';
 import LedgerWalletClass from '../../ledger/class';
 import {
   signTransaction,
@@ -5,6 +6,7 @@ import {
   verifyMessage,
 } from '../../ledger/staticMethods';
 
+import { REQUIRED_PROPS } from '../../core/defaults';
 import { TYPE_HARDWARE, SUBTYPE_LEDGER } from '../../core/types';
 
 jest.dontMock('../../ledger/class');
@@ -12,6 +14,7 @@ jest.dontMock('../../ledger/class');
 jest.mock('../../ledger/staticMethods');
 jest.mock('../../core/validators');
 jest.mock('../../core/normalizers');
+jest.mock('../../core/helpers');
 
 /*
  * Common values
@@ -26,6 +29,11 @@ const mockedInstanceArgument = {
   chainCode: rootChainCode,
   rootDerivationPath,
   addressCount,
+};
+const mockedTransactionObject = {
+  to: 'mocked-address',
+  nonce: 'mocked-nonce',
+  value: 'mocked-transaction-value',
 };
 
 describe('Ledger` Hardware Wallet Module', () => {
@@ -105,6 +113,18 @@ describe('Ledger` Hardware Wallet Module', () => {
         }));
       },
     );
+    test('Validates `sign` method user input', async () => {
+      const trezorWallet = new LedgerWalletClass(mockedInstanceArgument);
+      await trezorWallet.sign(mockedTransactionObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedTransactionObject,
+        requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+      });
+    });
     test(
       "Calls the `signMessage()` static method from the instance's methods",
       async () => {
