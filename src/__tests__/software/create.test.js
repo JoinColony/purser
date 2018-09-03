@@ -1,45 +1,98 @@
-import software, { create } from '../../software';
-import { jsonRpc } from '../../providers';
+import { Wallet as EthersWalletClass } from 'ethers/wallet';
 
-let SoftwareWalletCreateSpy;
+import { getRandomValues, warning } from '../../core/utils';
+import { userInputValidator } from '../../core/helpers';
 
-describe('`software` wallet module', () => {
-  beforeEach(() => {
-    SoftwareWalletCreateSpy = jest.spyOn(software.SoftwareWallet, 'create');
-  });
+import SoftwareWalletClass from '../../software/class';
+import softwareWallet from '../../software';
+
+jest.dontMock('../../software/index');
+
+jest.mock('ethers/wallet');
+jest.mock('../../software/class');
+jest.mock('../../core/helpers');
+jest.mock('../../core/utils');
+
+/*
+ * These values are not correct. Do not use the as reference.
+ * If the validators wouldn't be mocked, they wouldn't pass.
+ */
+const password = 'mocked-password';
+const privateKey = 'mocked-private-key';
+const mockedArgumentsObject = {
+  password,
+};
+
+describe('`Software` Wallet Module', () => {
   afterEach(() => {
-    SoftwareWalletCreateSpy.mockReset();
-    SoftwareWalletCreateSpy.mockRestore();
+    SoftwareWalletClass.mockClear();
+    EthersWalletClass.createRandom.mockClear();
+    getRandomValues.mockClear();
+    warning.mockClear();
+    userInputValidator.mockClear();
   });
-  describe('`SoftwareWallet` Create Method ', () => {
-    test('Creates a new wallet by default', () => {
-      create();
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({});
+  describe('`create()` static method', async () => {
+    test('Create a new wallet with defaults', async () => {
+      await softwareWallet.create();
+      /*
+       * Generates entrophy
+       */
+      expect(getRandomValues).toHaveBeenCalled();
+      /*
+       * Creates a random Ethers Wallet instance
+       */
+      expect(EthersWalletClass.createRandom).toHaveBeenCalled();
+      /*
+       * Uses that instance to create a new software wallet
+       */
+      expect(SoftwareWalletClass).toHaveBeenCalled();
+      expect(SoftwareWalletClass).toHaveBeenCalledWith(
+        expect.objectContaining({
+          privateKey,
+        }),
+      );
     });
-    test('Creates a new wallet with a provider', () => {
-      const provider = jsonRpc();
-      create({ provider });
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({ provider });
+    test("Validate the user's input", async () => {
+      await softwareWallet.create(mockedArgumentsObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedArgumentsObject,
+      });
     });
-    test('Creates a new wallet with an encryption password', () => {
-      const password = 'encryyyyyypt';
-      create({ password });
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({ password });
+    test('Still creates a wallet even with no entrophy', async () => {
+      await softwareWallet.create({ entropy: false });
+      /*
+       * Doesn't generate randomness since we overwrite it
+       */
+      expect(getRandomValues).not.toHaveBeenCalled();
+      /*
+       * But still creates the wallet
+       */
+      expect(EthersWalletClass.createRandom).toHaveBeenCalled();
+      /*
+       * But warns the user that this is not ideal
+       */
+      expect(warning).toHaveBeenCalled();
     });
-    test('Creates a new wallet with manual entrophy', () => {
-      const entrophy = new Uint8Array(100);
-      create({ entrophy });
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalledWith({ entrophy });
+    test('Sets the encryption password if provided', async () => {
+      await softwareWallet.create({ password });
+      expect(SoftwareWalletClass).toHaveBeenCalled();
+      expect(SoftwareWalletClass).toHaveBeenCalledWith(
+        expect.objectContaining({
+          privateKey,
+          password,
+        }),
+      );
     });
-    test('The new wallet to have the mnemonic and path props', async () => {
-      const testWallet = await create();
-      expect(SoftwareWalletCreateSpy).toHaveBeenCalled();
-      expect(testWallet).toHaveProperty('mnemonic');
-      expect(testWallet).toHaveProperty('path');
+    test('Throws if something goes wrong', async () => {
+      /*
+       * We mock the implementation of `createRandom` to simulate throwing an Error
+       */
+      EthersWalletClass.createRandom.mockImplementation(() => {
+        throw new Error();
+      });
+      expect(softwareWallet.create()).rejects.toThrow();
+      expect(SoftwareWalletClass).not.toHaveBeenCalled();
     });
   });
 });

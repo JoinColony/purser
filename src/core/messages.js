@@ -66,11 +66,6 @@ export const genericClass: Object = {
     'The address index you provided is outside the address count range you derived when opening the wallet',
 };
 
-export const deprecated: Object = {
-  providers:
-    'Use of providers with this library is deprecated. In the upcoming releases we will not use them internally at all, as this functionality will be offloaded to the end user',
-};
-
 export const helpers: Object = {
   verifyMessageSignature: {
     wrongLength:

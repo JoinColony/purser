@@ -43,8 +43,9 @@ export type WalletObjectType = {
 };
 
 export type WalletArgumentsType = {
+  address?: string,
   /*
-   * Used to select the address index from the trezor wallet
+   * Used to select the address index from the hardware wallet
    */
   addressCount?: number,
   privateKey?: string,

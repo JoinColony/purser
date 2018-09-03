@@ -64,10 +64,6 @@ await open(walletArguments: Object);
 
 This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` a new `TrezorWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
 
-By default it auto-selects the first available provider _(see: [`autoselect`](api-providers.md#autoselect))_, if one was not provided via the argument prop.
-
-**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much)_**
-
 By default, without any arguments it will open the first `10` accounts in the derivation path, but you can change that via the `addressCount` object prop argument _(Unlike the software wallet, this is the only argument the `open` method takes, but to preserved consistency, it's still being passed in as an object)_.
 
 Also, the first index from the addresses that you opened will be selected as the default one _(See: the `setDefaultAddress()` method from the [Wallet Object](wallet-object.md))_, while the rest of them will be available under the `otherAddresses` Array prop on the wallet instance.
@@ -83,6 +79,16 @@ Sets the number of addresses to derive from the derivation path. Defaults to `10
 It will set first one as the default _(index `0`)_, while the rest will be available through the `otherAddresses` Array, found as a prop on the Wallet Instance _(index `0` through `9` in this case)_.
 
 You will be able to change them using the `setDefaultAddress()` instance method _(See: [Wallet Object](wallet-object.md) for details))_.
+
+```js
+walletArguments.chainId: Number = 1
+```
+
+Sets the `id` of the network _(eg: `homestead`, `ropsten`, etc...)_ you want your account to be opened under _(changes the `derivationPath` of the opened addresses)_.
+
+It will also be used if you don't provide one when trying to sign a transaction.
+
+Defaults to `id` `1`: `homestead`.
 
 **Usage examples:**
 
@@ -102,4 +108,13 @@ const wallet = await open({ addressCount: 100 });
 // Optionally set another address as the default
 
 await wallet.setDefaultAddress(12); //true
+```
+
+Open the trezor wallet using a different chain id
+```js
+import { open } from 'colony-wallet/trezor';
+
+const wallet = await open({ chainId: 3 }); // ropsten
+
+await wallet.derivationPath; // m/44'/1'/0'/0/0
 ```

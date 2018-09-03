@@ -8,18 +8,13 @@ WalletInstance {
    * Props
    */
   address: String,
-  addressQR: Promise<String>, // deprecated
-  blockie: Promise<String>, // deprecated
-  defaultGasLimit: Number,
+  chainId: Number,
   keystore: Promise<String>,
   mnemonic: String,
-  path?: String, // deprecated, will be renamed to `derivationPath`
   derivationPath?: Promise<String>,
   otherAddresses: Array<String>,
   privateKey: String,
-  privateKeyQR: Promise<String>, // deprecated
   publicKey: Promise<String>,
-  provider: Object, // deprecated
   type: String,
   subtype: String,
   /*
@@ -41,22 +36,16 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
 * Wallet Object Instance
   * Props
     * [`address`](#address)
-    * [`addressQR`](#addressqr)
-    * [`blockie`](#blockie)
-    * [`defaultGasLimit`](#defaultgaslimit)
+    * [`chainId`](#chainid)
     * [`keystore`](#keystore)
     * [`mnemonic`](#mnemonic)
-    * [`path`](#path)
     * [`derivationPath`](#derivationpath)
     * [`otherAddresses`](#otheraddresses)
     * [`privateKey`](#privatekey)
-    * [`privateKeyQR`](#privatekeyqr)
     * [`publicKey`](#publickey)
-    * [`provider`](#provider)
     * [`type`](#type)
     * [`subtype`](#subtype)
   * Methods
-    * [`sendWithConfirmation()`](#sendwithconfirmation)
     * [`setDefaultAddress()`](#setdefaultaddress)
     * [`sign()`](#sign)
     * [`signMessage()`](#signmessage)
@@ -84,76 +73,24 @@ const wallet = await open({ privateKey: `0x9274...f447` });
 console.log(wallet.address); // 0x3953...a4CC
 ```
 
-### `addressQR`
+### `chainId`
 ```js
-WalletInstance.addressQR: Promise<String>
+WalletInstance.chainId: Number
 ```
 
-**_The `addressQR` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
+Contains the `id` of the network the wallet is intended to work on _(eg: `homestead`, `ropsten`, etc)_.
 
-This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a QR code of the wallet's public address in the form of a `base64`-encoded `String`.
+This is used on the hardware wallets to determine the `derivationPath` and on _all_ wallet types as a default if one isn't provided to the object of transaction you wish to [sign](#sign).
 
-This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
-
-The returned image has a size of `200`x`200` pixels.
+_**Note:** For the [Metamask Wallet](api-metamask.md) this is not available as it handles it internally, but can be changed using the UI._
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/software';
+import { open } from 'colony-wallet/ledger';
 
-const wallet = await open({ privateKey: `0x9274...f447` });
+const wallet = await open({ chainId: 3 });
 
-const qr = await wallet.addressQR;
-
-console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... eocAAAAAASUVORK5CYII=
-```
-
-### `blockie`
-```js
-WalletInstance.blockie: Promise<String>
-```
-
-**_The `blockie` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
-
-This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a [Blockie _(Identicon)_](https://github.com/rdig/better-ethereum-blockies) of the wallet's public address in the form of a `base64`-encoded `String`.
-
-This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
-
-The returned image has a size of `200`x`200` pixels.
-
-**Usage:**
-```js
-import { open } from 'colony-wallet/software';
-
-const wallet = await open({ privateKey: `0x9274...f447` });
-
-const blockie = await wallet.blockie;
-
-console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... Dw2G0AAAAAElFTkSuQmCC
-```
-
-### `defaultGasLimit`
-```js
-WalletInstance.defaultGasLimit: Number
-```
-
-**_The `defaultGasLimit` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
-
-This is prop has both a `getter` and a `setter` attached to it. The `getter` returns a `Number` value, while the `setter` sets a new one.
-
-This value will be used if the transaction you wish to send from the wallet does not contain a `gasLimit`.
-
-**Usage:**
-```js
-import { open } from 'colony-wallet/software';
-
-const wallet = await open({ privateKey: `0x9274...f447` });
-
-console.log(wallet.defaultGasLimit); // 1500000
-
-wallet.defaultGasLimit = 1600000;
-
-console.log(wallet.defaultGasLimit); // 1600000
+console.log(wallet.chainId); // 3
 ```
 
 ### `keystore`
@@ -205,15 +142,6 @@ const wallet = await create();
 
 console.log(wallet.mnemonic); // load blush spray dirt random cash pear illness pulse sketch sheriff surge
 ```
-
-### `path`
-```js
-WalletInstance.path: String
-```
-
-**_The `path` prop is deprecated and will be renamed to `derivationPath`, so make sure you don't rely on it too much_**
-
-See: [`derivationPath`](#derivationpath)
 
 ### `derivationPath`
 ```js
@@ -295,30 +223,6 @@ const wallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 console.log(wallet.privateKey); // 0x9274...f447
 ```
 
-### `privateKeyQR`
-```js
-WalletInstance.privateKeyQR: Promise<String>
-```
-
-**_The `privateKeyQR` prop is deprecated and will no longer be supported (and at some point removed), so make sure you don't rely on it too much_**
-
-This is a `getter` that returns a `Promise`. Upon resolving, the promise returns a QR code of the wallet's `private key` address in the form of a `base64`-encoded `String`.
-
-This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
-
-The returned image has a size of `200`x`200` pixels.
-
-**Usage:**
-```js
-import { open } from 'colony-wallet/software';
-
-const wallet = await open({ privateKey: `0x9274...f447` });
-
-const qr = await wallet.privateKeyQR;
-
-console.log(qr); // data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAA ... 5rQkAAAAASUVORK5CYII=
-```
-
 ### `publicKey`
 ```js
 WalletInstance.publicKey: Promise<String>
@@ -337,27 +241,6 @@ import { open } from 'colony-wallet/trezor';
 const wallet = await open();
 
 console.log(await wallet.publicKey); // 0x93f7 ... a9dd
-```
-
-### `provider`
-```js
-WalletInstance.provider: Object
-```
-
-**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
-
-This is an optional prop that will contain a [provider](api-providers.md) for the wallet to use. It can be set during instantiation _(both `open()` and `create()`)_ and can even be set to `null` or `undefined` if you don't want to have one.
-
-If one is not set via the argument prop, it defaults to [`autoselect()`](api-providers.md#autoselect), setting the first one available.
-
-**Usage:**
-```js
-import { create } from 'colony-wallet/software';
-import { jsonRpc } from 'colony-wallet/providers';
-
-const wallet = await create({ provider: jsonRpc });
-
-console.log(wallet.provider); // {chainId: 1, ensAddress: "0x3141...259b", name: "homestead", _events: {…}, resetEventsBlock: ƒ, …}
 ```
 
 ### `type`
@@ -440,7 +323,7 @@ _**Note**: Metamask is designed to handle it's own `nonce` count. You can manual
 transactionObject {
   gasPrice: bigNumber // The gas price you're willing to pay for this transaction, in WEI, as an instance of bigNumber. Defaults to 9000000000 WEI (9 GWEI)
   gasLimit: bigNumber // The gas limit you want for this transaction, as an instance of bigNumber. Defaults to 21000
-  chainId: Number // The chain id where the transaction is going to be sent. If this is not set, but a provider is set, it takes it from the provider Object. Defaults to 1.
+  chainId: Number // The chain id where the transaction is going to be sent. Defaults to 1.
   nonce: Number // The nonce of the transaction. Defaults to 0.
   to: String // The destination address to send the transaction to, as a hex String. This is the only REQUIRED prop by this library
   value: bigNumber // The value you want to send to the destination address, in WEI, as an instance of bigNumber. Defaults to 1 WEI

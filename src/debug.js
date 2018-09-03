@@ -2,8 +2,6 @@
 
 /* Dependencies */
 import ethers from 'ethers';
-import qrcode from 'qrcode';
-import blockies from 'ethereum-blockies';
 import bip32Path from 'bip32-path';
 import bn from 'bn.js';
 import ethereumJsTx from 'ethereumjs-tx';
@@ -19,11 +17,8 @@ import * as coreHelpers from './core/helpers';
 import * as validators from './core/validators';
 import * as normalizers from './core/normalizers';
 
-/* Providers (deprecated) */
-import providers from './providers';
-
 /* Software */
-import software from './software';
+import SoftwareWallet from './software/class';
 
 /* Trezor */
 import TrezorWallet from './trezor/class';
@@ -45,8 +40,6 @@ const debug: Object = {
   debug: {
     dependencies: {
       ethers,
-      qrcode,
-      blockies,
       bip32Path,
       bn,
       ethereumJsTx,
@@ -68,10 +61,9 @@ const debug: Object = {
     },
     validators,
     normalizers,
-    providers,
     walletClasses: {
       GenericWallet,
-      SoftwareWallet: software.SoftwareWallet,
+      SoftwareWallet,
       TrezorWallet,
       LedgerWallet,
       MetamaskWallet,
