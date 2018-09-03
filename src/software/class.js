@@ -3,16 +3,26 @@
 import secretStorage from 'ethers/wallet/secret-storage';
 import { privateToPublic } from 'ethereumjs-util';
 
-import { derivationPathSerializer } from '../core/helpers';
+import { derivationPathSerializer, userInputValidator } from '../core/helpers';
 import { warning } from '../core/utils';
 import { hexSequenceNormalizer } from '../core/normalizers';
 import { addressValidator, hexSequenceValidator } from '../core/validators';
 
-import { PATH, DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
+import { signTransaction } from './staticMethods';
+
+import {
+  PATH,
+  DESCRIPTORS,
+  HEX_HASH_TYPE,
+  REQUIRED_PROPS,
+} from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 import { walletClass as messages } from './messages';
 
-import type { WalletArgumentsType } from '../core/flowtypes';
+import type {
+  WalletArgumentsType,
+  TransactionObjectType,
+} from '../core/flowtypes';
 
 const { GETTERS, WALLET_PROPS } = DESCRIPTORS;
 /*
@@ -53,12 +63,23 @@ export default class SoftwareWallet {
 
   subtype: string;
 
+  chainId: number;
+
+  /*
+   * @TODO Add specific Flow types
+   *
+   * For the three main wallet methods
+   */
+  sign: (...*) => Promise<string>;
+
   constructor({
     address,
     privateKey,
     password,
     mnemonic,
     keystore,
+    chainId,
+    sign: ethersSign,
   }: WalletArgumentsType = {}) {
     /*
      * Validate the private key and address that's coming in from ethers.
@@ -79,6 +100,7 @@ export default class SoftwareWallet {
       address: Object.assign({}, { value: address }, WALLET_PROPS),
       type: Object.assign({}, { value: TYPE_SOFTWARE }, WALLET_PROPS),
       subtype: Object.assign({}, { value: SUBTYPE_ETHERS }, WALLET_PROPS),
+      chainId: Object.assign({}, { value: chainId }, WALLET_PROPS),
       /*
        * Getters
        */
@@ -98,6 +120,29 @@ export default class SoftwareWallet {
             }),
         },
         GETTERS,
+      ),
+      sign: Object.assign(
+        {},
+        {
+          value: async (transactionObject: TransactionObjectType) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: transactionObject,
+              requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+            });
+            const { chainId: transactionChainId = this.chainId } =
+              transactionObject || {};
+            return signTransaction(
+              Object.assign({}, transactionObject, {
+                callback: ethersSign,
+                chainId: transactionChainId,
+              }),
+            );
+          },
+        },
+        WALLET_PROPS,
       ),
     });
     /*

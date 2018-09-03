@@ -1,20 +1,26 @@
 import { privateToPublic } from 'ethereumjs-util';
 import secretStorage from 'ethers/wallet/secret-storage';
 
+import { userInputValidator } from '../../core/helpers';
 import { warning } from '../../core/utils';
 import { addressValidator, hexSequenceValidator } from '../../core/validators';
 import { hexSequenceNormalizer } from '../../core/normalizers';
 
 import SoftwareWallet from '../../software/class';
+import { signTransaction } from '../../software/staticMethods';
+
+import { REQUIRED_PROPS } from '../../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../../core/types';
 
 jest.dontMock('../../software/class');
 
 jest.mock('ethereumjs-util');
+jest.mock('ethers/wallet/secret-storage');
 jest.mock('../../core/utils');
 jest.mock('../../core/helpers');
 jest.mock('../../core/normalizers');
 jest.mock('../../core/validators');
+jest.mock('../../software/staticMethods');
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -29,6 +35,11 @@ const derivationPath = 'mocked-derivation-path';
 const mockedArgumentsObject = {
   address,
   privateKey,
+};
+const mockedTransactionObject = {
+  to: 'mocked-address',
+  nonce: 'mocked-nonce',
+  value: 'mocked-transaction-value',
 };
 
 describe('`Software` Wallet Module', () => {
@@ -69,34 +80,38 @@ describe('`Software` Wallet Module', () => {
         keystore,
       });
       /*
-      * Address
-      */
+       * Address
+       */
       expect(testWallet).toHaveProperty('address');
       /*
-      * Public Key Getter
-      */
+       * Public Key Getter
+       */
       expect(testWallet).toHaveProperty('publicKey');
       /*
-      * Private Key Getter
-      */
+       * Private Key Getter
+       */
       expect(testWallet).toHaveProperty('privateKey');
       /*
-      * Derivation Path Getter
-      */
+       * Derivation Path Getter
+       */
       expect(testWallet).toHaveProperty('derivationPath');
       /*
-      * Mnemonic Getter
-      */
+       * Mnemonic Getter
+       */
       expect(testWallet).toHaveProperty('mnemonic');
       /*
-      * Keystore Getter (and Setter)
-      */
+       * Keystore Getter (and Setter)
+       */
       expect(testWallet).toHaveProperty('keystore');
       /*
-      * The correct identification type props
-      */
+       * The correct identification type props
+       */
       expect(testWallet).toHaveProperty('type', TYPE_SOFTWARE);
       expect(testWallet).toHaveProperty('subtype', SUBTYPE_ETHERS);
+      /*
+       * Sign transaction method
+       */
+      expect(testWallet).toHaveProperty('sign');
     });
     test('Only has the mnemonic prop if it was opened with it', () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
@@ -189,6 +204,23 @@ describe('`Software` Wallet Module', () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
       testWallet.keystore = password;
       expect(testWallet.keystore).resolves.toEqual(keystore);
+    });
+    test('`sign()` calls the correct static method', async () => {
+      const testWallet = new SoftwareWallet(mockedArgumentsObject);
+      await testWallet.sign();
+      expect(signTransaction).toHaveBeenCalled();
+    });
+    test('Validates `sign` method user input', async () => {
+      const trezorWallet = new SoftwareWallet(mockedArgumentsObject);
+      await trezorWallet.sign(mockedTransactionObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedTransactionObject,
+        requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+      });
     });
   });
 });

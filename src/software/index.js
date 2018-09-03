@@ -6,7 +6,7 @@ import { derivationPathSerializer, userInputValidator } from '../core/helpers';
 import { objectToErrorString, getRandomValues, warning } from '../core/utils';
 import SoftwareWallet from './class';
 
-import { PATH } from '../core/defaults';
+import { PATH, NETWORK_IDS } from '../core/defaults';
 import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from './defaults';
 import { staticMethods as messages } from './messages';
 
@@ -35,6 +35,7 @@ const softwareWallet: Object = Object.assign(
      * @param {string} mnemonic Mnemonic string to open the wallet with
      * @param {string} keystore JSON formatted keystore string to open the wallet with.
      * Only works if you also send in a password
+     * @param {number} chainId The id of the network to use, defaults to mainnet (1)
      *
      * All the above params are sent in as props of an {WalletArgumentsType} object.
      *
@@ -51,7 +52,13 @@ const softwareWallet: Object = Object.assign(
         firstArgument: argumentObject,
         requiredEither: REQUIRED_PROPS_SOFTWARE.OPEN_WALLET,
       });
-      const { password, privateKey, mnemonic, keystore } = argumentObject;
+      const {
+        password,
+        privateKey,
+        mnemonic,
+        keystore,
+        chainId = NETWORK_IDS.HOMESTEAD,
+      } = argumentObject;
       let extractedPrivateKey: string;
       /*
        * @TODO Re-add use ability to control derivation path
@@ -80,9 +87,15 @@ const softwareWallet: Object = Object.assign(
            * So that we can make use of them inside the SoftwareWallet
            * constructor, as the Ethers Wallet instance object will
            * be passed down.
+           *
+           * @TODO Better passing of values
+           *
+           * This needs to be refactored to pass values to the SoftwareWallet
+           * class in a less repetitious way
            */
           keystoreWallet.keystore = keystore;
           keystoreWallet.password = password;
+          keystoreWallet.chainId = chainId;
           return new SoftwareWallet(keystoreWallet);
         }
         /*
@@ -106,9 +119,15 @@ const softwareWallet: Object = Object.assign(
          * So that we can make use of them inside the SoftwareWallet
          * constructor, as the Ethers Wallet instance object will
          * be passed down.
+         *
+         * @TODO Better passing of values
+         *
+         * This needs to be refactored to pass values to the SoftwareWallet
+         * class in a less repetitious way
          */
         privateKeyWallet.mnemonic = mnemonic;
         privateKeyWallet.password = password;
+        privateKeyWallet.chainId = chainId;
         return new SoftwareWallet(privateKeyWallet);
       } catch (caughtError) {
         throw new Error(
@@ -127,13 +146,11 @@ const softwareWallet: Object = Object.assign(
      * This will use EtherWallet's `createRandom()` (with defaults and entropy)
      * and use the resulting private key to instantiate a new SoftwareWallet.
      *
-     * @TODO Fix unit tests
-     * After refactor
-     *
      * @method create
      *
      * @param {Uint8Array} entropy An unsigned 8bit integer Array to provide extra randomness
      * @param {string} password Optional password used to generate an encrypted keystore
+     * @param {number} chainId The id of the network to use, defaults to mainnet (1)
      *
      * All the above params are sent in as props of an {WalletArgumentsType} object.
      *
@@ -151,6 +168,7 @@ const softwareWallet: Object = Object.assign(
       const {
         password,
         entropy = getRandomValues(new Uint8Array(65536)),
+        chainId = NETWORK_IDS.HOMESTEAD,
       } = argumentObject;
       let basicWallet: WalletObjectType;
       try {
@@ -168,8 +186,14 @@ const softwareWallet: Object = Object.assign(
          * So that we can make use of them inside the SoftwareWallet
          * constructor, as the Ethers Wallet instance object will
          * be passed down.
+         *
+         * @TODO Better passing of values
+         *
+         * This needs to be refactored to pass values to the SoftwareWallet
+         * class in a less repetitious way
          */
         basicWallet.password = password;
+        basicWallet.chainId = chainId;
         return new SoftwareWallet(basicWallet);
       } catch (caughtError) {
         throw new Error(`${messages.create} Error: ${caughtError.message}`);
