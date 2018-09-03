@@ -37,6 +37,7 @@ const password = 'mocked-encryption-password';
 const keystore = 'mocked-keystore';
 const derivationPath = 'mocked-derivation-path';
 const mockedMessage = 'mocked-message';
+const mockedSignature = 'mocked-signature';
 const mockedEthersSignMessage = {
   bind: jest.fn(),
 };
@@ -51,6 +52,10 @@ const mockedTransactionObject = {
 };
 const mockedMessageObject = {
   message: mockedMessage,
+};
+const mockedSignatureObject = {
+  message: mockedMessage,
+  signature: mockedSignature,
 };
 
 describe('`Software` Wallet Module', () => {
@@ -284,6 +289,18 @@ describe('`Software` Wallet Module', () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
       await testWallet.verifyMessage();
       expect(verifyMessage).toHaveBeenCalled();
+    });
+    test('Validate `verifyMessage` method user input', async () => {
+      const trezorWallet = new SoftwareWallet(mockedArgumentsObject);
+      await trezorWallet.verifyMessage(mockedSignatureObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedSignatureObject,
+        requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+      });
     });
   });
 });
