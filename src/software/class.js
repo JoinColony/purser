@@ -3,14 +3,19 @@
 import secretStorage from 'ethers/wallet/secret-storage';
 import { privateToPublic } from 'ethereumjs-util';
 
-import { derivationPathSerializer } from '../core/helpers';
+import { derivationPathSerializer, userInputValidator } from '../core/helpers';
 import { warning } from '../core/utils';
 import { hexSequenceNormalizer } from '../core/normalizers';
 import { addressValidator, hexSequenceValidator } from '../core/validators';
 
 import { signTransaction } from './staticMethods';
 
-import { PATH, DESCRIPTORS, HEX_HASH_TYPE } from '../core/defaults';
+import {
+  PATH,
+  DESCRIPTORS,
+  HEX_HASH_TYPE,
+  REQUIRED_PROPS,
+} from '../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../core/types';
 import { walletClass as messages } from './messages';
 
@@ -120,6 +125,13 @@ export default class SoftwareWallet {
         {},
         {
           value: async (transactionObject: TransactionObjectType) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: transactionObject,
+              requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+            });
             const { chainId: transactionChainId = this.chainId } =
               transactionObject || {};
             return signTransaction(
