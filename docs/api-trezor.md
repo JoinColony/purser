@@ -64,10 +64,6 @@ await open(walletArguments: Object);
 
 This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` a new `TrezorWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
 
-By default it auto-selects the first available provider _(see: [`autoselect`](api-providers.md#autoselect))_, if one was not provided via the argument prop.
-
-**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much)_**
-
 By default, without any arguments it will open the first `10` accounts in the derivation path, but you can change that via the `addressCount` object prop argument _(Unlike the software wallet, this is the only argument the `open` method takes, but to preserved consistency, it's still being passed in as an object)_.
 
 Also, the first index from the addresses that you opened will be selected as the default one _(See: the `setDefaultAddress()` method from the [Wallet Object](wallet-object.md))_, while the rest of them will be available under the `otherAddresses` Array prop on the wallet instance.

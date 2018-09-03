@@ -54,7 +54,7 @@ await create([walletArguments: Object]);
 
 This method returns a `Promise` which, upon resolving, will return new software wallet instance _(see: [Wallet Object](wallet-object.md))_.
 
-By default it will generate the maximum possible `entropy` _(see: [`getRandomValues`](api-utils.md#getRandomValues))_ and will auto-select the first available provider _(see: [`autoselect`](api-providers.md#autoselect))_.
+By default it will generate the maximum possible `entropy` _(see: [`getRandomValues`](api-utils.md#getRandomValues))_.
 
 Even though it will work out of the box, you can however, pass in custom arguments via the `walletArguments` object.
 
@@ -65,18 +65,6 @@ walletArguments.entropy: Uint8Array<>
 ```
 
 Provide custom randomness when creating the wallet. By default it will use a `8`-bit unsigned array of `65536` length on which it will generate random values _(see: [`getRandomValues`](api-utils.md#getRandomValues))_.
-
-```js
-walletArguments.provider: Object | function
-```
-
-**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
-
-Override the default auto-selector _(see: [`autoselect`](api-providers.md#autoselect))_ and provide a manual, custom provider when creating the new wallet instance.
-
-The provider `prop` can be either a provider object, or a provider generator method.
-
-See [`ProviderType`](./src/flowtypes.js#L3-L16) and [`ProviderGeneratorType`](./src/flowtypes.js#L18) in [`flowtypes.js`](../src/flowtypes.js) for how the provider object and generator functions look like.
 
 ```js
 walletArguments.password: String
@@ -103,16 +91,6 @@ import { utils } from 'colony-wallet';
 const newWallet = await create({ entropy: utils.getRandomValues(new Uint8Array(65536)) });
 ```
 
-Create a new wallet and give it a provider:
-```js
-import { create } from 'colony-wallet/software';
-import { jsonRpc } from 'colony-wallet/providers';
-
-const provider = await jsonRpc('http://localhost:8545', 'kovan');
-
-const newWallet = await create({ provider });
-```
-
 Create a new wallet and set the encryption password:
 ```js
 import { create } from 'colony-wallet/software';
@@ -131,8 +109,6 @@ await open(walletArguments: Object);
 ```
 
 This method returns a `Promise`, which after unlocking it via one of the available methods, it will `resolve` and `return` new software wallet instance _(see: [Wallet Object](wallet-object.md))_.
-
-By default it auto-selects the first available provider _(see: [`autoselect`](api-providers.md#autoselect))_, if one was not provided via the argument prop.
 
 It will not work without any arguments so you must specify at least one method of opening the wallet. If at least one is not provided, the `Promise` will `reject`, throwing an error.
 
@@ -161,18 +137,6 @@ walletArguments.path: String
 Optional, in case you want to specify a custom `mnemonic` `path` when instantiating a wallet, you can do so by providing it via this prop.
 
 This defaults to `m/44'/60'/0'/0/0`.
-
-```js
-walletArguments.provider: Object | function
-```
-
-**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
-
-Override the default auto-selector _(see: [`autoselect`](api-providers.md#autoselect))_ and provide a manual, custom provider when creating the wallet instance.
-
-The provider `prop` can be either a provider object, or a provider generator method.
-
-See [`ProviderType`](./src/flowtypes.js#L3-L16) and [`ProviderGeneratorType`](./src/flowtypes.js#L18) in [`flowtypes.js`](../src/flowtypes.js) for how the provider object and generator functions look like.
 
 ```js
 walletArguments.keystore: String
@@ -210,18 +174,6 @@ import { open } from 'colony-wallet/software';
 const mnemonic = 'load blush spray dirt random cash pear illness pulse sketch sheriff surge';
 
 const existingWallet = await open({ mnemonic });
-```
-
-Open a new wallet, and give it a provider and encryption password:
-```js
-import { open } from 'colony-wallet/software';
-import { etherscan } from 'colony-wallet/providers';
-
-const existingWallet = await open({
-  privateKey: '0x9274...f447'
-  provider: etherscan,
-  password: '6a8752d9cd49c65dfbf0',
-});
 ```
 
 Open a new wallet using an encrypted keystore:

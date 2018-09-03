@@ -19,7 +19,6 @@ WalletInstance {
   privateKey: String,
   privateKeyQR: Promise<String>, // deprecated
   publicKey: Promise<String>,
-  provider: Object, // deprecated
   type: String,
   subtype: String,
   /*
@@ -52,7 +51,6 @@ _**Example:** Instantiating a software wallet using an existing `privateKey` wil
     * [`privateKey`](#privatekey)
     * [`privateKeyQR`](#privatekeyqr)
     * [`publicKey`](#publickey)
-    * [`provider`](#provider)
     * [`type`](#type)
     * [`subtype`](#subtype)
   * Methods
@@ -339,27 +337,6 @@ const wallet = await open();
 console.log(await wallet.publicKey); // 0x93f7 ... a9dd
 ```
 
-### `provider`
-```js
-WalletInstance.provider: Object
-```
-
-**_Providers are deprecated and will no longer be supported, so make sure you don't rely on them too much_**
-
-This is an optional prop that will contain a [provider](api-providers.md) for the wallet to use. It can be set during instantiation _(both `open()` and `create()`)_ and can even be set to `null` or `undefined` if you don't want to have one.
-
-If one is not set via the argument prop, it defaults to [`autoselect()`](api-providers.md#autoselect), setting the first one available.
-
-**Usage:**
-```js
-import { create } from 'colony-wallet/software';
-import { jsonRpc } from 'colony-wallet/providers';
-
-const wallet = await create({ provider: jsonRpc });
-
-console.log(wallet.provider); // {chainId: 1, ensAddress: "0x3141...259b", name: "homestead", _events: {…}, resetEventsBlock: ƒ, …}
-```
-
 ### `type`
 ```js
 WalletInstance.type: String
@@ -440,7 +417,7 @@ _**Note**: Metamask is designed to handle it's own `nonce` count. You can manual
 transactionObject {
   gasPrice: bigNumber // The gas price you're willing to pay for this transaction, in WEI, as an instance of bigNumber. Defaults to 9000000000 WEI (9 GWEI)
   gasLimit: bigNumber // The gas limit you want for this transaction, as an instance of bigNumber. Defaults to 21000
-  chainId: Number // The chain id where the transaction is going to be sent. If this is not set, but a provider is set, it takes it from the provider Object. Defaults to 1.
+  chainId: Number // The chain id where the transaction is going to be sent. Defaults to 1.
   nonce: Number // The nonce of the transaction. Defaults to 0.
   to: String // The destination address to send the transaction to, as a hex String. This is the only REQUIRED prop by this library
   value: bigNumber // The value you want to send to the destination address, in WEI, as an instance of bigNumber. Defaults to 1 WEI
