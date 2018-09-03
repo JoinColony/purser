@@ -43,12 +43,12 @@ export type WalletObjectType = {
 };
 
 export type WalletArgumentsType = {
-  address: string,
+  address?: string,
   /*
    * Used to select the address index from the hardware wallet
    */
   addressCount?: number,
-  privateKey: string,
+  privateKey?: string,
   mnemonic?: string,
   path?: string,
   keystore?: string,
