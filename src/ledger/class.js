@@ -7,7 +7,6 @@ import { TYPE_HARDWARE, SUBTYPE_LEDGER } from '../core/types';
 import type {
   GenericClassArgumentsType,
   TransactionObjectType,
-  MessageObjectType,
   MessageVerificationObjectType,
 } from '../core/flowtypes';
 
@@ -49,11 +48,19 @@ export default class LedgerWallet extends GenericWallet {
       signMessage: Object.assign(
         {},
         {
-          value: async ({ message }: MessageObjectType = {}) =>
-            signMessage({
+          value: async (messageObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageObject,
+              requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+            });
+            return signMessage({
               derivationPath: await this.derivationPath,
-              message,
-            }),
+              message: messageObject.message,
+            });
+          },
         },
         WALLET_PROPS,
       ),
