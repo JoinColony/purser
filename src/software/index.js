@@ -6,7 +6,7 @@ import { derivationPathSerializer, userInputValidator } from '../core/helpers';
 import { objectToErrorString, getRandomValues, warning } from '../core/utils';
 import SoftwareWallet from './class';
 
-import { PATH } from '../core/defaults';
+import { PATH, NETWORK_IDS } from '../core/defaults';
 import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from './defaults';
 import { staticMethods as messages } from './messages';
 
