@@ -1,4 +1,7 @@
-import { derivationPathSerializer } from '../../core/helpers';
+import {
+  derivationPathSerializer,
+  userInputValidator,
+} from '../../core/helpers';
 import { PATH, NETWORK_IDS } from '../../core/defaults';
 import * as utils from '../../core/utils';
 
@@ -28,8 +31,8 @@ describe('Ledger` Hardware Wallet Module', () => {
   afterEach(() => {
     LedgerWalletClass.mockReset();
     LedgerWalletClass.mockRestore();
-    utils.warning.mockReset();
-    utils.warning.mockRestore();
+    utils.warning.mockClear();
+    userInputValidator.mockClear();
   });
   describe('`open()` static method with defaults', () => {
     test('Open the wallet with defaults', async () => {
@@ -49,6 +52,16 @@ describe('Ledger` Hardware Wallet Module', () => {
        * Instantiates the LedgerWallet class
        */
       expect(LedgerWalletClass).toHaveBeenCalled();
+    });
+    test("Validate the user's input", async () => {
+      const mockedArgumentsObject = {
+        mockedArgument: 'mocked-argument',
+      };
+      await ledgerWallet.open(mockedArgumentsObject);
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedArgumentsObject,
+      });
     });
     test('Open the wallet with 20 addresss', async () => {
       const addressesToOpen = 20;
