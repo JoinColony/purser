@@ -74,6 +74,14 @@ Set an encryption password when creating the wallet. This way you can just call 
 
 As with the others, this is optional, since it can be set after the wallet creation using the `keystore` setter.
 
+```js
+walletArguments.chainId: Number = 1
+```
+
+Sets the `id` of the network _(eg: `homestead`, `ropsten`, etc...)_ you want your wallet to use. It will be used if you don't provide one when trying to sign a transaction.
+
+Defaults to `id` `1`: `homestead`.
+
 **Usage examples:**
 
 Create a new wallet:
@@ -98,6 +106,15 @@ import { create } from 'colony-wallet/software';
 const newWallet = await create({ password: '0fbfd56c94dc9d2578a6' });
 
 const newWalletKeystore = await newWallet.keystore;
+```
+
+Create a new wallet and set a different network id
+```js
+import { create } from 'colony-wallet/software';
+
+const newWallet = await create({ chainId: 3 }); // ropsten
+
+console.log(newWallet.chainId); // 3
 ```
 
 See the [Wallet Object](wallet-object.md) documentation for all the props available to you after the wallet's instantiation.
@@ -156,6 +173,14 @@ Set an encryption password when instantiating the wallet. This way you can just 
 
 This can be set after the wallet creation using the `keystore` setter, but must be included if the wallet is to be instantiated using an encrypted `keystore`.
 
+```js
+walletArguments.chainId: Number = 1
+```
+
+Sets the `id` of the network _(eg: `homestead`, `ropsten`, etc...)_ you want your wallet to use. It will be used if you don't provide one when trying to sign a transaction.
+
+Defaults to `id` `1`: `homestead`.
+
 **Usage examples:**
 
 Open a wallet using a private key:
@@ -186,6 +211,18 @@ const existingWallet = await open({
   keystore,
   password: '6a8752d9cd49c65dfbf0',
 });
+```
+
+Open a new wallet and set a different network id
+```js
+import { open } from 'colony-wallet/software';
+
+const existingWallet = await open({
+  privateKey: '0x9274...f447',
+  chainId: 3, // ropsten
+});
+
+console.log(existingWallet.chainId); // 3
 ```
 
 See the [Wallet Object](wallet-object.md) documentation for all the props available to you after the wallet's instantiation.
