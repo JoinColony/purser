@@ -8,7 +8,7 @@ import { warning } from '../core/utils';
 import { hexSequenceNormalizer } from '../core/normalizers';
 import { addressValidator, hexSequenceValidator } from '../core/validators';
 
-import { signTransaction } from './staticMethods';
+import { signTransaction, signMessage } from './staticMethods';
 
 import {
   PATH,
@@ -72,6 +72,8 @@ export default class SoftwareWallet {
    */
   sign: (...*) => Promise<string>;
 
+  signMessage: (...*) => Promise<string>;
+
   constructor({
     address,
     privateKey,
@@ -80,6 +82,7 @@ export default class SoftwareWallet {
     keystore,
     chainId,
     sign: ethersSign,
+    signMessage: ethersSignMessage,
   }: WalletArgumentsType = {}) {
     /*
      * Validate the private key and address that's coming in from ethers.
@@ -140,6 +143,30 @@ export default class SoftwareWallet {
                 chainId: transactionChainId,
               }),
             );
+          },
+        },
+        WALLET_PROPS,
+      ),
+      signMessage: Object.assign(
+        {},
+        {
+          value: async (messageObject: Object = {}) => {
+            /*
+             * Validate the trasaction's object input
+             */
+            userInputValidator({
+              firstArgument: messageObject,
+              requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+            });
+            return signMessage({
+              message: messageObject.message,
+              /*
+               * Private key needs to be bound since this method doesn't
+               * expect to be destructured from the instance object, and
+               * uses `this` to get the value of the private key
+               */
+              callback: (ethersSignMessage: any).bind({ privateKey }),
+            });
           },
         },
         WALLET_PROPS,

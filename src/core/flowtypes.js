@@ -56,6 +56,7 @@ export type WalletArgumentsType = {
   password?: string,
   chainId?: number,
   sign?: () => {},
+  signMessage?: () => {},
 };
 
 export type MessageObjectType = {

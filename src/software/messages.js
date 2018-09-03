@@ -15,4 +15,6 @@ export const staticMethods: Object = {
     'Could not open the wallet with the method you provided. Please check the arguments you passed in:',
   cannotSign:
     'Cannot sign the transaction. Check the values you are passing in as the Transaction Object',
+  cannotSignMessage:
+    'Cannot sign the message. Check the message string you are passing in',
 };

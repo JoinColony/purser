@@ -7,7 +7,7 @@ import { addressValidator, hexSequenceValidator } from '../../core/validators';
 import { hexSequenceNormalizer } from '../../core/normalizers';
 
 import SoftwareWallet from '../../software/class';
-import { signTransaction } from '../../software/staticMethods';
+import { signTransaction, signMessage } from '../../software/staticMethods';
 
 import { REQUIRED_PROPS } from '../../core/defaults';
 import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../../core/types';
@@ -32,6 +32,10 @@ const mnemonic = 'mocked-mnemonic';
 const password = 'mocked-encryption-password';
 const keystore = 'mocked-keystore';
 const derivationPath = 'mocked-derivation-path';
+const mockedMessage = 'mocked-message';
+const mockedEthersSignMessage = {
+  bind: jest.fn(),
+};
 const mockedArgumentsObject = {
   address,
   privateKey,
@@ -40,6 +44,9 @@ const mockedTransactionObject = {
   to: 'mocked-address',
   nonce: 'mocked-nonce',
   value: 'mocked-transaction-value',
+};
+const mockedMessageObject = {
+  message: mockedMessage,
 };
 
 describe('`Software` Wallet Module', () => {
@@ -50,6 +57,10 @@ describe('`Software` Wallet Module', () => {
     hexSequenceNormalizer.mockClear();
     warning.mockClear();
     secretStorage.encrypt.mockClear();
+    signTransaction.mockClear();
+    userInputValidator.mockClear();
+    signMessage.mockClear();
+    mockedEthersSignMessage.bind.mockClear();
   });
   describe('`SoftwareWallet` Class', () => {
     test('Creates a new wallet', async () => {
@@ -112,6 +123,10 @@ describe('`Software` Wallet Module', () => {
        * Sign transaction method
        */
       expect(testWallet).toHaveProperty('sign');
+      /*
+       * Sign message method
+       */
+      expect(testWallet).toHaveProperty('signMessage');
     });
     test('Only has the mnemonic prop if it was opened with it', () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
@@ -220,6 +235,40 @@ describe('`Software` Wallet Module', () => {
       expect(userInputValidator).toHaveBeenCalledWith({
         firstArgument: mockedTransactionObject,
         requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
+      });
+    });
+    test('`signMessages()` calls the correct static method', async () => {
+      const testWallet = new SoftwareWallet({
+        ...mockedArgumentsObject,
+        signMessage: mockedEthersSignMessage,
+      });
+      await testWallet.signMessage();
+      expect(signMessage).toHaveBeenCalled();
+    });
+    test('`signMessages()` binds the private key', async () => {
+      const testWallet = new SoftwareWallet({
+        ...mockedArgumentsObject,
+        signMessage: mockedEthersSignMessage,
+      });
+      await testWallet.signMessage();
+      expect(mockedEthersSignMessage.bind).toHaveBeenCalled();
+      expect(mockedEthersSignMessage.bind).toHaveBeenCalledWith(
+        expect.objectContaining({ privateKey }),
+      );
+    });
+    test('Validate `signMessage` method user input', async () => {
+      const testWallet = new SoftwareWallet({
+        ...mockedArgumentsObject,
+        signMessage: mockedEthersSignMessage,
+      });
+      await testWallet.signMessage(mockedMessageObject);
+      /*
+       * Validate the input
+       */
+      expect(userInputValidator).toHaveBeenCalled();
+      expect(userInputValidator).toHaveBeenCalledWith({
+        firstArgument: mockedMessageObject,
+        requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
       });
     });
   });
