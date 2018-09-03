@@ -17,9 +17,6 @@ import * as coreHelpers from './core/helpers';
 import * as validators from './core/validators';
 import * as normalizers from './core/normalizers';
 
-/* Providers (deprecated) */
-import providers from './providers';
-
 /* Software */
 import SoftwareWallet from './software/class';
 
@@ -64,7 +61,6 @@ const debug: Object = {
     },
     validators,
     normalizers,
-    providers,
     walletClasses: {
       GenericWallet,
       SoftwareWallet,

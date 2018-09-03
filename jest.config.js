@@ -55,8 +55,6 @@ module.exports = {
   },
   moduleNameMapper: {
     '^ethers$': '<rootDir>/__mocks__/ethers',
-    '^qrcode$': '<rootDir>/__mocks__/qrcode.js',
-    '^ethereum-blockies$': '<rootDir>/__mocks__/ethereum-blockies.js',
     '^bip32-path$': '<rootDir>/__mocks__/bip32-path.js',
     '^ethereumjs-tx$': '<rootDir>/__mocks__/ethereumjs-tx.js',
     '^ethereumjs-util$': '<rootDir>/__mocks__/ethereumjs-util.js',
