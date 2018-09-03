@@ -103,7 +103,6 @@ It will also be used if you don't provide one when trying to sign a transaction.
 
 Defaults to `id` `1`: `homestead`.
 
-
 **Usage examples:**
 
 Open the ledger wallet using the default number of addresses:

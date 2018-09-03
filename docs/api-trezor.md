@@ -84,6 +84,16 @@ It will set first one as the default _(index `0`)_, while the rest will be avail
 
 You will be able to change them using the `setDefaultAddress()` instance method _(See: [Wallet Object](wallet-object.md) for details))_.
 
+```js
+walletArguments.chainId: Number = 1
+```
+
+Sets the `id` of the network _(eg: `homestead`, `ropsten`, etc...)_ you want your account to be opened under _(changes the `derivationPath` of the opened addresses)_.
+
+It will also be used if you don't provide one when trying to sign a transaction.
+
+Defaults to `id` `1`: `homestead`.
+
 **Usage examples:**
 
 Open the trezor wallet using the default number of addresses:
@@ -102,4 +112,13 @@ const wallet = await open({ addressCount: 100 });
 // Optionally set another address as the default
 
 await wallet.setDefaultAddress(12); //true
+```
+
+Open the trezor wallet using a different chain id
+```js
+import { open } from 'colony-wallet/trezor';
+
+const wallet = await open({ chainId: 3 }); // ropsten
+
+await wallet.derivationPath; // m/44'/1'/0'/0/0
 ```
