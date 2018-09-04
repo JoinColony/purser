@@ -6,3 +6,4 @@ jest.config.js
 jest-perf.config.js
 webpack.config.js
 src
+!packages/**/src
