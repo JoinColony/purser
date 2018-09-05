@@ -91,7 +91,7 @@ const buildUmd = (source, buildFolder, message, minimize = false) => {
       if (err || stats.hasErrors()) {
       // Handle errors here
       }
-      console.log(chalk.green(message));
+      console.log(message);
     },
   )
 };
@@ -108,6 +108,7 @@ const buildIndividualModule = async (moduleName) => {
   const cjsBuildFolder = path.resolve(modulePath, FOLDERS.BUILD);
   const esBuildFolder = path.resolve(cjsBuildFolder, SUBFOLDERS.ES_MODULES);
   const umdBuildFolder = path.resolve(cjsBuildFolder, SUBFOLDERS.UMD);
+  const packageFile = require(`${modulePath}/package.json`);
   /*
    * @NOTE The build step is silent
    * It won't output anything
@@ -119,7 +120,13 @@ const buildIndividualModule = async (moduleName) => {
   buildCommonJS(
     sourceFolder,
     cjsBuildFolder,
-    `Building CommonJS Module for @colony/${chalk.white(moduleName)}`,
+    `Building ${chalk.green(
+      'CommonJS Module'
+    )} for ${chalk.white('@colony/')}${chalk.whiteBright.bold(
+      moduleName
+    )}${chalk.white(' @ ')}${chalk.white.bold(
+      packageFile.version
+    )}`,
   );
   /*
    * Build ES Modules
@@ -127,7 +134,13 @@ const buildIndividualModule = async (moduleName) => {
   buildEs(
     sourceFolder,
     esBuildFolder,
-    `Building ES Module for @colony/${chalk.white(moduleName)}`,
+    `Building ${chalk.green(
+      'ES Module'
+    )} for ${chalk.white('@colony/')}${chalk.whiteBright.bold(
+      moduleName
+    )}${chalk.white(' @ ')}${chalk.white.bold(
+      packageFile.version
+    )}`,
   );
   /*
    * Build UMD Modules
@@ -135,7 +148,13 @@ const buildIndividualModule = async (moduleName) => {
   buildUmd(
     sourceFolder,
     umdBuildFolder,
-    `Building UMD Module for @colony/${chalk.white(moduleName)}`,
+    `Building ${chalk.green(
+      'UMD Module'
+    )} for ${chalk.white('@colony/')}${chalk.whiteBright.bold(
+      moduleName
+    )}${chalk.white(' @ ')}${chalk.white.bold(
+      packageFile.version
+    )}`,
   );
   /*
    * Build Minified UMD Modules
@@ -143,7 +162,13 @@ const buildIndividualModule = async (moduleName) => {
   buildMinifiedUmd(
     sourceFolder,
     umdBuildFolder,
-    `Building minified UMD Module for @colony/${chalk.white(moduleName)}`,
+    `Building ${chalk.green(
+      'Minified UMD Module'
+    )} for ${chalk.white('@colony/')}${chalk.whiteBright.bold(
+      moduleName
+    )}${chalk.white(' @ ')}${chalk.white.bold(
+      packageFile.version
+    )}`,
   );
 };
 
