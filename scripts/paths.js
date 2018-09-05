@@ -37,10 +37,15 @@ const FOLDERS = {
   SOURCE: 'src',
 };
 
+const SUBFOLDERS = {
+  ES_MODULES: 'es',
+  UMD: 'umd',
+};
 
 module.exports = {
   MODULES,
   FOLDERS,
+  SUBFOLDERS,
   // source,
   // lib,
   // modules,
