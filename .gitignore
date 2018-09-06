@@ -79,3 +79,4 @@ reports
 # Temporary ignore the source folder
 src
 !modules/**/src
+!tests/**/src

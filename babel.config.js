@@ -48,7 +48,7 @@ const babelConfig = {
         '@babel/preset-flow',
       ],
       plugins: [
-        'dynamic-import-node',
+        'babel-plugin-dynamic-import-node',
       ],
       ignore: null,
     }

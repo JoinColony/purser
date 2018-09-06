@@ -3,7 +3,6 @@ node_modules
 scripts
 flow-typed
 jest.config.js
-jest-perf.config.js
 webpack.config.js
 babel.config.js
 src
