@@ -3,30 +3,32 @@ import { fromString } from 'bip32-path';
 import {
   derivationPathSerializer,
   userInputValidator,
-} from '../../core/helpers';
-import { PATH, NETWORK_IDS } from '../../core/defaults';
+} from '@colony/purser-core/helpers';
+import { PATH, NETWORK_IDS } from '@colony/purser-core/defaults';
 
-import * as utils from '../../core/utils';
+import * as utils from '@colony/purser-core/utils';
 
-import trezorWallet from '../../trezor';
-import TrezorWalletClass from '../../trezor/class';
-import { payloadListener } from '../../trezor/helpers';
-import { PAYLOAD_XPUB } from '../../trezor/payloads';
-import { STD_ERRORS } from '../../trezor/defaults';
+import trezorWallet from '@colony/purser-trezor';
+import TrezorWalletClass from '@colony/purser-trezor/class';
+import { payloadListener } from '@colony/purser-trezor/helpers';
+import { PAYLOAD_XPUB } from '@colony/purser-trezor/payloads';
+import { STD_ERRORS } from '@colony/purser-trezor/defaults';
 
 jest.mock('bip32-path');
-jest.mock('../../trezor/class');
-jest.mock('../../core/helpers');
-jest.mock('../../core/utils');
+jest.mock('@colony/purser-trezor/class');
 /*
- * Manual mocking a manual mock. Yay for Jest being built by Facebook!
- *
- * If you need context, see this:
- * https://github.com/facebook/jest/issues/2070
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
  */
-jest.mock('../../trezor/helpers', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../trezor/__remocks__/helpers'),
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers'),
+);
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils'),
+);
+jest.mock('@colony/purser-trezor/helpers', () =>
+  require('@mocks/purser-trezor/helpers'),
 );
 
 describe('Trezor` Hardware Wallet Module', () => {

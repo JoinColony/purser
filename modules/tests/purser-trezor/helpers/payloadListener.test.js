@@ -1,8 +1,8 @@
-import { payloadListener } from '../../../trezor/helpers';
+import { payloadListener } from '@colony/purser-trezor/helpers';
 
-import { SERVICE_DOMAIN } from '../../../trezor/defaults';
+import { SERVICE_DOMAIN } from '@colony/purser-trezor/defaults';
 
-jest.dontMock('../../../trezor/helpers');
+jest.dontMock('@colony/purser-trezor/helpers');
 
 /*
  * We need to mock the `window`'s global event listeners methods

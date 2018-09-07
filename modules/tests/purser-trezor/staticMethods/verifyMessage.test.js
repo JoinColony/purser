@@ -1,31 +1,36 @@
-import { warning } from '../../../core/utils';
-import { messageVerificationObjectValidator } from '../../../core/helpers';
+import { warning } from '@colony/purser-core/utils';
+import { messageVerificationObjectValidator } from '@colony/purser-core/helpers';
 
-import { verifyMessage } from '../../../trezor/staticMethods';
-import { payloadListener } from '../../../trezor/helpers';
+import { verifyMessage } from '@colony/purser-trezor/staticMethods';
+import { payloadListener } from '@colony/purser-trezor/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../core/normalizers';
-import { addressValidator } from '../../../core/validators';
+} from '@colony/purser-core/normalizers';
+import { addressValidator } from '@colony/purser-core/validators';
 
-import { PAYLOAD_VERIFYMSG } from '../../../trezor/payloads';
+import { PAYLOAD_VERIFYMSG } from '@colony/purser-trezor/payloads';
 
-jest.dontMock('../../../trezor/staticMethods');
+jest.dontMock('@colony/purser-trezor/staticMethods');
 
-jest.mock('../../../core/validators');
-jest.mock('../../../core/normalizers');
-jest.mock('../../../core/utils');
-jest.mock('../../../core/helpers');
+jest.mock('@colony/purser-core/validators');
+
 /*
- * Manual mocking a manual mock. Yay for Jest being built by Facebook!
- *
- * If you need context, see this:
- * https://github.com/facebook/jest/issues/2070
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
  */
-jest.mock('../../../trezor/helpers', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../../trezor/__remocks__/helpers'),
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers'),
+);
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils'),
+);
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers'),
+);
+jest.mock('@colony/purser-trezor/helpers', () =>
+  require('@mocks/purser-trezor/helpers'),
 );
 
 /*

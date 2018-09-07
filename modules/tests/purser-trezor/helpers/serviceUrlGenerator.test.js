@@ -1,13 +1,13 @@
-import { serviceUrlGenerator } from '../../../trezor/helpers';
+import { serviceUrlGenerator } from '@colony/purser-trezor/helpers';
 
 import {
   SERVICE_DOMAIN,
   SERVICE_VERSION,
   SERVICE_URL,
   SERVICE_KEY,
-} from '../../../trezor/defaults';
+} from '@colony/purser-trezor/defaults';
 
-jest.dontMock('../../../trezor/helpers');
+jest.dontMock('@colony/purser-trezor/helpers');
 
 const serviceUrlString = `${SERVICE_DOMAIN}/${SERVICE_VERSION}/${SERVICE_URL}`;
 const serviceUrlParam = `?${SERVICE_KEY}=`;
