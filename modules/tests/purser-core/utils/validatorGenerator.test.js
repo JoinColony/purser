@@ -1,6 +1,6 @@
-import { validatorGenerator } from '../../../modules/node_modules/@colony/purser-core/src/utils';
+import { validatorGenerator } from '@colony/purser-core/utils';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/utils');
+jest.dontMock('@colony/purser-core/utils');
 
 const validErrorMessage = 'mocked-valid-error-message';
 const invalidErrorMessage = 'mocked-invalid-error-message';

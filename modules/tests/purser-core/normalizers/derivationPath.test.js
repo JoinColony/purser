@@ -1,7 +1,7 @@
-import { derivationPathNormalizer } from '../../../modules/node_modules/@colony/purser-core/src/normalizers';
+import { derivationPathNormalizer } from '@colony/purser-core/normalizers';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/utils');
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/normalizers');
+jest.dontMock('@colony/purser-core/utils');
+jest.dontMock('@colony/purser-core/normalizers');
 
 describe('`Core` Module', () => {
   describe('`derivationPathNormalizer()` normalizer', () => {

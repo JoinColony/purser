@@ -1,20 +1,17 @@
 module.exports = {
   rootDir: '.',
-  roots: [
-    '<rootDir>/modules/node_modules/@colony',
-    '<rootDir>/tests/',
-  ],
   testPathIgnorePatterns: [
-    'node_modules',
-    'modules',
-    'docs',
-    'scripts',
+    '<rootDir>/tests',
+    '!<rootDir>/node_modules',
   ],
   transformIgnorePatterns: [
     '<rootDir>/node_modules',
-    '!<rootDir/modules/node_modules>',
+    '!<rootDir>/modules/node_modules',
   ],
   moduleNameMapper: {
-    '^@colony/purser-core/(.*)$': '<rootDir>/modules/node_modules/@colony/purser-core/src/$1',
+    '^@mocks/(.*)$': '<rootDir>/modules/tests/mocks/@colony/$1',
+    '^@ledgerhq/hw-transport-u2f$': '<rootDir>/modules/tests/mocks/ledger-hw-transport-u2f.js',
+    '^@ledgerhq/hw-app-eth$': '<rootDir>/modules/tests/mocks/ledger-hw-app-eth.js',
+    '^ethereumjs-tx$': '<rootDir>/modules/tests/mocks/ethereumjs-tx.js',
   },
 };

@@ -1,7 +1,7 @@
-import { hexSequenceNormalizer } from '../../../modules/node_modules/@colony/purser-core/src/normalizers';
+import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/utils');
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/normalizers');
+jest.dontMock('@colony/purser-core/utils');
+jest.dontMock('@colony/purser-core/normalizers');
 
 const unPrefixedHexString = 'ead7de0ec184a6c8a';
 const prefixedHexString = '0xead7de0ec184a6c8a';

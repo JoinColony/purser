@@ -1,16 +1,15 @@
-import { userInputValidator } from '../../../modules/node_modules/@colony/purser-core/src/helpers';
-import { warning } from '../../../modules/node_modules/@colony/purser-core/src/utils';
+import { userInputValidator } from '@colony/purser-core/helpers';
+import { warning } from '@colony/purser-core/utils';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/helpers');
+jest.dontMock('@colony/purser-core/helpers');
 
 /*
  * @TODO Fix manual mocks
  * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
  * and will replace them with automatic ones
  */
-jest.mock('../../../modules/node_modules/@colony/purser-core/src/utils', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../__mocks__/@colony/purser-core/utils.js'),
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils.js'),
 );
 
 /*

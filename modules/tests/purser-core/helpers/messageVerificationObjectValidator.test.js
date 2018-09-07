@@ -1,23 +1,20 @@
-import { messageVerificationObjectValidator } from '../../../modules/node_modules/@colony/purser-core/src/helpers';
+import { messageVerificationObjectValidator } from '@colony/purser-core/helpers';
 import {
   hexSequenceValidator,
   messageValidator,
-} from '../../../modules/node_modules/@colony/purser-core/src/validators';
-import { hexSequenceNormalizer } from '../../../modules/node_modules/@colony/purser-core/src/normalizers';
+} from '@colony/purser-core/validators';
+import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/helpers');
+jest.dontMock('@colony/purser-core/helpers');
 
-jest.mock('../../../modules/node_modules/@colony/purser-core/src/validators');
+jest.mock('@colony/purser-core/validators');
 /*
  * @TODO Fix manual mocks
  * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
  * and will replace them with automatic ones
  */
-jest.mock(
-  '../../../modules/node_modules/@colony/purser-core/src/normalizers',
-  () =>
-    /* eslint-disable-next-line global-require */
-    require('../../__mocks__/@colony/purser-core/normalizers.js'),
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers.js'),
 );
 
 /*

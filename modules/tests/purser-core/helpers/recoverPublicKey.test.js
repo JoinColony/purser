@@ -1,14 +1,14 @@
 import { hashPersonalMessage, ecrecover } from 'ethereumjs-util';
 
-import { recoverPublicKey } from '../../../modules/node_modules/@colony/purser-core/src/helpers';
+import { recoverPublicKey } from '@colony/purser-core/helpers';
 import {
   hexSequenceNormalizer,
   recoveryParamNormalizer,
-} from '../../../modules/node_modules/@colony/purser-core/src/normalizers';
+} from '@colony/purser-core/normalizers';
 
-import { HEX_HASH_TYPE } from '../../../modules/node_modules/@colony/purser-core/src/defaults';
+import { HEX_HASH_TYPE } from '@colony/purser-core/defaults';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/helpers');
+jest.dontMock('@colony/purser-core/helpers');
 
 jest.mock('ethereumjs-util');
 /*
@@ -16,11 +16,8 @@ jest.mock('ethereumjs-util');
  * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
  * and will replace them with automatic ones
  */
-jest.mock(
-  '../../../modules/node_modules/@colony/purser-core/src/normalizers',
-  () =>
-    /* eslint-disable-next-line global-require */
-    require('../../__mocks__/@colony/purser-core/normalizers.js'),
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers.js'),
 );
 
 /*

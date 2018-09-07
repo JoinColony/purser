@@ -1,41 +1,32 @@
-/*
- * @TODO Fix modules name imports
- * If we add aliases to Jest, then manual mocks won't work all (because of our custom monorepo).
- * This is a temporary workaround, and the imports are really horrible, so these should
- * be fixed as fast as humanly possible.
- */
 import HDKey from 'hdkey';
 import { SigningKey } from 'ethers/wallet';
 
-import GenericWallet from '../../modules/node_modules/@colony/purser-core/src/genericWallet';
+import GenericWallet from '@colony/purser-core/genericWallet';
 import {
   safeIntegerValidator,
   hexSequenceValidator,
   addressValidator,
-} from '../../modules/node_modules/@colony/purser-core/src/validators';
+} from '@colony/purser-core/validators';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../modules/node_modules/@colony/purser-core/src/normalizers';
-import { NETWORK_IDS } from '../../modules/node_modules/@colony/purser-core/src/defaults';
+} from '@colony/purser-core/normalizers';
+import { NETWORK_IDS } from '@colony/purser-core/defaults';
 
-jest.dontMock(
-  '../../modules/node_modules/@colony/purser-core/src/genericWallet',
-);
+jest.dontMock('@colony/purser-core/genericWallet');
 
 jest.mock('hdkey');
 jest.mock('ethers/wallet');
-jest.mock('../../modules/node_modules/@colony/purser-core/src/validators');
+jest.mock('@colony/purser-core/validators');
+jest.mock('@colony/purser-core/normalizers');
+
 /*
  * @TODO Fix manual mocks
  * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
  * and will replace them with automatic ones
  */
-jest.mock(
-  '../../modules/node_modules/@colony/purser-core/src/normalizers',
-  () =>
-    /* eslint-disable-next-line global-require */
-    require('../__mocks__/@colony/purser-core/normalizers.js'),
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers.js'),
 );
 
 /*

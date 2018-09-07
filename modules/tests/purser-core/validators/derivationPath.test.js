@@ -1,7 +1,7 @@
-import { derivationPathValidator } from '../../../modules/node_modules/@colony/purser-core/src/validators';
+import { derivationPathValidator } from '@colony/purser-core/validators';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/utils');
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/validators');
+jest.dontMock('@colony/purser-core/utils');
+jest.dontMock('@colony/purser-core/validators');
 
 describe('`Core` Module', () => {
   describe('`derivationPathValidator()` validator', () => {

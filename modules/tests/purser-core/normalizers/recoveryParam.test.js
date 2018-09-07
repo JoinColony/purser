@@ -1,8 +1,8 @@
-import { recoveryParamNormalizer } from '../../../modules/node_modules/@colony/purser-core/src/normalizers';
+import { recoveryParamNormalizer } from '@colony/purser-core/normalizers';
 
-import { SIGNATURE } from '../../../modules/node_modules/@colony/purser-core/src/defaults';
+import { SIGNATURE } from '@colony/purser-core/defaults';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/normalizers');
+jest.dontMock('@colony/purser-core/normalizers');
 
 describe('`Core` Module', () => {
   describe('`recoveryParamNormalizer()` normalizer', () => {

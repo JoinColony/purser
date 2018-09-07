@@ -1,25 +1,24 @@
-import { transactionObjectValidator } from '../../../modules/node_modules/@colony/purser-core/src/helpers';
+import { transactionObjectValidator } from '@colony/purser-core/helpers';
 import {
   bigNumberValidator,
   safeIntegerValidator,
   addressValidator,
   hexSequenceValidator,
-} from '../../../modules/node_modules/@colony/purser-core/src/validators';
-import { bigNumber } from '../../../modules/node_modules/@colony/purser-core/src/utils';
+} from '@colony/purser-core/validators';
+import { bigNumber } from '@colony/purser-core/utils';
 
-import { TRANSACTION } from '../../../modules/node_modules/@colony/purser-core/src/defaults';
+import { TRANSACTION } from '@colony/purser-core/defaults';
 
-jest.dontMock('../../../modules/node_modules/@colony/purser-core/src/helpers');
+jest.dontMock('@colony/purser-core/helpers');
 
-jest.mock('../../../modules/node_modules/@colony/purser-core/src/validators');
+jest.mock('@colony/purser-core/validators');
 /*
  * @TODO Fix manual mocks
  * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
  * and will replace them with automatic ones
  */
-jest.mock('../../../modules/node_modules/@colony/purser-core/src/utils', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../__mocks__/@colony/purser-core/utils.js'),
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils.js'),
 );
 
 /*
