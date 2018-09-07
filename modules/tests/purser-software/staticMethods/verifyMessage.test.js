@@ -1,16 +1,25 @@
 import { Wallet as EthersWallet } from 'ethers/wallet';
 
-import { messageVerificationObjectValidator } from '../../../core/helpers';
-import { addressValidator } from '../../../core/validators';
+import { messageVerificationObjectValidator } from '@colony/purser-core/helpers';
+import { addressValidator } from '@colony/purser-core/validators';
 
-import { verifyMessage } from '../../../software/staticMethods';
+import { verifyMessage } from '@colony/purser-software/staticMethods';
 
-jest.dontMock('../../../software/staticMethods');
+jest.dontMock('@colony/purser-software/staticMethods');
 
 jest.mock('ethers/wallet');
-jest.mock('../../../core/helpers');
-jest.mock('../../../core/normalizers');
-jest.mock('../../../core/validators');
+jest.mock('@colony/purser-core/validators');
+/*
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
+ */
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers'),
+);
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers'),
+);
 
 /*
  * These values are not correct. Do not use the as reference.

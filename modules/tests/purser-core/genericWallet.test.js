@@ -18,8 +18,6 @@ jest.dontMock('@colony/purser-core/genericWallet');
 jest.mock('hdkey');
 jest.mock('ethers/wallet');
 jest.mock('@colony/purser-core/validators');
-jest.mock('@colony/purser-core/normalizers');
-
 /*
  * @TODO Fix manual mocks
  * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)

@@ -1,18 +1,27 @@
 import { bigNumberify } from 'ethers/utils';
 
-import { transactionObjectValidator } from '../../../core/helpers';
+import { transactionObjectValidator } from '@colony/purser-core/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../core/normalizers';
+} from '@colony/purser-core/normalizers';
 
-import { signTransaction } from '../../../software/staticMethods';
+import { signTransaction } from '@colony/purser-software/staticMethods';
 
-jest.dontMock('../../../software/staticMethods');
+jest.dontMock('@colony/purser-software/staticMethods');
 
 jest.mock('ethers/utils');
-jest.mock('../../../core/helpers');
-jest.mock('../../../core/normalizers');
+/*
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
+ */
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers'),
+);
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers'),
+);
 
 /*
  * These values are not correct. Do not use the as reference.

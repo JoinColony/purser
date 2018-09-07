@@ -1,30 +1,44 @@
 import { privateToPublic } from 'ethereumjs-util';
 import secretStorage from 'ethers/wallet/secret-storage';
 
-import { userInputValidator } from '../../core/helpers';
-import { warning } from '../../core/utils';
-import { addressValidator, hexSequenceValidator } from '../../core/validators';
-import { hexSequenceNormalizer } from '../../core/normalizers';
+import { userInputValidator } from '@colony/purser-core/helpers';
+import { warning } from '@colony/purser-core/utils';
+import {
+  addressValidator,
+  hexSequenceValidator,
+} from '@colony/purser-core/validators';
+import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
 
-import SoftwareWallet from '../../software/class';
+import SoftwareWallet from '@colony/purser-software/class';
 import {
   signTransaction,
   signMessage,
   verifyMessage,
-} from '../../software/staticMethods';
+} from '@colony/purser-software/staticMethods';
 
-import { REQUIRED_PROPS } from '../../core/defaults';
-import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '../../core/types';
+import { REQUIRED_PROPS } from '@colony/purser-core/defaults';
+import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '@colony/purser-core/types';
 
-jest.dontMock('../../software/class');
+jest.dontMock('@colony/purser-software/class');
 
 jest.mock('ethereumjs-util');
 jest.mock('ethers/wallet/secret-storage');
-jest.mock('../../core/utils');
-jest.mock('../../core/helpers');
-jest.mock('../../core/normalizers');
-jest.mock('../../core/validators');
-jest.mock('../../software/staticMethods');
+jest.mock('@colony/purser-core/validators');
+jest.mock('@colony/purser-software/staticMethods');
+/*
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
+ */
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers'),
+);
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers'),
+);
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils'),
+);
 
 /*
  * These values are not correct. Do not use the as reference.

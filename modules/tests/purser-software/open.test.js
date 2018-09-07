@@ -1,9 +1,9 @@
 import { HDNode, Wallet as EthersWalletClass } from 'ethers/wallet';
 
-import { userInputValidator } from '../../core/helpers';
+import { userInputValidator } from '@colony/purser-core/helpers';
 
-import SoftwareWalletClass from '../../software/class';
-import softwareWallet from '../../software';
+import SoftwareWalletClass from '@colony/purser-software/class';
+import softwareWallet from '@colony/purser-software';
 
 import {
   /*
@@ -11,14 +11,23 @@ import {
    * So we have to trick it again with a comment :)
    */
   REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE,
-} from '../../software/defaults';
+} from '@colony/purser-software/defaults';
 
-jest.dontMock('../../software/index');
+jest.dontMock('@colony/purser-software/index');
 
 jest.mock('ethers/wallet');
-jest.mock('../../software/class');
-jest.mock('../../core/helpers');
-jest.mock('../../core/utils');
+jest.mock('@colony/purser-software/class');
+/*
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
+ */
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers'),
+);
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils'),
+);
 
 /*
  * These values are not correct. Do not use the as reference.
