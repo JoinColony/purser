@@ -1,16 +1,16 @@
 import isEqual from 'lodash.isequal';
 
-import { warning } from '../../core/utils';
-import { hexSequenceNormalizer } from '../../core/normalizers';
-import { hexSequenceValidator } from '../../core/validators';
+import { warning } from '@colony/purser-core/utils';
+import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
+import { hexSequenceValidator } from '@colony/purser-core/validators';
 import {
   recoverPublicKey as recoverPublicKeyHelper,
   userInputValidator,
-} from '../../core/helpers';
-import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '../../core/types';
-import { HEX_HASH_TYPE, REQUIRED_PROPS } from '../../core/defaults';
+} from '@colony/purser-core/helpers';
+import { TYPE_SOFTWARE, SUBTYPE_METAMASK } from '@colony/purser-core/types';
+import { HEX_HASH_TYPE, REQUIRED_PROPS } from '@colony/purser-core/defaults';
 
-import MetamaskWalletClass from '../../metamask/class';
+import MetamaskWalletClass from '@colony/purser-metamask/class';
 import {
   methodCaller,
   getInpageProvider,
@@ -21,41 +21,43 @@ import {
    */
   /* eslint-disable-next-line import/named */
   triggerUpdateStateEvents,
-} from '../../metamask/helpers';
-import { validateMetamaskState } from '../../metamask/validators';
+} from '@colony/purser-metamask/helpers';
+import { validateMetamaskState } from '@colony/purser-metamask/validators';
 import {
   signTransaction,
   signMessage,
   verifyMessage,
-} from '../../metamask/staticMethods';
+} from '@colony/purser-metamask/staticMethods';
 import {
   PUBLICKEY_RECOVERY_MESSAGE,
   STD_ERRORS,
   REQUIRED_PROPS as REQUIRED_PROPS_METAMASK,
-} from '../../metamask/defaults';
+} from '@colony/purser-metamask/defaults';
 
-jest.dontMock('../../metamask/class');
+jest.dontMock('@colony/purser-metamask/class');
 
 jest.mock('lodash.isequal');
-jest.mock('../../core/utils');
-jest.mock('../../core/validators');
-jest.mock('../../core/normalizers');
-jest.mock('../../core/helpers');
-jest.mock('../../metamask/staticMethods');
-
+jest.mock('@colony/purser-core/validators');
+jest.mock('@colony/purser-metamask/staticMethods');
 /*
- * Manual mocking a manual mock. Yay for Jest being built by Facebook!
- *
- * If you need context, see this:
- * https://github.com/facebook/jest/issues/2070
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
  */
-jest.mock('../../metamask/helpers', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../metamask/__remocks__/helpers'),
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers'),
 );
-jest.mock('../../metamask/validators', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../metamask/__remocks__/validators'),
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers'),
+);
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils'),
+);
+jest.mock('@colony/purser-metamask/helpers', () =>
+  require('@mocks/purser-metamask/helpers'),
+);
+jest.mock('@colony/purser-metamask/validators', () =>
+  require('@mocks/purser-metamask/validators'),
 );
 
 const mockedMessageSignature = 'mocked-message-signature';

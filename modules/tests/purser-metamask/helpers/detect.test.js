@@ -1,8 +1,8 @@
-import { detect } from '../../../metamask/helpers';
+import { detect } from '@colony/purser-metamask/helpers';
 
-import { helpers as messages } from '../../../metamask/messages';
+import { helpers as messages } from '@colony/purser-metamask/messages';
 
-jest.dontMock('../../../metamask/helpers');
+jest.dontMock('@colony/purser-metamask/helpers');
 
 describe('Metamask` Wallet Module', () => {
   describe('`detect()` helper method', () => {

@@ -1,31 +1,35 @@
-import { warning } from '../../../core/utils';
+import { warning } from '@colony/purser-core/utils';
 
-import { signMessage } from '../../../metamask/staticMethods';
-import { methodCaller } from '../../../metamask/helpers';
-import { hexSequenceNormalizer } from '../../../core/normalizers';
+import { signMessage } from '@colony/purser-metamask/staticMethods';
+import { methodCaller } from '@colony/purser-metamask/helpers';
+import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
 import {
   addressValidator,
   messageValidator,
   hexSequenceValidator,
-} from '../../../core/validators';
+} from '@colony/purser-core/validators';
 
-import { STD_ERRORS } from '../../../metamask/defaults';
+import { STD_ERRORS } from '@colony/purser-metamask/defaults';
 
-jest.dontMock('../../../metamask/staticMethods');
+jest.dontMock('@colony/purser-metamask/staticMethods');
 
-jest.mock('../../../core/validators');
-jest.mock('../../../core/normalizers');
-jest.mock('../../../core/utils');
-jest.mock('../../../core/helpers');
+jest.mock('@colony/purser-core/validators');
 /*
- * Manual mocking a manual mock. Yay for Jest being built by Facebook!
- *
- * If you need context, see this:
- * https://github.com/facebook/jest/issues/2070
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
  */
-jest.mock('../../../metamask/helpers', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../../metamask/__remocks__/helpers'),
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers'),
+);
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers'),
+);
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils'),
+);
+jest.mock('@colony/purser-metamask/helpers', () =>
+  require('@mocks/purser-metamask/helpers'),
 );
 
 /*

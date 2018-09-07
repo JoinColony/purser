@@ -1,18 +1,16 @@
-import { validateMetamaskState } from '../../../metamask/validators';
+import { validateMetamaskState } from '@colony/purser-metamask/validators';
 
-import { validators as messages } from '../../../metamask/messages';
+import { validators as messages } from '@colony/purser-metamask/messages';
 
-jest.dontMock('../../../metamask/validators');
+jest.dontMock('@colony/purser-metamask/validators');
 
 /*
- * Manual mocking a manual mock. Yay for Jest being built by Facebook!
- *
- * If you need context, see this:
- * https://github.com/facebook/jest/issues/2070
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
  */
-jest.mock('../../../metamask/helpers', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../../metamask/__remocks__/helpers'),
+jest.mock('@colony/purser-metamask/helpers', () =>
+  require('@mocks/purser-metamask/helpers'),
 );
 
 /*

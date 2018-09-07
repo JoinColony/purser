@@ -1,6 +1,6 @@
-import * as helpers from '../../../metamask/helpers';
+import * as helpers from '@colony/purser-metamask/helpers';
 
-jest.dontMock('../../../metamask/helpers');
+jest.dontMock('@colony/purser-metamask/helpers');
 
 /*
  * We just need this method mocked, but since it's declared in a module we
