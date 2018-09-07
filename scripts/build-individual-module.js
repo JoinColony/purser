@@ -43,7 +43,7 @@ const buildUmd = (source, buildFolder, message, minimize = false) => {
    * There's an argument here that it will be better to just pass down the module name instead
    * of reversing it from the folder's name...
    */
-  const rootModulePath = path.resolve(source, '..');
+  const rootModulePath = path.resolve(source);
   const moduleName = path.basename(rootModulePath);
   const moduleFileName = camelCase(`colony-${moduleName}`);
   return webpack(
@@ -65,7 +65,7 @@ const buildUmd = (source, buildFolder, message, minimize = false) => {
        */
       resolve: {
         alias: {
-          '@colony/purser-core': path.resolve(MODULES, 'purser-core', 'src'),
+          // '@colony/purser-core': path.resolve(MODULES, 'purser-core', 'src'),
         },
       },
       module: {
@@ -104,7 +104,6 @@ const buildMinifiedUmd = (source, buildFolder, message) =>
 
 const buildIndividualModule = async (moduleName) => {
   const modulePath = path.resolve(MODULES, moduleName);
-  const sourceFolder = path.resolve(modulePath, FOLDERS.SOURCE);
   const cjsBuildFolder = path.resolve(modulePath, FOLDERS.BUILD);
   const esBuildFolder = path.resolve(cjsBuildFolder, SUBFOLDERS.ES_MODULES);
   const umdBuildFolder = path.resolve(cjsBuildFolder, SUBFOLDERS.UMD);
@@ -118,7 +117,7 @@ const buildIndividualModule = async (moduleName) => {
    * Build CommonJS
    */
   buildCommonJS(
-    sourceFolder,
+    modulePath,
     cjsBuildFolder,
     `Building ${chalk.green(
       'CommonJS Module'
@@ -132,7 +131,7 @@ const buildIndividualModule = async (moduleName) => {
    * Build ES Modules
    */
   buildEs(
-    sourceFolder,
+    modulePath,
     esBuildFolder,
     `Building ${chalk.green(
       'ES Module'
@@ -146,7 +145,7 @@ const buildIndividualModule = async (moduleName) => {
    * Build UMD Modules
    */
   buildUmd(
-    sourceFolder,
+    modulePath,
     umdBuildFolder,
     `Building ${chalk.green(
       'UMD Module'
@@ -160,7 +159,7 @@ const buildIndividualModule = async (moduleName) => {
    * Build Minified UMD Modules
    */
   buildMinifiedUmd(
-    sourceFolder,
+    modulePath,
     umdBuildFolder,
     `Building ${chalk.green(
       'Minified UMD Module'
