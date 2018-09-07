@@ -1,39 +1,43 @@
 import EthereumTx from 'ethereumjs-tx';
 
-import { transactionObjectValidator } from '../../../core/helpers';
-import * as utils from '../../../core/utils';
+import { transactionObjectValidator } from '@colony/purser-core/helpers';
+import * as utils from '@colony/purser-core/utils';
 
-import { signTransaction } from '../../../ledger/staticMethods';
+import { signTransaction } from '@colony/purser-ledger/staticMethods';
 import {
   ledgerConnection,
   handleLedgerConnectionError,
-} from '../../../ledger/helpers';
+} from '@colony/purser-ledger/helpers';
 import {
   derivationPathNormalizer,
   multipleOfTwoHexValueNormalizer,
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../core/normalizers';
-import { derivationPathValidator } from '../../../core/validators';
+} from '@colony/purser-core/normalizers';
+import { derivationPathValidator } from '@colony/purser-core/validators';
 
-import { SIGNATURE } from '../../../core/defaults';
+import { SIGNATURE } from '@colony/purser-core/defaults';
 
-jest.dontMock('../../../ledger/staticMethods');
+jest.dontMock('@colony/purser-ledger/staticMethods');
 
 jest.mock('ethereumjs-tx');
-jest.mock('../../../core/validators');
-jest.mock('../../../core/normalizers');
-jest.mock('../../../core/utils');
-jest.mock('../../../core/helpers');
+jest.mock('@colony/purser-core/validators');
 /*
- * Manual mocking a manual mock. Yay for Jest being built by Facebook!
- *
- * If you need context, see this:
- * https://github.com/facebook/jest/issues/2070
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
  */
-jest.mock('../../../ledger/helpers', () =>
-  /* eslint-disable-next-line global-require */
-  require('../../../ledger/__remocks__/helpers'),
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils.js'),
+);
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers.js'),
+);
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers.js'),
+);
+jest.mock('@colony/purser-ledger/helpers', () =>
+  require('@mocks/purser-ledger/helpers.js'),
 );
 
 /*

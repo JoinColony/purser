@@ -1,17 +1,26 @@
 import {
   messageVerificationObjectValidator,
   verifyMessageSignature,
-} from '../../../core/helpers';
-import { hexSequenceNormalizer } from '../../../core/normalizers';
-import { hexSequenceValidator } from '../../../core/validators';
+} from '@colony/purser-core/helpers';
+import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
+import { hexSequenceValidator } from '@colony/purser-core/validators';
 
-import { verifyMessage } from '../../../ledger/staticMethods';
+import { verifyMessage } from '@colony/purser-ledger/staticMethods';
 
-jest.dontMock('../../../ledger/staticMethods');
+jest.dontMock('@colony/purser-ledger/staticMethods');
 
-jest.mock('../../../core/helpers');
-jest.mock('../../../core/validators');
-jest.mock('../../../core/normalizers');
+jest.mock('@colony/purser-core/validators');
+/*
+ * @TODO Fix manual mocks
+ * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
+ * and will replace them with automatic ones
+ */
+jest.mock('@colony/purser-core/helpers', () =>
+  require('@mocks/purser-core/helpers.js'),
+);
+jest.mock('@colony/purser-core/normalizers', () =>
+  require('@mocks/purser-core/normalizers.js'),
+);
 
 /*
  * These values are not correct. Do not use the as reference.

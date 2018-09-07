@@ -1,9 +1,9 @@
 import U2fTransport from '@ledgerhq/hw-transport-u2f';
 import LedgerEthApp from '@ledgerhq/hw-app-eth';
 
-import { ledgerConnection } from '../../../ledger/helpers';
+import { ledgerConnection } from '@colony/purser-ledger/helpers';
 
-jest.dontMock('../../../ledger/helpers');
+jest.dontMock('@colony/purser-ledger/helpers');
 
 jest.mock('@ledgerhq/hw-transport-u2f');
 jest.mock('@ledgerhq/hw-app-eth');
