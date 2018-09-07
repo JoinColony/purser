@@ -4,5 +4,7 @@
   },
   "rules": {
     "flowtype/require-valid-file-annotation": [0],
+    "import/no-unresolved": [2, { ignore: ['@colony'] }],
+    "max-len": [0],
   },
 }
