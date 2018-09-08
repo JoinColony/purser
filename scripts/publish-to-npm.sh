@@ -33,13 +33,13 @@ rm -rf "${NODE_MODULES_PATH}"
 yarn
 
 log 'Build Modules...'
-yarn build:test
+yarn build
 
 log 'Prepare Modules for release...'
-yarn update:test
+yarn update-modules
 
 log 'Populate Modules folders...'
-yarn populate:test
+yarn populate-modules
 
 # TODO
 # We need a step to copy over relevant folders and files (eg: docs, license...)
