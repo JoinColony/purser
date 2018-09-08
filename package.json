@@ -11,6 +11,7 @@
     "build:ci": "NODE_ENV=test yarn build",
     "build:test": "node scripts/build-all-modules.js",
     "update:test": "node scripts/update-all-packages-json.js",
+    "release:test": "sh scripts/publish-to-npm.sh",
     "flow": "flow",
     "glow": "glow",
     "glow:watch": "glow --watch",
