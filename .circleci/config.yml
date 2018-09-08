@@ -41,7 +41,7 @@ jobs:
           path: reports
       - run:
           name: "Building library"
-          command: yarn build:ci
+          command: yarn build
       - run:
           name: "Uploading updated lockfile"
           command: yarn lockfile:upload
@@ -82,7 +82,7 @@ jobs:
           path: reports
       - run:
           name: "Building library"
-          command: yarn build:ci
+          command: yarn build
 
 workflows:
   version: 2
