@@ -38,6 +38,9 @@ yarn build:test
 log 'Prepare Modules for release...'
 yarn update:test
 
+log 'Populate Modules folders...'
+yarn populate:test
+
 # TODO
 # We need a step to copy over relevant folders and files (eg: docs, license...)
 

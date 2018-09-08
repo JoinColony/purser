@@ -73,6 +73,7 @@ const buildIndividualModule = async (moduleName) => {
        */
       files: [
         'lib',
+        'docs',
       ],
       /*
        * Add dependencies object
