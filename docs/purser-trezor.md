@@ -1,6 +1,6 @@
-# Trezor Wallet API
+# @colony/purser-trezor API documentation
 
-These docs serve to outline the `API` format and methods provided by `colony-wallet`.
+These docs serve to outline the `API` format and methods provided by the `@colony/purser-trezor` library.
 
 Unlike other wallet libraries, this one works entirely in `async` mode, meaning every `return` will be a `Promise` that must `resolve` _(or `reject`, if something goes wrong...)_.
 
@@ -9,12 +9,6 @@ Unlike other wallet libraries, this one works entirely in `async` mode, meaning 
 In `development` mode there will be a number of warnings or errors outputted verbosely to the console.
 
 When building with `NODE_ENV=production` all output will be silenced.
-
-## Contents
-
-* Hardware
-  * Trezor
-    * [`open`](#open)
 
 ### Hardware
 
@@ -40,20 +34,16 @@ There are different ways in which you can import the library in your project _(a
 
 Using `ES5` `require()` statements:
 ```js
-var wallets = require('colony-wallet').wallets; // wallets.trezor.open().then();
+var trezor = require('@colony/purser-trezor'); // trezor.open().then();
 
-var trezor = require('colony-wallet/trezor'); // trezor.open().then();
-
-var open = require('colony-wallet/trezor').open; // open().then();
+var open = require('@colony/purser-trezor').open; // open().then();
 ```
 
 Using `ES6` `import` statements:
 ```js
-import { wallets } from 'colony-wallet'; // await wallets.trezor.open();
+import trezor from '@colony/purser-trezor'; // await trezor.open();
 
-import trezor from 'colony-wallet/trezor'; // await trezor.open();
-
-import { open } from 'colony-wallet/trezor'; // await open();
+import { open } from '@colony/purser-trezor'; // await open();
 ```
 
 ### `open`
@@ -94,14 +84,14 @@ Defaults to `id` `1`: `homestead`.
 
 Open the trezor wallet using the default number of addresses:
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const wallet = await open();
 ```
 
 Open the trezor wallet using a custom number of addresses:
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const wallet = await open({ addressCount: 100 });
 
@@ -112,7 +102,7 @@ await wallet.setDefaultAddress(12); //true
 
 Open the trezor wallet using a different chain id
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const wallet = await open({ chainId: 3 }); // ropsten
 
