@@ -1,5 +1,5 @@
 {
-  "name": "colony-wallet",
+  "name": "purser",
   "private": true,
   "version": "0.1.0",
   "description": "Monorepo for the Purser collection of ethereum wallet libraries",
@@ -26,14 +26,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JoinColony/colony-wallet.git"
+    "url": "git+https://github.com/JoinColony/purser.git"
   },
   "author": "Raul Glogovetan <raul@colony.io>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/JoinColony/colony-wallet/issues"
+    "url": "https://github.com/JoinColony/purser/issues"
   },
-  "homepage": "https://github.com/JoinColony/colony-wallet",
+  "homepage": "https://github.com/JoinColony/purser",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
