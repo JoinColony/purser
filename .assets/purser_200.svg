@@ -5,11 +5,11 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   height="119.80275"
-   width="310"
+   height="73.201836"
+   width="200"
    id="svg903"
    version="1.1"
-   viewBox="0 0 310 119.80275">
+   viewBox="0 0 200 73.201836">
   <metadata
      id="metadata909">
     <rdf:RDF>
@@ -27,7 +27,7 @@
   <title
      id="title882">1</title>
   <g
-     transform="matrix(2.9886432,0,0,2.9886432,-64.665273,-29.75792)"
+     transform="matrix(1.9924288,0,0,1.9924288,-46.443515,-23.171947)"
      id="logos">
     <path
        id="path884"
@@ -60,7 +60,7 @@
     <polygon
        id="polygon898"
        style="fill:#19a582"
-       points="37.13,20.76 28,11.63 46.27,11.63 " />
+       points="46.27,11.63 37.13,20.76 28,11.63 " />
     <circle
        id="circle900"
        style="fill:#ffffff"
