@@ -32,6 +32,12 @@ const buildEs = (source, buildFolder, message) => run(
   message
 );
 
+const exportFlowTypes = (source, buildFolder, message) => run(
+  `flow-copy-source --ignore ${buildFolder} ${source} ${buildFolder}/${SUBFOLDERS.ES_MODULES}`,
+  {},
+  message,
+);
+
 const buildIndividualModule = async (moduleName) => {
   const modulePath = path.resolve(MODULES, moduleName);
   const cjsBuildFolder = path.resolve(modulePath, FOLDERS.BUILD);
@@ -56,7 +62,7 @@ const buildIndividualModule = async (moduleName) => {
     )}${chalk.white(' @ ')}${chalk.white.bold(
       packageFile.version
     )}`,
-  );
+  );cjsBuildFolder
   /*
    * Build ES Modules
    */
@@ -65,6 +71,20 @@ const buildIndividualModule = async (moduleName) => {
     esBuildFolder,
     `Building ${chalk.green(
       'ES Module'
+    )} for ${chalk.white('@colony/')}${chalk.whiteBright.bold(
+      moduleName
+    )}${chalk.white(' @ ')}${chalk.white.bold(
+      packageFile.version
+    )}`,
+  );
+  /*
+   * Flow types
+   */
+  exportFlowTypes(
+    modulePath,
+    cjsBuildFolder,
+    `Exporting ${chalk.green(
+      'Flow Types'
     )} for ${chalk.white('@colony/')}${chalk.whiteBright.bold(
       moduleName
     )}${chalk.white(' @ ')}${chalk.white.bold(
