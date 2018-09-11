@@ -1,7 +1,5 @@
 const path = require('path');
 const run = require('./utils').run;
-const webpack = require("webpack");
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const camelCase = require('camelcase');
 const chalk = require('chalk');
 
