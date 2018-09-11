@@ -62,6 +62,7 @@ const buildIndividualModule = async (moduleName) => {
     {},
     packageFile,
     {
+      private: false,
       /*
        * Library entry points
        */
@@ -75,6 +76,14 @@ const buildIndividualModule = async (moduleName) => {
         'lib',
         'docs',
       ],
+      /*
+       * Add links to the monorepo and author/license
+       */
+      repository: rootPackageFile.repository,
+      author: rootPackageFile.author,
+      license: rootPackageFile.license,
+      bugs: rootPackageFile.bugs,
+      homepage: rootPackageFile.homepage,
       /*
        * Add dependencies object
        */
