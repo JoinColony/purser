@@ -1,6 +1,6 @@
-# Ledger Wallet API
+# @colony/purser-ledger API documentation
 
-These docs serve to outline the `API` format and methods provided by `colony-wallet`.
+These docs serve to outline the `API` format and methods provided by the `@colony/purser-ledger` library.
 
 Unlike other wallet libraries, this one works entirely in `async` mode, meaning every `return` will be a `Promise` that must `resolve` _(or `reject`, if something goes wrong...)_.
 
@@ -9,13 +9,6 @@ Unlike other wallet libraries, this one works entirely in `async` mode, meaning 
 In `development` mode there will be a number of warnings or errors outputted verbosely to the console.
 
 When building with `NODE_ENV=production` all output will be silenced.
-
-## Contents
-
-* Hardware
-  * Ledger
-    * [`open`](#open)
-
 
 ### Hardware
 
@@ -49,20 +42,16 @@ There are different ways in which you can import the library in your project _(a
 
 Using `ES5` `require()` statements:
 ```js
-var wallets = require('colony-wallet').wallets; // wallets.ledger.open().then();
+var ledger = require('@colony/purser-ledger'); // ledger.open().then();
 
-var ledger = require('colony-wallet/ledger'); // ledger.open().then();
-
-var open = require('colony-wallet/ledger').open; // open().then();
+var open = require('@colony/purser-ledger/ledger').open; // open().then();
 ```
 
 Using `ES6` `import` statements:
 ```js
-import { wallets } from 'colony-wallet'; // await wallets.ledger.open();
+import ledger from '@colony/purser-ledger'; // await ledger.open();
 
-import ledger from 'colony-wallet/ledger'; // await ledger.open();
-
-import { open } from 'colony-wallet/ledger'; // await open();
+import { open } from '@colony/purser-ledger'; // await open();
 ```
 
 ### `open`
@@ -101,16 +90,16 @@ Defaults to `id` `1`: `homestead`.
 
 **Usage examples:**
 
-Open the ledger wallet using the default number of addresses:
+Open the Ledger wallet using the default number of addresses:
 ```js
-import { open } from 'colony-wallet/ledger';
+import { open } from '@colony/purser-ledger';
 
 const wallet = await open();
 ```
 
-Open the ledger wallet using a custom number of addresses:
+Open the Ledger wallet using a custom number of addresses:
 ```js
-import { open } from 'colony-wallet/ledger';
+import { open } from '@colony/purser-ledger';
 
 const wallet = await open({ addressCount: 100 });
 
@@ -119,9 +108,9 @@ const wallet = await open({ addressCount: 100 });
 await wallet.setDefaultAddress(12); //true
 ```
 
-Open the ledger wallet using a different chain id
+Open the Ledger wallet using a different chain id
 ```js
-import { open } from 'colony-wallet/ledger';
+import { open } from '@colony/purser-ledger';
 
 const wallet = await open({ chainId: 3 }); // ropsten
 
