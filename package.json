@@ -1,8 +1,8 @@
 {
   "name": "colony-wallet",
-  "private": false,
+  "private": true,
   "version": "0.1.0",
-  "description": "A set of utilities to interface with ethereum addresses",
+  "description": "Monorepo for the Purser collection of ethereum wallet libraries",
   "scripts": {
     "precommit": "lint-staged",
     "build": "node scripts/build-all-modules.js",

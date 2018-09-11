@@ -1,82 +1,46 @@
-## [Colony](http://colony.io) Wallet &middot; [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE) [![Greenkeeper badge](https://badges.greenkeeper.io/JoinColony/colony-wallet.svg?token=114044dbcad9f33395dffb9087c3e665bf5862cf49f66dd9d03d808663aa72bc&ts=1518703816619)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/JoinColony/colony-wallet/tree/master.svg?style=shield&circle-token=b465d9d46f98d87d322ef5fe438dd3aa4936cc80)](https://circleci.com/gh/JoinColony/colony-wallet/tree/master)
+![purser](https://github.com/JoinColony/purser/blob/master/.assets/purser_200.svg)
+
+## Purser
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/JoinColony/colony-wallet.svg?token=114044dbcad9f33395dffb9087c3e665bf5862cf49f66dd9d03d808663aa72bc&ts=1518703816619)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/JoinColony/colony-wallet/tree/master.svg?style=shield&circle-token=b465d9d46f98d87d322ef5fe438dd3aa4936cc80)](https://circleci.com/gh/JoinColony/colony-wallet/tree/master)
+
+Monorepo for the Purser collection of ethereum wallet libraries:
+- [`purser-core`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-core): A collection of `helpers`, `utils`, `validators` and `normalizers` to assist the individual purser modules.
+- [`purser-ledger`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-ledger): A `javascript` library to interact with a [Ledger](https://www.ledger.com/) based ethereum wallet.
+- [`purser-metamask`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-metamask): A `javascript` library to interact with the a [Metamask](https://metamask.io/) based ethereum wallet.
+- [`purser-software`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-software): A `javascript` library to interact with a software ethereum wallet, based on the [ethers.js](https://github.com/ethers-io/ethers.js/) library.
+- [`purser-trezor`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-trezor): A `javascript` library to interact with a [Trezor](https://trezor.io/) based ethereum wallet.
 
 
-A set of utilities to interface with ethereum addresses
+To learn more about Colony, you can visit [the website](https://colony.io/) or read the [white paper](https://colony.io/whitepaper.pdf).
 
-### Quick start
-
-#### Via a browser `<script>` tag _(using the [unpkg.com](http://unpkg.com) CDN)_:
-```html
-<script type="text/javascript" src="https://unpkg.com/colony-wallet/umd/colonyWallet.min.js"></script>
-```
-
-#### As a module
-Using `yarn`:
-```bash
-yarn add colony-wallet
-```
-Or using `npm`:
-```bash
-npm install colony-wallet
-```
-
-### Usage
-
-#### Create a new wallet:
-```js
-import { create } from 'colony-wallet/software';
-
-const newWallet = await create();
-```
-
-#### Open an existing wallet:
-```js
-import { open } from 'colony-wallet/software';
-
-const existingWallet = await open({ mnemonic: 'load blush spray dirt random cash pear illness pulse sketch sheriff surge' });
-```
-
-For a more complete explanation of the available features and more usage examples please check out the [**API docs**](docs/api.md).
-
-### Builds
-
-Building the project will output three versions of the library. You can either build it in _dev_ or _prod_ mode, the difference between then being with setting the `NODE_ENV` variable. This will determine the verbosity of the output and if the UMD build should have a minified version:
-
-```bash
-yarn build:dev
-```
-
-```bash
-yarn build:prod
-```
-
-A UMD build to be used directly inside the browser as a script source _(both minified and un-minified versions)_. A `commonjs` modules build and an `es6` modules build.
-
-The `es6` version will also bring over the `flow` types used for this project.
 
 ### Documentation
 
-- [Wallet Object documentation](docs/wallet-object.md)
-- [Software Wallet documentation](docs/api-software.md)
-- [Metamask Wallet documentation](docs/api-metamask.md)
-- [Hardware Wallet documentation](docs/api-hardware.md)
-  - [Trezor Wallet documentation](docs/api-trezor.md)
-  - [Ledger Wallet documentation](docs/api-ledger.md)
-- [Core utils documentation](docs/api-utils.md)
+Please see the [documentation](https://docs.colony.io/purser/) with detailed examples and explanations.
 
-Or you can find all the API docs files [here](docs/).
+### Contributing
+
+We welcome all contributions to Purser.
+
+Please read our [Contributing Guidelines](https://github.com/JoinColony/purser/blob/master/.github/CONTRIBUTING.md) for how to get started.
 
 ### Developing
 
-If you want to actively work on the modules, there's a `yarn` task that will watch the `src` folder and rebuild files if they were changed:
+This monorepo follows the [alle](https://github.com/boennemann/alle) monorepo management and publishing pattern.
 
+All interactions with it are made through custom scripts and clever folder structures.
+
+#### Building
+
+Builds are handled internally by a script that outputs two versions of the modules. One that's in the `CommonJS` and one in `ES`.
+
+This script is exposed via the `yarn build` command which will build each individual module in:
 ```bash
-yarn watch
+modules/node_modules/@colony/purser-<type>/lib
 ```
 
-This will just rebuild files, but not run any dev suites on them _(eg: `jest`, `eslint`, `flow`)_. That responsibility falls on you and your editor.
-
-#### Eslint
+#### Linting code
 
 It's most likely that you'll use `eslint` via your editor / IDE, but just in case you don't, there are a couple of scripts set up to do this manually:
 
@@ -126,16 +90,15 @@ First check will run `eslint` with the `fix` instruction, second check will be `
 
 After these two steps, the project will auto-run the `git add` command.
 
-### Testing
+#### Testing
 
 `jest` is set up as the default test runner for this project.
 
 You can run the following test commands that were set up as `npm` scripts:
 - `yarn test` makes a simple pass and runs all the tests
 - `yarn test:watch` will watch the source folder and re-run tests on file change
-- `yarn test:coverage` will output the test coverage of the project
 
-#### Jest
+**A note on `jest`**
 
 You may run into trouble running `yarn test:watch`, which will throw and error along the lines of:
 
@@ -151,7 +114,7 @@ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo s
 
 [More info on the fix from jest#3254](https://github.com/facebook/jest/issues/3254#issuecomment-297214395)
 
-### Continuous Integration
+#### Continuous Integration
 
 Circle CI handles this project's builds. It has two workflows set up: one for commit pushed, and one that it scheduled to run during the night.
 
@@ -159,7 +122,7 @@ The commit workflow will trigger every time you push to a branch. If that branch
 
 The nightly build workflow will run every night at 4 AM and will build the latest changes added to the `master` branch.
 
-### Dependency Management
+#### Dependency Management
 
 This project makes use of `greenkeeper` for dependency management.
 
@@ -169,4 +132,4 @@ When the builds succeeds one of two things will happen: if the package update wa
 
 ### License
 
-`colony-wallet` is [MIT licensed](LICENSE).
+The purser monorepo and each individual purser library are [MIT licensed](LICENSE).
