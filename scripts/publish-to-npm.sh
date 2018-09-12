@@ -57,7 +57,7 @@ for module in $(ls "${MODULES_PATH}"); do
     npm pack
   else
     log "Publishing @colony/$module to NPM..."
-    # npm publish --access=public
+    npm publish --access public
   fi
   cd "${ROOT_PATH}"
 done

@@ -67,12 +67,12 @@ const buildIndividualModule = async (moduleName) => {
        * Library entry points
        */
       main: 'lib/index.js',
-      module: 'lib/es/index.js',
-      browser: 'lib/umd/index.js',
+      module: 'es/index.js',
       /*
        * Folders to include
        */
       files: [
+        'es',
         'lib',
         'docs',
       ],
