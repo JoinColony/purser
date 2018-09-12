@@ -31,7 +31,7 @@ This will lint all the files inside the `src` folder and log any errors or warni
 yarn lint:fix
 ```
 
-This will also lint files in the `src`, but in addition it will also try to fix any problems it encounters. _(Makes use of `prettier`)_
+This script will lint files in the `src` directory and also try to fix any problems it encounters. _(Makes use of `prettier`)_
 
 If there's a error it cannot fix, it will log it to the console.
 
@@ -39,19 +39,19 @@ If there's a error it cannot fix, it will log it to the console.
 
 This project makes use of the [`flow`](https://flow.org/) system of types declaration.
 
-As above with `eslint` this project expects your editor or IDE to show you warning or errors in real-time. But if that's not an option you can do it manually.
+As above with `eslint` this project expects your editor or IDE to show you warning or errors in real-time. But if that's not an option you can do it manually:
 
 ```bash
 yarn flow
 ```
 
-Will check the `src` folder for any files using the `@flow` pragma _(It runs `flow status` under the hood)_ and it will also start the `flow` `daemon` if it isn't already.
+Will check the `src` folder for any files using the `@flow` pragma _(It runs `flow status` under the hood)_ and it will also start the `flow` `daemon` if it isn't already running.
 
 ```bash
 yarn glow
 ```
 
-It's just a wrapper for `flow` but with a nicer console output. Use this if you want to make sense of your `flow` errors.
+`glow` is just a wrapper for `flow` but with a nicer console output. Use this if you want to make sense of your `flow` errors.
 
 ```bash
 yarn flow:check
@@ -63,7 +63,9 @@ This is left in as a legacy, in case `flow status` doesn't work on your system. 
 
 Committing changes to `git` will trigger two commit hooks that will ensure your code follows the coding style guidelines set forth by `eslint` and `prettier`.
 
-First check will run `eslint` with the `fix` instruction, second check will be `flow`, but using the `glow` output formatting.
+The first check will run `eslint` with the `fix` instruction.
+
+The second check will be `flow`, but using the `glow` output formatting.
 
 After these two steps, the project will auto-run the `git add` command.
 

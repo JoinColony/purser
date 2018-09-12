@@ -31,9 +31,8 @@ WalletInstance {
 }
 ```
 
-This is the complete form of the Wallet Object, but in some cases, values are not going to be set due to various constraints.
+Values in the wallet object will be set if possible upon instantiation, but may be left undefined in certain contexts. For example, when instantiating a software wallet using an existing `privateKey`, the `mnemonic` value cannot be derived from a private key and so it will remain undefined. However, when instantiating with a `mnemonic` the privateKey will be set (with the first address as the default derivationPath).
 
-_**Example:** Instantiating a software wallet using an existing `privateKey` will not set the `mnemonic` since it's value cannot be reversed. But instantiating a software wallet using a `mnemonic` phrase will also set the `privateKey`s prop value since that can be reversed._
 
 #### Props
 
@@ -64,7 +63,7 @@ WalletInstance.address: String
 
 Contains the wallet's public address in the form of `String`.
 
-_**Tip:** Across all wallet types and formats this is the only value that you can count on as always present on the object._
+_**Tip:** Across all wallet types and formats this is the only value that will certainly be present in the object._
 
 _**Note:** For the [Metamask Wallet](purser-metamask.md) this will always reflect the address selected from the UI, so you can always count on it to be accurate._
 
@@ -102,13 +101,13 @@ console.log(wallet.chainId); // 3
 WalletInstance.keystore: Promise<String>
 ```
 
-This is prop has both a `getter` and a `setter` attached to it. The `getter` is `async` and returns a `Promise`, while the `setter` is synchronous and give you the ability to set the encryption password.
+This is prop has both a `getter` and a `setter` attached to it. The `getter` is `async` and returns a `Promise`, while the `setter` is synchronous and gives you the ability to set the encryption password.
 
-The `getter` `Promise` won't resolve if an encryption password wasn't set, either via the `password` argument when instantiating the wallet or via the aforementioned `setter`.
+The `getter` `Promise` will *not* resolve if an encryption password wasn't set, either via the `password` argument when instantiating the wallet or via the aforementioned `setter`.
 
 Upon resolving, the `Promise` will return a `JSON`-formatted `String`. _(Which you can transform into an object using `JSON.parse()`)_.
 
-This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read it's value, it will be served from memory instead of being re-calculated.
+This `getter` is also [memoized](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get#Smart_self-overwriting_lazy_getters), so the next time you read its value, it will be served from memory instead of being re-calculated.
 
 If the wallet was instantiated using an encrypted `keystore`, than this value is already set and memoized, so calling this will return the value instantly,
 
@@ -189,7 +188,7 @@ It contains an `Array` of all the addresses that were derived initially when ope
 
 This is useful to see all the addresses that you have access to.
 
-Note, that if only one address was derived when you opened the wallet _(Eg: `{ addressCount : 1 }`)_, than this prop will be `undefined`. This is because it will only contain one entry, which is also the default selected address _(See: [`setDefaultAddress`](#setdefaultaddress))_, so there's no point, as it will just repeat information.
+Note, that if only one address was derived when you opened the wallet _(Eg: `{ addressCount : 1 }`)_, this prop will be `undefined`. This is because it will only contain one entry, which is also the default selected address _(See: [`setDefaultAddress`](#setdefaultaddress))_.
 
 **Usage:**
 ```js
@@ -214,7 +213,7 @@ console.log(wallet.otherAddress); // undefined
 WalletInstance.privateKey: String
 ```
 
-Contains the `private key` for the wallet in `String` form. This will be available in all cases: if you created a new wallet instance, if you opened a wallet instance using either a `mnemonic` or a `private key`.
+Contains the `privateKey` for the wallet in `String` form. This will be available in all cases: if you created a new wallet instance, if you opened a wallet instance using either a `mnemonic` or a `private key`.
 
 _**Warning:** As the name suggests, this is private. So treat it with caution and if possible don't expose it to other parts of your app._
 
@@ -236,7 +235,7 @@ This is a `getter` that returns a `Promise`. Upon resolving, the promise returns
 
 This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(Eg: `privateKey`, `mnemonic`...)_.
 
-_**Note:** The [Metamask Wallet](purser-metamask.md) does not provide native access to the public key. But we can recover it from a signed message. So in order to access it, you will first have to sign a message (string provided), and than you'll have access to it. It will also be saved locally for future references (current selected address only), so that if you have to use it again, you won't have re-sign the message._
+_**Note:** The [Metamask Wallet](purser-metamask.md) does not provide native access to the public key, but it can be recovered from a signed message. in order to access it, you will first have to sign a message with Metamask to obtain the public key. It will then be saved locally for future reference (current selected address only), so that if you have to use it again, you won't have re-sign the message._
 
 **Usage:**
 ```js
@@ -288,11 +287,11 @@ WalletInstance.setDefaultAddress(addressIndex: Number): Promise<Boolean>
 
 _Note: This prop is only available on Hardware Wallet types (Eg: Trezor)_.
 
-By default address, we mean the address who's details are available via the `address`, `publicKey` and `derivationPath` props, and which will be used when call-ing the `sign()`, `signMessage()` and `verifyMessage()` methods, as it can only use one at a time for these operations.
+This method returns the address defined in the `address`, `publicKey` and `derivationPath` props, and which will be used when calling the `sign()`, `signMessage()` and `verifyMessage()` methods, as it can only use one at a time for these operations.
 
-This method takes in an address index argument, as a `Number` _(this corresponds to the [`otherAddresses`](#otheraddresses) Array)_ and sets that address's value internally.
+This method takes in an address index argument as a `Number` _(this corresponds to the [`otherAddresses`](#otheraddresses) Array)_ and sets that address's value internally.
 
-If it's can set it successfully, it will return `true`, otherwise it will `throw` an Error. The only case this will fail is if you provide an unavailable address index. _(Eg: if you opened the wallet with `{ addressCount: 1 }`, there's no other `addressIndex` that will work, except `0`)_
+If setting the address value is successful, it will return `true`, otherwise it will `throw`. The only case this will fail is if you provide an unavailable address index. _(Eg: if you opened the wallet with `{ addressCount: 1 }`, there's no other `addressIndex` that will work, except `0`)_
 
 **Usage:**
 ```js
@@ -316,11 +315,11 @@ Sign an Ethereum transaction using the current default address.
 
 This method takes in an `transactionObject` Object _(See below)_, and returns the hex `String` signature wrapped inside a `Promise` _(This method is `async`)_.
 
-The `transactionObject`'s props will be each individually validated, and if there's something wrong with one of them, it will `throw` and Error.
+The `transactionObject` props will each be individually validated, and will `throw` if there is something wrong with any of them.
 
 _**Note**: On hardware wallets this method will require some form of confirmation from the user._
 
-_**Note**: Metamask is designed to handle it's own `nonce` count. You can manually set it, but it's advisable to leave it out of the transaction object. The only case where you would want to do override it, is when you want to change a pending transaction._
+_**Note**: Metamask is designed to handle its own `nonce` count. You can manually set it, but it's advisable to leave it out of the transaction object. One case where you would want to override the `nonce` would be to over-write a previously sent pending transaction (with different values or a higher gas price)._
 
 **`transactionObject` format:**
 ```js
@@ -400,7 +399,7 @@ Verify a previously signed message to validate your identity and prove it was in
 
 This method takes in an `verificationObject` Object _(See below)_, and returns a Boolean wrapped inside a `Promise` _(This method is `async`)_.
 
-If the message _(after it gets signed internally)_ matches the provided signature, it will return `true`, otherwise it will return `false` _(And if you're in a `development` environment, also a warning)_.
+If the _(internally signed)_ message matches the provided signature, it will return `true`, otherwise it will return `false` _(And if you're in a `development` environment, also a warning)_.
 
 _**Note**: On hardware wallets this method **may** require some form of confirmation from the user (depending on the hardware wallet type)._
 

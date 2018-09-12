@@ -4,15 +4,21 @@ section: Docs
 order: 0
 ---
 
-The purser library is collection of modules that allows you better interact with Ethereum based wallets, be they hardware or software, reducing the setup time to almost zero, while providing you with a consistent and predictable interface you can work with.
+The purser library is collection of modules that simplify interaction with Ethereum based wallets. Purser supports both hardware and software wallets and provides a consistent and predictable interface to work with during dApp development.
+
+For a full description of the wallet interface and usage, see [The Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/)
 
 ### Quick Start
+
+Set-up time for purser is minimal-- just add to your project and go:
 
 ##  @colony/purser-core
 
 A collection of `helpers`, `utils`, `validators` and `normalizers` to assist the individual purser modules.
 
 #### Installation
+
+Add the core library:
 ```js
 yarn add @colony/purser-core
 ```
