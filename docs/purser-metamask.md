@@ -1,6 +1,6 @@
-# Metamask Wallet API
+# @colony/purser-metamask API documentation
 
-These docs serve to outline the `API` format and methods provided by `colony-wallet`.
+These docs serve to outline the `API` format and methods provided by the `@colony/purser-metamsk` library.
 
 Unlike other wallet libraries, this one works entirely in `async` mode, meaning every `return` will be a `Promise` that must `resolve` _(or `reject`, if something goes wrong...)_.
 
@@ -9,13 +9,6 @@ Unlike other wallet libraries, this one works entirely in `async` mode, meaning 
 In `development` mode there will be a number of warnings or errors outputted verbosely to the console.
 
 When building with `NODE_ENV=production` all output will be silenced.
-
-## Contents
-
-* Wallet
-  * Metamask
-    * [`open`](#open)
-    * [`detect`](#detect)
 
 ### Metmask
 
@@ -37,20 +30,16 @@ There are different ways in which you can import the library in your project _(a
 
 Using `ES5` `require()` statements:
 ```js
-var wallets = require('colony-wallet').wallets; // wallets.metamask.open().then();
+var metamask = require('@colony/purser-metamask'); // metamask.open().then();
 
-var metamask = require('colony-wallet/metamask'); // trezor.open().then();
-
-var open = require('colony-wallet/metamask').open; // open().then();
+var open = require('@colony/purser-metamask').open; // open().then();
 ```
 
 Using `ES6` `import` statements:
 ```js
-import { wallets } from 'colony-wallet'; // await wallets.metamask.open();
+import metamask from '@colony/purser-metamask'; // await metamask.open();
 
-import metamask from 'colony-wallet/metamask'; // await trezor.open();
-
-import { open } from 'colony-wallet/metamask'; // await open();
+import { open } from '@colony/purser-metamask'; // await open();
 ```
 
 ### `open`
@@ -69,7 +58,7 @@ _**Note:** If Metamask is not unlocked it cannot access the address, so an Error
 
 Open the metamask wallet:
 ```js
-import { open } from 'colony-wallet/metamask';
+import { open } from '@colony/purser-metamask';
 
 const wallet = await open();
 ```
@@ -88,7 +77,7 @@ This method returns a `Promise` which, after resolving, it will `return` only re
 
 Open the metamask wallet:
 ```js
-import { detect as isMetamaskAvailable } from 'colony-wallet/metamask';
+import { detect as isMetamaskAvailable } from '@colony/purser-metamask';
 
-await isMetamaskAvailable();
+await isMetamaskAvailable(); // true
 ```

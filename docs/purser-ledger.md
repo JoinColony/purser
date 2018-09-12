@@ -1,6 +1,6 @@
-# Trezor Wallet API
+# @colony/purser-ledger API documentation
 
-These docs serve to outline the `API` format and methods provided by `colony-wallet`.
+These docs serve to outline the `API` format and methods provided by the `@colony/purser-ledger` library.
 
 Unlike other wallet libraries, this one works entirely in `async` mode, meaning every `return` will be a `Promise` that must `resolve` _(or `reject`, if something goes wrong...)_.
 
@@ -10,29 +10,31 @@ In `development` mode there will be a number of warnings or errors outputted ver
 
 When building with `NODE_ENV=production` all output will be silenced.
 
-## Contents
-
-* Hardware
-  * Trezor
-    * [`open`](#open)
-
 ### Hardware
 
 A hardware device that gives you access to it's internal stored account(s). Usually enforced by a hardware true random number generator.
 
 For a more in-depth look at what the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
 
-#### Note: Trezor Bridge
+#### Note: `udev` rules
 
-To be able to use the Trezor Wallet inside a browser, you'll need to install and start a [Trezor Bridge Service](https://wallet.trezor.io/#/bridge), otherwise the hardware device won't be able to talk to the browser.
+On unix systems the Ledger Wallet will need `udev` rules manually set, since the kernel doesn't recognize HID devices by default.
 
-_If the above link doesn't work, here's an [alternative download location](https://wallet.trezor.io/data/bridge/latest/index.html)_
+See the [Fix connection issues](https://support.ledgerwallet.com/hc/en-us/articles/115005165269-Fix-connection-issues) Ledger support issue, for how to set them.
 
-#### Note: Firmware Version
+#### Note: Auto-locking
 
-The Trezor Wallet only started supporting ethereum methods in firmware version `1.4.0`, so make sure your device has this version at least. _(But most likely it will have a newer version)_. A safe bet is to update it to the latest one.
+By default, the Ledger device will auto-lock after 10 minutes. _(It will show a screen-saver)_. When this happens the browser will no longer be able to communicate with it and it will act like it's disconnected.
 
-Just make sure that, if you're updating your firmware version, it will wipe all your device's memory and you'll have to restore it from a saved seed.
+Only after re-entering your PIN and unlocking it, it will resume normal operation.
+
+#### Note: Mozilla Firefox U2F
+
+Due to the current state of U2F implementation in Mozilla Firefox, the Ledger Device's Ethereum Wallet will not be able to function, since it relies on features not implemented yet.
+
+On the bright side, the FIDO web authentication app will still work as the features required for that *are* implemented.
+
+_Just make sure you enable U2F functionality, by setting `security.webauth.u2f` to `true`, from the `about:config` page_
 
 #### Imports:
 
@@ -40,20 +42,16 @@ There are different ways in which you can import the library in your project _(a
 
 Using `ES5` `require()` statements:
 ```js
-var wallets = require('colony-wallet').wallets; // wallets.trezor.open().then();
+var ledger = require('@colony/purser-ledger'); // ledger.open().then();
 
-var trezor = require('colony-wallet/trezor'); // trezor.open().then();
-
-var open = require('colony-wallet/trezor').open; // open().then();
+var open = require('@colony/purser-ledger/ledger').open; // open().then();
 ```
 
 Using `ES6` `import` statements:
 ```js
-import { wallets } from 'colony-wallet'; // await wallets.trezor.open();
+import ledger from '@colony/purser-ledger'; // await ledger.open();
 
-import trezor from 'colony-wallet/trezor'; // await trezor.open();
-
-import { open } from 'colony-wallet/trezor'; // await open();
+import { open } from '@colony/purser-ledger'; // await open();
 ```
 
 ### `open`
@@ -62,9 +60,9 @@ import { open } from 'colony-wallet/trezor'; // await open();
 await open(walletArguments: Object);
 ```
 
-This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` a new `TrezorWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
+This method returns a `Promise` which, after resolving, it will `return` a new `LedgerWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
 
-By default, without any arguments it will open the first `10` accounts in the derivation path, but you can change that via the `addressCount` object prop argument _(Unlike the software wallet, this is the only argument the `open` method takes, but to preserved consistency, it's still being passed in as an object)_.
+Without any arguments it will open the first `10` accounts in the derivation path, but you can change that via the `addressCount` object prop argument _(Unlike the software wallet, this is the only argument the `open` method takes, but to preserved consistency, it's still being passed in as an object)_.
 
 Also, the first index from the addresses that you opened will be selected as the default one _(See: the `setDefaultAddress()` method from the [Wallet Object](wallet-object.md))_, while the rest of them will be available under the `otherAddresses` Array prop on the wallet instance.
 
@@ -92,16 +90,16 @@ Defaults to `id` `1`: `homestead`.
 
 **Usage examples:**
 
-Open the trezor wallet using the default number of addresses:
+Open the Ledger wallet using the default number of addresses:
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-ledger';
 
 const wallet = await open();
 ```
 
-Open the trezor wallet using a custom number of addresses:
+Open the Ledger wallet using a custom number of addresses:
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-ledger';
 
 const wallet = await open({ addressCount: 100 });
 
@@ -110,9 +108,9 @@ const wallet = await open({ addressCount: 100 });
 await wallet.setDefaultAddress(12); //true
 ```
 
-Open the trezor wallet using a different chain id
+Open the Ledger wallet using a different chain id
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-ledger';
 
 const wallet = await open({ chainId: 3 }); // ropsten
 

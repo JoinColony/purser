@@ -62,11 +62,11 @@ Contains the wallet's public address in the form of `String`.
 
 _**Tip:** Across all wallet types and formats this is the only value that you can count on as always present on the object._
 
-_**Note:** For the [Metamask Wallet](api-metamask.md) this will always reflect the address selected from the UI, so you can always count on it to be accurate._
+_**Note:** For the [Metamask Wallet](purser-metamask.md) this will always reflect the address selected from the UI, so you can always count on it to be accurate._
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/software';
+import { open } from '@colony/purser-software';
 
 const wallet = await open({ privateKey: `0x9274...f447` });
 
@@ -82,11 +82,11 @@ Contains the `id` of the network the wallet is intended to work on _(eg: `homest
 
 This is used on the hardware wallets to determine the `derivationPath` and on _all_ wallet types as a default if one isn't provided to the object of transaction you wish to [sign](#sign).
 
-_**Note:** For the [Metamask Wallet](api-metamask.md) this is not available as it handles it internally, but can be changed using the UI._
+_**Note:** For the [Metamask Wallet](purser-metamask.md) this is not available as it handles it internally, but can be changed using the UI._
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/ledger';
+import { open } from '@colony/purser-ledger';
 
 const wallet = await open({ chainId: 3 });
 
@@ -112,7 +112,7 @@ If you need more information about the encrypted `keystore`, you can check out t
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/software';
+import { open } from '@colony/purser-software';
 
 const wallet = await open({ privateKey: `0x9274...f447` });
 
@@ -136,7 +136,7 @@ If a _new_ wallet was instantiated, or a new instance was created via a `mnemoni
 
 **Usage:**
 ```js
-import { create } from 'colony-wallet/software';
+import { create } from '@colony/purser-software';
 
 const wallet = await create();
 
@@ -156,14 +156,14 @@ On a hardware wallet, this is read-only, and is used to derive all the address i
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/software';
+import { open } from '@colony/purser-software';
 
 const wallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 
 console.log(await wallet.derivationPath); // m/44'/60'/0'/0/0
 ```
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const wallet = await open();
 
@@ -189,7 +189,7 @@ Note, that if only one address was derived when you opened the wallet _(Eg: `{ a
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const multipleAddresesWallet = await open();
 
@@ -198,7 +198,7 @@ console.log(wallet.otherAddress); // [0x56B4...8173, 0x0F91...d9A8, 0x26eB...bAD
 console.log(wallet.otherAddress.length); // 10
 ```
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const multipleAddresesWallet = await open({ addressCount: 1 });
 
@@ -216,7 +216,7 @@ _**Warning:** As the name suggests, this is private. So treat it with caution an
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/software';
+import { open } from '@colony/purser-software';
 
 const wallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 
@@ -232,11 +232,11 @@ This is a `getter` that returns a `Promise`. Upon resolving, the promise returns
 
 This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(Eg: `privateKey`, `mnemonic`...)_.
 
-_**Note:** The [Metamask Wallet](api-metamask.md) does not provide native access to the public key. But we can recover it from a signed message. So in order to access it, you will first have to sign a message (string provided), and than you'll have access to it. It will also be saved locally for future references (current selected address only), so that if you have to use it again, you won't have re-sign the message._
+_**Note:** The [Metamask Wallet](purser-metamask.md) does not provide native access to the public key. But we can recover it from a signed message. So in order to access it, you will first have to sign a message (string provided), and than you'll have access to it. It will also be saved locally for future references (current selected address only), so that if you have to use it again, you won't have re-sign the message._
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const wallet = await open();
 
@@ -252,7 +252,7 @@ This is just a simple string value that represents the main type for the instant
 
 **Usage:**
 ```js
-import { create } from 'colony-wallet/software';
+import { create } from '@colony/purser-software';
 
 const wallet = await create();
 
@@ -268,7 +268,7 @@ This is just a simple string value that represents the sub type for _(wallet typ
 
 **Usage:**
 ```js
-import { create } from 'colony-wallet/software';
+import { create } from '@colony/purser-software';
 
 const wallet = await create();
 
@@ -292,7 +292,7 @@ If it's can set it successfully, it will return `true`, otherwise it will `throw
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const multipleAddresesWallet = await open();
 
@@ -308,7 +308,7 @@ console.log(wallet.address); // 0x0F91...d9A8
 WalletInstance.sign(transactionObject: Object): Promise<String>
 ```
 
-Sign an ethereum transaction using the current default address.
+Sign an Ethereum transaction using the current default address.
 
 This method takes in an `transactionObject` Object _(See below)_, and returns the hex `String` signature wrapped inside a `Promise` _(This method is `async`)_.
 
@@ -333,25 +333,25 @@ transactionObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const trezorWallet = await open();
 
 const transactionSignature = await trezorWallet.sign({ to: '0x3953...a4C1' }); // 0xF990...8d91
 ```
 ```js
-import { open } from 'colony-wallet/trezor';
-import { utils } from 'colony-wallet';
+import { open } from '@colony/purser-trezor';
+import { bigNumber } from '@colony/purser-core/utils';
 
 const trezorWallet = await open();
 
 const transaction = {
-  gasPrice: utils.bigNumber('0.00000001').toWei(),
-  gasLimit: utils.bigNumber(30000),
+  gasPrice: bigNumber('0.00000001').toWei(),
+  gasLimit: bigNumber(30000),
   chainId: 4,
   nonce: 15987,
   to: '0x3953...a4C1',
-  value: utils.bigNumber(1).toWei(),
+  value: bigNumber(1).toWei(),
   inputData: '0x00',
 };
 
@@ -380,7 +380,7 @@ messageObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const trezorWallet = await open();
 
@@ -410,7 +410,7 @@ messageObject {
 
 **Usage:**
 ```js
-import { open } from 'colony-wallet/trezor';
+import { open } from '@colony/purser-trezor';
 
 const trezorWallet = await open();
 
