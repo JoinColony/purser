@@ -5,7 +5,7 @@ var fs = require('fs');
 
 const PATHS = require('./paths');
 
-const { MODULES, FOLDERS, SUBFOLDERS } = PATHS;
+const { MODULES, FOLDERS } = PATHS;
 
 const rootPackageFile = require(path.resolve('.', 'package.json'));
 const corePackageFile = require(path.resolve(MODULES, 'purser-core', 'package.json'));
@@ -18,17 +18,16 @@ const PACKAGES = {
 
 const buildIndividualModule = async (moduleName) => {
   const modulePath = path.resolve(MODULES, moduleName);
-  const sourceFolder = path.resolve(modulePath, FOLDERS.SOURCE);
-  const cjsBuildFolder = path.resolve(modulePath, FOLDERS.BUILD);
-  const esBuildFolder = path.resolve(cjsBuildFolder, SUBFOLDERS.ES_MODULES);
+  const cjsBuildFolder = path.resolve(modulePath, FOLDERS.CJS_MODULES);
+  const esBuildFolder = path.resolve(modulePath, FOLDERS.ES_MODULES);
   const packageFilePath = path.resolve(modulePath, 'package.json');
   const packageFile = require(packageFilePath);
   const rawModuleDependencies = findImports(`${esBuildFolder}/**/*.js`, { flatten: true });
   const filteredModuleDependencies = rawModuleDependencies
     /*
-     * Filter out babel runtime
+     * Unify babel runtime module imports
      */
-    .filter(packageName => !packageName.includes(PACKAGES.BABEL_RUNTIME))
+    .map(packageName => packageName.includes(PACKAGES.BABEL_RUNTIME) ? PACKAGES.BABEL_RUNTIME : packageName)
     /*
      * Unify core ES module imports
      */
