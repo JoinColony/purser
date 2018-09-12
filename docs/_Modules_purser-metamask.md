@@ -54,7 +54,7 @@ import { open } from '@colony/purser-metamask'; // await open();
 await open(walletArguments: Object);
 ```
 
-This method returns a `Promise` which, after resolving, it will `return` a new `MetamaskWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
+This method returns a `Promise` which, after resolving, it will `return` a new `MetamaskWallet` instance object. _(See: [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) for details)_.
 
 Unlike the other wallet types in this library, this static method does not take any arguments. It will use the selected address from Metamask.
 
