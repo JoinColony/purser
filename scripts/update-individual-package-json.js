@@ -73,6 +73,7 @@ const buildIndividualModule = async (moduleName) => {
       files: [
         'es',
         'docs',
+        '*.js'
       ],
       /*
        * Add links to the monorepo and author/license
