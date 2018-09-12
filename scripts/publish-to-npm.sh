@@ -51,7 +51,7 @@ for module in $(ls "${MODULES_PATH}"); do
     # So we check for them
     continue
   fi
-  cd "${MODULES_PATH}/$module"
+  cd "${MODULES_PATH}/$module/lib"
   if [ ! -z $JUST_A_TEST ]; then
     log "Packing @colony/$module to NPM..."
     npm pack

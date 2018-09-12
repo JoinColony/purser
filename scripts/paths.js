@@ -15,6 +15,8 @@ const FOLDERS = {
 
 const FILES = {
   LICENSE: 'LICENSE',
+  README: 'README.md',
+  PACKAGE: 'package.json'
 };
 
 module.exports = {

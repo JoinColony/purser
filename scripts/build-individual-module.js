@@ -33,7 +33,7 @@ const buildEs = (source, buildFolder, message) => run(
 );
 
 const exportFlowTypes = (source, buildFolder, message) => run(
-  `flow-copy-source --ignore ${source}/${FOLDERS.CJS_MODULES} --ignore ${source}/${FOLDERS.ES_MODULES} ${source} ${buildFolder}`,
+  `flow-copy-source --ignore ${source}/${FOLDERS.CJS_MODULES} ${source} ${buildFolder}`,
   {},
   message,
 );
@@ -41,7 +41,7 @@ const exportFlowTypes = (source, buildFolder, message) => run(
 const buildIndividualModule = async (moduleName) => {
   const modulePath = path.resolve(MODULES, moduleName);
   const cjsBuildFolder = path.resolve(modulePath, FOLDERS.CJS_MODULES);
-  const esBuildFolder = path.resolve(modulePath, FOLDERS.ES_MODULES);
+  const esBuildFolder = path.resolve(cjsBuildFolder, FOLDERS.ES_MODULES);
   const packageFile = require(`${modulePath}/package.json`);
   /*
    * @NOTE The build step is silent

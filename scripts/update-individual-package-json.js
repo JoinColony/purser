@@ -5,9 +5,9 @@ var fs = require('fs');
 
 const PATHS = require('./paths');
 
-const { MODULES, FOLDERS } = PATHS;
+const { MODULES, FOLDERS, FILES } = PATHS;
 
-const rootPackageFile = require(path.resolve('.', 'package.json'));
+const rootPackageFile = require(path.resolve('.', FILES.PACKAGE));
 const corePackageFile = require(path.resolve(MODULES, 'purser-core', 'package.json'));
 
 const PACKAGES = {
@@ -19,8 +19,8 @@ const PACKAGES = {
 const buildIndividualModule = async (moduleName) => {
   const modulePath = path.resolve(MODULES, moduleName);
   const cjsBuildFolder = path.resolve(modulePath, FOLDERS.CJS_MODULES);
-  const esBuildFolder = path.resolve(modulePath, FOLDERS.ES_MODULES);
-  const packageFilePath = path.resolve(modulePath, 'package.json');
+  const esBuildFolder = path.resolve(cjsBuildFolder, FOLDERS.ES_MODULES);
+  const packageFilePath = path.resolve(modulePath, FILES.PACKAGE);
   const packageFile = require(packageFilePath);
   const rawModuleDependencies = findImports(`${esBuildFolder}/**/*.js`, { flatten: true });
   const filteredModuleDependencies = rawModuleDependencies
@@ -65,14 +65,13 @@ const buildIndividualModule = async (moduleName) => {
       /*
        * Library entry points
        */
-      main: 'lib/index.js',
+      main: 'index.js',
       module: 'es/index.js',
       /*
        * Folders to include
        */
       files: [
         'es',
-        'lib',
         'docs',
       ],
       /*
