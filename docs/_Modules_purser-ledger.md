@@ -1,4 +1,8 @@
-# @colony/purser-ledger API documentation
+---
+title: '@colony/purser-ledger'
+section: Modules
+order: 0
+---
 
 These docs serve to outline the `API` format and methods provided by the `@colony/purser-ledger` library.
 
@@ -14,7 +18,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 A hardware device that gives you access to it's internal stored account(s). Usually enforced by a hardware true random number generator.
 
-For a more in-depth look at what the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
+For a more in-depth look at what the resulting object looks like, see the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) docs.
 
 #### Note: `udev` rules
 
@@ -53,6 +57,8 @@ import ledger from '@colony/purser-ledger'; // await ledger.open();
 
 import { open } from '@colony/purser-ledger'; // await open();
 ```
+
+## Methods
 
 ### `open`
 
@@ -108,7 +114,7 @@ const wallet = await open({ addressCount: 100 });
 await wallet.setDefaultAddress(12); //true
 ```
 
-Open the Ledger wallet using a different chain id
+Open the Ledger wallet using a different chain id:
 ```js
 import { open } from '@colony/purser-ledger';
 
