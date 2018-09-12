@@ -1,4 +1,8 @@
-# Wallet Object
+---
+title: Common Wallet Interface
+section: Interface
+order: 0
+---
 
 This document describes the format you can expect the `Wallet` instance object to look like.
 
@@ -20,7 +24,7 @@ WalletInstance {
   /*
    * Methods
    */
-  setDefaultAddress(addressIndex: Number): Promise<Boolean>,
+  setDefaulAddress(addressIndex: Number): Promise<Boolean>,
   sign(transactionObject: Object): Promise<String>
   signMessage(messageObject: Object): Promise<String>
   verifyMessage(verificationObject: Object): Promise<Boolean>
@@ -31,25 +35,25 @@ This is the complete form of the Wallet Object, but in some cases, values are no
 
 _**Example:** Instantiating a software wallet using an existing `privateKey` will not set the `mnemonic` since it's value cannot be reversed. But instantiating a software wallet using a `mnemonic` phrase will also set the `privateKey`s prop value since that can be reversed._
 
-## Contents:
+#### Props
 
-* Wallet Object Instance
-  * Props
-    * [`address`](#address)
-    * [`chainId`](#chainid)
-    * [`keystore`](#keystore)
-    * [`mnemonic`](#mnemonic)
-    * [`derivationPath`](#derivationpath)
-    * [`otherAddresses`](#otheraddresses)
-    * [`privateKey`](#privatekey)
-    * [`publicKey`](#publickey)
-    * [`type`](#type)
-    * [`subtype`](#subtype)
-  * Methods
-    * [`setDefaultAddress()`](#setdefaultaddress)
-    * [`sign()`](#sign)
-    * [`signMessage()`](#signmessage)
-    * [`verifyMessage()`](#verifymessage)
+* [`address`](#address)
+* [`chainId`](#chainid)
+* [`keystore`](#keystore)
+* [`mnemonic`](#mnemonic)
+* [`derivationPath`](#derivationpath)
+* [`otherAddresses`](#otheraddresses)
+* [`privateKey`](#privatekey)
+* [`publicKey`](#publickey)
+* [`type`](#type)
+* [`subtype`](#subtype)
+
+#### Methods
+
+* [`setDefaultAddress()`](#setdefaultaddress)
+* [`sign()`](#sign)
+* [`signMessage()`](#signmessage)
+* [`verifyMessage()`](#verifymessage)
 
 ## Props
 
