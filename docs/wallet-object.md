@@ -308,7 +308,7 @@ console.log(wallet.address); // 0x0F91...d9A8
 WalletInstance.sign(transactionObject: Object): Promise<String>
 ```
 
-Sign an ethereum transaction using the current default address.
+Sign an Ethereum transaction using the current default address.
 
 This method takes in an `transactionObject` Object _(See below)_, and returns the hex `String` signature wrapped inside a `Promise` _(This method is `async`)_.
 

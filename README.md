@@ -4,12 +4,12 @@
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/JoinColony/colony-wallet.svg?token=114044dbcad9f33395dffb9087c3e665bf5862cf49f66dd9d03d808663aa72bc&ts=1518703816619)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/JoinColony/purser/tree/master.svg?style=shield&circle-token=b465d9d46f98d87d322ef5fe438dd3aa4936cc80)](https://circleci.com/gh/JoinColony/purser/tree/master)
 
-Monorepo for the Purser collection of ethereum wallet libraries:
+Monorepo for the Purser collection of Ethereum wallet libraries:
 - [`purser-core`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-core): A collection of `helpers`, `utils`, `validators` and `normalizers` to assist the individual purser modules.
-- [`purser-ledger`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-ledger): A `javascript` library to interact with a [Ledger](https://www.ledger.com/) based ethereum wallet.
-- [`purser-metamask`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-metamask): A `javascript` library to interact with the a [Metamask](https://metamask.io/) based ethereum wallet.
-- [`purser-software`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-software): A `javascript` library to interact with a software ethereum wallet, based on the [ethers.js](https://github.com/ethers-io/ethers.js/) library.
-- [`purser-trezor`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-trezor): A `javascript` library to interact with a [Trezor](https://trezor.io/) based ethereum wallet.
+- [`purser-ledger`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-ledger): A `javascript` library to interact with a [Ledger](https://www.ledger.com/) based Ethereum wallet.
+- [`purser-metamask`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-metamask): A `javascript` library to interact with the a [Metamask](https://metamask.io/) based Ethereum wallet.
+- [`purser-software`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-software): A `javascript` library to interact with a software Ethereum wallet, based on the [ethers.js](https://github.com/ethers-io/ethers.js/) library.
+- [`purser-trezor`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-trezor): A `javascript` library to interact with a [Trezor](https://trezor.io/) based Ethereum wallet.
 
 
 To learn more about Colony, you can visit [the website](https://colony.io/) or read the [white paper](https://colony.io/whitepaper.pdf).

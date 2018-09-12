@@ -2,7 +2,7 @@
   "name": "purser",
   "private": true,
   "version": "0.1.0",
-  "description": "Monorepo for the Purser collection of ethereum wallet libraries",
+  "description": "Monorepo for the Purser collection of Ethereum wallet libraries",
   "scripts": {
     "precommit": "lint-staged",
     "build": "node scripts/build-all-modules.js",

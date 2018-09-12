@@ -24,7 +24,7 @@ _If the above link doesn't work, here's an [alternative download location](https
 
 #### Note: Firmware Version
 
-The Trezor Wallet only started supporting ethereum methods in firmware version `1.4.0`, so make sure your device has this version at least. _(But most likely it will have a newer version)_. A safe bet is to update it to the latest one.
+The Trezor Wallet only started supporting Ethereum methods in firmware version `1.4.0`, so make sure your device has this version at least. _(But most likely it will have a newer version)_. A safe bet is to update it to the latest one.
 
 Just make sure that, if you're updating your firmware version, it will wipe all your device's memory and you'll have to restore it from a saved seed.
 
