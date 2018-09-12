@@ -1,4 +1,8 @@
-# @colony/purser-metamask API documentation
+---
+title: '@colony/purser-metamask'
+section: Modules
+order: 2
+---
 
 These docs serve to outline the `API` format and methods provided by the `@colony/purser-metamsk` library.
 
@@ -14,7 +18,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 A browser extension that provides a more secure interface to a software wallet. Available for [Chrome](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn), [Firefox](https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/) or [Opera](https://addons.opera.com/en/extensions/details/metamask/).
 
-For a more in-depth look at what the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
+For a more in-depth look at what the resulting object looks like, see the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) docs.
 
 #### Note: Transaction signing and implicit sending
 
@@ -41,6 +45,8 @@ import metamask from '@colony/purser-metamask'; // await metamask.open();
 
 import { open } from '@colony/purser-metamask'; // await open();
 ```
+
+## Methods
 
 ### `open`
 

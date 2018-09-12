@@ -1,7 +1,7 @@
 ---
 title: '@colony/purser-ledger'
 section: Modules
-order: 0
+order: 1
 ---
 
 These docs serve to outline the `API` format and methods provided by the `@colony/purser-ledger` library.
