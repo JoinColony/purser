@@ -1,4 +1,8 @@
-# @colony/purser-core _public_ API documentation
+---
+title: '@colony/purser-core'
+section: Modules
+order: 0
+---
 
 These docs serve to outline the _public_ `API` format and methods provided by the `@colony/purser-core` library.
 
@@ -25,6 +29,8 @@ Using `ES6` `import` statements:
 ```js
 import { utils } from '@colony/purser-core'; // utils.getRandomValues();
 ```
+
+## Methods
 
 ### `bigNumber`
 
