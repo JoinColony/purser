@@ -1,31 +1,8 @@
-![purser](https://github.com/JoinColony/purser/blob/master/.assets/purser_200.svg)
-
-## Purser
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/JoinColony/purser.svg?token=114044dbcad9f33395dffb9087c3e665bf5862cf49f66dd9d03d808663aa72bc&ts=1518703816619)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/JoinColony/purser/tree/master.svg?style=shield&circle-token=b465d9d46f98d87d322ef5fe438dd3aa4936cc80)](https://circleci.com/gh/JoinColony/purser/tree/master)
-
-Monorepo for the Purser collection of Ethereum wallet libraries:
-- [`purser-core`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-core): A collection of `helpers`, `utils`, `validators` and `normalizers` to assist the individual purser modules.
-- [`purser-ledger`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-ledger): A `javascript` library to interact with a [Ledger](https://www.ledger.com/) based Ethereum wallet.
-- [`purser-metamask`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-metamask): A `javascript` library to interact with the a [Metamask](https://metamask.io/) based Ethereum wallet.
-- [`purser-software`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-software): A `javascript` library to interact with a software Ethereum wallet, based on the [ethers.js](https://github.com/ethers-io/ethers.js/) library.
-- [`purser-trezor`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-trezor): A `javascript` library to interact with a [Trezor](https://trezor.io/) based Ethereum wallet.
-
-
-To learn more about Colony, you can visit [the website](https://colony.io/) or read the [white paper](https://colony.io/whitepaper.pdf).
-
-
-### Documentation
-
-Please see the [documentation](https://docs.colony.io/purser/docs-overview) with detailed examples and explanations.
-
-### Contributing
-
-We welcome all contributions to Purser.
-
-Please read our [Contributing Guidelines](https://github.com/JoinColony/purser/blob/master/.github/CONTRIBUTING.md) for how to get started.
-
-### Developing
+---
+title: Development
+section: Docs
+order: 2
+---
 
 This monorepo follows the [alle](https://github.com/boennemann/alle) monorepo management and publishing pattern.
 
@@ -129,7 +106,3 @@ This project makes use of `greenkeeper` for dependency management.
 If a new version of a package is found _(either public or private scoped)_ it will create a new branch with the package change and try to build it. If the build succeeds it will push changes to the `yarn` lockfile and re-build again.
 
 When the builds succeeds one of two things will happen: if the package update was to a in-range version, the branch will be deleted _(this is by design, as the package will be updated to this version when you reinstall `node_modules`)_. If the package update was out of range _(or one of the two previous builds failed)_ than a PR will be created so that it can be reviewed and fixed.
-
-### License
-
-The purser monorepo and each individual purser library are [MIT licensed](LICENSE).
