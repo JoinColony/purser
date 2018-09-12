@@ -2,5 +2,5 @@
     "logo": "img/purser_color.svg",
     "logoSmall": "img/purser_color.svg",
     "sectionOrder": ["Docs"],
-    "description": "The purser library is collection of modules that allows you better interact with Ethereum based wallets, be they hardware or software, reducing the setup time to almost zero, while providing you with a consistent and predictable interface you can work with."
+    "description": "The purser library is collection of modules that allows you easier access and interact with Ethereum based wallets."
 }

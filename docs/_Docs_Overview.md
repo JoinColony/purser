@@ -39,7 +39,7 @@ yarn add @colony/purser-ledger
 ```js
 import { open } from '@colony/purser-ledger'
 
-const wallet = open();
+const wallet = await open();
 
 console.log(wallet); // { address: '...', otherAddrresses: [...], publicKey: '...' }
 ```
@@ -57,7 +57,7 @@ yarn add @colony/purser-metamask
 ```js
 import { open } from '@colony/purser-metamask'
 
-const wallet = open();
+const wallet = await open();
 
 console.log(wallet); // { address: '...', chainId: '...', publicKey: '...' }
 ```
@@ -75,7 +75,7 @@ yarn add @colony/purser-sofware
 ```js
 import { open } from '@colony/purser-software'
 
-const wallet = open({ mnemonic: '...' });
+const wallet = await open({ mnemonic: '...' });
 
 console.log(wallet); // { address: '...', privateKey: '...', publicKey: '...' }
 ```
@@ -93,7 +93,7 @@ yarn add @colony/purser-trezor
 ```js
 import { open } from '@colony/purser-trezor'
 
-const wallet = open();
+const wallet = await open();
 
 console.log(wallet); // { address: '...', otherAddrresses: [...], publicKey: '...' }
 ```
