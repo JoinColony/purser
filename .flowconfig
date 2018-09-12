@@ -1,5 +1,5 @@
 [include]
-.*/src/.*
+.*/modules/.*
 
 [ignore]
 .*/__tests__/.*

@@ -1,5 +1,5 @@
 {
-  "src/**/*.js": [
+  "modules/node_modules/@colony/**/*.js": [
     "yarn lint:fix",
     "yarn glow",
     "git add"

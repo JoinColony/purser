@@ -1,6 +1,7 @@
-node_modules
+!modules/node_modules/@colony
 scripts
 flow-typed
 jest.config.js
-jest-perf.config.js
 webpack.config.js
+babel.config.js
+lib

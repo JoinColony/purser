@@ -36,6 +36,7 @@ build/Release
 
 # Dependency directories
 node_modules/
+!modules/node_modules/
 jspm_packages/
 
 # Typescript v1 declaration files
@@ -74,3 +75,8 @@ reports
 *.patch
 .diff/
 .patch/
+
+# Temporary ignore the source folder
+src
+!modules/**/src
+!tests/**/src
