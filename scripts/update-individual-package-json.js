@@ -8,7 +8,7 @@ const PATHS = require('./paths');
 const { MODULES, FOLDERS, FILES } = PATHS;
 
 const rootPackageFile = require(path.resolve('.', FILES.PACKAGE));
-const corePackageFile = require(path.resolve(MODULES, 'purser-core', 'package.json'));
+const corePackageFile = require(path.resolve(MODULES, 'purser-core', FILES.PACKAGE));
 
 const PACKAGES = {
   BABEL_RUNTIME: '@babel/runtime',
@@ -22,6 +22,9 @@ const buildIndividualModule = async (moduleName) => {
   const esBuildFolder = path.resolve(cjsBuildFolder, FOLDERS.ES_MODULES);
   const packageFilePath = path.resolve(modulePath, FILES.PACKAGE);
   const packageFile = require(packageFilePath);
+  /*
+   * Get individual package dependencies
+   */
   const rawModuleDependencies = findImports(`${esBuildFolder}/**/*.js`, { flatten: true });
   const filteredModuleDependencies = rawModuleDependencies
     /*
@@ -57,6 +60,14 @@ const buildIndividualModule = async (moduleName) => {
     }
     return moduleDependencies[dependency] = rootPackageFile.dependencies[dependency];
   });
+  /*
+   * Get keywords
+   */
+  const commonKeywords = rootPackageFile.keywords || [];
+  const individualKeywords = packageFile.keywords || [];
+  /*
+   * Assemble everything
+   */
   const updatedPackageFile = Object.assign(
     {},
     packageFile,
@@ -83,6 +94,10 @@ const buildIndividualModule = async (moduleName) => {
       license: rootPackageFile.license,
       bugs: rootPackageFile.bugs,
       homepage: rootPackageFile.homepage,
+      keywords: [
+        ...commonKeywords,
+        ...individualKeywords,
+      ],
       /*
        * Add dependencies object
        */
