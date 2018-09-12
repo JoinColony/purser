@@ -6,9 +6,9 @@ order: 0
 
 The purser library is collection of modules that allows you better interact with Ethereum based wallets, be they hardware or software, reducing the setup time to almost zero, while providing you with a consistent and predictable interface you can work with.
 
-## Quick Start
+### Quick Start
 
-### @colony/purser-core
+##  @colony/purser-core
 
 A collection of `helpers`, `utils`, `validators` and `normalizers` to assist the individual purser modules.
 
@@ -26,7 +26,7 @@ const value = bigNumber('0.00000001').toWei();
 console.log(value); // { negative: 0, words: Array(4), length: 4, red: null }
 ```
 
-### @colony/purser-ledger
+## @colony/purser-ledger
 
 A `javascript` library to interact with a [Ledger](https://www.ledger.com/) based Ethereum wallet.
 
@@ -44,7 +44,7 @@ const wallet = open();
 console.log(wallet); // { address: '...', otherAddrresses: [...], publicKey: '...' }
 ```
 
-### @colony/purser-metamask
+## @colony/purser-metamask
 
 A `javascript` library to interact with the a [Metamask](https://metamask.io/) based Ethereum wallet.
 
@@ -62,7 +62,7 @@ const wallet = open();
 console.log(wallet); // { address: '...', chainId: '...', publicKey: '...' }
 ```
 
-### @colony/purser-software
+## @colony/purser-software
 
 A `javascript` library to interact with a software Ethereum wallet, based on the [ethers.js](https://github.com/ethers-io/ethers.js/) library.
 
@@ -80,7 +80,7 @@ const wallet = open({ mnemonic: '...' });
 console.log(wallet); // { address: '...', privateKey: '...', publicKey: '...' }
 ```
 
-### @colony/purser-trezor
+## @colony/purser-trezor
 
 A `javascript` library to interact with a [Trezor](https://trezor.io/) based Ethereum wallet.
 
