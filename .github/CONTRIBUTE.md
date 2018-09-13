@@ -29,4 +29,4 @@ For the first line, try to be specific. e.g: "Ensure colony keys are unique" ins
 If you're adding or changing existing tests, they should go on the same commit.
 
 ## Code of Conduct
-Please note we have a [code of conduct](https://github.com/JoinColony/purser/blob/feature/add-docs/.github/CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
+Please note we have a [code of conduct](https://github.com/JoinColony/purser/blob/master/.github/CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
