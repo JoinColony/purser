@@ -17,6 +17,20 @@ This script is exposed via the `yarn build` command which will build each indivi
 modules/node_modules/@colony/purser-<type>/lib
 ```
 
+#### ES Modules Build
+
+All individual packages also export and ES Modules build _(along with Flow types)_. This is most likely to be used if you want to tree-shake your bundle.
+
+To use them, just append `/es` to the end of the package name when importing:
+
+```js
+import software from '@core/purser-software/es';
+
+await software.create();
+```
+
+Also, if you use [Flow]() for type declarations inside your project, it will automatically pick up the required _(optional)_ arguments and they're expected type.
+
 #### Linting code
 
 It's most likely that you'll use `eslint` via your editor / IDE, but just in case you don't, there are a couple of scripts set up to do this manually:
