@@ -18,7 +18,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 A browser extension that provides a more secure interface to a software wallet. Available for [Chrome](https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn), [Firefox](https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/) or [Opera](https://addons.opera.com/en/extensions/details/metamask/).
 
-For a more in-depth look at what the resulting object looks like, see the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) docs.
+For a more in-depth look at what the resulting object looks like, see the [Common Wallet Interface](/purser/interface-common-wallet-interface/) docs.
 
 #### Note: Transaction signing and implicit sending
 
@@ -54,7 +54,7 @@ import { open } from '@colony/purser-metamask'; // await open();
 await open(walletArguments: Object);
 ```
 
-This method returns a `Promise` which, after resolving, it will `return` a new `MetamaskWallet` instance object. _(See: [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) for details)_.
+This method returns a `Promise` which, after resolving, it will `return` a new `MetamaskWallet` instance object. _(See: [Common Wallet Interface](/purser/interface-common-wallet-interface/) for details)_.
 
 Unlike the other wallet types in this library, this static method does not take any arguments. It will use the selected address from Metamask.
 

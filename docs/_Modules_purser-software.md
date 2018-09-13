@@ -19,7 +19,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 A standard wallet working in it's entirety in a software environment. This means that it gives you access to sensitive data _(`private key`, `mnemonic`, etc...)_ via it's API.
 
-For a more in-depth look at what the resulting object looks like, see the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) docs.
+For a more in-depth look at what the resulting object looks like, see the [Common Wallet Interface](/purser/interface-common-wallet-interface/) docs.
 
 #### Imports:
 
@@ -112,7 +112,7 @@ const newWallet = await create({ chainId: 3 }); // ropsten
 console.log(newWallet.chainId); // 3
 ```
 
-See the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) documentation for all the props available to you after the wallet's instantiation.
+See the [Common Wallet Interface](/purser/interface-common-wallet-interface/) documentation for all the props available to you after the wallet's instantiation.
 
 ### `open`
 
@@ -120,7 +120,7 @@ See the [Common Wallet Interface](https://docs.colony.io/purser/interface-common
 await open(walletArguments: Object);
 ```
 
-This method returns a `Promise`, which after unlocking it via one of the available methods, it will `resolve` and `return` new software wallet instance _(see: [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/))_.
+This method returns a `Promise`, which after unlocking it via one of the available methods, it will `resolve` and `return` new software wallet instance _(see: [Common Wallet Interface](/purser/interface-common-wallet-interface/))_.
 
 It will not work without any arguments so you must specify at least one method of opening the wallet. If at least one is not provided, the `Promise` will `reject`, throwing an error.
 
@@ -132,7 +132,7 @@ walletArguments.privateKey: String
 
 Create a new wallet instance using an existing `private key`. This can be optional if another method of opening the wallet is provided.
 
-Using this method, the returned [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) will have all of the props with exception of `mnemonic` and `path`, since the `mnemonic` can't be reversed from the `private key`.
+Using this method, the returned [Common Wallet Interface](/purser/interface-common-wallet-interface/) will have all of the props with exception of `mnemonic` and `path`, since the `mnemonic` can't be reversed from the `private key`.
 
 ```js
 walletArguments.mnemonic: String
@@ -140,7 +140,7 @@ walletArguments.mnemonic: String
 
 Create a new wallet instance using an existing `mnemonic` phrase. This can be optional if another method of opening the wallet is provided.
 
-Using this method, the returned [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) will have all of the props available. _(the `private key` can be reversed from the `mnemonic`)_
+Using this method, the returned [Common Wallet Interface](/purser/interface-common-wallet-interface/) will have all of the props available. _(the `private key` can be reversed from the `mnemonic`)_
 
 ```js
 walletArguments.deviationPath: String
@@ -158,7 +158,7 @@ Open a new wallet instance using an encrypted `keystore`. For this to work, the 
 
 Using this method, the returned Common Wallet Inteface will have all of the props available.
 
-See the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) for more information on this.
+See the [Common Wallet Interface](/purser/interface-common-wallet-interface/) for more information on this.
 
 ```js
 walletArguments.password: String
@@ -220,4 +220,4 @@ const existingWallet = await open({
 console.log(existingWallet.chainId); // 3
 ```
 
-See the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) documentation for all the props available to you after the wallet's instantiation.
+See the [Common Wallet Interface](/purser/interface-common-wallet-interface/) documentation for all the props available to you after the wallet's instantiation.

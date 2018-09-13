@@ -6,7 +6,7 @@ order: 0
 
 This document describes the format you can expect the `Wallet` instance object to look like.
 
-```js
+```javascript
 WalletInstance {
   /*
    * Props

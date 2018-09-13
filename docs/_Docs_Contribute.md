@@ -11,7 +11,7 @@ Here are a few ways you can contribute:
 - Testing existing wallet types on your own hardware or your system
 - Maintaining and improving existing functionality by squashing bugs, or by keeping the various wallets APIs in sync with their upstream changes _(look for `help-wanted` and `good-first-issue` labels)_
 - Finding bugs and submitting them to the [issues tracker](https://github.com/JoinColony/purser/issues).
-- Maintaining, improving or fixing documentation pages in the [docs](https://docs.colony.io/purser/docs-overview).
+- Maintaining, improving or fixing documentation pages in the [docs](/purser/docs-overview).
 
 If you plan to make a larger change, please consult with the team beforehand.
 
@@ -33,4 +33,4 @@ For the first line, try to be specific. e.g: "Ensure colony keys are unique" ins
 If you're adding or changing existing tests, they should go on the same commit.
 
 ## Code of Conduct
-Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
+Please note we have a [code of conduct](https://github.com/JoinColony/purser/blob/feature/add-docs/.github/CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.

@@ -58,11 +58,11 @@ import { open } from '@colony/purser-trezor'; // await open();
 await open(walletArguments: Object);
 ```
 
-This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` a new `TrezorWallet` instance object. _(See: [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) for details)_.
+This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` a new `TrezorWallet` instance object. _(See: [Common Wallet Interface](/purser/interface-common-wallet-interface/) for details)_.
 
 By default, without any arguments it will open the first `10` accounts in the derivation path, but you can change that via the `addressCount` object prop argument _(Unlike the software wallet, this is the only argument the `open` method takes, but to preserved consistency, it's still being passed in as an object)_.
 
-Also, the first index from the addresses that you opened will be selected as the default one _(See: the `setDefaultAddress()` method from the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/))_, while the rest of them will be available under the `otherAddresses` Array prop on the wallet instance.
+Also, the first index from the addresses that you opened will be selected as the default one _(See: the `setDefaultAddress()` method from the [Common Wallet Interface](/purser/interface-common-wallet-interface/))_, while the rest of them will be available under the `otherAddresses` Array prop on the wallet instance.
 
 #### Argument props
 
@@ -74,7 +74,7 @@ Sets the number of addresses to derive from the derivation path. Defaults to `10
 
 It will set first one as the default _(index `0`)_, while the rest will be available through the `otherAddresses` Array, found as a prop on the Wallet Instance _(index `0` through `9` in this case)_.
 
-You will be able to change them using the `setDefaultAddress()` instance method _(See: [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) for details))_.
+You will be able to change them using the `setDefaultAddress()` instance method _(See: [Common Wallet Interface](/purser/interface-common-wallet-interface/) for details))_.
 
 ```js
 walletArguments.chainId: Number = 1
