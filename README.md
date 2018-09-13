@@ -92,7 +92,7 @@ We plan to add support more hardware wallets and other features that will make w
 
 We welcome all contributions to Purser. You can help by adding support for new wallet types, testing existing wallets, or improving the documentation.
 
-Please read our [Contributing Guidelines](https://github.com/JoinColony/purser/blob/master/.github/CONTRIBUTING.md) for how to get started.
+Please read our [Contributing Guidelines](https://github.com/JoinColony/purser/blob/master/.github/CONTRIBUTE.md) for how to get started.
 
 ### License
 
