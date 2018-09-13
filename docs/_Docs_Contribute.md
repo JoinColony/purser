@@ -8,6 +8,7 @@ We welcome all contributions to the Purser library!
 
 Here are a few ways you can contribute:
 - Extending the functionality by adding support for other wallet types
+- Testing existing wallet types on your own hardware or your system
 - Maintaining and improving existing functionality by squashing bugs, or by keeping the various wallets APIs in sync with their upstream changes _(look for `help-wanted` and `good-first-issue` labels)_
 - Finding bugs and submitting them to the [issues tracker](https://github.com/JoinColony/purser/issues).
 - Maintaining, improving or fixing documentation pages in the [docs](https://docs.colony.io/purser/docs-overview).
