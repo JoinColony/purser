@@ -47,6 +47,8 @@ import { open } from '@colony/purser-ledger'
 
 const wallet = await open();
 
+await wallet.setDefaultAddress(12); // Optional - Select another address from the ones available
+
 console.log(wallet); // { address: '...', otherAddrresses: [...], publicKey: '...' }
 ```
 
@@ -100,6 +102,8 @@ yarn add @colony/purser-trezor
 import { open } from '@colony/purser-trezor'
 
 const wallet = await open();
+
+await wallet.setDefaultAddress(12); // Optional - Select another address from the ones available
 
 console.log(wallet); // { address: '...', otherAddrresses: [...], publicKey: '...' }
 ```
