@@ -5,7 +5,7 @@ const chalk = require('chalk');
 
 const PATHS = require('./paths');
 
-const { FOLDERS, SUBFOLDERS, MODULES } = PATHS;
+const { FOLDERS, MODULES } = PATHS;
 
 let BUILD_MODE = 'development';
 if (process.env.NODE_ENV === 'production') {
@@ -33,22 +33,22 @@ const buildEs = (source, buildFolder, message) => run(
 );
 
 const exportFlowTypes = (source, buildFolder, message) => run(
-  `flow-copy-source --ignore ${buildFolder} ${source} ${buildFolder}/${SUBFOLDERS.ES_MODULES}`,
+  `flow-copy-source --ignore ${source}/${FOLDERS.CJS_MODULES} ${source} ${buildFolder}`,
   {},
   message,
 );
 
 const buildIndividualModule = async (moduleName) => {
   const modulePath = path.resolve(MODULES, moduleName);
-  const cjsBuildFolder = path.resolve(modulePath, FOLDERS.BUILD);
-  const esBuildFolder = path.resolve(cjsBuildFolder, SUBFOLDERS.ES_MODULES);
-  const umdBuildFolder = path.resolve(cjsBuildFolder, SUBFOLDERS.UMD);
+  const cjsBuildFolder = path.resolve(modulePath, FOLDERS.CJS_MODULES);
+  const esBuildFolder = path.resolve(cjsBuildFolder, FOLDERS.ES_MODULES);
   const packageFile = require(`${modulePath}/package.json`);
   /*
    * @NOTE The build step is silent
    * It won't output anything
    */
   squeakyClean(cjsBuildFolder);
+  squeakyClean(esBuildFolder);
   /*
    * Build CommonJS
    */
@@ -82,7 +82,7 @@ const buildIndividualModule = async (moduleName) => {
    */
   exportFlowTypes(
     modulePath,
-    cjsBuildFolder,
+    esBuildFolder,
     `Exporting ${chalk.green(
       'Flow Types'
     )} for ${chalk.white('@colony/')}${chalk.whiteBright.bold(

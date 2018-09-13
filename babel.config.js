@@ -7,12 +7,7 @@
  */
 const babelConfig = {
   plugins: [
-    [
-      '@babel/plugin-transform-runtime',
-      {
-        regenerator: true,
-      },
-    ],
+    '@babel/plugin-transform-runtime',
     [
       'transform-inline-environment-variables',
       {
@@ -26,6 +21,14 @@ const babelConfig = {
   ],
   env: {
     es: {
+      plugins: [
+        [
+          '@babel/plugin-transform-runtime',
+          {
+            useESModules: true,
+          },
+        ]
+      ],
       presets: [
         [
           '@babel/preset-env',

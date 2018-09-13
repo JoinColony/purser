@@ -5,10 +5,10 @@ var fs = require('fs');
 
 const PATHS = require('./paths');
 
-const { MODULES, FOLDERS, SUBFOLDERS } = PATHS;
+const { MODULES, FOLDERS, FILES } = PATHS;
 
-const rootPackageFile = require(path.resolve('.', 'package.json'));
-const corePackageFile = require(path.resolve(MODULES, 'purser-core', 'package.json'));
+const rootPackageFile = require(path.resolve('.', FILES.PACKAGE));
+const corePackageFile = require(path.resolve(MODULES, 'purser-core', FILES.PACKAGE));
 
 const PACKAGES = {
   BABEL_RUNTIME: '@babel/runtime',
@@ -18,17 +18,19 @@ const PACKAGES = {
 
 const buildIndividualModule = async (moduleName) => {
   const modulePath = path.resolve(MODULES, moduleName);
-  const sourceFolder = path.resolve(modulePath, FOLDERS.SOURCE);
-  const cjsBuildFolder = path.resolve(modulePath, FOLDERS.BUILD);
-  const esBuildFolder = path.resolve(cjsBuildFolder, SUBFOLDERS.ES_MODULES);
-  const packageFilePath = path.resolve(modulePath, 'package.json');
+  const cjsBuildFolder = path.resolve(modulePath, FOLDERS.CJS_MODULES);
+  const esBuildFolder = path.resolve(cjsBuildFolder, FOLDERS.ES_MODULES);
+  const packageFilePath = path.resolve(modulePath, FILES.PACKAGE);
   const packageFile = require(packageFilePath);
+  /*
+   * Get individual package dependencies
+   */
   const rawModuleDependencies = findImports(`${esBuildFolder}/**/*.js`, { flatten: true });
   const filteredModuleDependencies = rawModuleDependencies
     /*
-     * Filter out babel runtime
+     * Unify babel runtime module imports
      */
-    .filter(packageName => !packageName.includes(PACKAGES.BABEL_RUNTIME))
+    .map(packageName => packageName.includes(PACKAGES.BABEL_RUNTIME) ? PACKAGES.BABEL_RUNTIME : packageName)
     /*
      * Unify core ES module imports
      */
@@ -58,6 +60,14 @@ const buildIndividualModule = async (moduleName) => {
     }
     return moduleDependencies[dependency] = rootPackageFile.dependencies[dependency];
   });
+  /*
+   * Get keywords
+   */
+  const commonKeywords = rootPackageFile.keywords || [];
+  const individualKeywords = packageFile.keywords || [];
+  /*
+   * Assemble everything
+   */
   const updatedPackageFile = Object.assign(
     {},
     packageFile,
@@ -66,15 +76,15 @@ const buildIndividualModule = async (moduleName) => {
       /*
        * Library entry points
        */
-      main: 'lib/index.js',
-      module: 'lib/es/index.js',
-      browser: 'lib/umd/index.js',
+      main: 'index.js',
+      module: 'es/index.js',
       /*
        * Folders to include
        */
       files: [
-        'lib',
+        'es',
         'docs',
+        '*.js'
       ],
       /*
        * Add links to the monorepo and author/license
@@ -84,6 +94,10 @@ const buildIndividualModule = async (moduleName) => {
       license: rootPackageFile.license,
       bugs: rootPackageFile.bugs,
       homepage: rootPackageFile.homepage,
+      keywords: [
+        ...commonKeywords,
+        ...individualKeywords,
+      ],
       /*
        * Add dependencies object
        */

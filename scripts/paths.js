@@ -7,23 +7,20 @@ const path = require('path');
 const MODULES = path.resolve('.', 'modules', 'node_modules', '@colony');
 
 const FOLDERS = {
-  BUILD: 'lib',
   SOURCE: 'src',
   DOCS: 'docs',
-};
-
-const SUBFOLDERS = {
+  CJS_MODULES: 'lib',
   ES_MODULES: 'es',
-  UMD: 'umd',
 };
 
 const FILES = {
   LICENSE: 'LICENSE',
+  README: 'README.md',
+  PACKAGE: 'package.json'
 };
 
 module.exports = {
   MODULES,
   FOLDERS,
   FILES,
-  SUBFOLDERS,
 };

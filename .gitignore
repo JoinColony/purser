@@ -66,6 +66,7 @@ package-lock.json
 # Build folder
 dist
 lib
+es
 
 # CI JUnit Reporst
 reports
@@ -75,8 +76,3 @@ reports
 *.patch
 .diff/
 .patch/
-
-# Temporary ignore the source folder
-src
-!modules/**/src
-!tests/**/src

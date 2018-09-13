@@ -1,4 +1,8 @@
-# @colony/purser-trezor API documentation
+---
+title: '@colony/purser-trezor'
+section: Modules
+order: 4
+---
 
 These docs serve to outline the `API` format and methods provided by the `@colony/purser-trezor` library.
 
@@ -14,7 +18,7 @@ When building with `NODE_ENV=production` all output will be silenced.
 
 A hardware device that gives you access to it's internal stored account(s). Usually enforced by a hardware true random number generator.
 
-For a more in-depth look at what the resulting object looks like, see the [Wallet Object](wallet-object.md) docs.
+For a more in-depth look at what the resulting object looks like, see the [Common Wallet Interface](https://docs.colony.io/purser/interface-common-wallet-interface/) docs.
 
 #### Note: Trezor Bridge
 
@@ -46,17 +50,19 @@ import trezor from '@colony/purser-trezor'; // await trezor.open();
 import { open } from '@colony/purser-trezor'; // await open();
 ```
 
+## Methods
+
 ### `open`
 
 ```js
 await open(walletArguments: Object);
 ```
 
-This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` a new `TrezorWallet` instance object. _(See: [Wallet Object](wallet-object.md) for details)_.
+This method returns a `Promise` which, after confirming the _Ethereum Account Export_ via the window prompt _(and optionally entering your PIN)_, it will `resolve` and `return` a new `TrezorWallet` instance object. _(See: [Common Wallet Interface](/purser/interface-common-wallet-interface/) for details)_.
 
 By default, without any arguments it will open the first `10` accounts in the derivation path, but you can change that via the `addressCount` object prop argument _(Unlike the software wallet, this is the only argument the `open` method takes, but to preserved consistency, it's still being passed in as an object)_.
 
-Also, the first index from the addresses that you opened will be selected as the default one _(See: the `setDefaultAddress()` method from the [Wallet Object](wallet-object.md))_, while the rest of them will be available under the `otherAddresses` Array prop on the wallet instance.
+Also, the first index from the addresses that you opened will be selected as the default one _(See: the `setDefaultAddress()` method from the [Common Wallet Interface](/purser/interface-common-wallet-interface/))_, while the rest of them will be available under the `otherAddresses` Array prop on the wallet instance.
 
 #### Argument props
 
@@ -68,7 +74,7 @@ Sets the number of addresses to derive from the derivation path. Defaults to `10
 
 It will set first one as the default _(index `0`)_, while the rest will be available through the `otherAddresses` Array, found as a prop on the Wallet Instance _(index `0` through `9` in this case)_.
 
-You will be able to change them using the `setDefaultAddress()` instance method _(See: [Wallet Object](wallet-object.md) for details))_.
+You will be able to change them using the `setDefaultAddress()` instance method _(See: [Common Wallet Interface](/purser/interface-common-wallet-interface/) for details))_.
 
 ```js
 walletArguments.chainId: Number = 1
@@ -100,7 +106,7 @@ const wallet = await open({ addressCount: 100 });
 await wallet.setDefaultAddress(12); //true
 ```
 
-Open the trezor wallet using a different chain id
+Open the trezor wallet using a different chain id:
 ```js
 import { open } from '@colony/purser-trezor';
 
