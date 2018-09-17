@@ -76,7 +76,7 @@ A `javascript` library to interact with a software Ethereum wallet, based on the
 
 #### Installation
 ```js
-yarn add @colony/purser-sofware
+yarn add @colony/purser-software
 ```
 
 #### Usage

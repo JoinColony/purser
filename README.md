@@ -23,7 +23,7 @@ To use the **software wallet** (based on the [ethers wallet](https://github.com/
 #### Installation
 
 ```
-yarn add @colony/purser-sofware
+yarn add @colony/purser-software
 ```
 
 #### Usage
