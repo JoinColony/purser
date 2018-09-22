@@ -1,7 +1,7 @@
 {
   "name": "purser",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Interact with Ethereum wallets easily",
   "scripts": {
     "precommit": "lint-staged",
