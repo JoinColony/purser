@@ -2,8 +2,6 @@
 
 ## Purser
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/JoinColony/purser.svg)](https://greenkeeper.io/)
-
 Purser simplifies interaction with Ethereum based wallets. It supports both hardware and software wallets and provides a consistent and predictable interface to work with during dApp development.
 
 Purser is:
