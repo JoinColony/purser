@@ -24,7 +24,7 @@ WalletInstance {
   /*
    * Methods
    */
-  setDefaulAddress(addressIndex: Number): Promise<Boolean>,
+  setDefaultAddress(addressIndex: Number): Promise<Boolean>,
   sign(transactionObject: Object): Promise<String>
   signMessage(messageObject: Object): Promise<String>
   verifyMessage(verificationObject: Object): Promise<Boolean>
