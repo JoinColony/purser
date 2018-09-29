@@ -1,5 +1,5 @@
 import { privateToPublic } from 'ethereumjs-util';
-import secretStorage from 'ethers/wallet/secret-storage';
+import secretStorage from 'ethers/utils/secret-storage';
 
 import { userInputValidator } from '@colony/purser-core/helpers';
 import { warning } from '@colony/purser-core/utils';
@@ -22,7 +22,7 @@ import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '@colony/purser-core/types';
 jest.dontMock('@colony/purser-software/class');
 
 jest.mock('ethereumjs-util');
-jest.mock('ethers/wallet/secret-storage');
+jest.mock('ethers/utils/secret-storage');
 jest.mock('@colony/purser-core/validators');
 jest.mock('@colony/purser-software/staticMethods');
 /*
