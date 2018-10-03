@@ -31,7 +31,6 @@ import {
 import {
   PUBLICKEY_RECOVERY_MESSAGE,
   STD_ERRORS,
-  REQUIRED_PROPS as REQUIRED_PROPS_METAMASK,
 } from '@colony/purser-metamask/defaults';
 
 jest.dontMock('@colony/purser-metamask/class');
@@ -255,7 +254,6 @@ describe('Metamask` Wallet Module', () => {
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
         firstArgument: mockedTransactionObject,
-        requiredAll: REQUIRED_PROPS_METAMASK.SIGN_TRANSACTION,
       });
     });
     test('Calls the correct method to sign a message', async () => {
