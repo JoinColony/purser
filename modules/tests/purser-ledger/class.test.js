@@ -61,6 +61,12 @@ const mockedSignatureObject = {
 
 describe('Ledger` Hardware Wallet Module', () => {
   describe('`LedgerWallet` class', () => {
+    afterEach(() => {
+      signTransaction.mockClear();
+      signMessage.mockClear();
+      verifyMessage.mockClear();
+      userInputValidator.mockClear();
+    });
     test('Creates a new wallet instance', () => {
       const ledgerWallet = new LedgerWalletClass(mockedInstanceArgument);
       expect(ledgerWallet).toBeInstanceOf(LedgerWalletClass);
@@ -145,7 +151,6 @@ describe('Ledger` Hardware Wallet Module', () => {
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
         firstArgument: mockedTransactionObject,
-        requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
       });
     });
     test(
