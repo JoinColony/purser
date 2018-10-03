@@ -262,7 +262,6 @@ describe('`Software` Wallet Module', () => {
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
         firstArgument: mockedTransactionObject,
-        requiredAll: REQUIRED_PROPS.SIGN_TRANSACTION,
       });
     });
     test('`signMessages()` calls the correct static method', async () => {
