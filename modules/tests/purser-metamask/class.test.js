@@ -256,6 +256,14 @@ describe('Metamask` Wallet Module', () => {
         firstArgument: mockedTransactionObject,
       });
     });
+    test('Sign a transaction without a destination address', async () => {
+      const metamaskWallet = new MetamaskWalletClass({ address });
+      expect(
+        metamaskWallet.sign({
+          value: 'mockedValue',
+        }),
+      ).resolves.not.toThrow();
+    });
     test('Calls the correct method to sign a message', async () => {
       const metamaskWallet = new MetamaskWalletClass({ address });
       await metamaskWallet.signMessage();
