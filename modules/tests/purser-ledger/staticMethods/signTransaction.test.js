@@ -212,7 +212,7 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
        */
       expect(handleLedgerConnectionError).toHaveBeenCalled();
     });
-    test('Signs a transaction without a destionation address', async () => {
+    test('Signs a transaction without a destination address', async () => {
       expect(
         signTransaction({
           gasPrice,
