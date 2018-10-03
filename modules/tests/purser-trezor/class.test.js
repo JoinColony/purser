@@ -5,6 +5,7 @@ import {
   signMessage,
   verifyMessage,
 } from '@colony/purser-trezor/staticMethods';
+import { warning } from '@colony/purser-core/utils';
 
 import { REQUIRED_PROPS } from '@colony/purser-core/defaults';
 import { REQUIRED_PROPS as REQUIRED_TREZOR_PROPS } from '@colony/purser-trezor/defaults';
@@ -24,6 +25,9 @@ jest.mock('@colony/purser-core/helpers', () =>
 );
 jest.mock('@colony/purser-core/normalizers', () =>
   require('@mocks/purser-core/normalizers'),
+);
+jest.mock('@colony/purser-core/utils', () =>
+  require('@mocks/purser-core/utils'),
 );
 
 /*
@@ -63,6 +67,7 @@ describe('Trezor` Hardware Wallet Module', () => {
       signMessage.mockClear();
       verifyMessage.mockClear();
       userInputValidator.mockClear();
+      warning.mockClear();
     });
     test('Creates a new wallet instance', () => {
       const trezorWallet = new TrezorWalletClass(mockedInstanceArgument);
@@ -136,6 +141,10 @@ describe('Trezor` Hardware Wallet Module', () => {
           firstArgument: {},
           requiredAll: REQUIRED_TREZOR_PROPS.SIGN_TRANSACTION_CONTRACT,
         });
+        /*
+         * Notify the user about the Trezor requirements
+         */
+        expect(warning).toHaveBeenCalled();
       },
     );
     test(
