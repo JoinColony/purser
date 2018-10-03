@@ -127,5 +127,24 @@ describe('`Software` Wallet Module', () => {
     test('Throws if something goes wrong', async () => {
       expect(signTransaction()).rejects.toThrow();
     });
+    test("Can be called with no 'to' prop", async () => {
+      expect(
+        signTransaction({
+          gasPrice,
+          gasLimit,
+          chainId,
+          nonce,
+          value,
+          inputData,
+          callback: () => {},
+        }),
+      ).resolves.not.toThrow();
+      /*
+       * Since we don't have an address, don't add a destination prop and don't
+       * try to normalize it
+       */
+      expect(addressNormalizer).not.toHaveBeenCalled();
+      expect(addressNormalizer).not.toHaveBeenCalledWith(to);
+    });
   });
 });
