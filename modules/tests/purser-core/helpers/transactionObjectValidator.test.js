@@ -46,6 +46,13 @@ const mockedTransactionObject = {
 
 describe('`Core` Module', () => {
   describe('`transactionObjectValidator()` helper', () => {
+    afterEach(() => {
+      bigNumberValidator.mockClear();
+      safeIntegerValidator.mockClear();
+      addressValidator.mockClear();
+      hexSequenceValidator.mockClear();
+      bigNumber.mockClear();
+    });
     test("Validates all the transaction's object values", async () => {
       transactionObjectValidator(mockedTransactionObject);
       /*
@@ -119,6 +126,48 @@ describe('`Core` Module', () => {
         'inputData',
         TRANSACTION.INPUT_DATA,
       );
+    });
+    test('Validates destination (to), only if it was provided', async () => {
+      transactionObjectValidator({
+        derivationPath,
+        gasPrice,
+        gasLimit,
+        chainId,
+        nonce,
+        value,
+        inputData,
+      });
+      /*
+       * Validates gas price and gas limit
+       */
+      expect(bigNumberValidator).toHaveBeenCalled();
+      expect(bigNumberValidator).toHaveBeenCalledWith(gasPrice);
+      expect(bigNumberValidator).toHaveBeenCalledWith(gasLimit);
+      /*
+       * Validates the chain Id
+       */
+      expect(safeIntegerValidator).toHaveBeenCalled();
+      expect(safeIntegerValidator).toHaveBeenCalledWith(chainId);
+      /*
+       * Validates the nonce
+       */
+      expect(safeIntegerValidator).toHaveBeenCalled();
+      expect(safeIntegerValidator).toHaveBeenCalledWith(nonce);
+      /*
+       * Validates the transaction value
+       */
+      expect(bigNumberValidator).toHaveBeenCalled();
+      expect(bigNumberValidator).toHaveBeenCalledWith(value);
+      /*
+       * Validates the transaction input data
+       */
+      expect(hexSequenceValidator).toHaveBeenCalled();
+      expect(hexSequenceValidator).toHaveBeenCalledWith(inputData);
+      /*
+       * Doesn't validates the destination address, since it wasn't provided
+       */
+      expect(addressValidator).not.toHaveBeenCalled();
+      expect(addressValidator).not.toHaveBeenCalledWith(to);
     });
   });
 });
