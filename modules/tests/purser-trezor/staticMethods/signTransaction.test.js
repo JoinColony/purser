@@ -67,6 +67,13 @@ const mockedArgumentsObject = {
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     EthereumTx.mockClear();
+    derivationPathNormalizer.mockClear();
+    multipleOfTwoHexValueNormalizer.mockClear();
+    addressNormalizer.mockClear();
+    hexSequenceNormalizer.mockClear();
+    utils.warning.mockClear();
+    payloadListener.mockClear();
+    derivationPathValidator.mockClear();
   });
   describe('`signTransaction()` static method', () => {
     test('Creates the initial, unsigned signature', async () => {
@@ -178,6 +185,19 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
        * User cancelled, so we don't throw
        */
       expect(utils.warning).toHaveBeenCalled();
+    });
+    test('Signs a transaction without a destination address', async () => {
+      expect(
+        signTransaction({
+          gasPrice,
+          gasLimit,
+          chainId,
+          nonce,
+          value,
+          inputData,
+        }),
+      ).resolves.not.toThrow();
+      expect(addressNormalizer).not.toHaveBeenCalled();
     });
   });
 });

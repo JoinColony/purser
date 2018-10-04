@@ -328,25 +328,31 @@ transactionObject {
   gasLimit: bigNumber // The gas limit you want for this transaction, as an instance of bigNumber. Defaults to 21000
   chainId: Number // The chain id where the transaction is going to be sent. Defaults to 1.
   nonce: Number // The nonce of the transaction. Defaults to 0.
-  to: String // The destination address to send the transaction to, as a hex String. This is the only REQUIRED prop by this library
+  to: String // The destination address to send the transaction to, as a hex String. If you deploy a new contract, you must omit this prop.
   value: bigNumber // The value you want to send to the destination address, in WEI, as an instance of bigNumber. Defaults to 1 WEI
-  inputData: String // The additional input data to send in the transaction, as a hex String. Defaults to `0x00`
+  inputData: String // The additional input data to send in the transaction, as a hex String. Defaults to ''
 }
 ```
 
+**Contract deployment:**
+
+To create and then sign a transaction intended to deploy a contract you need to omit the destination address field _(`to` prop)_. The sign method expects this and will not validate against it.
+
+_**Note**: While all other wallet types allow you to pass in an empty `inputData` field (not that it would be very useful), Trezor requires you to specifically set it. So you won't be able to sign a contract deployment transaction without also setting the transaction data._
+
 **Usage:**
 ```js
-import { open } from '@colony/purser-trezor';
+import { open } from '@colony/purser-software';
 
-const trezorWallet = await open();
+const softwareWallet = await open({ mnemonic: 'load blush ... sheriff surge' });
 
-const transactionSignature = await trezorWallet.sign({ to: '0x3953...a4C1' }); // 0xF990...8d91
+const transactionSignature = await softwareWallet.sign({ to: '0x3953...a4C1' }); // 0xF990...8d91
 ```
 ```js
-import { open } from '@colony/purser-trezor';
+import { open } from '@colony/purser-ledger';
 import { bigNumber } from '@colony/purser-core/utils';
 
-const trezorWallet = await open();
+const ledgerWallet = await open();
 
 const transaction = {
   gasPrice: bigNumber('0.00000001').toWei(),
@@ -358,7 +364,21 @@ const transaction = {
   inputData: '0x00',
 };
 
-const transactionSignature = await trezorWallet.sign(transaction); // 0xf849...5681
+const transactionSignature = await ledgerWallet.sign(transaction); // 0xf849...5681
+```
+Deploy a contract:
+```js
+import { open } from '@colony/purser-trezor';
+import { bigNumber } from '@colony/purser-core/utils';
+
+const trezorWallet = await open();
+
+// omit the 'to' prop
+const newContractTransaction = {
+  inputData: '0x00',
+};
+
+const transactionSignature = await trezorWallet.sign(newContractTransaction); // 0xf849...993a
 ```
 
 ### `signMessage()`

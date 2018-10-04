@@ -69,6 +69,15 @@ const mockedArgumentsObject = {
 describe('`Ledger` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     EthereumTx.mockClear();
+    derivationPathNormalizer.mockClear();
+    multipleOfTwoHexValueNormalizer.mockClear();
+    addressNormalizer.mockClear();
+    hexSequenceNormalizer.mockClear();
+    ledgerConnection.mockClear();
+    handleLedgerConnectionError.mockClear();
+    transactionObjectValidator.mockClear();
+    derivationPathValidator.mockClear();
+    utils.warning.mockClear();
   });
   describe('`signTransaction()` static method', () => {
     test('Calls the correct ledger app method', async () => {
@@ -202,6 +211,19 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
        * Handles the specific transport error
        */
       expect(handleLedgerConnectionError).toHaveBeenCalled();
+    });
+    test('Signs a transaction without a destination address', async () => {
+      expect(
+        signTransaction({
+          gasPrice,
+          gasLimit,
+          chainId,
+          nonce,
+          value,
+          inputData,
+        }),
+      ).resolves.not.toThrow();
+      expect(addressNormalizer).not.toHaveBeenCalled();
     });
   });
 });
