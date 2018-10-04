@@ -4,6 +4,8 @@
 [ignore]
 .*/__tests__/.*
 .*/__mocks__/.*
+.*/tests/.*
+.*/mocks/.*
 .*/lib/.*
 .*/docs/.*
 
