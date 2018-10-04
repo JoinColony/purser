@@ -20,7 +20,7 @@
     "test": "NODE_ENV=test jest",
     "test:watch": "NODE_ENV=test jest --watchAll --verbose",
     "test:coverage": "NODE_ENV=test jest --coverage",
-    "test:ci": "NODE_ENV=test jest --verbose=true --maxWorkers 2"
+    "test:ci": "NODE_ENV=test jest --no-cache --ci --bail --verbose=true --maxWorkers 2 --reporters='jest-junit'"
   },
   "repository": {
     "type": "git",
