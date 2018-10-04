@@ -20,7 +20,7 @@
     "test": "NODE_ENV=test jest",
     "test:watch": "NODE_ENV=test jest --watchAll --verbose",
     "test:coverage": "NODE_ENV=test jest --coverage",
-    "test:ci": "jest --clearCache && NODE_ENV=test jest --ci --bail --verbose=true --reporters='jest-junit'"
+    "test:ci": "NODE_ENV=test jest --no-cache --ci --bail --verbose=true --maxWorkers 2 --reporters='jest-junit'"
   },
   "repository": {
     "type": "git",
@@ -65,7 +65,7 @@
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-prettier": "^3.0.0",
     "find-imports": "^0.5.2",
-    "flow-bin": "^0.81.0",
+    "flow-bin": "^0.82.0",
     "flow-copy-source": "^2.0.0",
     "fs-extra": "^7.0.0",
     "glow": "^1.2.2",
