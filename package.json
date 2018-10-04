@@ -4,7 +4,6 @@
   "version": "1.0.2",
   "description": "Interact with Ethereum wallets easily",
   "scripts": {
-    "precommit": "lint-staged",
     "build": "node scripts/build-all-modules.js",
     "update-modules": "node scripts/update-all-packages-json.js",
     "populate-modules": "node scripts/populate-all-modules.js",
