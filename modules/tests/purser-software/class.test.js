@@ -1,5 +1,5 @@
 import { privateToPublic } from 'ethereumjs-util';
-import secretStorage from 'ethers/utils/secret-storage';
+import { encrypt } from 'ethers/utils/secret-storage';
 
 import { userInputValidator } from '@colony/purser-core/helpers';
 import { warning } from '@colony/purser-core/utils';
@@ -22,7 +22,7 @@ import { TYPE_SOFTWARE, SUBTYPE_ETHERS } from '@colony/purser-core/types';
 jest.dontMock('@colony/purser-software/class');
 
 jest.mock('ethereumjs-util');
-jest.mock('ethers/utils/secret-storage');
+jest.mock('ethers/utils');
 jest.mock('@colony/purser-core/validators');
 jest.mock('@colony/purser-software/staticMethods');
 /*
@@ -52,6 +52,9 @@ const keystore = 'mocked-keystore';
 const derivationPath = 'mocked-derivation-path';
 const mockedMessage = 'mocked-message';
 const mockedSignature = 'mocked-signature';
+const mockedEthersSign = {
+  bind: jest.fn(),
+};
 const mockedEthersSignMessage = {
   bind: jest.fn(),
 };
@@ -79,11 +82,12 @@ describe('`Software` Wallet Module', () => {
     privateToPublic.mockClear();
     hexSequenceNormalizer.mockClear();
     warning.mockClear();
-    secretStorage.encrypt.mockClear();
+    encrypt.mockClear();
     signTransaction.mockClear();
     userInputValidator.mockClear();
     signMessage.mockClear();
     mockedEthersSignMessage.bind.mockClear();
+    mockedEthersSign.bind.mockClear();
     verifyMessage.mockClear();
   });
   describe('`SoftwareWallet` Class', () => {
@@ -110,7 +114,7 @@ describe('`Software` Wallet Module', () => {
     test('The instance object has the required (correct) props', async () => {
       const testWallet = new SoftwareWallet({
         ...mockedArgumentsObject,
-        mnemonic,
+        originalMnemonic: mnemonic,
         password,
         keystore,
       });
@@ -185,7 +189,7 @@ describe('`Software` Wallet Module', () => {
     test('Gets the mnemonic using the getter', async () => {
       const testWallet = new SoftwareWallet({
         ...mockedArgumentsObject,
-        mnemonic,
+        originalMnemonic: mnemonic,
       });
       expect(testWallet.mnemonic).resolves.toEqual(mnemonic);
     });
@@ -240,8 +244,8 @@ describe('`Software` Wallet Module', () => {
         password,
       });
       await testWallet.keystore;
-      expect(secretStorage.encrypt).toHaveBeenCalled();
-      expect(secretStorage.encrypt).toHaveBeenCalledWith(privateKey, password);
+      expect(encrypt).toHaveBeenCalled();
+      expect(encrypt).toHaveBeenCalledWith(privateKey, password);
     });
     test('Sets the encryption password after instantiation', async () => {
       const testWallet = new SoftwareWallet(mockedArgumentsObject);
@@ -249,12 +253,18 @@ describe('`Software` Wallet Module', () => {
       expect(testWallet.keystore).resolves.toEqual(keystore);
     });
     test('`sign()` calls the correct static method', async () => {
-      const testWallet = new SoftwareWallet(mockedArgumentsObject);
+      const testWallet = new SoftwareWallet({
+        ...mockedArgumentsObject,
+        sign: mockedEthersSign,
+      });
       await testWallet.sign();
       expect(signTransaction).toHaveBeenCalled();
     });
     test('Validates `sign` method user input', async () => {
-      const trezorWallet = new SoftwareWallet(mockedArgumentsObject);
+      const trezorWallet = new SoftwareWallet({
+        ...mockedArgumentsObject,
+        sign: mockedEthersSign,
+      });
       await trezorWallet.sign(mockedTransactionObject);
       /*
        * Validate the input
@@ -264,6 +274,14 @@ describe('`Software` Wallet Module', () => {
         firstArgument: mockedTransactionObject,
       });
     });
+    test('`sign()` binds the ethers instance', async () => {
+      const testWallet = new SoftwareWallet({
+        ...mockedArgumentsObject,
+        sign: mockedEthersSign,
+      });
+      await testWallet.sign();
+      expect(mockedEthersSign.bind).toHaveBeenCalled();
+    });
     test('`signMessages()` calls the correct static method', async () => {
       const testWallet = new SoftwareWallet({
         ...mockedArgumentsObject,
@@ -272,16 +290,13 @@ describe('`Software` Wallet Module', () => {
       await testWallet.signMessage();
       expect(signMessage).toHaveBeenCalled();
     });
-    test('`signMessages()` binds the private key', async () => {
+    test('`signMessages()` binds the ethers instance', async () => {
       const testWallet = new SoftwareWallet({
         ...mockedArgumentsObject,
         signMessage: mockedEthersSignMessage,
       });
       await testWallet.signMessage();
       expect(mockedEthersSignMessage.bind).toHaveBeenCalled();
-      expect(mockedEthersSignMessage.bind).toHaveBeenCalledWith(
-        expect.objectContaining({ privateKey }),
-      );
     });
     test('Validate `signMessage` method user input', async () => {
       const testWallet = new SoftwareWallet({

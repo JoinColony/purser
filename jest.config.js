@@ -12,6 +12,7 @@ module.exports = {
     '^@mocks/(.*)$': '<rootDir>/modules/tests/mocks/@colony/$1',
     '^ethers/wallet$': '<rootDir>/modules/tests/mocks/ethers/wallet/index.js',
     '^ethers/utils$': '<rootDir>/modules/tests/mocks/ethers/utils/index.js',
+    '^ethers/utils/secret-storage$': '<rootDir>/modules/tests/mocks/ethers/utils/secret-storage.js',
     '^@ledgerhq/hw-transport-u2f$': '<rootDir>/modules/tests/mocks/ledger-hw-transport-u2f.js',
     '^@ledgerhq/hw-app-eth$': '<rootDir>/modules/tests/mocks/ledger-hw-app-eth.js',
     '^ethereumjs-tx$': '<rootDir>/modules/tests/mocks/ethereumjs-tx.js',

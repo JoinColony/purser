@@ -1,5 +1,7 @@
+export const encrypt = jest.fn(() => 'mocked-keystore');
+
 const secretStorage = {
-  encrypt: jest.fn(() => 'mocked-keystore'),
+  encrypt,
 };
 
 export default secretStorage;
