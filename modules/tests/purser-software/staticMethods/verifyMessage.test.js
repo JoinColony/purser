@@ -1,4 +1,4 @@
-import { Wallet as EthersWallet } from 'ethers/wallet';
+import { verifyMessage as verifyEthersMessage } from 'ethers/utils';
 
 import { messageVerificationObjectValidator } from '@colony/purser-core/helpers';
 import { addressValidator } from '@colony/purser-core/validators';
@@ -7,7 +7,7 @@ import { verifyMessage } from '@colony/purser-software/staticMethods';
 
 jest.dontMock('@colony/purser-software/staticMethods');
 
-jest.mock('ethers/wallet');
+jest.mock('ethers/utils');
 jest.mock('@colony/purser-core/validators');
 /*
  * @TODO Fix manual mocks
@@ -37,16 +37,13 @@ describe('`Software` Wallet Module', () => {
   afterEach(() => {
     messageVerificationObjectValidator.mockClear();
     addressValidator.mockClear();
-    EthersWallet.verifyMessage.mockClear();
+    verifyEthersMessage.mockClear();
   });
   describe('`verifyMessage()` static method', () => {
     test('Calls the correct EthersWallet static method', async () => {
       await verifyMessage(mockedArgumentsObject);
-      expect(EthersWallet.verifyMessage).toHaveBeenCalled();
-      expect(EthersWallet.verifyMessage).toHaveBeenCalledWith(
-        message,
-        signature,
-      );
+      expect(verifyEthersMessage).toHaveBeenCalled();
+      expect(verifyEthersMessage).toHaveBeenCalledWith(message, signature);
     });
     test("Validates the signature object's values", async () => {
       await verifyMessage(mockedArgumentsObject);
