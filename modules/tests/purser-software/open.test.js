@@ -1,4 +1,6 @@
-import { HDNode, Wallet as EthersWalletClass } from 'ethers/wallet';
+import { Wallet as EthersWalletClass } from 'ethers/wallet';
+import { isValidMnemonic, fromMnemonic } from 'ethers/utils/hdnode';
+import { isSecretStorageWallet } from 'ethers/utils/json-wallet';
 
 import { userInputValidator } from '@colony/purser-core/helpers';
 
@@ -16,6 +18,8 @@ import {
 jest.dontMock('@colony/purser-software/index');
 
 jest.mock('ethers/wallet');
+jest.mock('ethers/utils/hdnode');
+jest.mock('ethers/utils/json-wallet');
 jest.mock('@colony/purser-software/class');
 /*
  * @TODO Fix manual mocks
@@ -45,9 +49,10 @@ describe('`Software` Wallet Module', () => {
   afterEach(() => {
     SoftwareWalletClass.mockClear();
     EthersWalletClass.mockClear();
-    HDNode.fromMnemonic.mockClear();
-    EthersWalletClass.fromEncryptedWallet.mockClear();
-    EthersWalletClass.isEncryptedWallet.mockClear();
+    fromMnemonic.mockClear();
+    isValidMnemonic.mockClear();
+    EthersWalletClass.fromEncryptedJson.mockClear();
+    isSecretStorageWallet.mockClear();
     userInputValidator.mockClear();
   });
   describe('`open()` static method', async () => {
@@ -73,8 +78,8 @@ describe('`Software` Wallet Module', () => {
       /*
        * Extract the private key from the mnemonic
        */
-      expect(HDNode.fromMnemonic).toHaveBeenCalled();
-      expect(HDNode.fromMnemonic).toHaveBeenCalledWith(mnemonic);
+      expect(fromMnemonic).toHaveBeenCalled();
+      expect(fromMnemonic).toHaveBeenCalledWith(mnemonic);
       /*
        * Uses the extracted private key to create a Ethers Wallet instance
        */
@@ -87,7 +92,7 @@ describe('`Software` Wallet Module', () => {
       expect(SoftwareWalletClass).toHaveBeenCalledWith(
         expect.objectContaining({
           privateKey,
-          mnemonic,
+          originalMnemonic: mnemonic,
         }),
       );
     });
@@ -96,16 +101,16 @@ describe('`Software` Wallet Module', () => {
       /*
        * Checks if the passed mnemonic is valid
        */
-      expect(HDNode.isValidMnemonic).toHaveBeenCalled();
-      expect(HDNode.isValidMnemonic).toHaveBeenCalledWith(mnemonic);
+      expect(isValidMnemonic).toHaveBeenCalled();
+      expect(isValidMnemonic).toHaveBeenCalledWith(mnemonic);
     });
     test('Open a wallet with a keystore', async () => {
       await softwareWallet.open({ keystore, password });
       /*
        * Create a new wallet instance from the (now decrypted) keystore
        */
-      expect(EthersWalletClass.fromEncryptedWallet).toHaveBeenCalled();
-      expect(EthersWalletClass.fromEncryptedWallet).toHaveBeenCalledWith(
+      expect(EthersWalletClass.fromEncryptedJson).toHaveBeenCalled();
+      expect(EthersWalletClass.fromEncryptedJson).toHaveBeenCalledWith(
         keystore,
         password,
       );
@@ -126,10 +131,8 @@ describe('`Software` Wallet Module', () => {
       /*
        * Checks if the passed keystore is valid
        */
-      expect(EthersWalletClass.isEncryptedWallet).toHaveBeenCalled();
-      expect(EthersWalletClass.isEncryptedWallet).toHaveBeenCalledWith(
-        keystore,
-      );
+      expect(isSecretStorageWallet).toHaveBeenCalled();
+      expect(isSecretStorageWallet).toHaveBeenCalledWith(keystore);
     });
     test("Validate the user's input", async () => {
       await softwareWallet.open(mockedArgumentsObject);

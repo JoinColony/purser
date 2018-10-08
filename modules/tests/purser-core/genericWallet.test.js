@@ -1,5 +1,5 @@
 import HDKey from 'hdkey';
-import { SigningKey } from 'ethers/wallet';
+import { computeAddress } from 'ethers/utils';
 
 import GenericWallet from '@colony/purser-core/genericWallet';
 import {
@@ -16,7 +16,7 @@ import { NETWORK_IDS } from '@colony/purser-core/defaults';
 jest.dontMock('@colony/purser-core/genericWallet');
 
 jest.mock('hdkey');
-jest.mock('ethers/wallet');
+jest.mock('ethers/utils');
 jest.mock('@colony/purser-core/validators');
 /*
  * @TODO Fix manual mocks
@@ -49,6 +49,7 @@ describe('`Core` Module', () => {
   afterEach(() => {
     addressNormalizer.mockClear();
     hexSequenceNormalizer.mockClear();
+    computeAddress.mockClear();
   });
   describe('`GenericWallet` class', () => {
     test('Creates a new wallet instance', () => {
@@ -87,7 +88,7 @@ describe('`Core` Module', () => {
     test('Generates the address(es) from the public key(s)', () => {
       /* eslint-disable-next-line no-new */
       new GenericWallet(mockedArguments);
-      expect(SigningKey.publicKeyToAddress).toHaveBeenCalled();
+      expect(computeAddress).toHaveBeenCalled();
     });
     test('The Wallet Object has the required (correct) props', async () => {
       const genericWallet = new GenericWallet(mockedArguments);
