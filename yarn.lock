@@ -586,52 +586,6 @@
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@colony/eslint-config-colony/-/eslint-config-colony-6.0.0.tgz#85b26e9b92bc48679095fe4ac351bc8c2eeffa82"
 
-"@colony/purser-core@1.1.0", "@colony/purser-core@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@colony/purser-core/-/purser-core-1.1.0.tgz#782021ad409dc6ff164f8e86c67c68b3e5c55cad"
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    bn.js "^4.11.8"
-    ethereumjs-util "^5.2.0"
-    ethers "^4.0.0"
-    hdkey "^1.1.0"
-
-"@colony/purser-ledger@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@colony/purser-ledger/-/purser-ledger-1.1.0.tgz#fd6f4848afaa3a1102ee8ab21f5ecdf308d34923"
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    "@colony/purser-core" "1.1.0"
-    "@ledgerhq/hw-app-eth" "^4.19.0"
-    "@ledgerhq/hw-transport-u2f" "^4.20.0"
-    ethereumjs-tx "^1.3.6"
-
-"@colony/purser-metamask@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@colony/purser-metamask/-/purser-metamask-1.1.0.tgz#cd7e8658f3317c11c6f3b2872285fe8ffea281bb"
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    "@colony/purser-core" "1.1.0"
-    lodash.isequal "^4.5.0"
-
-"@colony/purser-software@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@colony/purser-software/-/purser-software-1.1.0.tgz#16666ffe564d5ffd0d927e0dd236bca21747f9d2"
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    "@colony/purser-core" "1.1.0"
-    ethereumjs-util "^5.2.0"
-    ethers "^4.0.0"
-
-"@colony/purser-trezor@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@colony/purser-trezor/-/purser-trezor-1.1.0.tgz#7960e35f926706ef593bd6aefe503e28f8d4b265"
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    "@colony/purser-core" "1.1.0"
-    bip32-path "^0.4.2"
-    ethereumjs-tx "^1.3.6"
-
 "@kironeducation/flow-junit-transformer@^0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@kironeducation/flow-junit-transformer/-/flow-junit-transformer-0.3.0.tgz#ea1e57b01d7096012254a3d3dafc8afc7d97b8fe"
@@ -2295,9 +2249,9 @@ eslint-module-utils@^2.2.0:
     debug "^2.6.8"
     pkg-dir "^1.0.0"
 
-eslint-plugin-flowtype@^2.50.1:
-  version "2.50.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-2.50.1.tgz#36d4c961ac8b9e9e1dc091d3fba0537dad34ae8a"
+eslint-plugin-flowtype@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-3.0.0.tgz#4b72588d8a5a5c836439752fe52e8e0f4b9954df"
   dependencies:
     lodash "^4.17.10"
 
