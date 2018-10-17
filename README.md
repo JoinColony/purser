@@ -1,4 +1,20 @@
-![purser](https://github.com/JoinColony/purser/blob/master/.assets/purser_200.svg)
+<div align="center">
+  <img src="/docs/img/purser_color.svg" width="600" />
+</div>
+<div align="center">
+  <a href="https://circleci.com/gh/JoinColony/purser">
+    <img src="https://circleci.com/gh/JoinColony/purser.svg?style=shield" />
+  </a>
+  <a href="https://greenkeeper.io/">
+    <img src="https://badges.greenkeeper.io/JoinColony/purser.svg" />
+  </a>
+  <a href="https://gitter.im/JoinColony/purser">
+    <img src="https://img.shields.io/gitter/room/TechnologyAdvice/Stardust.svg" />
+  </a>
+  <a href="https://build.colony.io/">
+    <img src="https://img.shields.io/discourse/https/build.colony.io/status.svg" />
+  </a>
+</div>
 
 ## Purser
 
