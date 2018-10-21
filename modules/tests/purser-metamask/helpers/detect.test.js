@@ -6,46 +6,98 @@ jest.dontMock('@colony/purser-metamask/helpers');
 
 describe('Metamask` Wallet Module', () => {
   describe('`detect()` helper method', () => {
-    test('Checks if the global proxy is set', async () => {
+    test('Checks if ethereum object is injected', async () => {
       /*
-       * No global web3 proxy
+       * No ethereum object
        */
+      global.ethereum = undefined;
       global.web3 = undefined;
-      expect(() => detect()).toThrow();
-      expect(() => detect()).toThrowError(new Error(messages.notInjected));
+      expect(detect()).rejects.toThrow();
+      expect(detect()).rejects.toThrowError(new Error(messages.noExtension));
+    });
+    test('Checks if extension is unlocked', async () => {
+      /*
+       * Mock the `isUnlocked()` ethereum method
+       */
+      const isUnlocked = jest.fn(async () => false);
+      global.ethereum = {
+        isUnlocked,
+      };
+      global.web3 = undefined;
+      expect(detect()).rejects.toThrow();
+      expect(detect()).rejects.toThrowError(new Error(messages.isLocked));
+    });
+    test('Checks if extension is enabled', async () => {
+      /*
+       * To reach this step, the extension already needs to be unlocked
+       * (isUnlocked should return true)
+       *
+       * Mock the `isEnabled()` ethereum method
+       */
+      const isUnlocked = jest.fn(async () => true);
+      const isEnabled = jest.fn(async () => false);
+      global.ethereum = {
+        isUnlocked,
+        isEnabled,
+      };
+      global.web3 = undefined;
+      expect(detect()).rejects.toThrow();
+      expect(detect()).rejects.toThrowError(new Error(messages.notEnabled));
     });
     test('Checks if the proxy has the in-page provider set', async () => {
       /*
        * Global proxy, but no provider
        */
+      global.ethereum = undefined;
       global.web3 = {};
-      expect(() => detect()).toThrow();
+      expect(detect()).rejects.toThrow();
       /*
        * Provider set, but empty
        */
       global.web3 = { currentProvider: {} };
-      expect(() => detect()).toThrowError(new Error(messages.noInpageProvider));
+      expect(detect()).rejects.toThrowError(
+        new Error(messages.noInpageProvider),
+      );
     });
     test('Checks if the provider has internal state', async () => {
       /*
        * Provider available, but no state
        */
+      global.ethereum = undefined;
       global.web3 = { currentProvider: { publicConfigStore: {} } };
-      expect(() => detect()).toThrow();
-      expect(() => detect()).toThrowError(new Error(messages.noProviderState));
+      expect(detect()).rejects.toThrow();
+      expect(detect()).rejects.toThrowError(
+        new Error(messages.noProviderState),
+      );
     });
-    test('Checks if Metamask is locked (state has address)', async () => {
+    test('Checks if the provider (legacy) is enabled', async () => {
       /*
-       * State available, but no address
+       * State available, but no enabled
        */
+      global.ethereum = undefined;
       global.web3 = { currentProvider: { publicConfigStore: { _state: {} } } };
-      expect(() => detect()).toThrow();
-      expect(() => detect()).toThrowError(new Error(messages.isLocked));
+      expect(detect()).rejects.toThrow();
+      expect(detect()).rejects.toThrowError(new Error(messages.notEnabled));
+    });
+    test('Returns true if the extension is enabled', async () => {
+      /*
+       * Metamask is unlocked and enabled
+       */
+      const isUnlocked = jest.fn(async () => true);
+      const isEnabled = jest.fn(async () => true);
+      global.ethereum = {
+        isUnlocked,
+        isEnabled,
+      };
+      expect(detect()).resolves.not.toThrow();
+      const wasDetected = await detect();
+      expect(wasDetected).toBeTruthy();
     });
     test('Returns true if we can get to the address', async () => {
       /*
        * State available, and we have an address
        */
+      global.ethereum = undefined;
       global.web3 = {
         currentProvider: {
           publicConfigStore: {
@@ -53,8 +105,8 @@ describe('Metamask` Wallet Module', () => {
           },
         },
       };
-      expect(() => detect()).not.toThrow();
-      const wasDetected = detect();
+      expect(detect()).resolves.not.toThrow();
+      const wasDetected = await detect();
       expect(wasDetected).toBeTruthy();
     });
   });
