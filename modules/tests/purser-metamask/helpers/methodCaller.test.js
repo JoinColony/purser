@@ -8,7 +8,7 @@ jest.dontMock('@colony/purser-metamask/helpers');
  *
  * See: https://github.com/facebook/jest/issues/936
  */
-helpers.default.detect = jest.fn(() => true);
+helpers.default.detect = jest.fn(async () => true);
 
 const { methodCaller } = helpers;
 
@@ -21,24 +21,24 @@ describe('Metamask` Wallet Module', () => {
       mockedCallback.mockClear();
     });
     test('If it detects Metamask, it executes the callback', async () => {
-      methodCaller(mockedCallback);
+      await methodCaller(mockedCallback);
       expect(mockedCallback).toHaveBeenCalled();
     });
     test("If it doesn't, it throws", async () => {
-      helpers.default.detect.mockImplementation(() => {
+      helpers.default.detect.mockImplementation(async () => {
         throw new Error();
       });
-      expect(() => methodCaller(mockedCallback)).toThrow();
+      expect(methodCaller(mockedCallback)).rejects.toThrow();
     });
     test('It has a customized error message for throwing', async () => {
       const mockedErrorMessage = 'Oh no!';
       const customizedError = 'The horror...';
-      helpers.default.detect.mockImplementation(() => {
+      helpers.default.detect.mockImplementation(async () => {
         throw new Error(mockedErrorMessage);
       });
-      expect(() => methodCaller(mockedCallback, customizedError)).toThrowError(
-        `${customizedError} Error: ${mockedErrorMessage}`,
-      );
+      expect(
+        methodCaller(mockedCallback, customizedError),
+      ).rejects.toThrowError(`${customizedError} Error: ${mockedErrorMessage}`);
     });
   });
 });
