@@ -28,6 +28,16 @@ Currently this cannot be overcome and you as a developer have to be aware of it.
 
 There's an issue tracking the progress of this currently: [MetaMask/metamask-extension#3475](https://github.com/MetaMask/metamask-extension/issues/3475).
 
+#### Note: Metamask upgrade to EIP-1102
+
+Metamask's newest version implements [EIP-1102](https://eips.ethereum.org/EIPS/eip-1102). Since [release v1.2.0](https://github.com/JoinColony/purser/releases/tag/v1.2.0) this functionality has also been added to `purser-metamask`.
+
+While the API has not benn changed, there are some under-the-hood changes done to the `open()` method of the package.
+
+Since this change been made backwards compatible, you won't have to modify any existing code _(You you will get a warning in `dev` mode if you're running in Legacy)_, but do keep in mind that your users will need to go through an extra step to allow the extension on your domain.
+
+See more details about the change in [the official announcement](https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8).
+
 #### Imports:
 
 There are different ways in which you can import the library in your project _(as a module)_, but in the end they all bring in the same thing:
