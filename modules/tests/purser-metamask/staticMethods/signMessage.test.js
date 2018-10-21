@@ -38,10 +38,12 @@ jest.mock('@colony/purser-metamask/helpers', () =>
 const mockedMessageSignature = 'mocked-message-signature';
 const callbackError = { message: 'no-error-here' };
 global.web3 = {
-  personal: {
-    sign: jest.fn((message, address, callback) =>
-      callback(callbackError, mockedMessageSignature),
-    ),
+  eth: {
+    personal: {
+      sign: jest.fn((message, address, callback) =>
+        callback(callbackError, mockedMessageSignature),
+      ),
+    },
   },
 };
 /*
@@ -69,7 +71,7 @@ const mockedArgumentsObject = {
 
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
-    global.web3.personal.sign.mockClear();
+    global.web3.eth.personal.sign.mockClear();
     global.Buffer.from.mockClear();
     methodCaller.mockClear();
     addressValidator.mockClear();
@@ -81,8 +83,8 @@ describe('`Metamask` Wallet Module Static Methods', () => {
   describe('`signMessage()` static method', () => {
     test('Calls the correct metamask injected method', async () => {
       await signMessage(mockedArgumentsObject);
-      expect(global.web3.personal.sign).toHaveBeenCalled();
-      expect(global.web3.personal.sign).toHaveBeenCalledWith(
+      expect(global.web3.eth.personal.sign).toHaveBeenCalled();
+      expect(global.web3.eth.personal.sign).toHaveBeenCalledWith(
         mockedMessage,
         mockedAddress,
         expect.any(Function),
@@ -170,7 +172,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       hexSequenceValidator.mockImplementation(() => {
         throw new Error();
       });
-      global.web3.personal.sign.mockImplementation(
+      global.web3.eth.personal.sign.mockImplementation(
         (message, address, callback) =>
           callback(
             { ...callbackError, message: STD_ERRORS.CANCEL_MSG_SIGN },
