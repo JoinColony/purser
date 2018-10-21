@@ -30,7 +30,7 @@ There's an issue tracking the progress of this currently: [MetaMask/metamask-ext
 
 #### Note: Metamask upgrade to EIP-1102
 
-Metamask's newest version implements [EIP-1102](https://eips.ethereum.org/EIPS/eip-1102). Since [release v1.2.0](https://github.com/JoinColony/purser/releases/tag/v1.2.0) this functionality has also been added to `purser-metamask`.
+Metamask's newest version implements [EIP-1102](https://eips.ethereum.org/EIPS/eip-1102). Since [release v1.2.0](https://github.com/JoinColony/purser/releases/tag/v1.2.0-rc.0) this functionality has also been added to `purser-metamask`.
 
 While the API has not benn changed, there are some under-the-hood changes done to the `open()` method of the package.
 
