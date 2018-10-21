@@ -65,10 +65,12 @@ const callbackError = { message: 'no-error-here' };
  * Mock the injected web3 proxy object
  */
 global.web3 = {
-  personal: {
-    sign: jest.fn((message, address, callback) =>
-      callback(callbackError, mockedMessageSignature),
-    ),
+  eth: {
+    personal: {
+      sign: jest.fn((message, address, callback) =>
+        callback(callbackError, mockedMessageSignature),
+      ),
+    },
   },
   currentProvider: {
     publicConfigStore: {
@@ -325,8 +327,8 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Call's Metamask injected personal sign method
        */
-      expect(global.web3.personal.sign).toHaveBeenCalled();
-      expect(global.web3.personal.sign).toHaveBeenCalledWith(
+      expect(global.web3.eth.personal.sign).toHaveBeenCalled();
+      expect(global.web3.eth.personal.sign).toHaveBeenCalledWith(
         PUBLICKEY_RECOVERY_MESSAGE,
         address,
         expect.any(Function),
@@ -383,7 +385,7 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Mock it locally to simulate the user cancelling the sign message popup
        */
-      global.web3.personal.sign.mockImplementation(
+      global.web3.eth.personal.sign.mockImplementation(
         (message, currentAddress, callback) =>
           callback(
             { ...callbackError, message: STD_ERRORS.CANCEL_MSG_SIGN },
@@ -413,7 +415,7 @@ describe('Metamask` Wallet Module', () => {
       });
       triggerUpdateStateEvents(mockedNewState);
       const publicKey = await metamaskWallet.publicKey;
-      expect(global.web3.personal.sign).toHaveBeenCalled();
+      expect(global.web3.eth.personal.sign).toHaveBeenCalled();
       expect(publicKey).toEqual(mockedPublicKey);
     });
   });
