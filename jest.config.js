@@ -21,5 +21,6 @@ module.exports = {
     '^ethereumjs-util$': '<rootDir>/modules/tests/mocks/ethereumjs-util.js',
     '^bip32-path$': '<rootDir>/modules/tests/mocks/bip32-path.js',
     '^hdkey$': '<rootDir>/modules/tests/mocks/hdkey.js',
+    '^web3$': '<rootDir>/modules/tests/mocks/web3.js',
   },
 };
