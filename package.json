@@ -1,7 +1,7 @@
 {
   "name": "purser",
   "private": true,
-  "version": "1.2.0-rc.0",
+  "version": "1.2.0-rc.1",
   "description": "Interact with Ethereum wallets easily",
   "scripts": {
     "build": "node scripts/build-all-modules.js",
