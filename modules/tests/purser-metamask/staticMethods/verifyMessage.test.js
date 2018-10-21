@@ -38,10 +38,12 @@ jest.mock('@colony/purser-metamask/helpers', () =>
 const mockedRecoveredAddress = 'mocked-message-signature';
 const callbackError = { message: 'no-error-here' };
 global.web3 = {
-  personal: {
-    ecRecover: jest.fn((message, signature, callback) =>
-      callback(callbackError, mockedRecoveredAddress),
-    ),
+  eth: {
+    personal: {
+      ecRecover: jest.fn((message, signature, callback) =>
+        callback(callbackError, mockedRecoveredAddress),
+      ),
+    },
   },
 };
 /*
@@ -71,7 +73,7 @@ const mockedArgumentsObject = {
 
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
-    global.web3.personal.ecRecover.mockClear();
+    global.web3.eth.personal.ecRecover.mockClear();
     methodCaller.mockClear();
     messageVerificationObjectValidator.mockClear();
     addressValidator.mockClear();
@@ -81,8 +83,8 @@ describe('`Metamask` Wallet Module Static Methods', () => {
   describe('`verifyMessage()` static method', () => {
     test('Calls the correct metamask injected method', async () => {
       await verifyMessage(mockedArgumentsObject);
-      expect(global.web3.personal.ecRecover).toHaveBeenCalled();
-      expect(global.web3.personal.ecRecover).toHaveBeenCalledWith(
+      expect(global.web3.eth.personal.ecRecover).toHaveBeenCalled();
+      expect(global.web3.eth.personal.ecRecover).toHaveBeenCalledWith(
         mockedMessage,
         mockedSignature,
         expect.any(Function),
@@ -157,7 +159,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        * Mock the implementation locally to return the same mocked address
        * as the current one
        */
-      global.web3.personal.ecRecover.mockImplementation(
+      global.web3.eth.personal.ecRecover.mockImplementation(
         (message, signature, callback) =>
           callback(callbackError, mockedCurrentAddress),
       );
