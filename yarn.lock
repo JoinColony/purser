@@ -640,10 +640,16 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+<<<<<<< HEAD
 "@colony/eslint-config-colony@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@colony/eslint-config-colony/-/eslint-config-colony-6.0.0.tgz#85b26e9b92bc48679095fe4ac351bc8c2eeffa82"
   integrity sha512-MER4g+mluWO1Ue/mFOHAYwGvE5it12MO/yL/6nEjNehI6M79b7px22LJOWWf1cpj59zC3wN4qYaOz/CALQJtqA==
+=======
+"@colony/eslint-config-colony@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@colony/eslint-config-colony/-/eslint-config-colony-7.0.0.tgz#3371c84f86cd8024b5df57f44f344c50b692e7d0"
+>>>>>>> chore(package): update lockfile yarn.lock
 
 "@kironeducation/flow-junit-transformer@^0.3.0":
   version "0.3.0"
