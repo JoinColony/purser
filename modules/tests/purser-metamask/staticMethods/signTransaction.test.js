@@ -1,3 +1,5 @@
+import EthereumTx from 'ethereumjs-tx';
+
 import { transactionObjectValidator } from '@colony/purser-core/helpers';
 import { warning } from '@colony/purser-core/utils';
 
@@ -40,14 +42,29 @@ jest.mock('@colony/purser-metamask/helpers', () =>
  * Mock the injected web3 proxy object
  */
 const mockedTransactionHash = 'mocked-transaction-hash';
+const mockedRawSignedTransaction = {};
 const callbackError = { message: 'no-error-here' };
 global.web3 = {
   eth: {
     sendTransaction: jest.fn((transactionObject, callback) =>
       callback(callbackError, mockedTransactionHash),
     ),
+    getTransaction: jest.fn(() => Promise.resolve(mockedRawSignedTransaction)),
   },
 };
+
+/*
+ * Mock ethereumjs-tx serialization
+ */
+const mockedSerializedSignedTransaction =
+  'mocked-serialized-signed-transaction';
+jest.mock('ethereumjs-tx', () =>
+  jest.fn().mockImplementation(() => ({
+    serialize: jest.fn().mockReturnValue({
+      toString: jest.fn().mockReturnValue(mockedSerializedSignedTransaction),
+    }),
+  })),
+);
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -75,6 +92,8 @@ const mockedArgumentsObject = {
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
     global.web3.eth.sendTransaction.mockClear();
+    global.web3.eth.getTransaction.mockClear();
+    EthereumTx.mockClear();
     methodCaller.mockClear();
     transactionObjectValidator.mockClear();
     addressValidator.mockClear();
@@ -179,8 +198,9 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       expect(hexSequenceNormalizer).toHaveBeenCalledWith(mockedTransactionHash);
     });
     test('Returns the valid hash received from signing', async () => {
-      const transactionHash = await signTransaction(mockedArgumentsObject);
-      expect(transactionHash).toEqual(mockedTransactionHash);
+      const signedTransaction = await signTransaction(mockedArgumentsObject);
+      expect(global.web3.eth.getTransaction).toHaveBeenCalled();
+      expect(signedTransaction).toEqual(mockedSerializedSignedTransaction);
     });
     test('Throws if something goes wrong while signing', async () => {
       /*
