@@ -47,19 +47,19 @@ import { create } from '@colony/purser-software'; // await create();
 await create(walletArguments: Object);
 ```
 
-This method returns a `Promise` which, upon resolving, will return new software wallet instance _(see: [Wallet Object](wallet-object.md))_.
+This method returns a `Promise` which, upon resolving, will return new software wallet instance.
 
-By default it will generate the maximum possible `entropy` _(see: [`getRandomValues`](api-utils.md#getRandomValues))_.
+By default it will generate the maximum possible `entropy` _(see: [`getRandomValues`](/purser/modules-@colonypurser-core/#getrandomvalues))_.
 
 Even though it will work out of the box, you can however, pass in custom arguments via the `walletArguments` object.
 
-See [`WalletArgumentsType`](../src/flowtypes.js#L34-L42) in [`flowtypes.js`](../src/flowtypes.js) for how the options object looks like.
+See `WalletArgumentsType` in [`flowtypes.js`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/%40colony/purser-core/flowtypes.js) for how the options object looks like.
 
 ```js
 walletArguments.entropy: Uint8Array<>
 ```
 
-Provide custom randomness when creating the wallet. By default it will use a `8`-bit unsigned array of `65536` length on which it will generate random values _(see: [`getRandomValues`](api-utils.md#getRandomValues))_.
+Provide custom randomness when creating the wallet. By default it will use a `8`-bit unsigned array of `65536` length on which it will generate random values _(see: [`getRandomValues`](/purser/modules-@colonypurser-core/#getrandomvalues))_.
 
 ```js
 walletArguments.password: String
@@ -124,7 +124,7 @@ This method returns a `Promise`, which after unlocking it via one of the availab
 
 It will not work without any arguments so you must specify at least one method of opening the wallet. If at least one is not provided, the `Promise` will `reject`, throwing an error.
 
-See [`WalletArgumentsType`](../src/flowtypes.js#L34-L42) in [`flowtypes.js`](../src/flowtypes.js) for how the options object looks like.
+See `WalletArgumentsType` in [`flowtypes.js`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/%40colony/purser-core/flowtypes.js) for how the options object looks like.
 
 ```js
 walletArguments.privateKey: String
