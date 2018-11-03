@@ -124,7 +124,7 @@ This method returns a `Promise`, which after unlocking it via one of the availab
 
 It will not work without any arguments so you must specify at least one method of opening the wallet. If at least one is not provided, the `Promise` will `reject`, throwing an error.
 
-See [`WalletArgumentsType`](../src/flowtypes.js#L34-L42) in [`flowtypes.js`](../src/flowtypes.js) for how the options object looks like.
+See `WalletArgumentsType` in [`flowtypes.js`](https://github.com/JoinColony/purser/blob/master/modules/node_modules/%40colony/purser-core/flowtypes.js) for how the options object looks like.
 
 ```js
 walletArguments.privateKey: String
