@@ -65,7 +65,7 @@ Contains the wallet's public address in the form of `String`.
 
 _**Tip:** Across all wallet types and formats this is the only value that will certainly be present in the object._
 
-_**Note:** For the [Metamask Wallet](purser-metamask.md) this will always reflect the address selected from the UI, so you can always count on it to be accurate._
+_**Note:** For the [Metamask Wallet](/purser/modules-@colonypurser-metamask/) this will always reflect the address selected from the UI, so you can always count on it to be accurate._
 
 **Usage:**
 ```js
@@ -85,7 +85,7 @@ Contains the `id` of the network the wallet is intended to work on _(eg: `homest
 
 This is used on the hardware wallets to determine the `derivationPath` and on _all_ wallet types as a default if one isn't provided to the object of transaction you wish to [sign](#sign).
 
-_**Note:** For the [Metamask Wallet](purser-metamask.md) this is not available as it handles it internally, but can be changed using the UI._
+_**Note:** For the [Metamask Wallet](/purser/modules-@colonypurser-metamask/) this is not available as it handles it internally, but can be changed using the UI._
 
 **Usage:**
 ```js
@@ -235,7 +235,7 @@ This is a `getter` that returns a `Promise`. Upon resolving, the promise returns
 
 This is useful for cases where you want to prove the wallet's identity without exposing any private and dangerous information _(Eg: `privateKey`, `mnemonic`...)_.
 
-_**Note:** The [Metamask Wallet](purser-metamask.md) does not provide native access to the public key, but it can be recovered from a signed message. in order to access it, you will first have to sign a message with Metamask to obtain the public key. It will then be saved locally for future reference (current selected address only), so that if you have to use it again, you won't have re-sign the message._
+_**Note:** The [Metamask Wallet](/purser/modules-@colonypurser-metamask/) does not provide native access to the public key, but it can be recovered from a signed message. in order to access it, you will first have to sign a message with Metamask to obtain the public key. It will then be saved locally for future reference (current selected address only), so that if you have to use it again, you won't have re-sign the message._
 
 **Usage:**
 ```js
