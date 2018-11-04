@@ -6,6 +6,10 @@
 
 set -e
 
+# Login (for this release session)
+# Since this script will most likely run a different shell environment than your normal terminal
+npm adduser
+
 # Paths
 ROOT_PATH=$(pwd)
 MODULES_PATH="${ROOT_PATH}/modules/node_modules/@colony"
