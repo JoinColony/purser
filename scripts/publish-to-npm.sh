@@ -56,11 +56,17 @@ for module in $(ls "${MODULES_PATH}"); do
     continue
   fi
   cd "${MODULES_PATH}/$module/lib"
+  CURRENT_VERSION=$(node -p "require('./package.json').version")
+  VERSION_PUBLISHED=$(npm view "@colony/$module@$CURRENT_VERSION" version)
+  if [ $VERSION_PUBLISHED ]; then
+    echo "@colony/$module @ $CURRENT_VERSION is already published, skipping"
+    continue
+  fi
   if [ ! -z $JUST_A_TEST ]; then
-    log "Packing @colony/$module to NPM..."
+    log "Packing @colony/$module @ $CURRENT_VERSION to NPM..."
     npm pack
   else
-    log "Publishing @colony/$module to NPM..."
+    log "Publishing @colony/$module @ $CURRENT_VERSION to NPM..."
     npm publish --access public
   fi
   cd "${ROOT_PATH}"
