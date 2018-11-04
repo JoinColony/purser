@@ -56,25 +56,32 @@ for module in $(ls "${MODULES_PATH}"); do
     continue
   fi
   cd "${MODULES_PATH}/$module/lib"
+  # Get the current LOCAL package version
   CURRENT_VERSION=$(node -p "require('./package.json').version")
+  # Check if that version is already published
   VERSION_PUBLISHED=$(npm view "@colony/$module@$CURRENT_VERSION" version)
   if [ $VERSION_PUBLISHED ]; then
     echo "@colony/$module @ $CURRENT_VERSION is already published, skipping"
     continue
   fi
+  # If we're just testing, create a archive containing the release files, but don't push them
   if [ ! -z $JUST_A_TEST ]; then
     log "Packing @colony/$module @ $CURRENT_VERSION to NPM..."
     npm pack
   else
+    # Do a RC release
     if [ $(echo $CURRENT_VERSION | grep "rc") ]; then
       log "Publishing @colony/$module @ $CURRENT_VERSION to NPM as RELEASE CANDIDATE"
       npm publish --access public --tag rc
+    # Do a BETA release
     elif [ $(echo $CURRENT_VERSION | grep "beta") ]; then
       log "Publishing @colony/$module @ $CURRENT_VERSION to NPM as BETA"
       npm publish --access public --tag beta
+    # DO an ALPHA release
     elif [ $(echo $CURRENT_VERSION | grep "alpha") ]; then
       log "Publishing @colony/$module @ $CURRENT_VERSION to NPM as ALPHA"
       npm publish --access public --tag alpha
+    # DO a normal (LATEST) release
     else
       log "Publishing @colony/$module @ $CURRENT_VERSION to NPM"
       npm publish --access public
