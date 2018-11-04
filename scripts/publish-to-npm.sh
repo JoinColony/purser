@@ -66,8 +66,19 @@ for module in $(ls "${MODULES_PATH}"); do
     log "Packing @colony/$module @ $CURRENT_VERSION to NPM..."
     npm pack
   else
-    log "Publishing @colony/$module @ $CURRENT_VERSION to NPM..."
-    npm publish --access public
+    if [ $(echo $CURRENT_VERSION | grep "rc") ]; then
+      log "Publishing @colony/$module @ $CURRENT_VERSION to NPM as RELEASE CANDIDATE"
+      npm publish --access public --tag rc
+    elif [ $(echo $CURRENT_VERSION | grep "beta") ]; then
+      log "Publishing @colony/$module @ $CURRENT_VERSION to NPM as BETA"
+      npm publish --access public --tag beta
+    elif [ $(echo $CURRENT_VERSION | grep "alpha") ]; then
+      log "Publishing @colony/$module @ $CURRENT_VERSION to NPM as ALPHA"
+      npm publish --access public --tag alpha
+    else
+      log "Publishing @colony/$module @ $CURRENT_VERSION to NPM"
+      npm publish --access public
+    fi
   fi
   cd "${ROOT_PATH}"
 done
