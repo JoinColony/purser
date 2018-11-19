@@ -73,7 +73,7 @@
     "jest-junit": "^5.0.0",
     "jest-sandbox": "^1.1.1",
     "lint-staged": "^8.0.4",
-    "prettier": "^1.14.3",
+    "prettier": "^1.15.2",
     "regenerator-runtime": "^0.13.0"
   },
   "dependencies": {

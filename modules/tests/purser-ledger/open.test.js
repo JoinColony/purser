@@ -70,8 +70,8 @@ describe('Ledger` Hardware Wallet Module', () => {
       expect(LedgerWalletClass).toHaveBeenCalled();
       expect(LedgerWalletClass).toHaveBeenCalledWith(
         /*
-        * We only care about the address count
-        */
+         * We only care about the address count
+         */
         expect.objectContaining({
           addressCount: addressesToOpen,
         }),
