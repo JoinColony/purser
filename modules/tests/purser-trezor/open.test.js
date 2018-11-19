@@ -62,8 +62,8 @@ describe('Trezor` Hardware Wallet Module', () => {
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
         /*
-        * We only care about what payload type this method sends
-        */
+         * We only care about what payload type this method sends
+         */
         payload: expect.objectContaining({
           type,
           requiredFirmware,
@@ -86,8 +86,8 @@ describe('Trezor` Hardware Wallet Module', () => {
       expect(TrezorWalletClass).toHaveBeenCalled();
       expect(TrezorWalletClass).toHaveBeenCalledWith(
         /*
-        * We only care about the address count
-        */
+         * We only care about the address count
+         */
         expect.objectContaining({
           addressCount: addressesToOpen,
         }),

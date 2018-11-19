@@ -109,8 +109,8 @@ describe('`Core` Module', () => {
         `${rootDerivationPath}/0`,
       );
       /*
-      * Chain Id
-      */
+       * Chain Id
+       */
       expect(genericWallet).toHaveProperty('chainId');
       /*
        * `sign()` method (but it's empty -- you're supposed to overwrite it)

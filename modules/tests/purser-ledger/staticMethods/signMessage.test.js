@@ -58,8 +58,8 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
       expect(ledgerConnection.signPersonalMessage).toHaveBeenCalled();
       expect(ledgerConnection.signPersonalMessage).toHaveBeenCalledWith(
         /*
-        * We only care if the derivation path is "correct"
-        */
+         * We only care if the derivation path is "correct"
+         */
         derivationPath,
         expect.any(String),
       );
