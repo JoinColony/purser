@@ -277,7 +277,7 @@ describe('Metamask` Wallet Module', () => {
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
         firstArgument: mockeMessageObject,
-        requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+        requiredOr: REQUIRED_PROPS.SIGN_MESSAGE,
       });
     });
     test('Calls the correct method to verify a message', async () => {

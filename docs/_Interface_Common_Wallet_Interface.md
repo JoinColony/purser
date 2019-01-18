@@ -390,14 +390,15 @@ Sign a message with your public key to prove your identity and ownership of the 
 
 This method takes in an `messageObject` Object _(See below)_, and returns the hex `String` signature wrapped inside a `Promise` _(This method is `async`)_.
 
-The `messageObject` only has one prop, `message`, but to keep consistency with the rest of the library, it is passed in as an Object.
+The `messageObject` must contain exactly one of either `message` or `messageData`, where `message` is a UTF-8 string and `messageData` is the raw data to be signed as either a hex string (`0x...`) or a `Uint8Array`.
 
 _**Note**: On hardware wallets this method will require some form of confirmation from the user._
 
 **`messageObject` format:**
 ```js
 messageObject {
-  message: String // The message you want to sign, as a String. Defaults to the '' empty String
+  message?: String // The message you want to sign, as a String. Defaults to the '' empty String
+  messageData?: String | Uint8Array
 }
 ```
 
@@ -408,6 +409,9 @@ import { open } from '@colony/purser-trezor';
 const trezorWallet = await open();
 
 const messageSignature = await trezorWallet.signMessage({ message: 'Yes, this is me!' }); // '0xa1f7...0b1c'
+
+const messageData = new Uint8Array('some arbitrary data');
+const messageSignatureFromData = await trezorWallet.signMessage({ messageData }); // 0x...'
 ```
 
 ### `verifyMessage()`
