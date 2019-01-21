@@ -2,6 +2,7 @@ import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
 import { messageValidator } from '@colony/purser-core/validators';
 
 import { signMessage } from '@colony/purser-software/staticMethods';
+import { messageOrDataValidator } from '@colony/purser-core/helpers';
 
 jest.dontMock('@colony/purser-software/staticMethods');
 
@@ -51,8 +52,12 @@ describe('`Software` Wallet Module', () => {
     });
     test('Validates the message string', async () => {
       await signMessage(mockedArgumentsObject);
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(mockedMessage);
+      expect(messageOrDataValidator).toHaveBeenCalled();
+      expect(messageOrDataValidator).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: mockedMessage,
+        }),
+      );
     });
     test('Normalizes the message signature before returning', async () => {
       await signMessage(mockedArgumentsObject);
