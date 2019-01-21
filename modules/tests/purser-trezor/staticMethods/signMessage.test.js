@@ -7,6 +7,7 @@ import {
   messageValidator,
 } from '@colony/purser-core/validators';
 import { warning } from '@colony/purser-core/utils';
+import { messageOrDataValidator } from '@colony/purser-core/helpers';
 
 import { signMessage } from '@colony/purser-trezor/staticMethods';
 import { payloadListener } from '@colony/purser-trezor/helpers';
@@ -59,7 +60,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
          * If the validators wouldn't be mocked, they wouldn't pass.
          */
         path: 0,
-        mesasge: 0,
+        message: Buffer.from([]),
       });
       expect(payloadListener).toHaveBeenCalled();
       expect(payloadListener).toHaveBeenCalledWith({
@@ -86,8 +87,10 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       /*
        * Validates the message string
        */
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(message);
+      expect(messageOrDataValidator).toHaveBeenCalled();
+      expect(messageOrDataValidator).toHaveBeenCalledWith(
+        expect.objectContaining({ message }),
+      );
     });
     test('Normalizes the derivation path before sending', async () => {
       await signMessage(mockedMessageObject);
@@ -106,9 +109,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       payloadListener.mockImplementation(() => ({
         signature: returnedHexString,
       }));
-      await signMessage({
-        derivationPath,
-      });
+      await signMessage(mockedMessageObject);
       /*
        * Normalizes the return string
        */
