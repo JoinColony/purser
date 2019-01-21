@@ -8,12 +8,14 @@ import {
   messageValidator,
   hexSequenceValidator,
 } from '@colony/purser-core/validators';
+import { messageOrDataValidator } from '@colony/purser-core/helpers';
 
 import { STD_ERRORS } from '@colony/purser-metamask/defaults';
 
 jest.dontMock('@colony/purser-metamask/staticMethods');
 
 jest.mock('@colony/purser-core/validators');
+jest.mock('@colony/purser-core/helpers');
 /*
  * @TODO Fix manual mocks
  * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
@@ -123,8 +125,12 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Calls the validation helper with the correct values
        */
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(mockedMessage);
+      expect(messageOrDataValidator).toHaveBeenCalled();
+      expect(messageOrDataValidator).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: mockedMessage,
+        }),
+      );
     });
     test('Normalizes the message before sending it to Metamask', async () => {
       await signMessage(mockedArgumentsObject);
