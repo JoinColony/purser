@@ -310,7 +310,7 @@ describe('`Software` Wallet Module', () => {
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
         firstArgument: mockedMessageObject,
-        requiredAll: REQUIRED_PROPS.SIGN_MESSAGE,
+        requiredOr: REQUIRED_PROPS.SIGN_MESSAGE,
       });
     });
     test('`verifyMessages()` calls the correct static method', async () => {

@@ -7,6 +7,7 @@ import {
   derivationPathValidator,
   messageValidator,
 } from '@colony/purser-core/validators';
+import { messageOrDataValidator } from '@colony/purser-core/helpers';
 
 import { signMessage } from '@colony/purser-ledger/staticMethods';
 import {
@@ -78,8 +79,10 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
       /*
        * Validates the message string
        */
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(message);
+      expect(messageOrDataValidator).toHaveBeenCalled();
+      expect(messageOrDataValidator).toHaveBeenCalledWith(
+        expect.objectContaining({ message }),
+      );
     });
     test('Normalizes the derivation path before sending', async () => {
       await signMessage(mockedArgumentsObject);
@@ -114,7 +117,7 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
        * an error along the way
        */
       ledgerConnection.mockRejectedValueOnce(new Error());
-      await signMessage();
+      await signMessage(mockedArgumentsObject);
       /*
        * Handles the specific transport error
        */

@@ -8,6 +8,7 @@ import {
   messageValidator,
   hexSequenceValidator,
 } from '@colony/purser-core/validators';
+import { messageOrDataValidator } from '@colony/purser-core/helpers';
 
 import { STD_ERRORS } from '@colony/purser-metamask/defaults';
 
@@ -123,8 +124,12 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Calls the validation helper with the correct values
        */
-      expect(messageValidator).toHaveBeenCalled();
-      expect(messageValidator).toHaveBeenCalledWith(mockedMessage);
+      expect(messageOrDataValidator).toHaveBeenCalled();
+      expect(messageOrDataValidator).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: mockedMessage,
+        }),
+      );
     });
     test('Normalizes the message before sending it to Metamask', async () => {
       await signMessage(mockedArgumentsObject);
