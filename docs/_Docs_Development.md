@@ -29,7 +29,7 @@ import software from '@core/purser-software/es';
 await software.create();
 ```
 
-Also, if you use [Flow]() for type declarations inside your project, it will automatically pick up the required _(optional)_ arguments and they're expected type.
+Also, if you use [Flow](https://flow.org/) for type declarations inside your project, it will automatically pick up the required _(optional)_ arguments and they're expected type.
 
 #### Linting code
 
