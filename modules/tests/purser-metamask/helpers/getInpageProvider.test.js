@@ -15,9 +15,11 @@ const { getInpageProvider } = helpers;
 /*
  * Mock the global injected inpage provider
  */
-const mockedProvider = 'Yes! This is the provider';
+const mockedEthereumProvider = 'mocked-ethereum-provider';
+const mockedWeb3Provider = 'mocked-web3-provider';
+global.ethereum = mockedEthereumProvider;
 global.web3 = {
-  currentProvider: mockedProvider,
+  currentProvider: mockedWeb3Provider,
 };
 
 describe('Metamask` Wallet Module', () => {
@@ -25,9 +27,17 @@ describe('Metamask` Wallet Module', () => {
     afterEach(() => {
       helpers.default.detect.mockClear();
     });
-    test('It returns the inpage provider object', async () => {
-      const inpageProvider = getInpageProvider();
-      expect(inpageProvider).toEqual(mockedProvider);
+    test('Returns the Web3 inpage provider', async () => {
+      const modernProvider = getInpageProvider();
+      expect(modernProvider).toEqual(mockedEthereumProvider);
+    });
+    test('Returns the `legacy` inpage provider', async () => {
+      /*
+       * @NOTE If there's no `global.ethereun` object, fall back to the legacy web3 provider
+       */
+      delete global.ethereum;
+      const legacyProvider = getInpageProvider();
+      expect(legacyProvider).toEqual(mockedWeb3Provider);
     });
   });
 });

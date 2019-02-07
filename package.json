@@ -87,6 +87,6 @@
     "ethers": "^4.0.12",
     "hdkey": "^1.1.0",
     "lodash.isequal": "^4.5.0",
-    "web3": "^1.0.0-beta.36"
+    "web3": "1.0.0-beta.36"
   }
 }
