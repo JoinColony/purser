@@ -91,9 +91,36 @@ This method returns a `Promise` which, after resolving, it will `return` only re
 
 **Usage examples:**
 
-Open the metamask wallet:
+Detect if Metamask is available:
 ```js
 import { detect as isMetamaskAvailable } from '@colony/purser-metamask';
 
 await isMetamaskAvailable(); // true
+```
+
+### `accountChangeHook`
+
+```js
+await accountChangeHook(callback: Function);
+```
+
+This is a utility method to allow end users to hook into Metamask's State Event Observer, and execute a callback when that changes. _(Eg: When an account is changed in the Metamask UI)_
+
+This method takes a callback as an argument, which will be added to the state events array. When the state changes, all the callbacks added to that array are called in order.
+
+When this is is called, it will receive a `state` Object as an only argument, Object which contains the new updated state.
+
+This utility method is useful to act on account changes from within a dApp. _(Eg: To logout a user)_
+
+**Usage examples:**
+
+Hook into the state change events with a simple callback:
+```js
+import { accountChangeHook } from '@colony/purser-metamask';
+
+const walletChangedCallback = ({ selectedAddress }) => {
+  console.log(`You changed your wallet. The new address is: ${selectedAddress}`);
+};
+
+await accountChangeHook(walletChangedCallback);
 ```
