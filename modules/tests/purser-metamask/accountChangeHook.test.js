@@ -53,5 +53,13 @@ describe('Metamask` Wallet Module', () => {
         global.web3.currentProvider.publicConfigStore._events.update,
       ).toContain(mockedCallback);
     });
+    test('Catches if something goes wrong', async () => {
+      /*
+       * We're re-mocking the helpers just for this test so we can simulate
+       * an error along the way
+       */
+      setStateEventObserver.mockRejectedValueOnce(new Error());
+      expect(metamaskWallet.accountChangeHook()).rejects.toThrow();
+    });
   });
 });
