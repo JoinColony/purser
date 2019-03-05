@@ -68,7 +68,9 @@ This method returns a `Promise` which, after resolving, it will `return` a new `
 
 Unlike the other wallet types in this library, this static method does not take any arguments. It will use the selected address from Metamask.
 
-_**Note:** If Metamask is not unlocked it cannot access the address, so an Error will be thrown._
+**Note:**
+
+_If Metamask is not unlocked it cannot access the address, so an Error will be thrown._
 
 **Usage examples:**
 
@@ -111,6 +113,10 @@ This method takes a callback as an argument, which will be added to the state ev
 When this is is called, it will receive a `state` Object as an only argument, Object which contains the new updated state.
 
 This utility method is useful to act on account changes from within a dApp. _(Eg: To logout a user)_
+
+**Note:**
+
+_Opening Metamaks's UI counts as a State Event Change, so your callback will be called each time. It's up to you to provide a filtering._
 
 **Usage examples:**
 
