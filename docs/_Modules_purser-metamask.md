@@ -124,8 +124,30 @@ Hook into the state change events with a simple callback:
 ```js
 import { accountChangeHook } from '@colony/purser-metamask';
 
+const walletChangedCallback = (state) => {
+  console.log(`The State Change Event triggered!`, state);
+};
+
+await accountChangeHook(walletChangedCallback);
+```
+
+Hook into the state change events with filtering:
+```js
+import { open, accountChangeHook } from '@colony/purser-metamask';
+
+const metamaskInstance = await open();
+let addressState = metamaskInstance.address;
+
 const walletChangedCallback = ({ selectedAddress }) => {
-  console.log(`You changed your wallet. The new address is: ${selectedAddress}`);
+  /*
+   * Note that you can't use `metamaskInstance.address` to compare
+   * since that will always reflect the newly selected address.
+   * It uses the same method `accountChangeHook` internally to achieve this
+   */
+  if (addressState !== selectedAddress) {
+    addressState = selectedAddress;
+    console.log(`You changed your wallet. The new address is: ${selectedAddress}`);
+  }
 };
 
 await accountChangeHook(walletChangedCallback);
