@@ -68,7 +68,9 @@ This method returns a `Promise` which, after resolving, it will `return` a new `
 
 Unlike the other wallet types in this library, this static method does not take any arguments. It will use the selected address from Metamask.
 
-_**Note:** If Metamask is not unlocked it cannot access the address, so an Error will be thrown._
+**Note:**
+
+_If Metamask is not unlocked it cannot access the address, so an Error will be thrown._
 
 **Usage examples:**
 
@@ -112,14 +114,40 @@ When this is is called, it will receive a `state` Object as an only argument, Ob
 
 This utility method is useful to act on account changes from within a dApp. _(Eg: To logout a user)_
 
+**Note:**
+
+_Opening Metamaks's UI counts as a State Event Change, so your callback will be called each time. It's up to you to provide a filtering._
+
 **Usage examples:**
 
 Hook into the state change events with a simple callback:
 ```js
 import { accountChangeHook } from '@colony/purser-metamask';
 
+const walletChangedCallback = (state) => {
+  console.log(`The State Change Event triggered!`, state);
+};
+
+await accountChangeHook(walletChangedCallback);
+```
+
+Hook into the state change events with filtering:
+```js
+import { open, accountChangeHook } from '@colony/purser-metamask';
+
+const metamaskInstance = await open();
+let addressState = metamaskInstance.address;
+
 const walletChangedCallback = ({ selectedAddress }) => {
-  console.log(`You changed your wallet. The new address is: ${selectedAddress}`);
+  /*
+   * Note that you can't use `metamaskInstance.address` to compare
+   * since that will always reflect the newly selected address.
+   * It uses the same method `accountChangeHook` internally to achieve this
+   */
+  if (addressState !== selectedAddress) {
+    addressState = selectedAddress;
+    console.log(`You changed your wallet. The new address is: ${selectedAddress}`);
+  }
 };
 
 await accountChangeHook(walletChangedCallback);
