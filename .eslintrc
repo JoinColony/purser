@@ -4,12 +4,12 @@
   "env": {
     "browser": true,
     "commonjs": true,
-    "es6": true,
+    "es6": true
   },
   "rules": {
     "array-bracket-newline": ["warn", "consistent"],
     "no-console": ["warn", { "allow": ["warn", "error"]}],
     "flowtype/define-flow-type": 1,
-    "no-irregular-whitespace": ["error", { "skipRegExps": true }],
-  },
+    "no-irregular-whitespace": ["error", { "skipRegExps": true }]
+  }
 }
