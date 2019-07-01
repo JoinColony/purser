@@ -68,7 +68,7 @@
     "flow-copy-source": "^2.0.0",
     "fs-extra": "^8.0.1",
     "glow": "^1.2.2",
-    "husky": "^2.3.0",
+    "husky": "^3.0.0",
     "jest": "^23.5.0",
     "jest-junit": "^6.0.0",
     "jest-sandbox": "^1.1.1",
