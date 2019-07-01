@@ -72,7 +72,7 @@
     "jest": "^23.5.0",
     "jest-junit": "^6.0.0",
     "jest-sandbox": "^1.1.1",
-    "lint-staged": "^8.0.4",
+    "lint-staged": "^9.0.0",
     "prettier": "^1.15.2",
     "regenerator-runtime": "^0.13.0"
   },
