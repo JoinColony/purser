@@ -211,7 +211,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       });
       expect(signTransaction(mockedArgumentsObject)).rejects.toThrow();
     });
-    test('Warns if the user cancelled signing the message', async () => {
+    test('Throws if the user cancelled signing the message', async () => {
       /*
        * Mock it locally to simulate an error
        */
@@ -225,8 +225,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
             mockedTransactionHash,
           ),
       );
-      expect(() => signTransaction(mockedArgumentsObject)).not.toThrow();
-      expect(warning).toHaveBeenCalled();
+      expect(signTransaction(mockedArgumentsObject)).rejects.toThrow();
     });
   });
 });
