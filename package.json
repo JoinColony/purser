@@ -61,7 +61,7 @@
     "eslint-config-airbnb-base": "^13.0.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-flowtype": "^3.4.2",
-    "eslint-plugin-import": "2.17.3",
+    "eslint-plugin-import": "2.14.0",
     "eslint-plugin-prettier": "^3.0.0",
     "find-imports": "^1.0.0",
     "flow-bin": "^0.98.1",
@@ -88,5 +88,10 @@
     "hdkey": "^1.1.0",
     "lodash.isequal": "^4.5.0",
     "web3": "1.0.0-beta.36"
+  },
+  "greenkeeper": {
+    "ignore": [
+        "eslint-plugin-import"
+    ]
   }
 }
