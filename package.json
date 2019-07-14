@@ -64,7 +64,7 @@
     "eslint-plugin-import": "2.14.0",
     "eslint-plugin-prettier": "^3.0.0",
     "find-imports": "^1.0.0",
-    "flow-bin": "^0.98.1",
+    "flow-bin": "^0.102.0",
     "flow-copy-source": "^2.0.0",
     "fs-extra": "^8.0.1",
     "glow": "^1.2.2",
