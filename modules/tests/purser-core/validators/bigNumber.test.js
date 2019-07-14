@@ -14,7 +14,6 @@ describe('`Core` Module', () => {
     test("But passes if it's a valid bigNumber", () => {
       expect(bigNumberValidator(bigNumber(0))).toBeTruthy();
       expect(bigNumberValidator(bigNumber('0'))).toBeTruthy();
-      expect(bigNumberValidator(bigNumber('1e18'))).toBeTruthy();
       expect(bigNumberValidator(bigNumber('9007199254740992'))).toBeTruthy();
     });
   });
