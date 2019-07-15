@@ -10,6 +10,7 @@ import { warning } from '@colony/purser-core/utils';
 import { messageOrDataValidator } from '@colony/purser-core/helpers';
 
 import { signMessage } from '@colony/purser-trezor/staticMethods';
+import { staticMethods as messages } from '@colony/purser-trezor/messages';
 import { payloadListener } from '@colony/purser-trezor/helpers';
 
 import { PAYLOAD_SIGNMSG } from '@colony/purser-trezor/payloads';
@@ -126,7 +127,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       );
       expect(signMessage()).rejects.toThrow();
     });
-    test('Log a warning if the user Cancels signing it', async () => {
+    test('Throws if the user cancels signing it', async () => {
       /*
        * We're re-mocking the helpers just for this test so we can simulate
        * a cancel response.
@@ -134,19 +135,22 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       payloadListener.mockImplementation(() =>
         Promise.reject(new Error(STD_ERRORS.CANCEL_TX_SIGN)),
       );
-      await signMessage(mockedMessageObject);
-      /*
-       * User cancelled, so we don't throw
-       */
-      expect(warning).toHaveBeenCalled();
-      expect(signMessage(mockedMessageObject)).resolves.not.toThrow();
+      expect(signMessage(mockedMessageObject)).rejects.toHaveProperty(
+        'message',
+        messages.userSignTxCancel,
+      );
+      payloadListener.mockClear();
     });
     test('Warns the user about proprietary signature format', async () => {
+      payloadListener.mockImplementation(() => ({
+        signature: 'mocked-signature',
+      }));
+
       await signMessage(mockedMessageObject);
       /*
-       * Wran the user
+       * Warn the user
        */
-      expect(warning).toHaveBeenCalled();
+      expect(warning).toHaveBeenCalledWith(messages.messageSignatureOnlyTrezor);
     });
   });
 });

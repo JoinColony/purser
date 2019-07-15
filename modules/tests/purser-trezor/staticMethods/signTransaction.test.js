@@ -4,6 +4,7 @@ import { transactionObjectValidator } from '@colony/purser-core/helpers';
 import * as utils from '@colony/purser-core/utils';
 
 import { signTransaction } from '@colony/purser-trezor/staticMethods';
+import { staticMethods as messages } from '@colony/purser-trezor/messages';
 import { payloadListener } from '@colony/purser-trezor/helpers';
 import {
   derivationPathNormalizer,
@@ -170,9 +171,12 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       payloadListener.mockImplementation(() =>
         Promise.reject(new Error('Oh no!')),
       );
-      expect(signTransaction(mockedArgumentsObject)).rejects.toThrow();
+      expect(signTransaction(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        expect.stringContaining('Oh no!'),
+      );
     });
-    test('Log a warning if the user Cancels signing it', async () => {
+    test('Throws if the user cancels signing it', async () => {
       /*
        * We're re-mocking the helpers just for this test so we can simulate
        * a cancel response.
@@ -180,11 +184,10 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       payloadListener.mockImplementation(() =>
         Promise.reject(new Error(STD_ERRORS.CANCEL_TX_SIGN)),
       );
-      await signTransaction(mockedArgumentsObject);
-      /*
-       * User cancelled, so we don't throw
-       */
-      expect(utils.warning).toHaveBeenCalled();
+      expect(signTransaction(mockedTransactionObject)).rejects.toHaveProperty(
+        'message',
+        messages.userSignTxCancel,
+      );
     });
     test('Signs a transaction without a destination address', async () => {
       expect(
