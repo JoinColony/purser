@@ -184,8 +184,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
             mockedMessageSignature,
           ),
       );
-      expect(() => signMessage(mockedArgumentsObject)).not.toThrow();
-      expect(warning).toHaveBeenCalled();
+      expect(signMessage(mockedArgumentsObject)).rejects.toThrow();
     });
   });
 });
