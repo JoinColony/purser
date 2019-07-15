@@ -1,6 +1,7 @@
 import { warning } from '@colony/purser-core/utils';
 
 import { signMessage } from '@colony/purser-metamask/staticMethods';
+import { staticMethods as messages } from '@colony/purser-metamask/messages';
 import { methodCaller } from '@colony/purser-metamask/helpers';
 import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
 import {
@@ -37,12 +38,11 @@ jest.mock('@colony/purser-metamask/helpers', () =>
  * Mock the injected web3 proxy object
  */
 const mockedMessageSignature = 'mocked-message-signature';
-const callbackError = { message: 'no-error-here' };
 global.web3 = {
   eth: {
     personal: {
       sign: jest.fn((message, address, callback) =>
-        callback(callbackError, mockedMessageSignature),
+        callback(undefined, mockedMessageSignature),
       ),
     },
   },
@@ -163,28 +163,44 @@ describe('`Metamask` Wallet Module Static Methods', () => {
     });
     test('Throws if something goes wrong while signing', async () => {
       /*
-       * Mock it locally to simulate an error
+       * Mock it locally to simulate an error in the sign callback
        */
       hexSequenceValidator.mockImplementation(() => {
-        throw new Error();
+        throw new Error('hex sequence validator error');
       });
-      expect(signMessage(mockedArgumentsObject)).rejects.toThrow();
+      expect(signMessage(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        'hex sequence validator error',
+      );
     });
-    test('Warns if the user cancelled signing the message', async () => {
+    test('Throws if something goes wrong while signing the message', async () => {
       /*
-       * Mock it locally to simulate an error
+       * Mock web3's `sign` method locally to simulate a generic error while signing
        */
-      hexSequenceValidator.mockImplementation(() => {
-        throw new Error();
-      });
+      global.web3.eth.personal.sign.mockImplementation(
+        (message, address, callback) =>
+          callback(new Error('generic sign error')),
+      );
+      expect(signMessage(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        'generic sign error',
+      );
+    });
+    test('Throws if the user cancelled signing the message', async () => {
+      /*
+       * Mock web3's `sign` method locally to simulate the user cancelling signing
+       */
       global.web3.eth.personal.sign.mockImplementation(
         (message, address, callback) =>
           callback(
-            { ...callbackError, message: STD_ERRORS.CANCEL_MSG_SIGN },
+            new Error(STD_ERRORS.CANCEL_MSG_SIGN),
             mockedMessageSignature,
           ),
       );
-      expect(signMessage(mockedArgumentsObject)).rejects.toThrow();
+      expect(signMessage(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        messages.cancelMessageSign,
+      );
     });
   });
 });

@@ -36,12 +36,11 @@ jest.mock('@colony/purser-metamask/helpers', () =>
  * Mock the injected web3 proxy object
  */
 const mockedRecoveredAddress = 'mocked-message-signature';
-const callbackError = { message: 'no-error-here' };
 global.web3 = {
   eth: {
     personal: {
       ecRecover: jest.fn((message, signature, callback) =>
-        callback(callbackError, mockedRecoveredAddress),
+        callback(undefined, mockedRecoveredAddress),
       ),
     },
   },
@@ -159,21 +158,48 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        * Mock the implementation locally to return the same mocked address
        * as the current one
        */
-      global.web3.eth.personal.ecRecover.mockImplementation(
+      global.web3.eth.personal.ecRecover.mockImplementationOnce(
         (message, signature, callback) =>
-          callback(callbackError, mockedCurrentAddress),
+          callback(undefined, mockedCurrentAddress),
       );
       const validSignature = await verifyMessage(mockedArgumentsObject);
       expect(validSignature).toBeTruthy();
+
+      /*
+       * Mock the implementation locally to return the a different mocked address
+       * to the current one
+       */
+      global.web3.eth.personal.ecRecover.mockImplementationOnce(
+        (message, signature, callback) =>
+          callback(undefined, 'another-address'),
+      );
+      const invalidSignature = await verifyMessage(mockedArgumentsObject);
+      expect(invalidSignature).toBeFalsy();
+    });
+    test('Throws if something goes wrong while processing the result of recovering', async () => {
+      /*
+       * Mock it locally to simulate an error for the verify callback
+       */
+      addressNormalizer.mockImplementation(() => {
+        throw new Error('address normalizer error');
+      });
+      expect(verifyMessage(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        'address normalizer error',
+      );
     });
     test('Throws if something goes wrong while recovering', async () => {
       /*
-       * Mock it locally to simulate an error
+       * Mock web3's `ecRecover` method locally to simulate a generic error while recovering
        */
-      addressNormalizer.mockImplementation(() => {
-        throw new Error();
-      });
-      expect(verifyMessage(mockedArgumentsObject)).rejects.toThrow();
+      global.web3.eth.personal.ecRecover.mockImplementationOnce(
+        (message, signature, callback) =>
+          callback(new Error('generic ecRecover error')),
+      );
+      expect(verifyMessage(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        'generic ecRecover error',
+      );
     });
   });
 });
