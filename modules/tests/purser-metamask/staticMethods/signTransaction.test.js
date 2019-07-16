@@ -4,6 +4,7 @@ import { transactionObjectValidator } from '@colony/purser-core/helpers';
 import { warning } from '@colony/purser-core/utils';
 
 import { signTransaction } from '@colony/purser-metamask/staticMethods';
+import { staticMethods as messages } from '@colony/purser-metamask/messages';
 import { methodCaller } from '@colony/purser-metamask/helpers';
 import {
   addressNormalizer,
@@ -43,11 +44,10 @@ jest.mock('@colony/purser-metamask/helpers', () =>
  */
 const mockedTransactionHash = 'mocked-transaction-hash';
 const mockedRawSignedTransaction = {};
-const callbackError = { message: 'no-error-here' };
 global.web3 = {
   eth: {
     sendTransaction: jest.fn((transactionObject, callback) =>
-      callback(callbackError, mockedTransactionHash),
+      callback(undefined, mockedTransactionHash),
     ),
     getTransaction: jest.fn(() => Promise.resolve(mockedRawSignedTransaction)),
   },
@@ -202,30 +202,43 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       expect(global.web3.eth.getTransaction).toHaveBeenCalled();
       expect(signedTransaction).toEqual(mockedSerializedSignedTransaction);
     });
-    test('Throws if something goes wrong while signing', async () => {
+    test('Throws if something goes wrong while processing the signed transaction', async () => {
       /*
-       * Mock it locally to simulate an error
+       * Mock it locally to simulate an error in the sendTransaction callback
        */
       hexSequenceValidator.mockImplementation(() => {
-        throw new Error();
+        throw new Error('hex sequence validator error');
       });
-      expect(signTransaction(mockedArgumentsObject)).rejects.toThrow();
+      expect(signTransaction(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        'hex sequence validator error',
+      );
     });
-    test('Throws if the user cancelled signing the message', async () => {
+    test('Throws if something goes wrong while signing the transaction', async () => {
       /*
-       * Mock it locally to simulate an error
+       * Mock web3's `sendTransaction` method locally to simulate a generic error while signing
        */
-      hexSequenceValidator.mockImplementation(() => {
-        throw new Error();
-      });
       global.web3.eth.sendTransaction.mockImplementation(
         (transactionObject, callback) =>
-          callback(
-            { ...callbackError, message: STD_ERRORS.CANCEL_TX_SIGN },
-            mockedTransactionHash,
-          ),
+          callback(new Error('generic sendTransaction error')),
       );
-      expect(signTransaction(mockedArgumentsObject)).rejects.toThrow();
+      expect(signTransaction(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        'generic sendTransaction error',
+      );
+    });
+    test('Throws if the user cancelled signing the transaction', async () => {
+      /*
+       * Mock web3's `sendTransaction` method locally to simulate cancelling signing
+       */
+      global.web3.eth.sendTransaction.mockImplementation(
+        (transactionObject, callback) =>
+          callback(new Error(STD_ERRORS.CANCEL_TX_SIGN), mockedTransactionHash),
+      );
+      expect(signTransaction(mockedArgumentsObject)).rejects.toHaveProperty(
+        'message',
+        messages.cancelTransactionSign,
+      );
     });
   });
 });
