@@ -1,5 +1,3 @@
-import EthereumTx from 'ethereumjs-tx';
-
 import { transactionObjectValidator } from '@colony/purser-core/helpers';
 import { warning } from '@colony/purser-core/utils';
 
@@ -20,6 +18,7 @@ import { STD_ERRORS } from '@colony/purser-metamask/defaults';
 
 jest.dontMock('@colony/purser-metamask/staticMethods');
 
+jest.mock('ethereumjs-tx');
 jest.mock('@colony/purser-core/validators');
 /*
  * @TODO Fix manual mocks
@@ -54,19 +53,6 @@ global.web3 = {
 };
 
 /*
- * Mock ethereumjs-tx serialization
- */
-const mockedSerializedSignedTransaction =
-  'mocked-serialized-signed-transaction';
-jest.mock('ethereumjs-tx', () =>
-  jest.fn().mockImplementation(() => ({
-    serialize: jest.fn().mockReturnValue({
-      toString: jest.fn().mockReturnValue(mockedSerializedSignedTransaction),
-    }),
-  })),
-);
-
-/*
  * These values are not correct. Do not use the as reference.
  * If the validators wouldn't be mocked, they wouldn't pass.
  */
@@ -93,7 +79,6 @@ describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
     global.web3.eth.sendTransaction.mockClear();
     global.web3.eth.getTransaction.mockClear();
-    EthereumTx.mockClear();
     methodCaller.mockClear();
     transactionObjectValidator.mockClear();
     addressValidator.mockClear();
@@ -200,7 +185,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
     test('Returns the valid hash received from signing', async () => {
       const signedTransaction = await signTransaction(mockedArgumentsObject);
       expect(global.web3.eth.getTransaction).toHaveBeenCalled();
-      expect(signedTransaction).toEqual(mockedSerializedSignedTransaction);
+      expect(signedTransaction).toEqual('mocked-serialized-signed-transaction');
     });
     test('Throws if something goes wrong while processing the signed transaction', async () => {
       /*

@@ -1,4 +1,4 @@
-import EthereumTx from 'ethereumjs-tx';
+import { Transaction as EthereumTx } from 'ethereumjs-tx';
 
 import { transactionObjectValidator } from '@colony/purser-core/helpers';
 import * as utils from '@colony/purser-core/utils';
@@ -67,7 +67,6 @@ const mockedArgumentsObject = {
 
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
-    EthereumTx.mockClear();
     derivationPathNormalizer.mockClear();
     multipleOfTwoHexValueNormalizer.mockClear();
     addressNormalizer.mockClear();

@@ -1,7 +1,9 @@
-export const EthereumTx = jest.fn().mockImplementation(() => ({
+export const Transaction = jest.fn().mockImplementation(() => ({
   serialize: () => ({
-    toString: () => 'mocked-hex-string',
+    toString: () => 'mocked-serialized-signed-transaction',
   }),
 }));
 
-export default EthereumTx;
+const EthereumJsTx = jest.fn(() => ({ Transaction }));
+
+export default EthereumJsTx;
