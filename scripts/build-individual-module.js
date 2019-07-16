@@ -62,7 +62,7 @@ const buildIndividualModule = async (moduleName) => {
     )}${chalk.white(' @ ')}${chalk.white.bold(
       packageFile.version
     )}`,
-  );cjsBuildFolder
+  );
   /*
    * Build ES Modules
    */
