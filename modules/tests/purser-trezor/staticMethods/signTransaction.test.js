@@ -79,18 +79,22 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
     test('Creates the initial, unsigned signature', async () => {
       await signTransaction(mockedArgumentsObject);
       expect(EthereumTx).toHaveBeenCalled();
-      expect(EthereumTx).toHaveBeenCalledWith({
-        gasPrice,
-        gasLimit,
-        chainId,
-        nonce,
-        to,
-        value,
-        data: inputData,
-        r: '0',
-        s: '0',
-        v: chainId,
-      });
+      expect(EthereumTx).toHaveBeenCalledWith(
+        {
+          gasPrice,
+          gasLimit,
+          nonce,
+          value,
+          data: inputData,
+          r: '0',
+          s: '0',
+          v: chainId,
+        },
+        {
+          to,
+          chain: chainId,
+        },
+      );
     });
     test('Uses the correct trezor service payload type', async () => {
       const { type, requiredFirmware } = PAYLOAD_SIGNTX;
@@ -189,6 +193,9 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       );
     });
     test('Signs a transaction without a destination address', async () => {
+      payloadListener.mockImplementation(() => ({
+        signature: 'mocked-signature',
+      }));
       expect(
         signTransaction({
           gasPrice,

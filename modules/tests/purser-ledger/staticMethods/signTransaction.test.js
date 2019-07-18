@@ -170,18 +170,22 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
        */
       expect(EthereumTx).toHaveBeenCalled();
       expect(EthereumTx).toHaveBeenCalledWith(
-        expect.objectContaining({
-          gasPrice,
-          gasLimit,
-          chainId,
-          nonce,
-          to,
-          value,
-          data: inputData,
-          r: String(SIGNATURE.R),
-          s: String(SIGNATURE.S),
-          v: chainId,
-        }),
+        expect.objectContaining(
+          {
+            gasPrice,
+            gasLimit,
+            nonce,
+            value,
+            data: inputData,
+            r: String(SIGNATURE.R),
+            s: String(SIGNATURE.S),
+            v: chainId,
+          },
+          {
+            chain: chainId,
+            to,
+          },
+        ),
       );
     });
     test('Normalizes the signed transaction signature components', async () => {
