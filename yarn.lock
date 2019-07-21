@@ -765,13 +765,6 @@
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@kironeducation/flow-junit-transformer/-/flow-junit-transformer-0.3.0.tgz#ea1e57b01d7096012254a3d3dafc8afc7d97b8fe"
 
-"@ledgerhq/devices@^4.50.0":
-  version "4.50.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-4.50.0.tgz#3a1b762948fd3720e73eafad4767d18a903a4b05"
-  integrity sha512-Dtk3IiaNV2lMnfCABWx7+wJsOiJIzEUT6/1a5f1+g5vZoXf+3v+Bop7GB3ob/Xtfkxjk7wrlsglT8B/TrEVk3Q==
-  dependencies:
-    "@ledgerhq/errors" "^4.50.0"
-
 "@ledgerhq/devices@^4.68.0":
   version "4.68.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-4.68.0.tgz#bc674a6b00261ab916b1a34c4f2b5a62f0c94107"
@@ -780,11 +773,6 @@
     "@ledgerhq/errors" "^4.68.0"
     "@ledgerhq/logs" "^4.64.0"
     rxjs "^6.5.2"
-
-"@ledgerhq/errors@^4.50.0":
-  version "4.50.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-4.50.0.tgz#d330e396d47bbbe474fe0adfa087eeb7edd76912"
-  integrity sha512-Xg5GTDUWprVJ5zCWtfESLfI1qyr09JQH8pLtWDCkz3GxlwnFPtMAvKB9qUoc2Ou4zJ9DfsZdS8KaZ/2VKXkYGA==
 
 "@ledgerhq/errors@^4.68.0":
   version "4.68.0"
@@ -799,23 +787,15 @@
     "@ledgerhq/errors" "^4.68.0"
     "@ledgerhq/hw-transport" "^4.68.0"
 
-"@ledgerhq/hw-transport-u2f@^4.50.0":
-  version "4.50.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-u2f/-/hw-transport-u2f-4.50.0.tgz#31605d3d40f8303cc26260d54b75ef0b6f96e752"
-  integrity sha512-/J//nWNshyxgUjdxw69eOVtd0QQa93knEOikgN0INmL2A0ozNQl8vTNxqIWEpKW+XhJbdq4ep35p4g5eIcgKQw==
+"@ledgerhq/hw-transport-u2f@^4.68.0":
+  version "4.68.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-u2f/-/hw-transport-u2f-4.68.0.tgz#aaf49ee9344ec36fbadec9cbb11c6e60c9f3c4f0"
+  integrity sha512-toe2IfmOKMr8D7AA4b49phQYuct2J4EfcIL7uP2VQxY90k36RxDlTllGv75Kkc9RwsH8dhU883afUMDdI7Et4g==
   dependencies:
-    "@ledgerhq/errors" "^4.50.0"
-    "@ledgerhq/hw-transport" "^4.50.0"
+    "@ledgerhq/errors" "^4.68.0"
+    "@ledgerhq/hw-transport" "^4.68.0"
+    "@ledgerhq/logs" "^4.64.0"
     u2f-api "0.2.7"
-
-"@ledgerhq/hw-transport@^4.50.0":
-  version "4.50.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-4.50.0.tgz#2b4c8e9954a9fe7e616cb936ae105fa1de776095"
-  integrity sha512-NDbTOkoAphL9er46wjni2CVn+s8ZfyDVgj2dVS00L/NYA3ajVX21DrRGMEI8P5/kdLx4KfID4Z1wsa6Hefj3EQ==
-  dependencies:
-    "@ledgerhq/devices" "^4.50.0"
-    "@ledgerhq/errors" "^4.50.0"
-    events "^3.0.0"
 
 "@ledgerhq/hw-transport@^4.68.0":
   version "4.68.0"
