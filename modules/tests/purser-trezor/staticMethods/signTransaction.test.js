@@ -1,6 +1,9 @@
 import { Transaction as EthereumTx } from 'ethereumjs-tx';
 
-import { transactionObjectValidator } from '@colony/purser-core/helpers';
+import {
+  getChainDefinition,
+  transactionObjectValidator,
+} from '@colony/purser-core/helpers';
 import * as utils from '@colony/purser-core/utils';
 
 import { signTransaction } from '@colony/purser-trezor/staticMethods';
@@ -71,6 +74,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
     multipleOfTwoHexValueNormalizer.mockClear();
     addressNormalizer.mockClear();
     hexSequenceNormalizer.mockClear();
+    getChainDefinition.mockClear();
     utils.warning.mockClear();
     payloadListener.mockClear();
     derivationPathValidator.mockClear();
@@ -90,10 +94,7 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
           s: '0',
           v: chainId,
         },
-        {
-          to,
-          chain: chainId,
-        },
+        { common: { chainId: 'mocked-chain-id' } },
       );
     });
     test('Uses the correct trezor service payload type', async () => {
@@ -118,6 +119,16 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       expect(transactionObjectValidator).toHaveBeenCalled();
       expect(transactionObjectValidator).toHaveBeenCalledWith(
         mockedTransactionObject,
+      );
+    });
+    test('Gets the correct chain definition', async () => {
+      await signTransaction(mockedArgumentsObject);
+      /*
+       * Calls the chain definition helper with the correct value
+       */
+      expect(getChainDefinition).toHaveBeenCalled();
+      expect(getChainDefinition).toHaveBeenCalledWith(
+        mockedTransactionObject.chainId,
       );
     });
     test('Validates the derivation path individually', async () => {

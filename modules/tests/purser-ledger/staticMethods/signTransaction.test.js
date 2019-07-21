@@ -1,6 +1,9 @@
 import { Transaction as EthereumTx } from 'ethereumjs-tx';
 
-import { transactionObjectValidator } from '@colony/purser-core/helpers';
+import {
+  getChainDefinition,
+  transactionObjectValidator,
+} from '@colony/purser-core/helpers';
 import * as utils from '@colony/purser-core/utils';
 
 import { signTransaction } from '@colony/purser-ledger/staticMethods';
@@ -75,6 +78,7 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
     ledgerConnection.mockClear();
     handleLedgerConnectionError.mockClear();
     transactionObjectValidator.mockClear();
+    getChainDefinition.mockClear();
     derivationPathValidator.mockClear();
     utils.warning.mockClear();
   });
@@ -108,6 +112,16 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
       expect(derivationPathValidator).toHaveBeenCalled();
       expect(derivationPathValidator).toHaveBeenCalledWith(derivationPath);
     });
+    test('Gets the correct chain definition', async () => {
+      await signTransaction(mockedArgumentsObject);
+      /*
+       * Calls the chain definition helper with the correct value
+       */
+      expect(getChainDefinition).toHaveBeenCalled();
+      expect(getChainDefinition).toHaveBeenCalledWith(
+        mockedTransactionObject.chainId,
+      );
+    });
     test('Normalizes the transaction input values', async () => {
       await signTransaction(mockedArgumentsObject);
       /*
@@ -127,11 +141,6 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
        */
       expect(hexSequenceNormalizer).toHaveBeenCalledWith(nonce);
       expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(nonce);
-      /*
-       * Normalizes the destination address
-       */
-      expect(addressNormalizer).toHaveBeenCalled();
-      expect(addressNormalizer).toHaveBeenCalledWith(to);
       /*
        * Normalizes the transaction value
        */
@@ -170,22 +179,17 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
        */
       expect(EthereumTx).toHaveBeenCalled();
       expect(EthereumTx).toHaveBeenCalledWith(
-        expect.objectContaining(
-          {
-            gasPrice,
-            gasLimit,
-            nonce,
-            value,
-            data: inputData,
-            r: String(SIGNATURE.R),
-            s: String(SIGNATURE.S),
-            v: chainId,
-          },
-          {
-            chain: chainId,
-            to,
-          },
-        ),
+        expect.objectContaining({
+          gasPrice,
+          gasLimit,
+          nonce,
+          value,
+          data: inputData,
+          r: String(SIGNATURE.R),
+          s: String(SIGNATURE.S),
+          v: chainId,
+        }),
+        expect.objectContaining({ common: { chainId: 'mocked-chain-id' } }),
       );
     });
     test('Normalizes the signed transaction signature components', async () => {

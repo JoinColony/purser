@@ -28,3 +28,7 @@ export const messageOrDataValidator = jest.fn(
     return messageData;
   },
 );
+
+export const getChainDefinition = jest.fn(() => ({
+  common: { chainId: 'mocked-chain-id' },
+}));
