@@ -11,7 +11,7 @@ import {
   addressNormalizer,
   hexSequenceNormalizer,
 } from '@colony/purser-core/normalizers';
-import { NETWORK_IDS } from '@colony/purser-core/defaults';
+import { CHAIN_IDS } from '@colony/purser-core/defaults';
 
 jest.dontMock('@colony/purser-core/genericWallet');
 
@@ -146,7 +146,7 @@ describe('`Core` Module', () => {
       /*
        * Address
        */
-      expect(genericWallet).toHaveProperty('chainId', NETWORK_IDS.HOMESTEAD);
+      expect(genericWallet).toHaveProperty('chainId', CHAIN_IDS.HOMESTEAD);
     });
     test('Validates values used to instantiate', async () => {
       /* eslint-disable-next-line no-new */

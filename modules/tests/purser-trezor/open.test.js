@@ -4,7 +4,7 @@ import {
   derivationPathSerializer,
   userInputValidator,
 } from '@colony/purser-core/helpers';
-import { PATH, NETWORK_IDS } from '@colony/purser-core/defaults';
+import { PATH, CHAIN_IDS } from '@colony/purser-core/defaults';
 
 import * as utils from '@colony/purser-core/utils';
 
@@ -94,7 +94,7 @@ describe('Trezor` Hardware Wallet Module', () => {
       );
     });
     test('Sets the derivation path coin to the mainnet type', async () => {
-      await trezorWallet.open({ chainId: NETWORK_IDS.HOMESTEAD });
+      await trezorWallet.open({ chainId: CHAIN_IDS.HOMESTEAD });
       /*
        * Should set the coin to the mainnet 60 type
        */
