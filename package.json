@@ -78,8 +78,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
-    "@ledgerhq/hw-app-eth": "^4.68.1",
-    "@ledgerhq/hw-transport-u2f": "^4.68.0",
+    "@ledgerhq/hw-app-eth": "^4.68.2",
+    "@ledgerhq/hw-transport-u2f": "^4.68.2",
     "await-transaction-mined": "^1.0.12",
     "bip32-path": "^0.4.2",
     "bn.js": "^5.0.0",

@@ -12,4 +12,6 @@ export const addressNormalizer = jest.fn(value => value);
 
 export const hexSequenceNormalizer = jest.fn(value => value);
 
+export const bigNumberToHexString = jest.fn(value => value);
+
 export const recoveryParamNormalizer = jest.fn(value => value);

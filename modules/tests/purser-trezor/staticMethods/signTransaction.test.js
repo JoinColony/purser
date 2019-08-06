@@ -11,7 +11,7 @@ import { staticMethods as messages } from '@colony/purser-trezor/messages';
 import { payloadListener } from '@colony/purser-trezor/helpers';
 import {
   derivationPathNormalizer,
-  multipleOfTwoHexValueNormalizer,
+  bigNumberToHexString,
   addressNormalizer,
   hexSequenceNormalizer,
 } from '@colony/purser-core/normalizers';
@@ -71,7 +71,7 @@ const mockedArgumentsObject = {
 describe('`Trezor` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     derivationPathNormalizer.mockClear();
-    multipleOfTwoHexValueNormalizer.mockClear();
+    bigNumberToHexString.mockClear();
     addressNormalizer.mockClear();
     hexSequenceNormalizer.mockClear();
     getChainDefinition.mockClear();
@@ -90,9 +90,6 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
           nonce,
           value,
           data: inputData,
-          r: '0',
-          s: '0',
-          v: chainId,
         },
         { common: { chainId: 'mocked-chain-id' } },
       );
@@ -153,14 +150,14 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       /*
        * Normalizes gas price and gas limit
        */
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalled();
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(gasPrice);
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(gasLimit);
+      expect(bigNumberToHexString).toHaveBeenCalled();
+      expect(bigNumberToHexString).toHaveBeenCalledWith(gasPrice);
+      expect(bigNumberToHexString).toHaveBeenCalledWith(gasLimit);
       /*
        * Normalizes the nonce
        */
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalled();
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(nonce);
+      expect(bigNumberToHexString).toHaveBeenCalled();
+      expect(bigNumberToHexString).toHaveBeenCalledWith(nonce);
       /*
        * Normalizes the destination address
        */
@@ -169,8 +166,8 @@ describe('`Trezor` Hardware Wallet Module Static Methods', () => {
       /*
        * Normalizes the transaction value
        */
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalled();
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(value);
+      expect(bigNumberToHexString).toHaveBeenCalled();
+      expect(bigNumberToHexString).toHaveBeenCalledWith(value);
       /*
        * Normalizes the transaction input data
        */

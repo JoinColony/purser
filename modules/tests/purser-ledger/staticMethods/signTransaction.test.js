@@ -13,13 +13,11 @@ import {
 } from '@colony/purser-ledger/helpers';
 import {
   derivationPathNormalizer,
-  multipleOfTwoHexValueNormalizer,
+  bigNumberToHexString,
   addressNormalizer,
   hexSequenceNormalizer,
 } from '@colony/purser-core/normalizers';
 import { derivationPathValidator } from '@colony/purser-core/validators';
-
-import { SIGNATURE } from '@colony/purser-core/defaults';
 
 jest.dontMock('@colony/purser-ledger/staticMethods');
 
@@ -72,7 +70,7 @@ const mockedArgumentsObject = {
 describe('`Ledger` Hardware Wallet Module Static Methods', () => {
   afterEach(() => {
     derivationPathNormalizer.mockClear();
-    multipleOfTwoHexValueNormalizer.mockClear();
+    bigNumberToHexString.mockClear();
     addressNormalizer.mockClear();
     hexSequenceNormalizer.mockClear();
     ledgerConnection.mockClear();
@@ -132,38 +130,22 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
       /*
        * Normalizes gas price and gas limit
        */
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(gasPrice);
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(gasPrice);
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(gasLimit);
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(gasLimit);
+      expect(bigNumberToHexString).toHaveBeenCalled();
+      expect(bigNumberToHexString).toHaveBeenCalledWith(gasPrice);
+      expect(bigNumberToHexString).toHaveBeenCalledWith(gasLimit);
       /*
        * Normalizes the nonce
        */
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(nonce);
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(nonce);
+      expect(bigNumberToHexString).toHaveBeenCalledWith(nonce);
       /*
        * Normalizes the transaction value
        */
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(value);
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(value);
+      expect(bigNumberToHexString).toHaveBeenCalledWith(value);
       /*
        * Normalizes the transaction input data
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
       expect(hexSequenceNormalizer).toHaveBeenCalledWith(inputData);
-      /*
-       * Normalizes the seeded R,S and V signature components
-       */
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(String(SIGNATURE.R));
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(
-        String(SIGNATURE.R),
-      );
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(String(SIGNATURE.S));
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(
-        String(SIGNATURE.S),
-      );
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(chainId);
-      expect(multipleOfTwoHexValueNormalizer).toHaveBeenCalledWith(chainId);
     });
     test('Warns the user to check/confirm the device', async () => {
       await signTransaction(mockedArgumentsObject);
@@ -175,7 +157,7 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
     test('Creates the unsigned transaction object', async () => {
       await signTransaction(mockedArgumentsObject);
       /*
-       * Creates the unsigned transaction, seeding the R,S and V components
+       * Creates the unsigned transaction
        */
       expect(EthereumTx).toHaveBeenCalled();
       expect(EthereumTx).toHaveBeenCalledWith(
@@ -185,9 +167,7 @@ describe('`Ledger` Hardware Wallet Module Static Methods', () => {
           nonce,
           value,
           data: inputData,
-          r: String(SIGNATURE.R),
-          s: String(SIGNATURE.S),
-          v: chainId,
+          to,
         }),
         expect.objectContaining({ common: { chainId: 'mocked-chain-id' } }),
       );
