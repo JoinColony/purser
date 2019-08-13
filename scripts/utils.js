@@ -21,7 +21,7 @@ const run = (
   command,
   { env: Object.assign({}, process.env, env) },
   (err, stdout, stderr) => {
-    if (err || stderr) {
+    if (err) {
       return console.log(chalk.red(errorMsg), err);
     }
     if (!!successMsg) {
