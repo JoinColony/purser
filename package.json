@@ -60,7 +60,7 @@
     "eslint": "6.1.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-flowtype": "^3.11.1",
+    "eslint-plugin-flowtype": "^4.2.0",
     "eslint-plugin-import": "2.14.0",
     "eslint-plugin-prettier": "^3.0.0",
     "find-imports": "^1.0.0",
