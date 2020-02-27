@@ -1,0 +1,9 @@
+{
+  "name": "@colony/purser-metamask",
+  "version": "2.4.1",
+  "description": "A javascript library to interact with a Metamask based Ethereum wallet",
+  "keywords": [
+    "metamask",
+    "software-wallet"
+  ]
+}

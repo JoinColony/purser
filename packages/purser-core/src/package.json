@@ -1,0 +1,5 @@
+{
+  "name": "@colony/purser-core",
+  "version": "2.2.1",
+  "description": "A collection of helpers, utils, validators and normalizers to assist the individual purser modules"
+}

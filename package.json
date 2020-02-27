@@ -14,7 +14,8 @@
     "test": "cross-env NODE_ENV=test jest",
     "test:watch": "cross-env NODE_ENV=test jest --watchAll --verbose",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage",
-    "test:ci": "cross-env NODE_ENV=test jest --ci --bail --verbose=true --maxWorkers 2"
+    "test:ci": "cross-env NODE_ENV=test jest --ci --bail --verbose=true --maxWorkers 2",
+    "tsc": "tsc"
   },
   "repository": {
     "type": "git",
@@ -36,17 +37,11 @@
     "purser"
   ],
   "devDependencies": {
-    "@babel/cli": "7.8.4",
-    "@babel/core": "7.8.7",
-    "@babel/plugin-transform-runtime": "7.8.3",
-    "@babel/preset-env": "7.8.7",
-    "@babel/preset-flow": "7.8.3",
     "@colony/eslint-config-colony": "8.0.1",
-    "@kironeducation/flow-junit-transformer": "0.3.0",
-    "babel-eslint": "10.1.0",
-    "babel-jest": "25.1.0",
-    "babel-plugin-dynamic-import-node": "2.3.0",
-    "babel-plugin-transform-inline-environment-variables": "0.4.3",
+    "@types/bn.js": "^4.11.6",
+    "@types/jest": "^25.2.1",
+    "@typescript-eslint/eslint-plugin": "^2.28.0",
+    "@typescript-eslint/parser": "^2.28.0",
     "camelcase": "5.3.1",
     "chalk": "3.0.0",
     "chokidar": "3.3.1",
@@ -56,23 +51,20 @@
     "eslint-config-airbnb-base": "14.1.0",
     "eslint-config-prettier": "6.10.0",
     "eslint-plugin-eslint-comments": "3.1.2",
-    "eslint-plugin-flowtype": "4.6.0",
     "eslint-plugin-import": "2.20.1",
     "eslint-plugin-prettier": "3.1.2",
     "find-imports": "1.1.0",
-    "flow-bin": "0.121.0",
-    "flow-copy-source": "2.0.9",
     "fs-extra": "8.1.0",
     "husky": "4.2.3",
     "jest": "25.1.0",
     "jest-sandbox": "1.1.2",
     "lint-staged": "10.0.8",
     "prettier": "1.19.1",
-    "regenerator-runtime": "0.13.5",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "ts-jest": "^25.3.1",
+    "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@babel/runtime": "7.8.7",
     "@ledgerhq/hw-app-eth": "5.11.0",
     "@ledgerhq/hw-transport-u2f": "5.11.0",
     "await-transaction-mined": "1.0.12",
@@ -84,6 +76,6 @@
     "ethers": "4.0.46",
     "hdkey": "1.1.1",
     "lodash.isequal": "4.5.0",
-    "web3": "1.2.6"
+    "web3": "1.2.7-rc.0"
   }
 }
