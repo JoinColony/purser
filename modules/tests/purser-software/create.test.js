@@ -40,7 +40,7 @@ describe('`Software` Wallet Module', () => {
     warning.mockClear();
     userInputValidator.mockClear();
   });
-  describe('`create()` static method', async () => {
+  describe('`create()` static method', () => {
     test('Create a new wallet with defaults', async () => {
       await softwareWallet.create();
       /*
