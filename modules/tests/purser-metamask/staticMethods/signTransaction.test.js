@@ -66,6 +66,7 @@ global.web3 = {
       callback(undefined, mockedTransactionHash),
     ),
     getTransaction: jest.fn(() => Promise.resolve(mockedRawSignedTransaction)),
+    getTransactionReceipt: jest.fn(),
   },
 };
 
