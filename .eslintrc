@@ -1,6 +1,13 @@
 {
-  "extends": ["@colony/eslint-config-colony"],
-  "plugins": ["import"],
+  "extends": [
+    "@colony/eslint-config-colony",
+    "prettier/flowtype"
+  ],
+  "plugins": [
+    "flowtype",
+    "prettier"
+  ],
+  "parser": "babel-eslint",
   "env": {
     "browser": true,
     "commonjs": true,
@@ -9,7 +16,14 @@
   "rules": {
     "array-bracket-newline": ["warn", "consistent"],
     "no-console": ["warn", { "allow": ["warn", "error"]}],
-    "flowtype/define-flow-type": 1,
-    "no-irregular-whitespace": ["error", { "skipRegExps": true }]
+    "no-irregular-whitespace": ["error", { "skipRegExps": true }],
+    "eslint-comments/disable-enable-pair": ["error", {"allowWholeFile": true}],
+    "flowtype/define-flow-type": "warn",
+    "import/no-extraneous-dependencies": "off",
+    "prettier/prettier": ["error", {
+      "parser": "flow",
+      "singleQuote": true,
+      "trailingComma": "all"
+    }]
   }
 }

@@ -9,9 +9,6 @@
     "populate-modules": "node scripts/populate-all-modules.js",
     "release-modules": "sh scripts/publish-to-npm.sh",
     "flow": "flow",
-    "glow": "glow",
-    "glow:watch": "glow --watch",
-    "flow:check": "flow check",
     "flow:ci": "flow --json | flow-junit-transformer > reports/flow/flow-results.xml",
     "lint": "eslint modules/**/*.js",
     "lint:fix": "eslint modules/**/*.js --fix",
@@ -45,11 +42,11 @@
     "@babel/core": "^7.1.2",
     "@babel/plugin-transform-runtime": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
-    "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-flow": "^7.8.3",
     "@colony/eslint-config-colony": "^8.0.1",
     "@kironeducation/flow-junit-transformer": "^0.3.0",
     "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "^10.1.0",
     "babel-jest": "^23.4.2",
     "babel-plugin-dynamic-import-node": "^2.1.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
@@ -68,7 +65,6 @@
     "flow-bin": "^0.105.2",
     "flow-copy-source": "^2.0.0",
     "fs-extra": "^8.0.1",
-    "glow": "^1.2.2",
     "husky": "^3.0.0",
     "jest": "^23.5.0",
     "jest-junit": "^7.0.0",
@@ -91,11 +87,5 @@
     "hdkey": "^1.1.0",
     "lodash.isequal": "^4.5.0",
     "web3": "1.0.0-beta.36"
-  },
-  "greenkeeper": {
-    "ignore": [
-        "eslint-plugin-import",
-        "lint-staged"
-    ]
   }
 }

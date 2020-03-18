@@ -1,7 +1,6 @@
 {
   "modules/**/*.js": [
     "yarn lint:fix",
-    "yarn glow",
     "git add"
   ]
 }
