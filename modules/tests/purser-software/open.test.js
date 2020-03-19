@@ -55,7 +55,7 @@ describe('`Software` Wallet Module', () => {
     isSecretStorageWallet.mockClear();
     userInputValidator.mockClear();
   });
-  describe('`open()` static method', async () => {
+  describe('`open()` static method', () => {
     test('Open a wallet with a private key', async () => {
       await softwareWallet.open({ privateKey });
       /*
