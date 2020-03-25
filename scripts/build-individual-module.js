@@ -2,6 +2,7 @@ const path = require('path');
 const run = require('./utils').run;
 const camelCase = require('camelcase');
 const chalk = require('chalk');
+const rimraf = require('rimraf')
 
 const PATHS = require('./paths');
 
@@ -15,7 +16,7 @@ if (process.env.NODE_ENV === 'production') {
 /*
  * Clean the build folder before building
  */
-const squeakyClean = buildFolder => run(`rm -rf ${buildFolder}`, {}, false);
+const squeakyClean = buildFolder => rimraf.sync(buildFolder);
 
 /*
  * Build default, CommonJS pattern of the module
