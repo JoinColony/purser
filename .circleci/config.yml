@@ -14,7 +14,7 @@ jobs:
           - node-modules-
       - run:
           name: "Installing modules"
-          command: yarn install
+          command: npm install
       - save_cache:
           paths:
             - node_modules
@@ -23,13 +23,13 @@ jobs:
           name: "Checking correct types"
           command: |
             mkdir -p reports/flow
-            yarn flow:ci
+            npm run flow:ci
       - run:
           name: "Linting code"
-          command: yarn lint:ci
+          command: npm run lint:ci
       - run:
           name: "Running unit tests"
-          command: yarn test:ci
+          command: npm run test:ci
           environment:
             JEST_JUNIT_OUTPUT: "reports/jest/jest-results.xml"
       - store_test_results:
@@ -38,7 +38,7 @@ jobs:
           path: reports
       - run:
           name: "Building library"
-          command: yarn build
+          command: npm run build
 
 workflows:
   version: 2
