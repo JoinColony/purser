@@ -9,14 +9,12 @@
     "populate-modules": "node scripts/populate-all-modules.js",
     "release-modules": "sh scripts/publish-to-npm.sh",
     "flow": "flow",
-    "flow:ci": "flow --json | flow-junit-transformer > reports/flow/flow-results.xml",
     "lint": "eslint modules/**/*.js",
     "lint:fix": "eslint modules/**/*.js --fix",
-    "lint:ci": "eslint --format junit -o reports/eslint/eslint-results.xml modules/**/*.js",
     "test": "cross-env NODE_ENV=test jest",
     "test:watch": "cross-env NODE_ENV=test jest --watchAll --verbose",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage",
-    "test:ci": "cross-env NODE_ENV=test jest --no-cache --ci --bail --verbose=true --maxWorkers 2 --reporters='jest-junit'"
+    "test:ci": "cross-env NODE_ENV=test jest --ci --bail --verbose=true --maxWorkers 2"
   },
   "repository": {
     "type": "git",
@@ -52,6 +50,7 @@
     "camelcase": "5.3.1",
     "chalk": "3.0.0",
     "chokidar": "3.3.1",
+    "cross-env": "^6.0.3",
     "denodeify": "1.2.1",
     "eslint": "6.8.0",
     "eslint-config-airbnb-base": "14.1.0",
@@ -66,12 +65,10 @@
     "fs-extra": "8.1.0",
     "husky": "4.2.3",
     "jest": "25.1.0",
-    "jest-junit": "10.0.0",
     "jest-sandbox": "1.1.2",
     "lint-staged": "10.0.8",
     "prettier": "1.19.1",
     "regenerator-runtime": "0.13.5",
-    "cross-env": "^6.0.3",
     "rimraf": "^3.0.2"
   },
   "dependencies": {
