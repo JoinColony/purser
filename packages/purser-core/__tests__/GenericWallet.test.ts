@@ -1,6 +1,7 @@
 import HDKey from 'hdkey';
 import { computeAddress } from 'ethers/utils';
 
+import { jestMocked } from '../../testutils';
 import { GenericWallet } from '../src';
 import {
   safeIntegerValidator,
@@ -15,15 +16,9 @@ jest.mock('ethers/utils');
 jest.mock('../src/validators');
 jest.mock('../src/normalizers');
 
-const mockedAddressNormalizer = (addressNormalizer as unknown) as jest.Mock<
-  typeof addressNormalizer
->;
-const mockedHexSequenceNormalizer = (hexSequenceNormalizer as unknown) as jest.Mock<
-  typeof hexSequenceNormalizer
->;
-const mockedComputeAddress = (computeAddress as unknown) as jest.Mock<
-  typeof computeAddress
->;
+const mockedAddressNormalizer = jestMocked(addressNormalizer);
+const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
+const mockedComputeAddress = jestMocked(computeAddress);
 
 /*
  * Common values

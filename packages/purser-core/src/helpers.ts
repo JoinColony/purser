@@ -1,9 +1,6 @@
-
-
 import { hashPersonalMessage, ecrecover } from 'ethereumjs-util';
 import Common from 'ethereumjs-common';
 import { TransactionOptions } from 'ethereumjs-tx';
-
 
 import {
   safeIntegerValidator,
@@ -30,7 +27,7 @@ import {
   DerivationPathObjectType,
   TransactionObjectType,
   MessageVerificationObjectType,
-  TransactionObjectTypeWithTo
+  TransactionObjectTypeWithTo,
 } from './types';
 
 /**
@@ -61,28 +58,14 @@ export const derivationPathSerializer = ({
   const { DELIMITER } = PATH;
   const hasChange = change || change === 0;
   const hasAddressIndex = addressIndex || addressIndex === 0;
-  return (
-    /*
-     * It's using a template in the last spot, eslint just donesn't recognizes it...
-     */
-    /* eslint-disable-next-line prefer-template */
-    `${PATH.HEADER_KEY}/${purpose}` +
+  return `${`${PATH.HEADER_KEY}/${purpose}` +
     `${DELIMITER}${coinType}` +
     `${DELIMITER}${account}` +
     `${DELIMITER}` +
-    /*
-     * We're already checking if the change and address index has a value, so
-     * we're not coercing `undefined`.
-     *
-     * Flow is overreacting again...
-     */
-    /* $FlowFixMe */
-    `${hasChange ? change : ''}` +
-    /* $FlowFixMe */
-    (hasChange && hasAddressIndex ? `/${addressIndex}` : '')
-  );
+    `${hasChange ? change : ''}`}${
+    hasChange && hasAddressIndex ? `/${addressIndex}` : ''
+  }`;
 };
-
 
 /**
  * Recover a public key from a message and the signature of that message.
@@ -108,14 +91,12 @@ export const derivationPathSerializer = ({
  * @return {String} The recovered public key.
  */
 export const recoverPublicKey = ({
-                                   message,
-                                   signature
-                                 } : MessageVerificationObjectType): string => {
-
+  message,
+  signature,
+}: MessageVerificationObjectType): string => {
   const signatureBuffer = Buffer.from(
-      /* $FlowFixMe */
-      hexSequenceNormalizer(signature.toLowerCase(), false),
-      HEX_HASH_TYPE,
+    hexSequenceNormalizer(signature.toLowerCase(), false),
+    HEX_HASH_TYPE,
   );
 
   const messages = helperMessages.verifyMessageSignature;
@@ -126,7 +107,7 @@ export const recoverPublicKey = ({
    * - 1 for the reco(V)ery param
    */
   if (signatureBuffer.length !== 65) {
-    throw new Error( messages.wrongLength);
+    throw new Error(messages.wrongLength);
   }
   /*
    * The recovery param is the the 64th bit of the signature Buffer
@@ -144,20 +125,18 @@ export const recoverPublicKey = ({
    * This is to what the function description comment block note is referring  to
    */
   const recoveredPublicKeyBuffer = ecrecover(
-      messageHash,
-      recoveryParam,
-      rComponent,
-      sComponent,
+    messageHash,
+    recoveryParam,
+    rComponent,
+    sComponent,
   );
   /*
    * Normalize and return the recovered public key
    */
   return hexSequenceNormalizer(
-      recoveredPublicKeyBuffer.toString(HEX_HASH_TYPE),
+    recoveredPublicKeyBuffer.toString(HEX_HASH_TYPE),
   );
 };
-
-
 
 /**
  * Verify a signed message.
@@ -174,34 +153,27 @@ export const recoverPublicKey = ({
  * @return {boolean} true or false depending if the signature is valid or not
  *
  */
-export const verifyMessageSignature =  ({
-                                              publicKey,
-                                              message,
-                                              signature,
-                                            }): boolean => {
+export const verifyMessageSignature = ({
+  publicKey,
+  message,
+  signature,
+}): boolean => {
   const { verifyMessageSignature: messages } = helperMessages;
   try {
     /*
      * Normalize the recovered public key by removing the `0x` preifx
      */
     const recoveredPublicKey: string = hexSequenceNormalizer(
-        /*
-         * We need this little go-around trick to mock just one export of
-         * the module, while leaving the rest of the module intact so we can test it
-         *
-         * See: https://github.com/facebook/jest/issues/936
-         */
-        /* eslint-disable-next-line no-use-before-define */
-        coreHelpers.recoverPublicKey({ message, signature }),
-        false,
+      recoverPublicKey({ message, signature }),
+      false,
     );
     /*
      * Remove the prefix (0x) and the header (first two bits) from the public key we
      * want to test against
      */
     const normalizedPublicKey: string = hexSequenceNormalizer(
-        publicKey,
-        false,
+      publicKey,
+      false,
     ).slice(2);
     /*
      * Last 64 bits of the private should match the first 64 bits of the recovered public key
@@ -236,24 +208,24 @@ export const verifyMessageSignature =  ({
  * @return {TransactionObjectType} The validated transaction object containing the exact passed in values
  */
 
-
-export const transactionObjectValidator = ({
-                                             gasPrice = bigNumber(TRANSACTION.GAS_PRICE).toString(),
-                                             gasLimit = bigNumber(TRANSACTION.GAS_LIMIT).toString(),
-                                             chainId = TRANSACTION.CHAIN_ID,
-                                             nonce = TRANSACTION.NONCE,
-                                             to,
-                                             value = bigNumber(TRANSACTION.VALUE).toString(),
-                                             inputData = TRANSACTION.INPUT_DATA,
-                                           } : TransactionObjectTypeWithTo = {
-                                             gasPrice: bigNumber(TRANSACTION.GAS_PRICE).toString(),
-                                             gasLimit: bigNumber(TRANSACTION.GAS_LIMIT).toString(),
-                                             chainId: TRANSACTION.CHAIN_ID,
-                                             nonce: TRANSACTION.NONCE,
-                                             to: undefined,
-                                             value: bigNumber(TRANSACTION.VALUE).toString(),
-                                             inputData: TRANSACTION.INPUT_DATA,
-                                           }
+export const transactionObjectValidator = (
+  {
+    gasPrice = bigNumber(TRANSACTION.GAS_PRICE).toString(),
+    gasLimit = bigNumber(TRANSACTION.GAS_LIMIT).toString(),
+    chainId = TRANSACTION.CHAIN_ID,
+    nonce = TRANSACTION.NONCE,
+    to,
+    value = bigNumber(TRANSACTION.VALUE).toString(),
+    inputData = TRANSACTION.INPUT_DATA,
+  }: TransactionObjectTypeWithTo = {
+    gasPrice: bigNumber(TRANSACTION.GAS_PRICE).toString(),
+    gasLimit: bigNumber(TRANSACTION.GAS_LIMIT).toString(),
+    chainId: TRANSACTION.CHAIN_ID,
+    nonce: TRANSACTION.NONCE,
+    to: undefined,
+    value: bigNumber(TRANSACTION.VALUE).toString(),
+    inputData: TRANSACTION.INPUT_DATA,
+  },
 ): TransactionObjectTypeWithTo => {
   /*
    * Check that the gas price is a big number
@@ -313,13 +285,13 @@ export const transactionObjectValidator = ({
  * @return {Object} The validated signature object containing the exact passed in values
  */
 export const messageVerificationObjectValidator = ({
-                                                     /*
-                                                      * For the Ledger wallet implementation we can't pass in an empty string, so
-                                                      * we try with the next best thing.
-                                                      */
-                                                     message,
-                                                     signature,
-                                                   } : MessageVerificationObjectType): MessageVerificationObjectType => {
+  /*
+   * For the Ledger wallet implementation we can't pass in an empty string, so
+   * we try with the next best thing.
+   */
+  message,
+  signature,
+}: MessageVerificationObjectType): MessageVerificationObjectType => {
   /*
    * Check if the messages is in the correct format
    */
@@ -336,8 +308,6 @@ export const messageVerificationObjectValidator = ({
     signature: hexSequenceNormalizer(signature),
   };
 };
-
-
 
 /*
 export const userInputValidator = ({
@@ -365,17 +335,16 @@ export const userInputValidator = ({
  * All the above params are sent in as props of an object.
  */
 
-
 export const userInputValidator = ({
-                                     firstArgument = {},
-                                     requiredEither = [],
-                                     requiredAll = [],
-                                     requiredOr = [],
+  firstArgument = {},
+  requiredEither = [],
+  requiredAll = [],
+  requiredOr = [],
 }: {
-  firstArgument?: Object,
-  requiredEither?: Array<String>,
-  requiredAll?: Array<String>,
-  requiredOr?: Array<String>
+  firstArgument?: Record<string, any>;
+  requiredEither?: Array<string>;
+  requiredAll?: Array<string>;
+  requiredOr?: Array<string>;
 } = {}) => {
   const { userInputValidator: messages } = helperMessages;
   /*
@@ -394,7 +363,7 @@ export const userInputValidator = ({
    */
   if (requiredEither && requiredEither.length) {
     const availableProps: Array<boolean> = requiredEither.map(propName =>
-        Object.prototype.hasOwnProperty.call(firstArgument, propName),
+      Object.prototype.hasOwnProperty.call(firstArgument, propName),
     );
     if (!availableProps.some(propExists => propExists === true)) {
       /*
@@ -402,7 +371,7 @@ export const userInputValidator = ({
        */
       warning(messages.argumentsFormatExplanation);
       throw new Error(
-          `${messages.notSomeProps}: { '${requiredEither.join(`', '`)}' }`,
+        `${messages.notSomeProps}: { '${requiredEither.join(`', '`)}' }`,
       );
     }
   }
@@ -418,7 +387,7 @@ export const userInputValidator = ({
          */
         warning(messages.argumentsFormatExplanation);
         throw new Error(
-            `${messages.notAllProps}: { '${requiredAll.join(`', '`)}' }`,
+          `${messages.notAllProps}: { '${requiredAll.join(`', '`)}' }`,
         );
       }
       return propName;
@@ -430,36 +399,38 @@ export const userInputValidator = ({
    * Fail if multiple are present.
    */
   if (
-      requiredOr &&
-      requiredOr.length &&
-      requiredOr.reduce(
-          (acc, propName) =>
-              Object.prototype.hasOwnProperty.call(firstArgument, propName)
-                  ? acc + 1
-                  : acc,
-          0,
-      ) !== 1
+    requiredOr &&
+    requiredOr.length &&
+    requiredOr.reduce(
+      (acc, propName) =>
+        Object.prototype.hasOwnProperty.call(firstArgument, propName)
+          ? acc + 1
+          : acc,
+      0,
+    ) !== 1
   ) {
     warning(messages.argumentsFormatExplanation);
     throw new Error();
   }
 };
 
-export const messageOrDataValidator = (
-    { message, messageData }:
-        { message: any, messageData: any }
-): string | Uint8Array => {
+export const messageOrDataValidator = ({
+  message,
+  messageData,
+}: {
+  message: any;
+  messageData: any;
+}): string | Uint8Array => {
   if (message) {
     messageValidator(message);
     return message;
   }
   messageDataValidator(messageData);
   return typeof messageData === 'string'
-      ? new Uint8Array(Buffer.from(
-          hexSequenceNormalizer(messageData, false),
-          'hex',
-      ))
-      : messageData;
+    ? new Uint8Array(
+        Buffer.from(hexSequenceNormalizer(messageData, false), 'hex'),
+      )
+    : messageData;
 };
 
 /**
@@ -472,66 +443,46 @@ export const messageOrDataValidator = (
  * @param {number} chainId The given chain ID (as defined in EIP-155)
  * @return {Object} The common chain definition
  */
-export const getChainDefinition = (chainId: number): TransactionOptions  => {
+export const getChainDefinition = (chainId: number): TransactionOptions => {
+  let baseChain: string;
 
-    let baseChain : string;
-
-    switch (chainId) {
-        /*
-         * Ganache's default chain ID is 1337, and is also the standard for
-         * private chains. The assumption is taken here that this inherits
-         * all of the other properties from mainnet, but that might not be
-         * the case.
-         *
-         * @TODO Provide a means to specify all chain properties for transactions
-         */
-      case CHAIN_IDS.HOMESTEAD:
-      case CHAIN_IDS.LOCAL:
-        baseChain = NETWORK_NAMES.MAINNET;
-      case CHAIN_IDS.GOERLI:
-        baseChain = NETWORK_NAMES.GOERLI;
-        /*
-         * The following (or other) chain IDs _may_ cause validation errors
-         * in `ethereumjs-common`
-         */
-      case CHAIN_IDS.KOVAN:
-        baseChain = NETWORK_NAMES.KOVAN;
-      case CHAIN_IDS.ROPSTEN:
-        baseChain = NETWORK_NAMES.ROPSTEN;
-      case CHAIN_IDS.RINKEBY:
-        baseChain = NETWORK_NAMES.RINKEBY;
-      default:
-        baseChain = chainId.toString();
-    }
-    return {
-      common: Common.forCustomChain(
-          baseChain,
-          { chainId },
-          /*
-           * `ethereumjs-common` requires a hardfork to be defined, so we are
-           * using the current default for this property. This is also an
-           * assumption, and this should be made configurable.
-           */
-          HARDFORKS.PETERSBURG,
-      )}
-
+  switch (chainId) {
+    /*
+     * Ganache's default chain ID is 1337, and is also the standard for
+     * private chains. The assumption is taken here that this inherits
+     * all of the other properties from mainnet, but that might not be
+     * the case.
+     *
+     * @TODO Provide a means to specify all chain properties for transactions
+     */
+    case CHAIN_IDS.HOMESTEAD:
+    case CHAIN_IDS.LOCAL:
+      baseChain = NETWORK_NAMES.MAINNET;
+    case CHAIN_IDS.GOERLI:
+      baseChain = NETWORK_NAMES.GOERLI;
+    /*
+     * The following (or other) chain IDs _may_ cause validation errors
+     * in `ethereumjs-common`
+     */
+    case CHAIN_IDS.KOVAN:
+      baseChain = NETWORK_NAMES.KOVAN;
+    case CHAIN_IDS.ROPSTEN:
+      baseChain = NETWORK_NAMES.ROPSTEN;
+    case CHAIN_IDS.RINKEBY:
+      baseChain = NETWORK_NAMES.RINKEBY;
+    default:
+      baseChain = chainId.toString();
+  }
+  return {
+    common: Common.forCustomChain(
+      baseChain,
+      { chainId },
+      /*
+       * `ethereumjs-common` requires a hardfork to be defined, so we are
+       * using the current default for this property. This is also an
+       * assumption, and this should be made configurable.
+       */
+      HARDFORKS.PETERSBURG,
+    ),
   };
-
-
-  /*
-   * This default export is only here to help us with testing, otherwise
-   * it wound't be needed
-   */
-  const coreHelpers = {
-    getChainDefinition,
-    derivationPathSerializer,
-    recoverPublicKey,
-    verifyMessageSignature,
-    transactionObjectValidator,
-    messageVerificationObjectValidator,
-    userInputValidator,
-    messageOrDataValidator,
-  };
-
-
-export default coreHelpers;
+};

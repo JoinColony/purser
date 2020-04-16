@@ -1,22 +1,15 @@
-import { messageVerificationObjectValidator } from '@colony/purser-core/helpers';
-import {
-  hexSequenceValidator,
-  messageValidator,
-} from '@colony/purser-core/validators';
-import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
+import { jestMocked } from '../../../testutils';
 
-jest.dontMock('@colony/purser-core/helpers');
+import { messageVerificationObjectValidator } from '../../src/helpers';
+import { hexSequenceValidator, messageValidator } from '../../src/validators';
+import { hexSequenceNormalizer } from '../../src/normalizers';
 
-jest.mock('@colony/purser-core/validators');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers.js'),
-);
+jest.mock('../../src/validators');
+jest.mock('../../src/normalizers');
 
+const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
+const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
+const mockedMessageValidator = jestMocked(messageValidator);
 /*
  * These values are not correct. Do not use the as reference.
  * If the validators wouldn't be mocked, they wouldn't pass.
@@ -31,9 +24,9 @@ const mockedMessageObject = {
 describe('`Core` Module', () => {
   describe('`messageVerificationObjectValidator()` helper', () => {
     afterEach(() => {
-      hexSequenceValidator.mockClear();
-      messageValidator.mockClear();
-      hexSequenceNormalizer.mockClear();
+      mockedHexSequenceValidator.mockClear();
+      mockedMessageValidator.mockClear();
+      mockedHexSequenceNormalizer.mockClear();
     });
     test("Validates only the signature's object values", async () => {
       messageVerificationObjectValidator(mockedMessageObject);
@@ -71,13 +64,12 @@ describe('`Core` Module', () => {
        *
        * See:https://jestjs.io/docs/en/mock-function-api.html#mockfnmockrestore
        */
-      messageValidator.mockImplementation(value => {
-        if (!value) {
-          throw new Error();
-        }
-        return true;
+      mockedMessageValidator.mockImplementationOnce(() => {
+        throw new Error();
       });
-      expect(() => messageVerificationObjectValidator()).toThrow();
+      expect(() =>
+        messageVerificationObjectValidator({ message: '', signature: '' }),
+      ).toThrow();
     });
   });
 });

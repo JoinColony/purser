@@ -1,7 +1,4 @@
-import { derivationPathValidator } from '@colony/purser-core/validators';
-
-jest.dontMock('@colony/purser-core/utils');
-jest.dontMock('@colony/purser-core/validators');
+import { derivationPathValidator } from '../../src/validators';
 
 describe('`Core` Module', () => {
   describe('`derivationPathValidator()` validator', () => {
@@ -9,6 +6,7 @@ describe('`Core` Module', () => {
       expect(() => derivationPathValidator('')).toThrow();
     });
     test("Fail if it's not a String type", () => {
+      // @ts-ignore
       expect(() => derivationPathValidator(44)).toThrow();
     });
     test("Fail if it doesn't have the correct number of parts", () => {

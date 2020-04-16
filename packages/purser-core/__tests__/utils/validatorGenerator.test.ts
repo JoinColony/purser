@@ -1,6 +1,4 @@
-import { validatorGenerator } from '@colony/purser-core/utils';
-
-jest.dontMock('@colony/purser-core/utils');
+import { validatorGenerator } from '../../src/utils';
 
 const validErrorMessage = 'mocked-valid-error-message';
 const invalidErrorMessage = 'mocked-invalid-error-message';
@@ -8,7 +6,7 @@ const genericErrorMessage = 'mocked-generic-error-message';
 
 const badAssertionsArray = [
   { expression: true, message: validErrorMessage },
-  { expression: false, message: invalidErrorMessage },
+  { expression: false, message: invalidErrorMessage, level: undefined },
   { expression: true, message: validErrorMessage },
 ];
 

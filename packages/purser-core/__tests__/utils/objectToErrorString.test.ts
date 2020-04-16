@@ -1,6 +1,4 @@
-import { objectToErrorString } from '@colony/purser-core/utils';
-
-jest.dontMock('@colony/purser-core/utils');
+import { objectToErrorString } from '../../src/utils';
 
 describe('`Core` Module', () => {
   describe('`objectToErrorString()` util', () => {

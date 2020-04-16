@@ -1,22 +1,18 @@
-import { assertTruth } from '@colony/purser-core/utils';
-import * as defaults from '@colony/purser-core/defaults';
+import * as utils from '../../src/utils';
 
-jest.dontMock('@colony/purser-core/utils');
+const { assertTruth } = utils;
 
-global.console = {
-  warn: jest.fn(),
-};
+const consoleSpy = jest.spyOn(utils, 'warning').mockImplementation(jest.fn());
 
 const errorMessage = 'mocked-error-message';
 
 describe('`Core` Module', () => {
   describe('`assertTruth()` util', () => {
     afterEach(() => {
-      console.warn.mockReset();
-      console.warn.mockRestore();
+      consoleSpy.mockReset();
     });
     test('Stops execution if assertion fails and level is set to high', () => {
-      const badAssertion = () =>
+      const badAssertion = (): boolean =>
         assertTruth({
           expression: false,
           message: errorMessage,
@@ -26,32 +22,32 @@ describe('`Core` Module', () => {
       expect(badAssertion).toThrowError(errorMessage);
     });
     test('Warns if assertion fails and level is set to low', () => {
-      defaults.ENV = 'development';
       const badAssertion = assertTruth({
         expression: false,
         message: errorMessage,
         level: 'low',
       });
-      expect(console.warn).toHaveBeenCalled();
-      expect(console.warn).toHaveBeenCalledWith(errorMessage);
+      expect(consoleSpy).toHaveBeenCalled();
+      expect(consoleSpy).toHaveBeenCalledWith(errorMessage);
       expect(badAssertion).toBeFalsy();
     });
     test('Messages can be passed in as an Array', () => {
-      defaults.ENV = 'development';
       const errorsArray = [errorMessage, errorMessage, errorMessage];
       assertTruth({
         expression: false,
         message: errorsArray,
         level: 'low',
       });
-      expect(console.warn).toHaveBeenCalled();
-      expect(console.warn).toHaveBeenCalledWith(...errorsArray);
+      expect(consoleSpy).toHaveBeenCalled();
+      expect(consoleSpy).toHaveBeenCalledWith(...errorsArray);
     });
     test('Returns true if the expression is also true', () => {
       const goodAssertion = assertTruth({
         expression: true,
+        message: '',
+        level: '',
       });
-      expect(console.warn).not.toHaveBeenCalled();
+      expect(consoleSpy).not.toHaveBeenCalled();
       expect(() => goodAssertion).not.toThrow();
       expect(goodAssertion).toBeTruthy();
     });

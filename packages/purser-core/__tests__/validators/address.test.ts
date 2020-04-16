@@ -1,14 +1,15 @@
-import { addressValidator } from '@colony/purser-core/validators';
-
-jest.dontMock('@colony/purser-core/utils');
-jest.dontMock('@colony/purser-core/validators');
+import { addressValidator } from '../../src/validators';
 
 describe('`Core` Module', () => {
   describe('`addressValidator()` validator', () => {
     test("Fail if it's not a String", () => {
+      // @ts-ignore
       expect(() => addressValidator()).toThrow();
+      // @ts-ignore
       expect(() => addressValidator({})).toThrow();
+      // @ts-ignore
       expect(() => addressValidator(12)).toThrow();
+      // @ts-ignore
       expect(() => addressValidator([])).toThrow();
     });
     test("Fail if it's not the correct length", () => {

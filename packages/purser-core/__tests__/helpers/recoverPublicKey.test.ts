@@ -1,41 +1,26 @@
 import { hashPersonalMessage, ecrecover } from 'ethereumjs-util';
 
-import { recoverPublicKey } from '@colony/purser-core/helpers';
+import { jestMocked } from '../../../testutils';
+import { recoverPublicKey } from '../../src/helpers';
 import {
   hexSequenceNormalizer,
   recoveryParamNormalizer,
-} from '@colony/purser-core/normalizers';
+} from '../../src/normalizers';
 
-import { HEX_HASH_TYPE } from '@colony/purser-core/defaults';
-
-jest.dontMock('@colony/purser-core/helpers');
+import { HEX_HASH_TYPE } from '../../src/defaults';
 
 jest.mock('ethereumjs-util');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers.js'),
-);
-
-/*
- * These values are not correct. Do not use the as reference.
- * If the validators wouldn't be mocked, they wouldn't pass.
- */
+jest.mock('../../src/normalizers');
 
 /*
  * Mocking a returned Buffer here
  */
 const recoveredPublicKey = 'recovered-mocked-public-key';
-const recoveredPublicKeyBuffer = {
-  toString: () => recoveredPublicKey,
-};
-const message = 'mocked-message';
+const recoveredPublicKeyBuffer = Buffer.from(recoveredPublicKey);
+const message = 'Hello, world!';
 const invalidsignature = '0';
 const validSignature =
-  '00000000000000000000000000000000000000000000000000000000000000000';
+  'f0445266ddd86f7d043dc1f538fe0b2fda271555af4ab5951ed84ec999e2d14e65829d0a66b34bcb752635e9ecd668e509622f9d91e7640958701208a13338e61c';
 const signatureObject = {
   message,
   signature: validSignature,
@@ -44,17 +29,21 @@ const signatureObject = {
 /*
  * Mock the Buffer global object
  */
-global.Buffer = {
-  from: jest.fn(value => value),
-  alloc: jest.fn(value => '0'.repeat(value)),
-};
+jest.spyOn(global.Buffer, 'from');
+jest.spyOn(global.Buffer, 'alloc');
+const mockedBufferFrom = jestMocked(global.Buffer.from);
+const mockedBufferAlloc = jestMocked(global.Buffer.alloc);
+const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
+const mockedRecoveryParamNormalizer = jestMocked(recoveryParamNormalizer);
+const mockedEcrecover = jestMocked(ecrecover);
 
 describe('`Core` Module', () => {
   describe('`recoverPublicKey()` helper', () => {
     afterEach(() => {
-      global.Buffer.from.mockClear();
-      global.Buffer.alloc.mockClear();
-      hexSequenceNormalizer.mockClear();
+      mockedBufferFrom.mockClear();
+      mockedBufferAlloc.mockClear();
+      mockedHexSequenceNormalizer.mockClear();
+      mockedRecoveryParamNormalizer.mockClear();
     });
     test('Normalizes the signature and makes it a Buffer', async () => {
       recoverPublicKey(signatureObject);
@@ -95,7 +84,9 @@ describe('`Core` Module', () => {
        * Calls the normalizer
        */
       expect(recoveryParamNormalizer).toHaveBeenCalled();
-      expect(recoveryParamNormalizer).toHaveBeenCalledWith(validSignature[64]);
+      expect(recoveryParamNormalizer).toHaveBeenCalledWith(
+        Buffer.from(validSignature, HEX_HASH_TYPE)[64],
+      );
     });
     test('Creates a hash of the message value', async () => {
       recoverPublicKey(signatureObject);
@@ -103,41 +94,44 @@ describe('`Core` Module', () => {
        * Calls the `ethereumjs-util` `hashPersonalMessage` method
        */
       expect(hashPersonalMessage).toHaveBeenCalled();
-      expect(hashPersonalMessage).toHaveBeenCalledWith(message);
+      expect(hashPersonalMessage).toHaveBeenCalledWith(Buffer.from(message));
     });
     test('Recovers the public key', async () => {
       recoverPublicKey(signatureObject);
       /*
        * Calls the `ethereumjs-util` `ecrecover` method
        */
-      expect(ecrecover).toHaveBeenCalled();
-      expect(ecrecover).toHaveBeenCalledWith(
+      expect(mockedEcrecover).toHaveBeenCalled();
+      expect(mockedEcrecover).toHaveBeenCalledWith(
         /*
          * Message hash (as a hex Buffer)
          */
-        message,
+        Buffer.from(message),
         /*
          * Recovery param
          */
-        validSignature[64],
+        Buffer.from(validSignature, HEX_HASH_TYPE)[64],
         /*
          * R signature component (which is the first 32 bits of the signature)
          */
-        validSignature.slice(0, 32),
+        Buffer.from(validSignature, HEX_HASH_TYPE).slice(0, 32),
         /*
          * S signature component (which is the last 32 bits of the signature)
          */
-        validSignature.slice(32, 64),
+        Buffer.from(validSignature, HEX_HASH_TYPE).slice(32, 64),
       );
     });
     test('Normalizes the recovered public key before returning', async () => {
-      ecrecover.mockImplementation(() => recoveredPublicKeyBuffer);
+      mockedEcrecover.mockImplementation(() => recoveredPublicKeyBuffer);
       recoverPublicKey(signatureObject);
       /*
        * Normalizes the value before returning (also adds the `0x` prefix)
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
-      expect(hexSequenceNormalizer).nthCalledWith(2, recoveredPublicKey);
+      expect(hexSequenceNormalizer).nthCalledWith(
+        2,
+        Buffer.from(recoveredPublicKey).toString(HEX_HASH_TYPE),
+      );
     });
   });
 });

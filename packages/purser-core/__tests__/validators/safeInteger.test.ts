@@ -1,13 +1,13 @@
-import { safeIntegerValidator } from '@colony/purser-core/validators';
-
-jest.dontMock('@colony/purser-core/utils');
-jest.dontMock('@colony/purser-core/validators');
+import { safeIntegerValidator } from '../../src/validators';
 
 describe('`Core` Module', () => {
   describe('`safeIntegerValidator()` validator', () => {
     test("Fail if it's not a Number primitive", () => {
+      // @ts-ignore
       expect(() => safeIntegerValidator('')).toThrow();
+      // @ts-ignore
       expect(() => safeIntegerValidator({})).toThrow();
+      // @ts-ignore
       expect(() => safeIntegerValidator([])).toThrow();
     });
     test("Fail if it's not a positive Number", () => {

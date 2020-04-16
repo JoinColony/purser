@@ -1,7 +1,4 @@
-import { multipleOfTwoHexValueNormalizer } from '@colony/purser-core/normalizers';
-
-jest.dontMock('@colony/purser-core/utils');
-jest.dontMock('@colony/purser-core/normalizers');
+import { multipleOfTwoHexValueNormalizer } from '../../src/normalizers';
 
 describe('`Core` Module', () => {
   describe('`multipleOfTwoHexValueNormalizer()` normalizer', () => {

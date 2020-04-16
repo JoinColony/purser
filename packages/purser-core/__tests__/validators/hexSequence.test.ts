@@ -1,13 +1,13 @@
-import { hexSequenceValidator } from '@colony/purser-core/validators';
-
-jest.dontMock('@colony/purser-core/utils');
-jest.dontMock('@colony/purser-core/validators');
+import { hexSequenceValidator } from '../../src/validators';
 
 describe('`Core` Module', () => {
   describe('`hexSequenceValidator()` validator', () => {
     test("Fail if it's not a String", () => {
+      // @ts-ignore
       expect(() => hexSequenceValidator({})).toThrow();
+      // @ts-ignore
       expect(() => hexSequenceValidator(12)).toThrow();
+      // @ts-ignore
       expect(() => hexSequenceValidator([])).toThrow();
     });
     test("Fail if it's contains non-hex characters", () => {

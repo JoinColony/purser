@@ -1,16 +1,11 @@
-import { userInputValidator } from '@colony/purser-core/helpers';
-import { warning } from '@colony/purser-core/utils';
+import { jestMocked } from '../../../testutils';
 
-jest.dontMock('@colony/purser-core/helpers');
+import { userInputValidator } from '../../src/helpers';
+import { warning } from '../../src/utils';
 
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils.js'),
-);
+jest.mock('../../src/utils');
+
+const mockedWarning = jestMocked(warning);
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -25,7 +20,7 @@ const mockedArgument = {
 describe('`Core` Module', () => {
   describe('`userInputValidator()` helper', () => {
     afterEach(() => {
-      warning.mockClear();
+      mockedWarning.mockClear();
     });
     test('Continues operation if first argument is an Object', () => {
       /*

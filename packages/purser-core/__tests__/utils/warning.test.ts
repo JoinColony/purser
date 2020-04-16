@@ -1,29 +1,35 @@
-import { warning } from '@colony/purser-core/utils';
-import * as defaults from '@colony/purser-core/defaults';
+import { jestMocked } from '../../../testutils';
 
-jest.dontMock('@colony/purser-core/utils');
+import { warning } from '../../src/utils';
+import * as defaults from '../../src/defaults';
 
+// @ts-ignore
 global.console = {
   warn: jest.fn(),
   error: jest.fn(),
 };
+
+const mockWarn = jestMocked(console.warn);
+const mockError = jestMocked(console.error);
 
 const message = 'This is a test message';
 
 describe('`Core` Module', () => {
   describe('`warning()` util', () => {
     beforeEach(() => {
+      // @ts-ignore
       defaults.ENV = 'development';
     });
     afterEach(() => {
-      console.warn.mockClear();
-      console.error.mockClear();
+      mockWarn.mockClear();
+      mockError.mockClear();
     });
     test('Logs the correct message', () => {
       warning(message);
       expect(console.warn).toHaveBeenCalledWith(message);
     });
     test("Doesn't log a message when in production", () => {
+      // @ts-ignore
       defaults.ENV = 'production';
       warning(message);
       expect(console.warn).not.toHaveBeenCalled();
@@ -54,6 +60,7 @@ describe('`Core` Module', () => {
       expect(console.error).not.toHaveBeenCalled();
     });
     test("Doesn't log a message when in production", () => {
+      // @ts-ignore
       defaults.ENV = 'production';
       warning(message);
       expect(console.warn).not.toHaveBeenCalled();

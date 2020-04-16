@@ -1,12 +1,16 @@
+const anyGlobal: any = global;
+
 export const detect = jest.fn(() => true);
 
 export const methodCaller = jest.fn(callback => callback());
 
-export const getInpageProvider = jest.fn(() => global.web3.currentProvider);
+export const getInpageProvider = jest.fn(() => anyGlobal.web3.currentProvider);
 
 export const setStateEventObserver = jest.fn(callback => {
   /* eslint-disable-next-line no-underscore-dangle */
-  global.web3.currentProvider.publicConfigStore._events.update.push(callback);
+  anyGlobal.web3.currentProvider.publicConfigStore._events.update.push(
+    callback,
+  );
 });
 
 /*
@@ -15,6 +19,6 @@ export const setStateEventObserver = jest.fn(callback => {
  */
 export const triggerUpdateStateEvents = newState =>
   /* eslint-disable-next-line no-underscore-dangle */
-  global.web3.currentProvider.publicConfigStore._events.update.map(callback =>
-    callback(newState),
+  anyGlobal.web3.currentProvider.publicConfigStore._events.update.map(
+    callback => callback(newState),
   );

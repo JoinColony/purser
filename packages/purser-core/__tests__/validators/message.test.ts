@@ -1,13 +1,13 @@
-import { messageValidator } from '@colony/purser-core/validators';
-
-jest.dontMock('@colony/purser-core/utils');
-jest.dontMock('@colony/purser-core/validators');
+import { messageValidator } from '../../src/validators';
 
 describe('`Core` Module', () => {
   describe('`messageValidator()` validator', () => {
     test("Fail if it's not a String", () => {
+      // @ts-ignore
       expect(() => messageValidator({})).toThrow();
+      // @ts-ignore
       expect(() => messageValidator(12)).toThrow();
+      // @ts-ignore
       expect(() => messageValidator([])).toThrow();
     });
     test("Fail if it's over 1 kB in size", () => {

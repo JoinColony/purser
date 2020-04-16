@@ -16,7 +16,10 @@ const signPersonalMessage = jest.fn(() => ({
   v: 'mocked-recovery-param',
 }));
 
-export const ledgerConnection = jest.fn(() => ({
+export const ledgerConnection: jest.Mock<any, any> & {
+  signTransaction?: jest.Mock<any, any>;
+  signPersonalMessage?: jest.Mock<any, any>;
+} = jest.fn(() => ({
   getAddress: jest.fn(() => ({
     publicKey: 'mocked-public-key',
     chainCode: 'mocked-chain-code',

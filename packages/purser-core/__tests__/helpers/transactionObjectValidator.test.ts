@@ -1,36 +1,34 @@
-import { transactionObjectValidator } from '@colony/purser-core/helpers';
+import { jestMocked } from '../../../testutils';
+
+import { transactionObjectValidator } from '../../src/helpers';
 import {
   bigNumberValidator,
   safeIntegerValidator,
   addressValidator,
   hexSequenceValidator,
-} from '@colony/purser-core/validators';
-import { bigNumber } from '@colony/purser-core/utils';
+} from '../../src/validators';
+import { bigNumber } from '../../src/utils';
+import { TRANSACTION } from '../../src/defaults';
 
-import { TRANSACTION } from '@colony/purser-core/defaults';
+jest.mock('../../src/validators');
+jest.mock('../../src/utils');
 
-jest.dontMock('@colony/purser-core/helpers');
-
-jest.mock('@colony/purser-core/validators');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils.js'),
-);
+const mockedBigNumberValidator = jestMocked(bigNumberValidator);
+const mockedSafeIntegerValidator = jestMocked(safeIntegerValidator);
+const mockedAddressValidator = jestMocked(addressValidator);
+const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
+const mockedBigNumber = jestMocked(bigNumber);
 
 /*
  * These values are not correct. Do not use the as reference.
  * If the validators wouldn't be mocked, they wouldn't pass.
  */
 const derivationPath = 'mocked-derivation-path';
-const chainId = 'mocked-chain-id';
+const chainId = 1337;
 const inputData = 'mocked-data';
 const gasLimit = 'mocked-gas-limit';
 const gasPrice = 'mocked-gas-price';
-const nonce = 'mocked-nonce';
+const nonce = 7;
 const to = 'mocked-destination-address';
 const value = 'mocked-transaction-value';
 const mockedTransactionObject = {
@@ -47,11 +45,11 @@ const mockedTransactionObject = {
 describe('`Core` Module', () => {
   describe('`transactionObjectValidator()` helper', () => {
     afterEach(() => {
-      bigNumberValidator.mockClear();
-      safeIntegerValidator.mockClear();
-      addressValidator.mockClear();
-      hexSequenceValidator.mockClear();
-      bigNumber.mockClear();
+      mockedBigNumberValidator.mockClear();
+      mockedSafeIntegerValidator.mockClear();
+      mockedAddressValidator.mockClear();
+      mockedHexSequenceValidator.mockClear();
+      mockedBigNumber.mockClear();
     });
     test("Validates all the transaction's object values", async () => {
       transactionObjectValidator(mockedTransactionObject);
@@ -100,7 +98,7 @@ describe('`Core` Module', () => {
       expect(validatedTransactionObject).toHaveProperty('inputData');
     });
     test('Has defaults for all object values (except for `to`)', async () => {
-      bigNumber.mockImplementation(number => number);
+      mockedBigNumber.mockImplementation(number => number);
       const validatedTransactionObject = transactionObjectValidator();
       expect(validatedTransactionObject).toHaveProperty(
         'gasPrice',
@@ -129,7 +127,6 @@ describe('`Core` Module', () => {
     });
     test('Validates destination (to), only if it was provided', async () => {
       transactionObjectValidator({
-        derivationPath,
         gasPrice,
         gasLimit,
         chainId,

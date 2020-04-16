@@ -1,20 +1,18 @@
-import * as helpers from '@colony/purser-core/helpers';
-import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
-import { warning } from '@colony/purser-core/utils';
+import { jestMocked } from '../../../testutils';
+
+import * as helpers from '../../src/helpers';
+import { hexSequenceNormalizer } from '../../src/normalizers';
+import { warning } from '../../src/utils';
+
+const { verifyMessageSignature } = helpers;
 
 jest.mock('ethereumjs-util');
-jest.mock('@colony/purser-core/validators');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils.js'),
-);
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers.js'),
-);
+jest.mock('../../src/validators');
+jest.mock('../../src/utils');
+jest.mock('../../src/normalizers');
+
+const mockedWarning = jestMocked(warning);
+const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -30,30 +28,23 @@ const signatureObject = {
   signature,
 };
 
-/*
- * We just need this method mocked, but since it's declared in a module we
- * need to test we have do do this little go-around trick and use the default export
- *
- * See: https://github.com/facebook/jest/issues/936
- */
-helpers.default.recoverPublicKey = jest.fn(() => recoveredPublicKey);
-
-const { verifyMessageSignature } = helpers;
-const { recoverPublicKey } = helpers.default;
+const mockedRecoverPublicKey = jest
+  .spyOn(helpers, 'recoverPublicKey')
+  .mockImplementation(() => recoveredPublicKey);
 
 describe('`Core` Module', () => {
   describe('`verifyMessageSignature()` helper', () => {
     afterEach(() => {
-      warning.mockClear();
-      hexSequenceNormalizer.mockClear();
+      mockedWarning.mockClear();
+      mockedHexSequenceNormalizer.mockClear();
     });
     test('Gets the recovered public key from `recoverPublicKey`', async () => {
       verifyMessageSignature(signatureObject);
       /*
        * Call the local `recoverPublicKey` helper
        */
-      expect(recoverPublicKey).toHaveBeenCalled();
-      expect(recoverPublicKey).toHaveBeenCalledWith({
+      expect(mockedRecoverPublicKey).toHaveBeenCalled();
+      expect(mockedRecoverPublicKey).toHaveBeenCalledWith({
         message,
         signature,
       });
@@ -98,7 +89,7 @@ describe('`Core` Module', () => {
       /*
        * Mock the implementation locally, so that we can throw
        */
-      helpers.default.recoverPublicKey.mockImplementationOnce(() => {
+      mockedRecoverPublicKey.mockImplementationOnce(() => {
         throw new Error();
       });
       expect(() => verifyMessageSignature(signatureObject)).not.toThrow();

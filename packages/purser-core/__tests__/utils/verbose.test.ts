@@ -1,8 +1,7 @@
-import { verbose } from '@colony/purser-core/utils';
-import * as defaults from '@colony/purser-core/defaults';
+import { verbose } from '../../src/utils';
+import * as defaults from '../../src/defaults';
 
-jest.dontMock('@colony/purser-core/utils');
-
+// @ts-ignore
 global.console = {
   warn: jest.fn(),
   error: jest.fn(),
@@ -11,22 +10,35 @@ global.console = {
 describe('`Core` Module', () => {
   describe('`verbose()` util', () => {
     test('Should be verbose if the environment is not defined', () => {
+      const env = defaults.ENV;
+      // @ts-ignore
       defaults.ENV = undefined;
       const isVerbose = verbose();
       expect(isVerbose).toBeTruthy();
+      // @ts-ignore
+      defaults.ENV = env;
     });
     test("Should be verbose if we're in a development environment", () => {
+      const env = defaults.ENV;
+      // @ts-ignore
       defaults.ENV = 'development';
       const isVerbose = verbose();
       expect(isVerbose).toBeTruthy();
+      // @ts-ignore
+      defaults.ENV = env;
     });
     test("Should NOT be verbose if we're not in `development` env", () => {
+      const env = defaults.ENV;
+      // @ts-ignore
       defaults.ENV = 'production';
       let isVerbose = verbose();
       expect(isVerbose).not.toBeTruthy();
+      // @ts-ignore
       defaults.ENV = 'testing';
       isVerbose = verbose();
       expect(isVerbose).not.toBeTruthy();
+      // @ts-ignore
+      defaults.ENV = env;
     });
   });
 });

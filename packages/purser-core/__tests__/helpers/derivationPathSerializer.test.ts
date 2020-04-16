@@ -1,6 +1,4 @@
-import { derivationPathSerializer } from '@colony/purser-core/helpers';
-
-jest.dontMock('@colony/purser-core/helpers');
+import { derivationPathSerializer } from '../../src/helpers';
 
 describe('`Core` Module', () => {
   describe('`derivationPathSerializer()` helper', () => {

@@ -1,12 +1,8 @@
+import BN from 'bn.js';
 
-import  BN from 'bn.js';
+import ExtendedBN from './ExtendedBigNumber';
 
-import {
-  ENV,
-  WEI_MINIFICATION,
-  GWEI_MINIFICATION,
-  DESCRIPTORS,
-} from './defaults';
+import { ENV } from './defaults';
 import { utils as messages } from './messages';
 
 /**
@@ -49,7 +45,7 @@ export const warning = (...args: Array<any>): void => {
   if (!verbose()) {
     return undefined;
   }
-  let level: string = 'low';
+  let level = 'low';
   const lastArgIndex: number = args.length - 1;
   const options = args[lastArgIndex];
   const [message] = args;
@@ -67,7 +63,7 @@ export const warning = (...args: Array<any>): void => {
     ({ level } = options);
     literalTemplates.pop();
   }
-  let warningType: string = 'warn';
+  let warningType = 'warn';
   if (level === 'high') {
     warningType = 'error';
   }
@@ -121,10 +117,12 @@ export const getRandomValues = (
    */
   if (
     typeof window !== 'undefined' &&
+    /* eslint-disable dot-notation */
     typeof window['msCrypto'] === 'object' &&
     typeof window['msCrypto'].getRandomValues === 'function'
   ) {
     return window['msCrypto'].getRandomValues(typedArray);
+    /* eslint-enable dot-notation */
   }
   /*
    * We can't find any crypto method, we'll try to do our own.
@@ -154,10 +152,11 @@ export const getRandomValues = (
  * @return {boolean} true if the expression is valid, false otherwise (and depending on the level, throw an error
  * or just log the warning)
  */
-export const assertTruth = (params :{
-  expression: boolean,
-  message: string| Array<string>,
-  level: string}): boolean => {
+export const assertTruth = (params: {
+  expression: boolean;
+  message: string | Array<string>;
+  level: string;
+}): boolean => {
   if (params.expression) {
     return true;
   }
@@ -165,7 +164,9 @@ export const assertTruth = (params :{
     params.level = 'high';
   }
   if (params.level === 'high') {
-    throw new Error(Array.isArray(params.message) ? params.message.join(' ') : params.message);
+    throw new Error(
+      Array.isArray(params.message) ? params.message.join(' ') : params.message,
+    );
   }
   if (Array.isArray(params.message)) {
     warning(...params.message);
@@ -194,43 +195,8 @@ export const assertTruth = (params :{
  *
  * @return {BN} The new bignumber instance
  */
-export const bigNumber = (value: number | string | BN): BN => {
-  const { GETTERS } = DESCRIPTORS;
-  const oneWei = new BN(WEI_MINIFICATION.toString());
-  const oneGwei = new BN(GWEI_MINIFICATION.toString());
-  class ExtendedBN extends BN {
-    constructor(number: number | string | number[] | Uint8Array | Buffer | BN,
-                base?: number | 'hex',
-                endian?: BN.Endianness) {
-
-      super(number, base, endian);
-      const ExtendedBNPrototype = Object.getPrototypeOf(this);
-      Object.defineProperties(ExtendedBNPrototype, {
-        /*
-         * Convert the number to WEI (multiply by 1 to the power of 18)
-         */
-        toWei: Object.assign({}, { value: () => this.imul(oneWei) }, GETTERS),
-        /*
-         * Convert the number to WEI (divide by 1 to the power of 18)
-         */
-        fromWei: Object.assign({}, { value: () => this.div(oneWei) }, GETTERS),
-        /*
-         * Convert the number to GWEI (multiply by 1 to the power of 9)
-         */
-        toGwei: Object.assign({}, { value: () => this.imul(oneGwei) }, GETTERS),
-        /*
-         * Convert the number to GWEI (divide by 1 to the power of 9)
-         */
-        fromGwei: Object.assign(
-          {},
-          { value: () => this.div(oneGwei) },
-          GETTERS,
-        ),
-      });
-    }
-  }
-  return new ExtendedBN(value);
-};
+export const bigNumber = (value: number | string | BN): ExtendedBN =>
+  new ExtendedBN(value);
 
 /**
  * Convert an object to a key (value) concatenated string.
@@ -243,7 +209,7 @@ export const bigNumber = (value: number | string | BN): BN => {
  *
  * @return {string} The string containing the object's key (value) pairs
  */
-export const objectToErrorString = (object: Object = {}): string =>
+export const objectToErrorString = (object: Record<string, any> = {}): string =>
   Object.keys(object)
     .reduce(
       (allArgs, key) =>
@@ -272,26 +238,27 @@ export const objectToErrorString = (object: Object = {}): string =>
  */
 export const validatorGenerator = (
   validationSequenceArray: Array<{
-    expression: boolean,
-    message?: string | Array<string>,
-    level?: string,
+    expression: boolean;
+    message?: string | Array<string>;
+    level?: string;
   }>,
   genericError: string,
 ): boolean => {
   const validationTests: Array<boolean> = [];
-  validationSequenceArray.map((validationSequence) =>
+  validationSequenceArray.map(validationSequence =>
     validationTests.push(
-
       assertTruth(
         /*
          * If there's no message passed in, use the generic error
          */
-          {expression: validationSequence.expression,
-            message: validationSequence.message ?? genericError,
-            level: validationSequence.level ?? 'high'}
-        ),
+        {
+          expression: validationSequence.expression,
+          message: validationSequence.message ?? genericError,
+          level: validationSequence.level ?? 'high',
+        },
       ),
-    );
+    ),
+  );
 
   /*
    * This is a fail-safe in case anything spills through.

@@ -60,12 +60,12 @@ export interface TransactionObjectTypeWithCallback
 }
 
 export interface TransactionObjectTypeWithTo extends TransactionObjectType {
-  to: string | undefined;
+  to?: string;
 }
 
 export interface TransactionObjectTypeWithAddresses
   extends TransactionObjectTypeWithTo {
-  from: string | undefined;
+  from?: string;
 }
 
 export interface SignMessageData {

@@ -1,5 +1,3 @@
-
-
 import BN from 'bn.js';
 
 import { assertTruth, validatorGenerator, objectToErrorString } from './utils';
@@ -50,10 +48,9 @@ export const derivationPathValidator = (derivationPath: string): boolean => {
       `${derivationPathMessages.notValidParts}: [`,
       ...deSerializedDerivationPath,
       ']',
-
     ],
-    level: 'high'
-  })
+    level: 'high',
+  });
   const validationSequence = [
     {
       /*
@@ -229,17 +226,17 @@ export const addressValidator = (address: string): boolean => {
   const validationSequence = [
     {
       /*
-      * It should be a string
-      */
+       * It should be a string
+       */
       expression: typeof address === 'string',
-      message: `${addressMessages.notStringSequence}: ${objectToErrorString(
+      message: `${addressMessages.notStringSequence}: ${objectToErrorString({
         address,
-      ) || UNDEFINED}`,
+      }) || UNDEFINED}`,
     },
     {
       /*
-      * It should be the correct length. Either 40 or 42 (with prefix)
-      */
+       * It should be the correct length. Either 40 or 42 (with prefix)
+       */
       expression: addressLength === 40 || addressLength === 42,
       message: `${addressMessages.notLength}: ${address || UNDEFINED}`,
     },
@@ -273,17 +270,17 @@ export const hexSequenceValidator = (hexSequence: string): boolean => {
   const validationSequence = [
     {
       /*
-      * It should be a string
-      */
+       * It should be a string
+       */
       expression: typeof hexSequence === 'string',
-      message: `${hexSequenceMessages.notStringSequence}: ${objectToErrorString(
-        hexSequence,
-      ) || UNDEFINED}`,
+      message: `${
+        hexSequenceMessages.notStringSequence
+      }: ${objectToErrorString({ hexSequence }) || UNDEFINED}`,
     },
     {
       /*
-      * It should be in the correct format (hex string with or with out the `0x` prefix)
-      */
+       * It should be in the correct format (hex string with or with out the `0x` prefix)
+       */
       expression: !!hexSequence.match(MATCH.HEX_STRING),
       message: `${hexSequenceMessages.notFormat}: ${hexSequence || UNDEFINED}`,
     },
@@ -299,12 +296,12 @@ export const hexSequenceValidator = (hexSequence: string): boolean => {
  *
  * @method messageValidator
  *
- * @param {string} string The big number instance to check
+ * @param {str} string The big number instance to check
  *
  * @return {boolean} It only returns true if the string is a valid format,
  * otherwise an Error will be thrown and this will not finish execution.
  */
-export const messageValidator = (string: string): boolean => {
+export const messageValidator = (str: string): boolean => {
   /*
    * Real creative naming there, huh...?
    */
@@ -312,26 +309,25 @@ export const messageValidator = (string: string): boolean => {
   const validationSequence = [
     {
       /*
-      * It should be a string
-      */
-      expression: typeof string === 'string',
-      message: `${messageMessages.notString}: ${objectToErrorString(string) ||
+       * It should be a string
+       */
+      expression: typeof str === 'string',
+      message: `${messageMessages.notString}: ${objectToErrorString({ str }) ||
         UNDEFINED}`,
     },
     {
       /*
-      * It should be under (or equal to) 1024 Bytes in size
-      */
-      expression: string.length <= 1024,
-      message: `${messageMessages.tooBig}: ${string || UNDEFINED}`,
+       * It should be under (or equal to) 1024 Bytes in size
+       */
+      expression: str.length <= 1024,
+      message: `${messageMessages.tooBig}: ${str || UNDEFINED}`,
     },
   ];
   return validatorGenerator(
     validationSequence,
-    `${messageMessages.genericError}: ${string || UNDEFINED}`,
+    `${messageMessages.genericError}: ${str || UNDEFINED}`,
   );
 };
-
 
 /**
  * Validate a hex string
@@ -348,9 +344,10 @@ export const messageDataValidator = (data: any): boolean => {
   const validationSequence = [
     {
       /*
-      * It should be a hex string or UInt8Array
-      */
-      expression: (typeof data === 'string' && hexSequenceValidator(data)) ||
+       * It should be a hex string or UInt8Array
+       */
+      expression:
+        (typeof data === 'string' && hexSequenceValidator(data)) ||
         data.constructor === Uint8Array,
       message: `${messageMessages.notString}: ${objectToErrorString(data) ||
         UNDEFINED}`,

@@ -1,4 +1,7 @@
-export const Wallet = jest.fn().mockImplementation(privateKey => {
+export const Wallet: jest.Mock<any, any> & {
+  createRandom?: jest.Mock<any, any>;
+  fromEncryptedJson?: jest.Mock<any, any>;
+} = jest.fn().mockImplementation(privateKey => {
   if (privateKey === '0x0' || !privateKey) {
     throw new Error();
   }

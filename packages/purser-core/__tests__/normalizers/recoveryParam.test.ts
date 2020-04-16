@@ -1,14 +1,16 @@
-import { recoveryParamNormalizer } from '@colony/purser-core/normalizers';
+import { recoveryParamNormalizer } from '../../src/normalizers';
 
-import { SIGNATURE } from '@colony/purser-core/defaults';
-
-jest.dontMock('@colony/purser-core/normalizers');
+import { SIGNATURE } from '../../src/defaults';
 
 describe('`Core` Module', () => {
   describe('`recoveryParamNormalizer()` normalizer', () => {
     test('Throw if param is not a number', () => {
+      // We're testing irregular values deliberately here. So ts-ignore is ok.
+      // @ts-ignore
       expect(() => recoveryParamNormalizer('not-a-number')).toThrow();
+      // @ts-ignore
       expect(() => recoveryParamNormalizer()).toThrow();
+      // @ts-ignore
       expect(() => recoveryParamNormalizer([])).toThrow();
     });
     test('If 0 return the signature recovery odd value', () => {

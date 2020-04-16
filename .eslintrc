@@ -8,6 +8,11 @@
   "plugins": [
     "@typescript-eslint"
   ],
+  "env": {
+    "es2020": true,
+    "node": true,
+    "browser": true
+  },
   "rules": {
     "no-unused-vars": "off",
     "camelcase": "off",
@@ -26,7 +31,8 @@
         "jest": true
       },
       "rules": {
-        "max-len": "off"
+        "max-len": "off",
+        "@typescript-eslint/ban-ts-ignore": "off"
       }
     }
   ]
