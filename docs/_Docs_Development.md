@@ -12,7 +12,7 @@ All interactions with it are made through custom scripts and clever folder struc
 
 Builds are handled internally by a script that outputs two versions of the modules. One that's in the `CommonJS` and one in `ES`.
 
-This script is exposed via the `yarn build` command which will build each individual module in:
+This script is exposed via the `npm run build` command which will build each individual module in:
 ```bash
 modules/node_modules/@colony/purser-<type>/lib
 ```
@@ -36,13 +36,13 @@ Also, if you use [Flow](https://flow.org/) for type declarations inside your pro
 It's most likely that you'll use `eslint` via your editor / IDE, but just in case you don't, there are a couple of scripts set up to do this manually:
 
 ```bash
-yarn lint
+npm run lint
 ```
 
 This will lint all the files inside the `src` folder and log any errors or warnings.
 
 ```bash
-yarn lint:fix
+npm run lint:fix
 ```
 
 This script will lint files in the `src` directory and also try to fix any problems it encounters. _(Makes use of `prettier`)_
@@ -56,19 +56,19 @@ This project makes use of the [`flow`](https://flow.org/) system of types declar
 As above with `eslint` this project expects your editor or IDE to show you warning or errors in real-time. But if that's not an option you can do it manually:
 
 ```bash
-yarn flow
+npm run flow
 ```
 
 Will check the `src` folder for any files using the `@flow` pragma _(It runs `flow status` under the hood)_ and it will also start the `flow` `daemon` if it isn't already running.
 
 ```bash
-yarn glow
+npm run glow
 ```
 
 `glow` is just a wrapper for `flow` but with a nicer console output. Use this if you want to make sense of your `flow` errors.
 
 ```bash
-yarn flow:check
+npm run flow:check
 ```
 
 This is left in as a legacy, in case `flow status` doesn't work on your system. This is slower and will not work with `glow` but you can be certain that it will parse all your files.
@@ -88,12 +88,12 @@ After these two steps, the project will auto-run the `git add` command.
 `jest` is set up as the default test runner for this project.
 
 You can run the following test commands that were set up as `npm` scripts:
-- `yarn test` makes a simple pass and runs all the tests
-- `yarn test:watch` will watch the source folder and re-run tests on file change
+- `npm run test` makes a simple pass and runs all the tests
+- `npm run test:watch` will watch the source folder and re-run tests on file change
 
 **A note on `jest`**
 
-You may run into trouble running `yarn test:watch`, which will throw and error along the lines of:
+You may run into trouble running `npm run test:watch`, which will throw and error along the lines of:
 
 ```bash
 ENOSPC
@@ -111,7 +111,7 @@ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo s
 
 Circle CI handles this project's builds. It has two workflows set up: one for commit pushed, and one that it scheduled to run during the night.
 
-The commit workflow will trigger every time you push to a branch. If that branch push was triggered by `greenkeeper` it will build it, and if it succeeds it will re-push with the updated `yarn` lockfile and build again.
+The commit workflow will trigger every time you push to a branch. If that branch push was triggered by `greenkeeper` it will build it, and if it succeeds it will re-push with the updated `npm run` lockfile and build again.
 
 The nightly build workflow will run every night at 4 AM and will build the latest changes added to the `master` branch.
 
@@ -119,6 +119,6 @@ The nightly build workflow will run every night at 4 AM and will build the lates
 
 This project makes use of `greenkeeper` for dependency management.
 
-If a new version of a package is found _(either public or private scoped)_ it will create a new branch with the package change and try to build it. If the build succeeds it will push changes to the `yarn` lockfile and re-build again.
+If a new version of a package is found _(either public or private scoped)_ it will create a new branch with the package change and try to build it. If the build succeeds it will push changes to the `npm run` lockfile and re-build again.
 
 When the builds succeeds one of two things will happen: if the package update was to a in-range version, the branch will be deleted _(this is by design, as the package will be updated to this version when you reinstall `node_modules`)_. If the package update was out of range _(or one of the two previous builds failed)_ than a PR will be created so that it can be reviewed and fixed.

@@ -89,3 +89,150 @@ const entropy = getRandomValues(uintArray); // [236, 157, 149, 236, 109, 233, 11
 
 const newWallet = await create({ entropy });
 ```
+
+## Classes
+
+### `PurserSigner`
+
+```js
+new PurserSigner(purserArgumentsObject: Object)
+```
+
+Create a new instance of an abstract signer, containing the follow required props: `provider`, `getAddress`, `signMessage`, `sendTransaction`.
+
+[See more about the Ethers Abstract Signer](https://docs.ethers.io/ethers.js/html/api-wallet.html#signer-api), from which this inherits.
+
+The constructor takes in a `purserArgumentsObject` Object _(See below)_, and returns a new instance of the signer.
+
+The `purserArgumentsObject` must contain exactly one of each `purserWalletInstance` and `provider`, where `purserWalletInstance` is a instantiated wallet from any of the `purser` modules _(ie: `purser-software`)_, while `provider` is a provider instance object coming from a library like `ethers.js`.
+
+**`purserArgumentsObject` format:**
+```js
+purserArgumentsObject {
+  purserWalletInstance: PurserWalletInstace, // From any purser module
+  provider: ProviderInstance, // ie: Ethers Provider Instance
+};
+```
+
+**Instantiating Example:**
+```js
+import { providers } from 'ethers';
+import { PurserSigner } from '@colony/purser-core';
+import { create } from '@colony/purser-software';
+
+const wallet = await create();
+const provider = new providers.EtherscanProvider();
+
+const signer = new PurserSigner({
+  purserWalletInstance: wallet,
+  provider,
+});
+```
+
+#### `provider`
+
+The `provider` property on the resulting signer instance is a direct reference of the provider you passed in when instantiating the class.
+
+**Usage:**
+```js
+import { providers } from 'ethers';
+import { PurserSigner } from '@colony/purser-core';
+import { create } from '@colony/purser-software';
+
+const wallet = await create();
+const provider = new providers.EtherscanProvider();
+
+const signer = new PurserSigner({
+  purserWalletInstance: wallet,
+  provider,
+});
+
+signer.provider; // EtherscanProvider { ... }
+```
+
+#### `getAddress(): Promise<string>`
+
+The `getAddress` property on the resulting signer instance is a method that _returns_ the underlying wallet address from the purser wallet instance that yout passed in when instantiating the class.
+
+This, as well as the other methods on the signer instance are async, so this will return the wallet address wrapped in a `Promise`.
+
+**Usage:**
+```js
+import { providers } from 'ethers';
+import { PurserSigner } from '@colony/purser-core';
+import { create } from '@colony/purser-software';
+
+const wallet = await create();
+const provider = new providers.EtherscanProvider();
+
+const signer = new PurserSigner({
+  purserWalletInstance: wallet,
+  provider,
+});
+
+await signer.getAddress(); // '0x0123...
+```
+
+#### `signMessage(message: string): Promise<string>`
+
+The `signMessage` property on the resulting signer instance is a method that signs, then _returns_ the message signature.
+
+This, as well as the other methods on the signer instance are async, so this will return the message signature wrapped in a `Promise`.
+
+_**Note**: On some wallet types (ie: hardware) this method will require some form of confirmation from the user._
+
+**Usage:**
+```js
+import { providers } from 'ethers';
+import { PurserSigner } from '@colony/purser-core';
+import { create } from '@colony/purser-software';
+
+const wallet = await create();
+const provider = new providers.EtherscanProvider();
+
+const signer = new PurserSigner({
+  purserWalletInstance: wallet,
+  provider,
+});
+
+await signer.signMessage('Hello World'); // '0x0123...
+```
+
+#### `sendTransaction(transactionObject: Object): Promise<Object>`
+
+The `sendTransaction` property on the resulting signer instance is a method that sends a transaction to the network.
+
+The format of the transaction object format is detailed here: https://docs.ethers.io/ethers.js/html/api-providers.html#transaction-requests
+
+This, as well as the other methods on the signer instance are async, so this will return the transaction response object wrapped in a `Promise`.
+
+For the transaction response expected format see here: https://docs.ethers.io/ethers.js/html/api-providers.html#transaction-response
+
+_**Note**: On some wallet types (ie: hardware) this method will require some form of confirmation from the user._
+
+**Usage:**
+```js
+import { providers } from 'ethers';
+import { PurserSigner } from '@colony/purser-core';
+import { create } from '@colony/purser-software';
+
+import { bigNumber } from '@colony/purser-core/utils';
+
+const wallet = await create();
+const provider = new providers.EtherscanProvider();
+
+const signer = new PurserSigner({
+  purserWalletInstance: wallet,
+  provider,
+});
+
+await signer.sendTransaction({
+  to: '0x3953...a4C1',
+  nonce: 15987,
+  gasLimit: bigNumber(30000),
+  gasPrice: bigNumber('0.00000001').toWei(),
+  chainId: 4,
+  value: bigNumber(1).toWei(),
+  data: '0x00',
+}) // { hash: "0xf517...022e", }
+```

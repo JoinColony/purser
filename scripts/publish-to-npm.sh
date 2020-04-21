@@ -34,16 +34,16 @@ git checkout -b "${RELEASE_BRANCH}"
 
 log 'Refresh Node Modules...'
 rm -rf "${NODE_MODULES_PATH}"
-yarn
+npm install
 
 log 'Build Modules...'
-yarn build
+npm run build
 
 log 'Prepare Modules for release...'
-yarn update-modules
+npm run update-modules
 
 log 'Populate Modules folders...'
-yarn populate-modules
+npm run populate-modules
 
 # TODO
 # We need a step to copy over relevant folders and files (eg: docs, license...)

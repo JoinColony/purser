@@ -39,7 +39,7 @@ To use the **software wallet** (based on the [ethers wallet](https://github.com/
 #### Installation
 
 ```
-yarn add @colony/purser-software
+npm install @colony/purser-software
 ```
 
 #### Usage
@@ -71,7 +71,7 @@ For **hardware wallets** (let's use trezor in this example) do:
 #### Installation
 
 ```
-yarn add @colony/purser-trezor
+npm install @colony/purser-trezor
 ```
 
 #### Usage

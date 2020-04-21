@@ -20,7 +20,7 @@ A collection of `helpers`, `utils`, `validators` and `normalizers` to assist the
 
 Add the core library:
 ```js
-yarn add @colony/purser-core
+npm install @colony/purser-core
 ```
 
 #### Usage
@@ -38,7 +38,7 @@ A `javascript` library to interact with a [Ledger](https://www.ledger.com/) base
 
 #### Installation
 ```js
-yarn add @colony/purser-ledger
+npm install @colony/purser-ledger
 ```
 
 #### Usage
@@ -58,7 +58,7 @@ A `javascript` library to interact with the a [Metamask](https://metamask.io/) b
 
 ### Installation
 ```js
-yarn add @colony/purser-metamask
+npm install @colony/purser-metamask
 ```
 
 ### Usage
@@ -76,7 +76,7 @@ A `javascript` library to interact with a software Ethereum wallet, based on the
 
 #### Installation
 ```js
-yarn add @colony/purser-software
+npm install @colony/purser-software
 ```
 
 #### Usage
@@ -94,7 +94,7 @@ A `javascript` library to interact with a [Trezor](https://trezor.io/) based Eth
 
 #### Installation
 ```js
-yarn add @colony/purser-trezor
+npm install @colony/purser-trezor
 ```
 
 #### Usage
