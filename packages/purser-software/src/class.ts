@@ -17,7 +17,7 @@ import {
   DESCRIPTORS,
   HEX_HASH_TYPE,
   REQUIRED_PROPS,
-} from '@purser/core/defaults';
+} from '@purser/core/constants';
 
 import {
   WalletType,

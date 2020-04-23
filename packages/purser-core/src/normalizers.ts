@@ -1,4 +1,4 @@
-import { PATH, SPLITTER, MATCH, SIGNATURE } from './defaults';
+import { PATH, SPLITTER, MATCH, SIGNATURE } from './constants';
 
 /**
  * Normalize a derivation path passed in as a string

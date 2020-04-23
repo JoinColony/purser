@@ -9,7 +9,7 @@ import {
 import { addressNormalizer, hexSequenceNormalizer } from './normalizers';
 
 import { genericClass as messages } from './messages';
-import { HEX_HASH_TYPE, SPLITTER, CHAIN_IDS } from './defaults';
+import { HEX_HASH_TYPE, SPLITTER, CHAIN_IDS } from './constants';
 import {
   AddressObject,
   WalletType,

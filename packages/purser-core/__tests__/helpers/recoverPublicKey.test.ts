@@ -7,7 +7,7 @@ import {
   recoveryParamNormalizer,
 } from '../../src/normalizers';
 
-import { HEX_HASH_TYPE } from '../../src/defaults';
+import { HEX_HASH_TYPE } from '../../src/constants';
 
 jest.mock('ethereumjs-util');
 jest.mock('../../src/normalizers');

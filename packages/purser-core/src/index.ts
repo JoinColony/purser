@@ -1,32 +1,8 @@
-import * as helpers from './helpers';
-import * as validators from './validators';
-import * as normalizers from './normalizers';
-import * as defaults from './defaults';
-import * as messages from './messages';
-import * as types from './types';
-import * as utils from './utils';
-import GenericWallet from './GenericWallet';
-
-const coreModule = {
-  helpers,
-  defaults,
-  validators,
-  normalizers,
-  messages,
-  types,
-  utils,
-  GenericWallet,
-};
-
-export {
-  helpers,
-  defaults,
-  validators,
-  normalizers,
-  messages,
-  types,
-  utils,
-  GenericWallet,
-};
-
-export default coreModule;
+export * as helpers from './helpers';
+export * as validators from './validators';
+export * as normalizers from './normalizers';
+export * as constants from './constants';
+export * as messages from './messages';
+export * as types from './types';
+export * as utils from './utils';
+export { default as GenericWallet } from './GenericWallet';

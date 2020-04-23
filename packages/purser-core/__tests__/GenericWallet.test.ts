@@ -9,7 +9,7 @@ import {
   addressValidator,
 } from '../src/validators';
 import { addressNormalizer, hexSequenceNormalizer } from '../src/normalizers';
-import { CHAIN_IDS } from '../src/defaults';
+import { CHAIN_IDS } from '../src/constants';
 
 jest.mock('hdkey');
 jest.mock('ethers/utils');

@@ -1,7 +1,7 @@
 import { jestMocked } from '../../../testutils';
 
 import { warning } from '../../src/utils';
-import * as defaults from '../../src/defaults';
+import * as constants from '../../src/constants';
 
 // @ts-ignore
 global.console = {
@@ -18,7 +18,7 @@ describe('`Core` Module', () => {
   describe('`warning()` util', () => {
     beforeEach(() => {
       // @ts-ignore
-      defaults.ENV = 'development';
+      constants.ENV = 'development';
     });
     afterEach(() => {
       mockWarn.mockClear();
@@ -30,7 +30,7 @@ describe('`Core` Module', () => {
     });
     test("Doesn't log a message when in production", () => {
       // @ts-ignore
-      defaults.ENV = 'production';
+      constants.ENV = 'production';
       warning(message);
       expect(console.warn).not.toHaveBeenCalled();
       expect(console.error).not.toHaveBeenCalled();
@@ -61,7 +61,7 @@ describe('`Core` Module', () => {
     });
     test("Doesn't log a message when in production", () => {
       // @ts-ignore
-      defaults.ENV = 'production';
+      constants.ENV = 'production';
       warning(message);
       expect(console.warn).not.toHaveBeenCalled();
     });

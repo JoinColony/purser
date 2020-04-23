@@ -1,6 +1,6 @@
 import { recoveryParamNormalizer } from '../../src/normalizers';
 
-import { SIGNATURE } from '../../src/defaults';
+import { SIGNATURE } from '../../src/constants';
 
 describe('`Core` Module', () => {
   describe('`recoveryParamNormalizer()` normalizer', () => {

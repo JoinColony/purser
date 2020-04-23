@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 
-import { WEI_MINIFICATION, GWEI_MINIFICATION } from './defaults';
+import { WEI_MINIFICATION, GWEI_MINIFICATION } from './constants';
 
 const oneWei = new BN(WEI_MINIFICATION.toString());
 const oneGwei = new BN(GWEI_MINIFICATION.toString());

@@ -2,7 +2,7 @@ import BN from 'bn.js';
 
 import ExtendedBN from './ExtendedBigNumber';
 
-import { ENV } from './defaults';
+import { ENV } from './constants';
 import { utils as messages } from './messages';
 
 /**

@@ -1,7 +1,7 @@
 import BN from 'bn.js';
 
 import { bigNumber } from '../../src/utils';
-import * as defaults from '../../src/defaults';
+import * as constants from '../../src/constants';
 
 describe('`Core` Module', () => {
   describe('`bigNumber()` util', () => {
@@ -16,25 +16,21 @@ describe('`Core` Module', () => {
       expect(bigNumberInstance).toHaveProperty('fromGwei');
     });
     test('Correctly converts to WEI', () => {
-      const bigNumberWei = bigNumber(1)
-        .toWei()
-        .toString();
-      expect(bigNumberWei).toEqual(`${defaults.WEI_MINIFICATION}`);
+      const bigNumberWei = bigNumber(1).toWei().toString();
+      expect(bigNumberWei).toEqual(`${constants.WEI_MINIFICATION}`);
     });
     test('Correctly converts from WEI', () => {
-      const bigNumberValue = bigNumber(`${defaults.WEI_MINIFICATION}`)
+      const bigNumberValue = bigNumber(`${constants.WEI_MINIFICATION}`)
         .fromWei()
         .toString();
       expect(bigNumberValue).toEqual(`1`);
     });
     test('Correctly converts to GWEI', () => {
-      const bigNumberGwei = bigNumber(1)
-        .toGwei()
-        .toString();
-      expect(bigNumberGwei).toEqual(`${defaults.GWEI_MINIFICATION}`);
+      const bigNumberGwei = bigNumber(1).toGwei().toString();
+      expect(bigNumberGwei).toEqual(`${constants.GWEI_MINIFICATION}`);
     });
     test('Correctly converts from GWEI', () => {
-      const bigNumberValue = bigNumber(`${defaults.GWEI_MINIFICATION}`)
+      const bigNumberValue = bigNumber(`${constants.GWEI_MINIFICATION}`)
         .fromGwei()
         .toString();
       expect(bigNumberValue).toEqual(`1`);

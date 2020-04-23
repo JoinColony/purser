@@ -1,5 +1,5 @@
 import { verbose } from '../../src/utils';
-import * as defaults from '../../src/defaults';
+import * as constants from '../../src/constants';
 
 // @ts-ignore
 global.console = {
@@ -10,35 +10,35 @@ global.console = {
 describe('`Core` Module', () => {
   describe('`verbose()` util', () => {
     test('Should be verbose if the environment is not defined', () => {
-      const env = defaults.ENV;
+      const env = constants.ENV;
       // @ts-ignore
-      defaults.ENV = undefined;
+      constants.ENV = undefined;
       const isVerbose = verbose();
       expect(isVerbose).toBeTruthy();
       // @ts-ignore
-      defaults.ENV = env;
+      constants.ENV = env;
     });
     test("Should be verbose if we're in a development environment", () => {
-      const env = defaults.ENV;
+      const env = constants.ENV;
       // @ts-ignore
-      defaults.ENV = 'development';
+      constants.ENV = 'development';
       const isVerbose = verbose();
       expect(isVerbose).toBeTruthy();
       // @ts-ignore
-      defaults.ENV = env;
+      constants.ENV = env;
     });
     test("Should NOT be verbose if we're not in `development` env", () => {
-      const env = defaults.ENV;
+      const env = constants.ENV;
       // @ts-ignore
-      defaults.ENV = 'production';
+      constants.ENV = 'production';
       let isVerbose = verbose();
       expect(isVerbose).not.toBeTruthy();
       // @ts-ignore
-      defaults.ENV = 'testing';
+      constants.ENV = 'testing';
       isVerbose = verbose();
       expect(isVerbose).not.toBeTruthy();
       // @ts-ignore
-      defaults.ENV = env;
+      constants.ENV = env;
     });
   });
 });

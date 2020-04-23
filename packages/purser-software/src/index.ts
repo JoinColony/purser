@@ -11,9 +11,7 @@ import {
   getRandomValues,
   warning,
 } from '@purser/core/utils';
-
-import { PATH, CHAIN_IDS } from '@purser/core/defaults';
-
+import { PATH, CHAIN_IDS } from '@purser/core/constants';
 import { WalletArgumentsType } from '@purser/core/types';
 
 import SoftwareWallet from './class';

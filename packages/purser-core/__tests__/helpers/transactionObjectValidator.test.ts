@@ -8,7 +8,7 @@ import {
   hexSequenceValidator,
 } from '../../src/validators';
 import { bigNumber } from '../../src/utils';
-import { TRANSACTION } from '../../src/defaults';
+import { TRANSACTION } from '../../src/constants';
 
 jest.mock('../../src/validators');
 jest.mock('../../src/utils');
@@ -98,7 +98,7 @@ describe('`Core` Module', () => {
       expect(validatedTransactionObject).toHaveProperty('inputData');
     });
     test('Has defaults for all object values (except for `to`)', async () => {
-      mockedBigNumber.mockImplementation(number => number);
+      mockedBigNumber.mockImplementation((number) => number);
       const validatedTransactionObject = transactionObjectValidator();
       expect(validatedTransactionObject).toHaveProperty(
         'gasPrice',

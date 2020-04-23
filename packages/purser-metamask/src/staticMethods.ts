@@ -19,7 +19,7 @@ import {
   getChainDefinition,
 } from '@purser/core/helpers';
 
-import { HEX_HASH_TYPE } from '@purser/core/defaults';
+import { HEX_HASH_TYPE } from '@purser/core/constants';
 
 import {
   MessageVerificationObjectType,

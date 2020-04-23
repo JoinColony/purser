@@ -1,5 +1,3 @@
-
-
 import { DerivationPathDefaultType } from './types';
 
 /*
@@ -55,21 +53,21 @@ export const MATCH = {
 /*
  * Used to separate misc. derivation paths or urls
  */
-export const SPLITTER: string = '/';
+export const SPLITTER = '/';
 
 /*
  * Used to better inform the user when a variable doesn't have a value
  * (Used in Error messsages)
  */
-export const UNDEFINED: string = 'undefined';
+export const UNDEFINED = 'undefined';
 
 /*
  * Hash types
  */
 export const HEX_HASH_TYPE: BufferEncoding = 'hex';
 
-export const WEI_MINIFICATION: number = 1e18;
-export const GWEI_MINIFICATION: number = 1e9;
+export const WEI_MINIFICATION = 1e18;
+export const GWEI_MINIFICATION = 1e9;
 
 /*
  * Default class descriptors.
@@ -98,7 +96,7 @@ export const DESCRIPTORS = {
 /*
  * Defaults for the transaction object
  */
-export const TRANSACTION  = {
+export const TRANSACTION = {
   CHAIN_ID: 1,
   GAS_PRICE: '9000000000', // 9 Gwei
   GAS_LIMIT: '21000',
@@ -117,7 +115,7 @@ export const SIGNATURE = {
   RECOVERY_EVEN: 28,
 };
 
-export const HTTPS_PROTOCOL: string = 'https:';
+export const HTTPS_PROTOCOL = 'https:';
 
 /*
  * Chain IDs

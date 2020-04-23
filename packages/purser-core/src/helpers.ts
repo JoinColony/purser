@@ -21,7 +21,7 @@ import {
   NETWORK_NAMES,
   PATH,
   TRANSACTION,
-} from './defaults';
+} from './constants';
 
 import {
   DerivationPathObjectType,
