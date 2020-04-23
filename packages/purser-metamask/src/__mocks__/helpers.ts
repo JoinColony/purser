@@ -14,7 +14,7 @@ export const setStateEventObserver = jest.fn(callback => {
 });
 
 /*
- * This does not exist in the main library.
+ * This is only used for testing
  * It's only here to help us trigger a state update
  */
 export const triggerUpdateStateEvents = newState =>

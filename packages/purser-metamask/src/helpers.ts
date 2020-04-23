@@ -5,6 +5,7 @@ import {
   MetamaskStateEventsObserverType,
 } from './types';
 
+const anyGlobal: any = global;
 /*
  * @TODO Add isModern() helper method to detect the new version of Metamask
  */
@@ -20,8 +21,6 @@ export const detect = async (): Promise<boolean> => {
   /*
    * Modern Metamask Version
    */
-  const anyGlobal: any = global;
-
   if (anyGlobal.ethereum) {
     /*
      * @NOTE This is a temporary failsafe check, since Metmask is running an
@@ -126,7 +125,6 @@ export const getInpageProvider = (): MetamaskInpageProvider => {
    *
    * See: https://github.com/facebook/jest/issues/936
    */
-  const anyGlobal: any = global;
   if (anyGlobal.ethereum) {
     return anyGlobal.ethereum;
   }
@@ -151,3 +149,13 @@ export const setStateEventObserver = (
 
   return stateEvents.update.push(observer);
 };
+
+/*
+ * This is only used for testing
+ * It's only here to help us trigger a state update
+ */
+export const triggerUpdateStateEvents = (newState) =>
+  /* eslint-disable-next-line no-underscore-dangle */
+  anyGlobal.web3.currentProvider.publicConfigStore._events.update.map(
+    (callback) => callback(newState),
+  );

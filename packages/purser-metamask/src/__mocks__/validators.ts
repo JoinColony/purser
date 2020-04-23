@@ -1,3 +1,1 @@
-export const validateMetamaskState = jest.fn(() => true);
-
-export default validateMetamaskState;
+export const validateMetaMaskState = jest.fn(() => true);

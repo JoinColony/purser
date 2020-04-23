@@ -26,10 +26,10 @@ import {
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { methodCaller, setStateEventObserver } from './helpers';
-import { validateMetamaskState } from './validators';
+import { validateMetaMaskState } from './validators';
 import { signMessage as signMessageMethodLink } from './methodLinks';
 
-import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from './defaults';
+import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from './constants';
 import {
   MetamaskWallet as messages,
   staticMethods as staticMethodsMessages,
@@ -162,7 +162,7 @@ export default class MetamaskWallet {
                * If they aren't there, it means that either Metamask is locked,
                * or somebody tampered with them.
                */
-              validateMetamaskState(newState);
+              validateMetaMaskState(newState);
               /*
                * We only update the values if the state has changed.
                * (We're using lodash here to deep compare the two state objects)
@@ -234,7 +234,7 @@ export default class MetamaskWallet {
        * This way we could better test it
        */
       () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           /*
            * Sign the message. This will prompt the user via Metamask's UI
            */

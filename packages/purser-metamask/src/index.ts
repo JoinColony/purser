@@ -2,7 +2,7 @@ import Web3Instance from 'web3';
 
 import { warning } from '@purser/core/utils';
 
-import MetamaskWallet from './class';
+import MetaMaskWallet from './MetaMaskWallet';
 import {
   methodCaller,
   getInpageProvider,
@@ -22,7 +22,7 @@ import { MetamaskStateEventsObserverType } from './types';
  * @return {WalletType} The wallet object resulted by instantiating the class
  * (Object is wrapped in a promise).
  */
-export const open = async (): Promise<MetamaskWallet> => {
+export const open = async (): Promise<MetaMaskWallet> => {
   let addressAfterEnable: string;
   try {
     /*
@@ -72,7 +72,7 @@ export const open = async (): Promise<MetamaskWallet> => {
       const {
         publicConfigStore: { _state: state },
       } = getInpageProvider();
-      return new MetamaskWallet({
+      return new MetaMaskWallet({
         /*
          * The EIP-1102 mode uses the address we got after enabling (and getting
          * the users's permission), while the legacy mode get the address from

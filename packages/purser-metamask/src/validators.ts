@@ -1,5 +1,3 @@
-/* @flow */
-
 import { validators as messages } from './messages';
 
 /**
@@ -12,7 +10,7 @@ import { validators as messages } from './messages';
  *
  * @return {boolean} Throws if object is not valid. If it's all good, it returns true.
  */
-export const validateMetamaskState = (stateObject: Object): boolean => {
+export const validateMetaMaskState = (stateObject: Object): boolean => {
   if (!stateObject || typeof stateObject !== 'object') {
     throw new Error(messages.noState);
   }
@@ -24,9 +22,3 @@ export const validateMetamaskState = (stateObject: Object): boolean => {
   }
   return true;
 };
-
-const metamaskValidators: Object = {
-  validateMetamaskState,
-};
-
-export default metamaskValidators;

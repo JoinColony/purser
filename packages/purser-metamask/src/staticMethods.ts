@@ -35,7 +35,7 @@ import {
   verifyMessage as verifyMessageMethodLink,
 } from './methodLinks';
 
-import { STD_ERRORS } from './defaults';
+import { STD_ERRORS } from './constants';
 import { staticMethods as messages } from './messages';
 
 import { Web3TransactionType } from './types';
