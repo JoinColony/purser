@@ -1,5 +1,3 @@
-/* @flow */
-
 import { helpers as messages } from './messages';
 
 import {
@@ -33,7 +31,10 @@ export const detect = async (): Promise<boolean> => {
      * @TODO Remove legacy metmask object availability check
      * After an adequate amount of time has passed
      */
-    if (anyGlobal.ethereum.isUnlocked && !(await anyGlobal.ethereum.isUnlocked())) {
+    if (
+      anyGlobal.ethereum.isUnlocked &&
+      !(await anyGlobal.ethereum.isUnlocked())
+    ) {
       throw new Error(messages.isLocked);
     }
     /*
@@ -44,7 +45,10 @@ export const detect = async (): Promise<boolean> => {
      * @TODO Remove legacy metmask object availability check
      * After an adequate amount of time has passed
      */
-    if (anyGlobal.ethereum.isEnabled && !(await anyGlobal.ethereum.isEnabled())) {
+    if (
+      anyGlobal.ethereum.isEnabled &&
+      !(await anyGlobal.ethereum.isEnabled())
+    ) {
       throw new Error(messages.notEnabled);
     }
     /*
@@ -69,7 +73,9 @@ export const detect = async (): Promise<boolean> => {
       throw new Error(messages.noProviderState);
     }
     /* eslint-disable-next-line no-underscore-dangle */
-    if (!anyGlobal.web3.currentProvider.publicConfigStore._state.selectedAddress) {
+    if (
+      !anyGlobal.web3.currentProvider.publicConfigStore._state.selectedAddress
+    ) {
       throw new Error(messages.notEnabled);
     }
     return true;
@@ -94,19 +100,10 @@ export const detect = async (): Promise<boolean> => {
  */
 export const methodCaller = async (
   callback: () => any,
-  errorMessage: string = '',
+  errorMessage = '',
 ): Promise<any> => {
   try {
-    /*
-     * Detect if the Metamask injected proxy is (still) available
-     *
-     * We need this little go-around trick to mock just one export of
-     * the module, while leaving the rest of the module intact so we can test it
-     *
-     * See: https://github.com/facebook/jest/issues/936
-     */
-    /* eslint-disable-next-line no-use-before-define */
-    await metamaskHelpers.detect();
+    await detect();
     return callback();
   } catch (caughtError) {
     throw new Error(
@@ -150,28 +147,7 @@ export const setStateEventObserver = (
 ): void => {
   const {
     publicConfigStore: { _events: stateEvents },
-  }: MetamaskInpageProvider =
-    /*
-     * We need this little go-around trick to mock just one export of
-     * the module, while leaving the rest of the module intact so we can test it
-     *
-     * See: https://github.com/facebook/jest/issues/936
-     */
-    /* eslint-disable-next-line no-use-before-define */
-    metamaskHelpers.getInpageProvider();
+  }: MetamaskInpageProvider = getInpageProvider();
 
   return stateEvents.update.push(observer);
 };
-
-/*
- * This default export is only here to help us with testing, otherwise
- * it wound't be needed
- */
-const metamaskHelpers = {
-  detect,
-  methodCaller,
-  getInpageProvider,
-  setStateEventObserver,
-};
-
-export default metamaskHelpers;

@@ -137,15 +137,3 @@ export const accountChangeHook = async (
     throw new Error(messages.cannotAddHook);
   }
 };
-
-/*
- * @NOTE There's an argument to be made here to expose the new version
- */
-
-const metamaskWallet: Record<string, any> = {
-  open,
-  detect,
-  accountChangeHook,
-};
-
-export default metamaskWallet;
