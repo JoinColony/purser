@@ -1,17 +1,20 @@
-import Web3Instance from 'web3';
+import Web3 from 'web3';
 
-import { warning } from '@colony/purser-core/utils';
-import metamaskWallet from '@colony/purser-metamask';
-import MetamaskWalletClass from '@colony/purser-metamask/class';
-import {
-  methodCaller,
-  getInpageProvider,
-} from '@colony/purser-metamask/helpers';
+import { warning } from '../../purser-core/src/utils';
+import { open } from '../src/index';
+import MetaMaskWallet from '../src/MetaMaskWallet';
+import { methodCaller, getInpageProvider } from '../src/helpers';
+import { jestMocked, testGlobal } from '../../testutils';
 
-jest.dontMock('@colony/purser-metamask');
-
-jest.mock('@colony/purser-metamask/class');
+jest.mock('../src/MetaMaskWallet');
 jest.mock('web3');
+jest.mock('../src/helpers');
+jest.mock('../../purser-core/src/utils');
+
+// jestMocked doesn't work here, as the constructor is an overloaded function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const MockedWeb3 = (Web3 as unknown) as jest.Mock<any>;
+const mockedWarning = jestMocked(warning);
 
 /*
  * Mocked values
@@ -19,32 +22,20 @@ jest.mock('web3');
 const mockedAddress = 'mocked-address';
 const mockedEnableMethod = jest.fn(() => [mockedAddress]);
 
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-metamask/helpers', () =>
-  require('@mocks/purser-metamask/helpers'),
-);
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils'),
-);
-
 describe('Metamask` Wallet Module', () => {
   beforeEach(() => {
-    global.ethereum = {
+    testGlobal.ethereum = {
       enable: mockedEnableMethod,
     };
   });
   afterEach(() => {
-    Web3Instance.mockClear();
-    warning.mockClear();
+    MockedWeb3.mockClear();
+    mockedWarning.mockClear();
     mockedEnableMethod.mockClear();
   });
   describe('`open()` static method', () => {
     test('Start in EIP-1102 mode', async () => {
-      await metamaskWallet.open();
+      await open();
       /*
        * Enabled the account
        */
@@ -52,21 +43,21 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Created the Web3 Instance
        */
-      expect(Web3Instance).toHaveBeenCalled();
-      expect(Web3Instance).toHaveBeenCalledWith(global.ethereum);
+      expect(MockedWeb3).toHaveBeenCalled();
+      expect(MockedWeb3).toHaveBeenCalledWith(testGlobal.ethereum);
       /*
        * We did not warn the user, we're not in legacy mode
        */
       expect(warning).not.toHaveBeenCalled();
     });
     test('Start in Legacy mode', async () => {
-      global.ethereum = undefined;
-      global.web3 = {
+      testGlobal.ethereum = undefined;
+      testGlobal.web3 = {
         currentProvider: {
           enable: mockedEnableMethod,
         },
       };
-      await metamaskWallet.open();
+      await open();
       /*
        * We warn the user
        */
@@ -82,27 +73,27 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Created the Web3 Instance
        */
-      expect(Web3Instance).toHaveBeenCalled();
+      expect(MockedWeb3).toHaveBeenCalled();
       /*
        * Call the helper method
        */
     });
     test('Detect the inpage provider before opening', async () => {
-      await metamaskWallet.open();
+      await open();
       /*
        * Call the helper method
        */
       expect(methodCaller).toHaveBeenCalled();
     });
     test("Get the address from Metamask's state (legacy)", async () => {
-      await metamaskWallet.open();
+      await open();
       /*
        * Call the helper method
        */
       expect(getInpageProvider).toHaveBeenCalled();
     });
     test('Open the wallet with defaults', async () => {
-      await metamaskWallet.open();
+      await open();
       /*
        * Call the helper method
        */
@@ -110,8 +101,8 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Instantiates the Metamask class
        */
-      expect(MetamaskWalletClass).toHaveBeenCalled();
-      expect(MetamaskWalletClass).toHaveBeenCalledWith({
+      expect(MetaMaskWallet).toHaveBeenCalled();
+      expect(MetaMaskWallet).toHaveBeenCalledWith({
         address: mockedAddress,
       });
     });
