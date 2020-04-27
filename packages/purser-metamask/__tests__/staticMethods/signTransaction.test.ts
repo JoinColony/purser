@@ -1,47 +1,34 @@
 import { Transaction as EthereumTx } from 'ethereumjs-tx';
-import {
-  getChainDefinition,
-  transactionObjectValidator,
-} from '@colony/purser-core/helpers';
-import { warning } from '@colony/purser-core/utils';
 
-import { signTransaction } from '@colony/purser-metamask/staticMethods';
-import { staticMethods as messages } from '@colony/purser-metamask/messages';
-import { methodCaller } from '@colony/purser-metamask/helpers';
+import { STD_ERRORS } from '../../src/constants';
+import { signTransaction } from '../../src/staticMethods';
+import { staticMethods as messages } from '../../src/messages';
+import { methodCaller } from '../../src/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '@colony/purser-core/normalizers';
+} from '../../../purser-core/src/normalizers';
 import {
   addressValidator,
   safeIntegerValidator,
   hexSequenceValidator,
-} from '@colony/purser-core/validators';
+} from '../../../purser-core/src/validators';
+import { SIGNATURE } from '../../../purser-core/src/constants';
 
-import { STD_ERRORS } from '@colony/purser-metamask/defaults';
-import { SIGNATURE } from '@colony/purser-core/defaults';
+import { warning } from '../../../purser-core/src/utils';
+import {
+  getChainDefinition,
+  transactionObjectValidator,
+} from '../../../purser-core/src/helpers';
 
-jest.dontMock('@colony/purser-metamask/staticMethods');
+import { jestMocked, testGlobal } from '../../../testutils';
 
 jest.mock('ethereumjs-tx');
-jest.mock('@colony/purser-core/validators');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/helpers', () =>
-  require('@mocks/purser-core/helpers'),
-);
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers'),
-);
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils'),
-);
-jest.mock('@colony/purser-metamask/helpers', () =>
-  require('@mocks/purser-metamask/helpers'),
-);
+jest.mock('../../../purser-core/src/validators');
+jest.mock('../../../purser-core/src/helpers');
+jest.mock('../../../purser-core/src/normalizers');
+jest.mock('../../../purser-core/src/utils');
+jest.mock('../../src/helpers');
 
 const chainId = 5;
 
@@ -60,7 +47,18 @@ const mockedRawSignedTransaction = {
   v: SIGNATURE.RECOVERY_EVEN,
   value: '0',
 };
-global.web3 = {
+
+const mockedMethodCaller = jestMocked(methodCaller);
+const mockedTranactionObjectValidator = jestMocked(transactionObjectValidator);
+const mockedAddressValidator = jestMocked(addressValidator);
+const mockedSafeIntegerValidator = jestMocked(safeIntegerValidator);
+const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
+const mockedGetChainDefinition = jestMocked(getChainDefinition);
+const mockedWarning = jestMocked(warning);
+const mockedAddressNormalizer = jestMocked(addressNormalizer);
+const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
+
+testGlobal.web3 = {
   eth: {
     sendTransaction: jest.fn((transactionObject, callback) =>
       callback(undefined, mockedTransactionHash),
@@ -78,7 +76,7 @@ const mockedAddress = 'mocked-address';
 const inputData = 'mocked-data';
 const gasLimit = 'mocked-gas-limit';
 const gasPrice = 'mocked-gas-price';
-const nonce = 'mocked-nonce';
+const nonce = 42;
 const to = 'mocked-destination-address';
 const value = 'mocked-transaction-value';
 const mockedTransactionObject = {
@@ -88,6 +86,7 @@ const mockedTransactionObject = {
   chainId,
   value,
   inputData,
+  nonce,
 };
 const mockedArgumentsObject = {
   ...mockedTransactionObject,
@@ -96,23 +95,23 @@ const mockedArgumentsObject = {
 
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
-    global.web3.eth.sendTransaction.mockClear();
-    global.web3.eth.getTransaction.mockClear();
-    methodCaller.mockClear();
-    transactionObjectValidator.mockClear();
-    addressValidator.mockClear();
-    safeIntegerValidator.mockClear();
-    hexSequenceValidator.mockClear();
-    getChainDefinition.mockClear();
-    warning.mockClear();
-    addressNormalizer.mockClear();
-    hexSequenceNormalizer.mockClear();
+    testGlobal.web3.eth.sendTransaction.mockClear();
+    testGlobal.web3.eth.getTransaction.mockClear();
+    mockedMethodCaller.mockClear();
+    mockedTranactionObjectValidator.mockClear();
+    mockedAddressValidator.mockClear();
+    mockedSafeIntegerValidator.mockClear();
+    mockedHexSequenceValidator.mockClear();
+    mockedGetChainDefinition.mockClear();
+    mockedWarning.mockClear();
+    mockedAddressNormalizer.mockClear();
+    mockedHexSequenceNormalizer.mockClear();
   });
   describe('`signTransaction()` static method', () => {
     test('Calls the correct metamask injected method', async () => {
       await signTransaction(mockedArgumentsObject);
-      expect(global.web3.eth.sendTransaction).toHaveBeenCalled();
-      expect(global.web3.eth.sendTransaction).toHaveBeenCalledWith(
+      expect(testGlobal.web3.eth.sendTransaction).toHaveBeenCalled();
+      expect(testGlobal.web3.eth.sendTransaction).toHaveBeenCalledWith(
         expect.objectContaining({
           from: mockedAddress,
           gasPrice,
@@ -149,6 +148,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       );
     });
     test('Throws if no argument provided', async () => {
+      // @ts-ignore
       expect(signTransaction()).rejects.toThrow();
     });
     test('Validates the `from` address individually', async () => {
@@ -175,7 +175,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       expect(warning).toHaveBeenCalled();
     });
     test('And ignores the nonce if not set', async () => {
-      await signTransaction(mockedArgumentsObject);
+      await signTransaction({ ...mockedArgumentsObject, nonce: undefined });
       /*
        * Does not try to validate the nonce
        */
@@ -235,14 +235,14 @@ describe('`Metamask` Wallet Module Static Methods', () => {
     });
     test('Returns the valid hash received from signing', async () => {
       const signedTransaction = await signTransaction(mockedArgumentsObject);
-      expect(global.web3.eth.getTransaction).toHaveBeenCalled();
+      expect(testGlobal.web3.eth.getTransaction).toHaveBeenCalled();
       expect(signedTransaction).toEqual('mocked-serialized-signed-transaction');
     });
     test('Throws if something goes wrong while processing the signed transaction', async () => {
       /*
        * Mock it locally to simulate an error in the sendTransaction callback
        */
-      hexSequenceValidator.mockImplementation(() => {
+      mockedHexSequenceValidator.mockImplementation(() => {
         throw new Error('hex sequence validator error');
       });
       expect(signTransaction(mockedArgumentsObject)).rejects.toHaveProperty(
@@ -254,7 +254,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Mock web3's `sendTransaction` method locally to simulate a generic error while signing
        */
-      global.web3.eth.sendTransaction.mockImplementation(
+      testGlobal.web3.eth.sendTransaction.mockImplementation(
         (transactionObject, callback) =>
           callback(new Error('generic sendTransaction error')),
       );
@@ -267,7 +267,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Mock web3's `sendTransaction` method locally to simulate cancelling signing
        */
-      global.web3.eth.sendTransaction.mockImplementation(
+      testGlobal.web3.eth.sendTransaction.mockImplementation(
         (transactionObject, callback) =>
           callback(new Error(STD_ERRORS.CANCEL_TX_SIGN), mockedTransactionHash),
       );
