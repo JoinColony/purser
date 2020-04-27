@@ -1,42 +1,29 @@
-import { messageVerificationObjectValidator } from '@colony/purser-core/helpers';
+import { messageVerificationObjectValidator } from '../../../purser-core/src/helpers';
 
-import { verifyMessage } from '@colony/purser-metamask/staticMethods';
-import { methodCaller } from '@colony/purser-metamask/helpers';
+import { methodCaller } from '../../src/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '@colony/purser-core/normalizers';
+} from '../../../purser-core/src/normalizers';
 import {
   addressValidator,
   hexSequenceValidator,
-} from '@colony/purser-core/validators';
+} from '../../../purser-core/src/validators';
+import { verifyMessage } from '../../src/staticMethods';
 
-jest.dontMock('@colony/purser-metamask/staticMethods');
+import { jestMocked, testGlobal } from '../../../testutils';
 
-jest.mock('@colony/purser-core/validators');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/helpers', () =>
-  require('@mocks/purser-core/helpers'),
-);
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers'),
-);
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils'),
-);
-jest.mock('@colony/purser-metamask/helpers', () =>
-  require('@mocks/purser-metamask/helpers'),
-);
+jest.mock('../../../purser-core/src/validators');
+jest.mock('../../../purser-core/src/helpers');
+jest.mock('../../../purser-core/src/normalizers');
+jest.mock('../../../purser-core/src/utils');
+jest.mock('../../src/helpers');
 
 /*
  * Mock the injected web3 proxy object
  */
 const mockedRecoveredAddress = 'mocked-message-signature';
-global.web3 = {
+testGlobal.web3 = {
   eth: {
     personal: {
       ecRecover: jest.fn((message, signature, callback) =>
@@ -44,17 +31,6 @@ global.web3 = {
       ),
     },
   },
-};
-/*
- * Mock the Buffer global object
- */
-const mockedToString = jest.fn(function mockedToString() {
-  return this;
-});
-global.Buffer = {
-  from: jest.fn(value => ({
-    toString: mockedToString.bind(value),
-  })),
 };
 
 /*
@@ -70,20 +46,28 @@ const mockedArgumentsObject = {
   currentAddress: mockedCurrentAddress,
 };
 
+const mockedMethodCaller = jestMocked(methodCaller);
+const mockedAddressValidator = jestMocked(addressValidator);
+const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
+const mockedAddressNormalizer = jestMocked(addressNormalizer);
+const mockedMessageVerificationObjectValidator = jestMocked(
+  messageVerificationObjectValidator,
+);
+
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
-    global.web3.eth.personal.ecRecover.mockClear();
-    methodCaller.mockClear();
-    messageVerificationObjectValidator.mockClear();
-    addressValidator.mockClear();
-    hexSequenceValidator.mockClear();
-    addressNormalizer.mockClear();
+    testGlobal.web3.eth.personal.ecRecover.mockClear();
+    mockedMethodCaller.mockClear();
+    mockedMessageVerificationObjectValidator.mockClear();
+    mockedAddressValidator.mockClear();
+    mockedHexSequenceValidator.mockClear();
+    mockedAddressNormalizer.mockClear();
   });
   describe('`verifyMessage()` static method', () => {
     test('Calls the correct metamask injected method', async () => {
       await verifyMessage(mockedArgumentsObject);
-      expect(global.web3.eth.personal.ecRecover).toHaveBeenCalled();
-      expect(global.web3.eth.personal.ecRecover).toHaveBeenCalledWith(
+      expect(testGlobal.web3.eth.personal.ecRecover).toHaveBeenCalled();
+      expect(testGlobal.web3.eth.personal.ecRecover).toHaveBeenCalledWith(
         mockedMessage,
         mockedSignature,
         expect.any(Function),
@@ -112,12 +96,13 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        *
        * See: https://jestjs.io/docs/en/mock-function-api.html#mockfnmockrestore
        */
-      addressValidator.mockImplementation(value => {
+      mockedAddressValidator.mockImplementation((value) => {
         if (!value) {
           throw new Error();
         }
         return true;
       });
+      // @ts-ignore
       expect(verifyMessage()).rejects.toThrow();
     });
     test('Validates the current address individually', async () => {
@@ -158,7 +143,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        * Mock the implementation locally to return the same mocked address
        * as the current one
        */
-      global.web3.eth.personal.ecRecover.mockImplementationOnce(
+      testGlobal.web3.eth.personal.ecRecover.mockImplementationOnce(
         (message, signature, callback) =>
           callback(undefined, mockedCurrentAddress),
       );
@@ -169,7 +154,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        * Mock the implementation locally to return the a different mocked address
        * to the current one
        */
-      global.web3.eth.personal.ecRecover.mockImplementationOnce(
+      testGlobal.web3.eth.personal.ecRecover.mockImplementationOnce(
         (message, signature, callback) =>
           callback(undefined, 'another-address'),
       );
@@ -192,7 +177,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Mock web3's `ecRecover` method locally to simulate a generic error while recovering
        */
-      global.web3.eth.personal.ecRecover.mockImplementationOnce(
+      testGlobal.web3.eth.personal.ecRecover.mockImplementationOnce(
         (message, signature, callback) =>
           callback(new Error('generic ecRecover error')),
       );
