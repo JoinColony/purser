@@ -1,8 +1,6 @@
-import { detect } from '@colony/purser-metamask/helpers';
-
-import { helpers as messages } from '@colony/purser-metamask/messages';
-
-jest.dontMock('@colony/purser-metamask/helpers');
+import { detect } from '../../src/helpers';
+import { helpers as messages } from '../../src/messages';
+import { testGlobal } from '../../../testutils';
 
 describe('Metamask` Wallet Module', () => {
   describe('`detect()` helper method', () => {
@@ -10,8 +8,8 @@ describe('Metamask` Wallet Module', () => {
       /*
        * No ethereum object
        */
-      global.ethereum = undefined;
-      global.web3 = undefined;
+      testGlobal.ethereum = undefined;
+      testGlobal.web3 = undefined;
       expect(detect()).rejects.toThrow();
       expect(detect()).rejects.toThrowError(new Error(messages.noExtension));
     });
@@ -20,10 +18,10 @@ describe('Metamask` Wallet Module', () => {
        * Mock the `isUnlocked()` ethereum method
        */
       const isUnlocked = jest.fn(async () => false);
-      global.ethereum = {
+      testGlobal.ethereum = {
         isUnlocked,
       };
-      global.web3 = undefined;
+      testGlobal.web3 = undefined;
       expect(detect()).rejects.toThrow();
       expect(detect()).rejects.toThrowError(new Error(messages.isLocked));
     });
@@ -36,11 +34,11 @@ describe('Metamask` Wallet Module', () => {
        */
       const isUnlocked = jest.fn(async () => true);
       const isEnabled = jest.fn(async () => false);
-      global.ethereum = {
+      testGlobal.ethereum = {
         isUnlocked,
         isEnabled,
       };
-      global.web3 = undefined;
+      testGlobal.web3 = undefined;
       expect(detect()).rejects.toThrow();
       expect(detect()).rejects.toThrowError(new Error(messages.notEnabled));
     });
@@ -48,13 +46,13 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Global proxy, but no provider
        */
-      global.ethereum = undefined;
-      global.web3 = {};
+      testGlobal.ethereum = undefined;
+      testGlobal.web3 = {};
       expect(detect()).rejects.toThrow();
       /*
        * Provider set, but empty
        */
-      global.web3 = { currentProvider: {} };
+      testGlobal.web3 = { currentProvider: {} };
       expect(detect()).rejects.toThrowError(
         new Error(messages.noInpageProvider),
       );
@@ -63,8 +61,8 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Provider available, but no state
        */
-      global.ethereum = undefined;
-      global.web3 = { currentProvider: { publicConfigStore: {} } };
+      testGlobal.ethereum = undefined;
+      testGlobal.web3 = { currentProvider: { publicConfigStore: {} } };
       expect(detect()).rejects.toThrow();
       expect(detect()).rejects.toThrowError(
         new Error(messages.noProviderState),
@@ -74,8 +72,10 @@ describe('Metamask` Wallet Module', () => {
       /*
        * State available, but no enabled
        */
-      global.ethereum = undefined;
-      global.web3 = { currentProvider: { publicConfigStore: { _state: {} } } };
+      testGlobal.ethereum = undefined;
+      testGlobal.web3 = {
+        currentProvider: { publicConfigStore: { _state: {} } },
+      };
       expect(detect()).rejects.toThrow();
       expect(detect()).rejects.toThrowError(new Error(messages.notEnabled));
     });
@@ -85,7 +85,7 @@ describe('Metamask` Wallet Module', () => {
        */
       const isUnlocked = jest.fn(async () => true);
       const isEnabled = jest.fn(async () => true);
-      global.ethereum = {
+      testGlobal.ethereum = {
         isUnlocked,
         isEnabled,
       };
@@ -97,8 +97,8 @@ describe('Metamask` Wallet Module', () => {
       /*
        * State available, and we have an address
        */
-      global.ethereum = undefined;
-      global.web3 = {
+      testGlobal.ethereum = undefined;
+      testGlobal.web3 = {
         currentProvider: {
           publicConfigStore: {
             _state: { selectedAddress: 'mocked-selected-address' },

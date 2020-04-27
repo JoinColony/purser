@@ -3,37 +3,39 @@ import { IpcProvider } from 'web3-core';
 
 export interface MetamaskInpageProvider extends IpcProvider {
   enable: () => Promise<Array<string>>;
-  mux: Object;
+  mux: Record<string, any>;
+  // There are surely more events but this is the one we care about
+  on(event: 'accountsChanged', listener: (accounts: string[]) => void);
   publicConfigStore: {
-    _events: any,
-    _state: any,
+    _events: any;
+    _state: any;
   };
-  rpcEngine: Object;
+  rpcEngine: Record<string, any>;
 }
 
 export type Web3CallbackType = (error: Error, result: string) => any;
 
 export type Web3TransactionType = {
-  blockHash: string,
-  blockNumber: number,
-  from: string,
-  gas: number,
-  gasPrice: BigNumber,
-  hash: string,
-  input: string,
-  nonce: number,
-  r: string,
-  s: string,
-  to: string,
-  transactionIndex: number,
-  v: string,
-  value: string,
+  blockHash: string;
+  blockNumber: number;
+  from: string;
+  gas: number;
+  gasPrice: BigNumber;
+  hash: string;
+  input: string;
+  nonce: number;
+  r: string;
+  s: string;
+  to: string;
+  transactionIndex: number;
+  v: string;
+  value: string;
 };
 
-export type MetamaskStateEventsObserverType = (state: Object) => any;
+export type MetamaskStateEventsObserverType = (state: any) => any;
 
 export type MetamaskWalletConstructorArgumentsType = {
-  address: string,
+  address: string;
 };
 
 export type getTransactionMethodType = (
@@ -47,7 +49,7 @@ export type signMessageMethodType = (
 ) => void;
 
 export type signTrasactionMethodType = (
-  transactionObject: Object,
+  transactionObject: Record<string, any>,
   callback: Web3CallbackType,
 ) => void;
 

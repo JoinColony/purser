@@ -143,11 +143,16 @@ export const getInpageProvider = (): MetamaskInpageProvider => {
 export const setStateEventObserver = (
   observer: MetamaskStateEventsObserverType,
 ): void => {
+  const ethereum = getInpageProvider();
   const {
     publicConfigStore: { _events: stateEvents },
-  }: MetamaskInpageProvider = getInpageProvider();
+  }: MetamaskInpageProvider = ethereum;
 
-  return stateEvents.update.push(observer);
+  if (ethereum.on) {
+    ethereum.on('accountsChanged', observer);
+  } else {
+    stateEvents.update.push(observer);
+  }
 };
 
 /*

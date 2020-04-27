@@ -1,8 +1,9 @@
-import * as helpers from '@colony/purser-metamask/helpers';
-
-jest.dontMock('@colony/purser-metamask/helpers');
+import * as helpers from '../../src/helpers';
+import { testGlobal } from '../../../testutils';
 
 const { setStateEventObserver } = helpers;
+
+const mockGetInpageProvider = jest.spyOn(helpers, 'getInpageProvider');
 
 describe('Metamask` Wallet Module', () => {
   describe('`setStateEventObserver()` helper method with old ethereum provider api', () => {
@@ -10,7 +11,7 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Mock the global injected in-page provider
        */
-      global.web3 = {
+      testGlobal.web3 = {
         currentProvider: {
           publicConfigStore: {
             _events: {
@@ -20,36 +21,30 @@ describe('Metamask` Wallet Module', () => {
         },
       };
 
-      /*
-       * We just need this method mocked, but since it's declared in a module we
-       * need to test we have do do this little go-around trick and use the default export
-       *
-       * See: https://github.com/facebook/jest/issues/936
-       */
-      helpers.default.getInpageProvider = jest.fn(
-        () => global.web3.currentProvider,
+      mockGetInpageProvider.mockImplementation(
+        () => testGlobal.web3.currentProvider,
       );
     });
     afterEach(() => {
-      helpers.default.getInpageProvider.mockClear();
+      mockGetInpageProvider.mockClear();
       /*
        * Also reset the state event updates array
        */
       const {
         publicConfigStore: { _events: stateEvents },
-      } = helpers.default.getInpageProvider();
+      } = helpers.getInpageProvider();
       stateEvents.update = [];
     });
     test('Uses `getInpageProvider` to get the state events Array', async () => {
-      setStateEventObserver();
-      expect(helpers.default.getInpageProvider).toHaveBeenCalled();
+      setStateEventObserver(jest.fn());
+      expect(mockGetInpageProvider).toHaveBeenCalled();
     });
     test('Adds the observer callback to the state events Array', async () => {
       const {
         publicConfigStore: { _events: stateEvents },
-      } = helpers.default.getInpageProvider();
+      } = helpers.getInpageProvider();
       expect(stateEvents.update).toHaveLength(0);
-      setStateEventObserver(() => {});
+      setStateEventObserver(jest.fn());
       expect(stateEvents.update).toHaveLength(1);
     });
   });
@@ -59,25 +54,30 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Mock the ethereum provider with the new state change api
        */
-      helpers.default.getInpageProvider = jest.fn(() => global.ethereum);
-      global.ethereum = {
-        on: jest.fn(() => {}),
+      mockGetInpageProvider.mockImplementation(() => testGlobal.ethereum);
+      testGlobal.ethereum = {
+        on: jest.fn(),
+        publicConfigStore: {
+          _events: {
+            update: [],
+          },
+        },
       };
     });
-    afterEach(() => helpers.default.getInpageProvider.mockClear());
+    afterEach(() => mockGetInpageProvider.mockClear());
     test('Utilises the new method of listening for events if available', async () => {
       /*
        * If ethereum.on is available we should be using that to listen for account state change
        * Attempt to listen for account changes
        */
-      const myListener = () => {};
+      const myListener = jest.fn();
       setStateEventObserver(myListener);
 
       /*
        * Expect the new function was called with our listening function
        */
-      expect(global.ethereum.on).toHaveBeenCalledTimes(1);
-      expect(global.ethereum.on).toHaveBeenCalledWith(
+      expect(testGlobal.ethereum.on).toHaveBeenCalledTimes(1);
+      expect(testGlobal.ethereum.on).toHaveBeenCalledWith(
         'accountsChanged',
         myListener,
       );

@@ -1,14 +1,8 @@
-import * as helpers from '@colony/purser-metamask/helpers';
+import * as helpers from '../../src/helpers';
 
-jest.dontMock('@colony/purser-metamask/helpers');
-
-/*
- * We just need this method mocked, but since it's declared in a module we
- * need to test we have do do this little go-around trick and use the default export
- *
- * See: https://github.com/facebook/jest/issues/936
- */
-helpers.default.detect = jest.fn(async () => true);
+const mockDetect = jest
+  .spyOn(helpers, 'detect')
+  .mockImplementation(() => Promise.resolve(true));
 
 const { methodCaller } = helpers;
 
@@ -17,7 +11,7 @@ const mockedCallback = jest.fn();
 describe('Metamask` Wallet Module', () => {
   describe('`methodCaller()` helper method', () => {
     afterEach(() => {
-      helpers.default.detect.mockClear();
+      mockDetect.mockClear();
       mockedCallback.mockClear();
     });
     test('If it detects Metamask, it executes the callback', async () => {
@@ -25,7 +19,7 @@ describe('Metamask` Wallet Module', () => {
       expect(mockedCallback).toHaveBeenCalled();
     });
     test("If it doesn't, it throws", async () => {
-      helpers.default.detect.mockImplementation(async () => {
+      mockDetect.mockImplementation(async () => {
         throw new Error();
       });
       expect(methodCaller(mockedCallback)).rejects.toThrow();
@@ -33,7 +27,7 @@ describe('Metamask` Wallet Module', () => {
     test('It has a customized error message for throwing', async () => {
       const mockedErrorMessage = 'Oh no!';
       const customizedError = 'The horror...';
-      helpers.default.detect.mockImplementation(async () => {
+      mockDetect.mockImplementation(async () => {
         throw new Error(mockedErrorMessage);
       });
       expect(

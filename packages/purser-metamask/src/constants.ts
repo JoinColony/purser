@@ -1,6 +1,4 @@
-/* @flow */
-
-export const PUBLICKEY_RECOVERY_MESSAGE: string =
+export const PUBLICKEY_RECOVERY_MESSAGE =
   'By signing this message you are allowing access to your public key';
 
 export const STD_ERRORS = {

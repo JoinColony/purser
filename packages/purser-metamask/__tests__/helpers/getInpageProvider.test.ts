@@ -1,14 +1,9 @@
-import * as helpers from '@colony/purser-metamask/helpers';
+import * as helpers from '../../src/helpers';
+import { testGlobal } from '../../../testutils';
 
-jest.dontMock('@colony/purser-metamask/helpers');
-
-/*
- * We just need this method mocked, but since it's declared in a module we
- * need to test we have do do this little go-around trick and use the default export
- *
- * See: https://github.com/facebook/jest/issues/936
- */
-helpers.default.detect = jest.fn(() => true);
+const mockDetect = jest
+  .spyOn(helpers, 'detect')
+  .mockImplementation(() => Promise.resolve(true));
 
 const { getInpageProvider } = helpers;
 
@@ -17,15 +12,15 @@ const { getInpageProvider } = helpers;
  */
 const mockedEthereumProvider = 'mocked-ethereum-provider';
 const mockedWeb3Provider = 'mocked-web3-provider';
-global.ethereum = mockedEthereumProvider;
-global.web3 = {
+testGlobal.ethereum = mockedEthereumProvider;
+testGlobal.web3 = {
   currentProvider: mockedWeb3Provider,
 };
 
 describe('Metamask` Wallet Module', () => {
   describe('`getInpageProvider()` helper method', () => {
     afterEach(() => {
-      helpers.default.detect.mockClear();
+      mockDetect.mockClear();
     });
     test('Returns the Web3 inpage provider', async () => {
       const modernProvider = getInpageProvider();
@@ -35,7 +30,7 @@ describe('Metamask` Wallet Module', () => {
       /*
        * @NOTE If there's no `global.ethereun` object, fall back to the legacy web3 provider
        */
-      delete global.ethereum;
+      delete testGlobal.ethereum;
       const legacyProvider = getInpageProvider();
       expect(legacyProvider).toEqual(mockedWeb3Provider);
     });
