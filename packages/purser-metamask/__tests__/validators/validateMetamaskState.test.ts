@@ -1,17 +1,8 @@
-import { validateMetamaskState } from '@colony/purser-metamask/validators';
+import { validateMetaMaskState } from '../../src/validators';
 
-import { validators as messages } from '@colony/purser-metamask/messages';
+import { validators as messages } from '../../src/messages';
 
-jest.dontMock('@colony/purser-metamask/validators');
-
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-metamask/helpers', () =>
-  require('@mocks/purser-metamask/helpers'),
-);
+jest.mock('../../src/helpers');
 
 /*
  * Mocked values for testing
@@ -24,38 +15,39 @@ const mockedStateObject = {
 };
 
 describe('Metamask` Wallet Module', () => {
-  describe('`validateMetamaskState()` validator', () => {
+  describe('`validateMetaMaskState()` validator', () => {
     test('Checks the value to be an object', async () => {
-      expect(() => validateMetamaskState()).toThrow();
-      expect(() => validateMetamaskState(1)).toThrowError(
+      // @ts-ignore
+      expect(() => validateMetaMaskState()).toThrow();
+      expect(() => validateMetaMaskState(1)).toThrowError(
         new Error(messages.noState),
       );
     });
     test('Checks that the object has the address prop', async () => {
       expect(() =>
-        validateMetamaskState({
+        validateMetaMaskState({
           networkVersion: mockedNetworkVersion,
         }),
       ).toThrow();
-      expect(() => validateMetamaskState([])).toThrowError(
+      expect(() => validateMetaMaskState([])).toThrowError(
         new Error(messages.noStateAddress),
       );
     });
     test('Checks that the object has the chain id prop', async () => {
       expect(() =>
-        validateMetamaskState({
+        validateMetaMaskState({
           selectedAddress: mockedSelectedAddress,
         }),
       ).toThrow();
       expect(() =>
-        validateMetamaskState({
+        validateMetaMaskState({
           selectedAddress: mockedSelectedAddress,
         }),
       ).toThrow(new Error(messages.noStateNetwork));
     });
     test('Returns otherwise if everyhting is good', async () => {
-      const isStateValid = validateMetamaskState(mockedStateObject);
-      expect(() => validateMetamaskState(mockedStateObject)).not.toThrow();
+      const isStateValid = validateMetaMaskState(mockedStateObject);
+      expect(() => validateMetaMaskState(mockedStateObject)).not.toThrow();
       expect(isStateValid).toBeTruthy();
     });
   });
