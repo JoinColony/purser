@@ -1,44 +1,31 @@
-import { warning } from '@colony/purser-core/utils';
-
-import { signMessage } from '@colony/purser-metamask/staticMethods';
-import { staticMethods as messages } from '@colony/purser-metamask/messages';
-import { methodCaller } from '@colony/purser-metamask/helpers';
-import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
+import { warning } from '../../../purser-core/src/utils';
+import { hexSequenceNormalizer } from '../../../purser-core/src/normalizers';
 import {
   addressValidator,
   messageValidator,
   hexSequenceValidator,
-} from '@colony/purser-core/validators';
-import { messageOrDataValidator } from '@colony/purser-core/helpers';
+} from '../../../purser-core/src/validators';
+import { messageOrDataValidator } from '../../../purser-core/src/helpers';
 
-import { STD_ERRORS } from '@colony/purser-metamask/defaults';
+import { signMessage } from '../../src/staticMethods';
+import { staticMethods as messages } from '../../src/messages';
+import { methodCaller } from '../../src/helpers';
 
-jest.dontMock('@colony/purser-metamask/staticMethods');
+import { STD_ERRORS } from '../../src/constants';
 
-jest.mock('@colony/purser-core/validators');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/helpers', () =>
-  require('@mocks/purser-core/helpers'),
-);
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers'),
-);
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils'),
-);
-jest.mock('@colony/purser-metamask/helpers', () =>
-  require('@mocks/purser-metamask/helpers'),
-);
+import { jestMocked, testGlobal } from '../../../testutils';
+
+jest.mock('../../../purser-core/src/validators');
+jest.mock('../../../purser-core/src/helpers');
+jest.mock('../../../purser-core/src/normalizers');
+jest.mock('../../../purser-core/src/utils');
+jest.mock('../../src/helpers');
 
 /*
  * Mock the injected web3 proxy object
  */
 const mockedMessageSignature = 'mocked-message-signature';
-global.web3 = {
+testGlobal.web3 = {
   eth: {
     personal: {
       sign: jest.fn((message, address, callback) =>
@@ -46,17 +33,6 @@ global.web3 = {
       ),
     },
   },
-};
-/*
- * Mock the Buffer global object
- */
-const mockedToString = jest.fn(function mockedToString() {
-  return this;
-});
-global.Buffer = {
-  from: jest.fn(value => ({
-    toString: mockedToString.bind(value),
-  })),
 };
 
 /*
@@ -68,25 +44,34 @@ const mockedMessage = 'mocked-message';
 const mockedArgumentsObject = {
   message: mockedMessage,
   currentAddress: mockedAddress,
+  messageData: {},
 };
+
+const mockedBufferFrom = jest.spyOn(Buffer, 'from');
+const mockedMethodCaller = jestMocked(methodCaller);
+const mockedAddressValidator = jestMocked(addressValidator);
+const mockedMessageValidator = jestMocked(messageValidator);
+const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
+const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
+const mockedWarning = jestMocked(warning);
 
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
-    global.web3.eth.personal.sign.mockClear();
-    global.Buffer.from.mockClear();
-    methodCaller.mockClear();
-    addressValidator.mockClear();
-    messageValidator.mockClear();
-    hexSequenceValidator.mockClear();
-    warning.mockClear();
-    hexSequenceNormalizer.mockClear();
+    testGlobal.web3.eth.personal.sign.mockClear();
+    mockedBufferFrom.mockClear();
+    mockedMethodCaller.mockClear();
+    mockedAddressValidator.mockClear();
+    mockedMessageValidator.mockClear();
+    mockedHexSequenceValidator.mockClear();
+    mockedHexSequenceNormalizer.mockClear();
+    mockedWarning.mockClear();
   });
   describe('`signMessage()` static method', () => {
     test('Calls the correct metamask injected method', async () => {
       await signMessage(mockedArgumentsObject);
-      expect(global.web3.eth.personal.sign).toHaveBeenCalled();
-      expect(global.web3.eth.personal.sign).toHaveBeenCalledWith(
-        mockedMessage,
+      expect(testGlobal.web3.eth.personal.sign).toHaveBeenCalled();
+      expect(testGlobal.web3.eth.personal.sign).toHaveBeenCalledWith(
+        Buffer.from(mockedMessage).toString('hex'),
         mockedAddress,
         expect.any(Function),
       );
@@ -103,12 +88,13 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        *
        * See:https://jestjs.io/docs/en/mock-function-api.html#mockfnmockrestore
        */
-      addressValidator.mockImplementation(value => {
+      mockedAddressValidator.mockImplementation((value) => {
         if (!value) {
           throw new Error();
         }
         return true;
       });
+      // @ts-ignore
       expect(signMessage()).rejects.toThrow();
     });
     test('Validates the `currentAddress` individually', async () => {
@@ -137,7 +123,9 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        * Calls the validation helper with the correct values
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(mockedMessage);
+      expect(hexSequenceNormalizer).toHaveBeenCalledWith(
+        Buffer.from(mockedMessage).toString('hex'),
+      );
     });
     test('Validates the returned message signature', async () => {
       await signMessage(mockedArgumentsObject);
@@ -165,7 +153,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Mock it locally to simulate an error in the sign callback
        */
-      hexSequenceValidator.mockImplementation(() => {
+      mockedHexSequenceValidator.mockImplementation(() => {
         throw new Error('hex sequence validator error');
       });
       expect(signMessage(mockedArgumentsObject)).rejects.toHaveProperty(
@@ -177,7 +165,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Mock web3's `sign` method locally to simulate a generic error while signing
        */
-      global.web3.eth.personal.sign.mockImplementation(
+      testGlobal.web3.eth.personal.sign.mockImplementation(
         (message, address, callback) =>
           callback(new Error('generic sign error')),
       );
@@ -190,7 +178,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Mock web3's `sign` method locally to simulate the user cancelling signing
        */
-      global.web3.eth.personal.sign.mockImplementation(
+      testGlobal.web3.eth.personal.sign.mockImplementation(
         (message, address, callback) =>
           callback(
             new Error(STD_ERRORS.CANCEL_MSG_SIGN),
