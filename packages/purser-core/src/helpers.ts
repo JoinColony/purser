@@ -25,7 +25,6 @@ import {
 
 import {
   DerivationPathObjectType,
-  TransactionObjectType,
   MessageVerificationObjectType,
   TransactionObjectTypeWithTo,
 } from './types';
@@ -58,13 +57,13 @@ export const derivationPathSerializer = ({
   const { DELIMITER } = PATH;
   const hasChange = change || change === 0;
   const hasAddressIndex = addressIndex || addressIndex === 0;
-  return `${`${PATH.HEADER_KEY}/${purpose}` +
+  return `${
+    `${PATH.HEADER_KEY}/${purpose}` +
     `${DELIMITER}${coinType}` +
     `${DELIMITER}${account}` +
     `${DELIMITER}` +
-    `${hasChange ? change : ''}`}${
-    hasChange && hasAddressIndex ? `/${addressIndex}` : ''
-  }`;
+    `${hasChange ? change : ''}`
+  }${hasChange && hasAddressIndex ? `/${addressIndex}` : ''}`;
 };
 
 /**
@@ -309,20 +308,6 @@ export const messageVerificationObjectValidator = ({
   };
 };
 
-/*
-export const userInputValidator = ({
-                                     firstArgument = {},
-                                     requiredEither = [],
-                                     requiredAll = [],
-                                     requiredOr = [],
-} : {
-  firstArgument: Object,
-  requiredEither?: Array<String>,
-  requiredAll?: Array<String>,
-  requiredOr?: Array<String>
-  } = {})
- */
-
 /**
  * Check if the user provided input is in the form of an Object and it's required props
  *
@@ -341,11 +326,12 @@ export const userInputValidator = ({
   requiredAll = [],
   requiredOr = [],
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   firstArgument?: Record<string, any>;
   requiredEither?: Array<string>;
   requiredAll?: Array<string>;
   requiredOr?: Array<string>;
-} = {}) => {
+} = {}): void => {
   const { userInputValidator: messages } = helperMessages;
   /*
    * First we check if the argument is an Object (also, not an Array)
@@ -362,10 +348,10 @@ export const userInputValidator = ({
    * Fail if none are available.
    */
   if (requiredEither && requiredEither.length) {
-    const availableProps: Array<boolean> = requiredEither.map(propName =>
+    const availableProps: Array<boolean> = requiredEither.map((propName) =>
       Object.prototype.hasOwnProperty.call(firstArgument, propName),
     );
-    if (!availableProps.some(propExists => propExists === true)) {
+    if (!availableProps.some((propExists) => propExists === true)) {
       /*
        * Explain the arguments format (if we're in dev mode), then throw the Error
        */
@@ -380,7 +366,7 @@ export const userInputValidator = ({
    * Fail after the first one missing.
    */
   if (requiredAll) {
-    requiredAll.map(propName => {
+    requiredAll.map((propName) => {
       if (!Object.prototype.hasOwnProperty.call(firstArgument, propName)) {
         /*
          * Explain the arguments format (if we're in dev mode), then throw the Error
@@ -418,8 +404,8 @@ export const messageOrDataValidator = ({
   message,
   messageData,
 }: {
-  message: any;
-  messageData: any;
+  message: string;
+  messageData: string | Uint8Array;
 }): string | Uint8Array => {
   if (message) {
     messageValidator(message);
@@ -456,22 +442,33 @@ export const getChainDefinition = (chainId: number): TransactionOptions => {
      * @TODO Provide a means to specify all chain properties for transactions
      */
     case CHAIN_IDS.HOMESTEAD:
-    case CHAIN_IDS.LOCAL:
+    case CHAIN_IDS.LOCAL: {
       baseChain = NETWORK_NAMES.MAINNET;
-    case CHAIN_IDS.GOERLI:
+      break;
+    }
+    case CHAIN_IDS.GOERLI: {
       baseChain = NETWORK_NAMES.GOERLI;
+      break;
+    }
     /*
      * The following (or other) chain IDs _may_ cause validation errors
      * in `ethereumjs-common`
      */
-    case CHAIN_IDS.KOVAN:
+    case CHAIN_IDS.KOVAN: {
       baseChain = NETWORK_NAMES.KOVAN;
-    case CHAIN_IDS.ROPSTEN:
+      break;
+    }
+    case CHAIN_IDS.ROPSTEN: {
       baseChain = NETWORK_NAMES.ROPSTEN;
-    case CHAIN_IDS.RINKEBY:
+      break;
+    }
+    case CHAIN_IDS.RINKEBY: {
       baseChain = NETWORK_NAMES.RINKEBY;
-    default:
+      break;
+    }
+    default: {
       baseChain = chainId.toString();
+    }
   }
   return {
     common: Common.forCustomChain(

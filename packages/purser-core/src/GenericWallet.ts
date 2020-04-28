@@ -1,4 +1,4 @@
-import { computeAddress } from 'ethers/utils';
+import { pubToAddress } from 'ethereumjs-util';
 import HDKey from 'hdkey';
 
 import {
@@ -100,12 +100,12 @@ export default class GenericWallet {
          * Generate the address from the derived public key
          */
 
-        const addressFromPublicKey = computeAddress(derivationKey.publicKey);
+        const addressFromPublicKey = pubToAddress(derivationKey.publicKey);
 
         /*
          * Also validate the address that comes from the `HDKey` library.
          */
-        addressValidator(addressFromPublicKey);
+        addressValidator(addressFromPublicKey.toString('hex'));
 
         return {
           publicKey: addressObjectPublicKey,

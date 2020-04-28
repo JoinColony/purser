@@ -44,7 +44,7 @@ export const derivationPathNormalizer = (derivationPath: string): string => {
         case 3: {
           const deviationPathChageIndex = pathSection.split(SPLITTER);
           return deviationPathChageIndex
-            .map(value => parseInt(value, 10))
+            .map((value) => parseInt(value, 10))
             .slice(0, 2)
             .join(SPLITTER);
         }
@@ -76,15 +76,13 @@ export const multipleOfTwoHexValueNormalizer = (hexValue: string): string =>
 const stringPrefixNormalizer = (
   pattern: RegExp,
   str: string,
-  prefix: boolean = true,
-) => {
+  prefix = true,
+): string => {
   /*
    * Index 1 is the prefix (if it exists), index 2 is the value without a prefix
    */
   const matchedAddress = str.match(pattern) || [];
-  return prefix
-    ? `0x${matchedAddress[2]}`
-    : matchedAddress[2];
+  return prefix ? `0x${matchedAddress[2]}` : matchedAddress[2];
 };
 
 /**
@@ -99,8 +97,10 @@ const stringPrefixNormalizer = (
  *
  * @return {string} The normalized string
  */
-export const addressNormalizer =
-  stringPrefixNormalizer.bind(null, MATCH.ADDRESS);
+export const addressNormalizer = stringPrefixNormalizer.bind(
+  null,
+  MATCH.ADDRESS,
+);
 
 /**
  * Normalize a hex string sequence.
@@ -119,8 +119,9 @@ export const addressNormalizer =
  */
 export const hexSequenceNormalizer = (
   hexString: string,
-  prefix: boolean = true,
-) => stringPrefixNormalizer(MATCH.HEX_STRING, hexString.toLowerCase(), prefix);
+  prefix = true,
+): string =>
+  stringPrefixNormalizer(MATCH.HEX_STRING, hexString.toLowerCase(), prefix);
 
 /**
  * Normalize the recovery param of an Ethereum ECDSA signature.

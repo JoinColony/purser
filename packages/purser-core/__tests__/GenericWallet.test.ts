@@ -1,5 +1,5 @@
 import HDKey from 'hdkey';
-import { computeAddress } from 'ethers/utils';
+import { pubToAddress } from 'ethereumjs-util';
 
 import { jestMocked } from '../../testutils';
 import { GenericWallet } from '../src';
@@ -12,13 +12,12 @@ import { addressNormalizer, hexSequenceNormalizer } from '../src/normalizers';
 import { CHAIN_IDS } from '../src/constants';
 
 jest.mock('hdkey');
-jest.mock('ethers/utils');
 jest.mock('../src/validators');
 jest.mock('../src/normalizers');
 
 const mockedAddressNormalizer = jestMocked(addressNormalizer);
 const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
-const mockedComputeAddress = jestMocked(computeAddress);
+const mockedPubToAddress = jestMocked(pubToAddress);
 
 /*
  * Common values
@@ -42,7 +41,7 @@ describe('`Core` Module', () => {
   afterEach(() => {
     mockedAddressNormalizer.mockClear();
     mockedHexSequenceNormalizer.mockClear();
-    mockedComputeAddress.mockClear();
+    mockedPubToAddress.mockClear();
   });
   describe('`GenericWallet` class', () => {
     test('Creates a new wallet instance', () => {
@@ -77,7 +76,7 @@ describe('`Core` Module', () => {
     test('Generates the address(es) from the public key(s)', () => {
       /* eslint-disable-next-line no-new */
       new GenericWallet(mockedArguments);
-      expect(computeAddress).toHaveBeenCalled();
+      expect(pubToAddress).toHaveBeenCalled();
     });
     test('The Wallet Object has the required (correct) props', async () => {
       const genericWallet = new GenericWallet(mockedArguments);

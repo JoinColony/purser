@@ -47,6 +47,7 @@ export const MATCH = {
    * Just like the address above, but without the character number limit
    */
   HEX_STRING: /^(0x)?([0-9a-fA-F]*)$/,
+  // eslint-disable-next-line no-irregular-whitespace
   URL: /^.+:\/\/[^‌​/]+/,
 };
 

@@ -69,8 +69,8 @@ export interface TransactionObjectTypeWithAddresses
 }
 
 export interface SignMessageData {
-  message: any;
-  messageData: any;
+  message: string;
+  messageData: string | Uint8Array;
 }
 
 export interface WalletObjectType {
@@ -103,11 +103,11 @@ export interface WalletArgumentsType {
   /*
   @param {TransactionRequest} message
   */
-  sign?: (transaction: any) => Promise<string>;
+  sign?: (transaction: TransactionObjectType) => Promise<string>;
   /*
   @param {Arrayish} message
   */
-  signMessage?: (message: any) => Promise<string>;
+  signMessage?: (message: string) => Promise<string>;
 }
 
 export interface MessageObjectType {
@@ -118,20 +118,6 @@ export type MessageVerificationObjectType = {
   message: string;
   signature: string;
 };
-
-/*
- * Types used for modules exports
- */
-export interface LibraryExportType {
-  wallets: Record<string, any>;
-  about: {
-    name: string;
-    version: string;
-    environment: string;
-  };
-  utils: Record<string, any>;
-  debug?: Record<string, any>;
-}
 
 export interface AddressObject {
   publicKey: string;

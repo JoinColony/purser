@@ -17,6 +17,7 @@
     "no-unused-vars": "off",
     "camelcase": "off",
     "@typescript-eslint/no-unused-vars": "error",
+    "eslint-comments/disable-enable-pair": ["error", {"allowWholeFile": true}],
     "import/extensions": "off",
     "import/no-unresolved": "off",
     "import/prefer-default-export": "off"

@@ -37,6 +37,7 @@ export const verbose = (): boolean => {
  *
  * @param {any} args Arguments array that will be passed down to `console` methods (see above)
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const warning = (...args: Array<any>): void => {
   /*
    * Stop everything if we're in production mode.
@@ -49,6 +50,7 @@ export const warning = (...args: Array<any>): void => {
   const lastArgIndex: number = args.length - 1;
   const options = args[lastArgIndex];
   const [message] = args;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const literalTemplates: Array<any> = args.slice(1);
   /*
    * We're being very specific with object testing here, since we don't want to
@@ -74,7 +76,7 @@ export const warning = (...args: Array<any>): void => {
   /* eslint-disable-next-line no-console */
   return console[warningType](
     message,
-    ...literalTemplates.map(value => {
+    ...literalTemplates.map((value) => {
       if (typeof value === 'object') {
         return JSON.stringify(value);
       }
@@ -152,26 +154,29 @@ export const getRandomValues = (
  * @return {boolean} true if the expression is valid, false otherwise (and depending on the level, throw an error
  * or just log the warning)
  */
-export const assertTruth = (params: {
+export const assertTruth = ({
+  expression,
+  level,
+  message,
+}: {
   expression: boolean;
-  message: string | Array<string>;
   level: string;
+  message: string | Array<string>;
 }): boolean => {
-  if (params.expression) {
+  let assignedLevel = level;
+  if (expression) {
     return true;
   }
-  if (params.level === undefined) {
-    params.level = 'high';
+  if (assignedLevel === undefined) {
+    assignedLevel = 'high';
   }
-  if (params.level === 'high') {
-    throw new Error(
-      Array.isArray(params.message) ? params.message.join(' ') : params.message,
-    );
+  if (assignedLevel === 'high') {
+    throw new Error(Array.isArray(message) ? message.join(' ') : message);
   }
-  if (Array.isArray(params.message)) {
-    warning(...params.message);
+  if (Array.isArray(message)) {
+    warning(...message);
   } else {
-    warning(params.message);
+    warning(message);
   }
   return false;
 };
@@ -209,6 +214,7 @@ export const bigNumber = (value: number | string | BN): ExtendedBN =>
  *
  * @return {string} The string containing the object's key (value) pairs
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const objectToErrorString = (object: Record<string, any> = {}): string =>
   Object.keys(object)
     .reduce(
@@ -245,7 +251,7 @@ export const validatorGenerator = (
   genericError: string,
 ): boolean => {
   const validationTests: Array<boolean> = [];
-  validationSequenceArray.map(validationSequence =>
+  validationSequenceArray.map((validationSequence) =>
     validationTests.push(
       assertTruth(
         /*
@@ -264,7 +270,7 @@ export const validatorGenerator = (
    * This is a fail-safe in case anything spills through.
    * If any of the values are `false` throw a general Error
    */
-  if (!validationTests.every(testResult => testResult === true)) {
+  if (!validationTests.every((testResult) => testResult === true)) {
     throw new Error(genericError);
   }
   /*

@@ -102,8 +102,8 @@ export const derivationPathValidator = (derivationPath: string): boolean => {
        */
       expression: deSerializedDerivationPath[3]
         .split(SPLITTER)
-        .map(value => !!value.match(MATCH.DIGITS))
-        .every(truth => truth !== false),
+        .map((value) => !!value.match(MATCH.DIGITS))
+        .every((truth) => truth !== false),
       message: [
         `${derivationPathMessages.notValidChangeIndex}:`,
         deSerializedDerivationPath[3] || UNDEFINED,
@@ -179,6 +179,7 @@ export const safeIntegerValidator = (integer: number): boolean => {
  * @return {boolean} It only returns true if the object is an instance of Big Number,
  * otherwise an Error will be thrown and this will not finish execution.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const bigNumberValidator = (bigNumber: any): boolean => {
   const { bigNumber: bigNumberMessages } = messages;
   const validationSequence = [
@@ -229,9 +230,11 @@ export const addressValidator = (address: string): boolean => {
        * It should be a string
        */
       expression: typeof address === 'string',
-      message: `${addressMessages.notStringSequence}: ${objectToErrorString({
-        address,
-      }) || UNDEFINED}`,
+      message: `${addressMessages.notStringSequence}: ${
+        objectToErrorString({
+          address,
+        }) || UNDEFINED
+      }`,
     },
     {
       /*
@@ -273,9 +276,9 @@ export const hexSequenceValidator = (hexSequence: string): boolean => {
        * It should be a string
        */
       expression: typeof hexSequence === 'string',
-      message: `${
-        hexSequenceMessages.notStringSequence
-      }: ${objectToErrorString({ hexSequence }) || UNDEFINED}`,
+      message: `${hexSequenceMessages.notStringSequence}: ${
+        objectToErrorString({ hexSequence }) || UNDEFINED
+      }`,
     },
     {
       /*
@@ -312,8 +315,9 @@ export const messageValidator = (str: string): boolean => {
        * It should be a string
        */
       expression: typeof str === 'string',
-      message: `${messageMessages.notString}: ${objectToErrorString({ str }) ||
-        UNDEFINED}`,
+      message: `${messageMessages.notString}: ${
+        objectToErrorString({ str }) || UNDEFINED
+      }`,
     },
     {
       /*
@@ -339,7 +343,7 @@ export const messageValidator = (str: string): boolean => {
  * @return {boolean} It only returns true if the data is a valid format,
  * otherwise an Error will be thrown and this will not finish execution.
  */
-export const messageDataValidator = (data: any): boolean => {
+export const messageDataValidator = (data: string | Uint8Array): boolean => {
   const { message: messageMessages } = messages;
   const validationSequence = [
     {
@@ -349,8 +353,9 @@ export const messageDataValidator = (data: any): boolean => {
       expression:
         (typeof data === 'string' && hexSequenceValidator(data)) ||
         data.constructor === Uint8Array,
-      message: `${messageMessages.notString}: ${objectToErrorString(data) ||
-        UNDEFINED}`,
+      message: `${messageMessages.notString}: ${
+        objectToErrorString({ data }) || UNDEFINED
+      }`,
     },
   ];
   return validatorGenerator(
