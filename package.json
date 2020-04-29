@@ -9,13 +9,13 @@
     "populate-modules": "node scripts/populate-all-modules.js",
     "release-modules": "sh scripts/publish-to-npm.sh",
     "flow": "flow",
-    "lint": "lerna run lint",
     "lint:fix": "eslint modules/**/*.js --fix",
     "test": "cross-env NODE_ENV=test jest",
     "test:watch": "cross-env NODE_ENV=test jest --watchAll --verbose",
     "test:coverage": "cross-env NODE_ENV=test jest --coverage",
     "test:ci": "cross-env NODE_ENV=test jest --ci --bail --verbose=true --maxWorkers 2",
-    "tsc": "tsc"
+    "lint": "lerna run lint",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",

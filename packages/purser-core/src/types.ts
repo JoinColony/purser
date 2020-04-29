@@ -86,6 +86,10 @@ export interface WalletObjectType {
   sign: (...any) => Promise<TransactionObjectType>;
 }
 
+export interface MessageObjectType {
+  message: string;
+}
+
 export interface WalletArgumentsType {
   address?: string;
   /*
@@ -100,18 +104,8 @@ export interface WalletArgumentsType {
   entropy?: Uint8Array;
   password?: string;
   chainId?: number;
-  /*
-  @param {TransactionRequest} message
-  */
   sign?: (transaction: TransactionObjectType) => Promise<string>;
-  /*
-  @param {Arrayish} message
-  */
-  signMessage?: (message: string) => Promise<string>;
-}
-
-export interface MessageObjectType {
-  message: string;
+  signMessage?: (data: MessageObjectType) => Promise<string>;
 }
 
 export type MessageVerificationObjectType = {

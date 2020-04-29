@@ -1,0 +1,41 @@
+{
+  "name": "@purser/signer-ethers",
+  "version": "1.0.0",
+  "description": "A signer to use purser with ethers.js",
+  "keywords": [
+    "ethers",
+    "ethereum",
+    "wallet",
+    "signer"
+  ],
+  "author": "Raul Glogovetan <raul@colony.io>",
+  "homepage": "https://github.com/JoinColony/purser/tree/master/packages/signer-ethers#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoinColony/purser.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/JoinColony/purser/issues"
+  },
+  "peerDependencies": {
+    "ethers": "^4.0.47"
+  },
+  "devDependencies": {
+    "ethers": "^4.0.47"
+  }
+}
