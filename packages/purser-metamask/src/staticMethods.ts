@@ -38,7 +38,7 @@ import {
 import { STD_ERRORS } from './constants';
 import { staticMethods as messages } from './messages';
 
-import { Web3TransactionType } from './types';
+import { SignMessageObject, Web3TransactionType } from './types';
 
 /**
  * Get a transaction, with a workaround for some providers not returning
@@ -297,15 +297,13 @@ export const signMessageCallback = (
  *
  * @return {Promise<string>} The signed message `hex` string (wrapped inside a `Promise`)
  */
-export const signMessage = async (obj: {
-  currentAddress: string;
-  message: string;
-  messageData: any;
-}): Promise<string | void> => {
-  if (obj === null || typeof obj !== 'object') {
+export const signMessage = async (
+  messageObject: SignMessageObject,
+): Promise<string | void> => {
+  if (messageObject === null || typeof messageObject !== 'object') {
     throw new Error(messages.signMessageArgumentMissing);
   }
-  const { currentAddress, message, messageData } = obj;
+  const { currentAddress, message, messageData } = messageObject;
 
   addressValidator(currentAddress);
   const toSign = messageOrDataValidator({ message, messageData });
@@ -390,7 +388,7 @@ export const verifyMessage = async (obj: {
   message: string;
   signature: string;
   currentAddress: string;
-}) => {
+}): Promise<boolean> => {
   const { currentAddress } = obj;
   const messageVerificationObject = {
     message: obj.message,

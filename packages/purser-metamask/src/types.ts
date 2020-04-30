@@ -32,7 +32,36 @@ export type Web3TransactionType = {
   value: string;
 };
 
-export type MetamaskStateEventsObserverType = (state: any) => any;
+// This is surely not an exhaustive representation of the MM state, but it's close
+export interface MetaMaskState {
+  selectedAddress: string | null;
+  networkVersion: string;
+  chainId: string;
+  publicConfigStore: {
+    _events: {
+      update: Array<(state: MetaMaskState) => void>;
+    };
+    _eventsCount: number;
+    _maxListeners: number | undefined;
+    _state: {
+      isUnlocked: boolean;
+      isEnabled: boolean;
+      selectedAddress: string | null;
+      networkVersion: string;
+      onboardingcomplete: boolean;
+      chainId: string;
+    };
+  };
+  enable: (force: boolean) => void;
+  autoRefreshOnNetworkChange: boolean;
+  _metamask: {
+    isEnabled: () => boolean;
+    isApproved: () => Promise<boolean>;
+    isUnlocked: () => Promise<boolean>;
+  };
+}
+
+export type MetamaskStateEventsObserverType = (state: MetaMaskState) => void;
 
 export type MetamaskWalletConstructorArgumentsType = {
   address: string;
@@ -47,6 +76,12 @@ export type signMessageMethodType = (
   currentAddress: string,
   callback: Web3CallbackType,
 ) => void;
+
+export interface SignMessageObject {
+  currentAddress: string;
+  message: string;
+  messageData: string | Uint8Array;
+}
 
 export type signTrasactionMethodType = (
   transactionObject: Record<string, any>,

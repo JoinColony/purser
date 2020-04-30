@@ -1,6 +1,6 @@
 import isEqual from 'lodash.isequal';
 
-import { jestMocked } from '../../testutils';
+import { jestMocked, testGlobal } from '../../testutils';
 
 import { warning } from '../../purser-core/src/utils';
 import { hexSequenceNormalizer } from '../../purser-core/src/normalizers';
@@ -46,20 +46,15 @@ const mockedBufferFrom = jest.spyOn(Buffer, 'from');
 const mockedBufferToString = jest.spyOn(Buffer.prototype, 'toString');
 
 const mockedMessageSignature = 'mocked-message-signature';
-const callbackError = { message: 'no-error-here' };
-
-const anyGlobal: any = global;
 
 /*
  * Mock the injected web3 proxy object
  */
-anyGlobal.web3 = {
+testGlobal.web3 = {
   eth: {
-    personal: {
-      sign: jest.fn((message, address, callback) =>
-        callback(callbackError, mockedMessageSignature),
-      ),
-    },
+    sign: jest.fn((message, address, callback) =>
+      callback(null, mockedMessageSignature),
+    ),
   },
   currentProvider: {
     publicConfigStore: {
@@ -87,12 +82,19 @@ const mockedNewState = {
 const mockedTransactionObject = {
   to: 'mocked-destination-address',
   value: 'mockedValue',
+  chainId: 1,
+  gasPrice: '1',
+  gasLimit: '1',
+  nonce: 1,
+  inputData: '1',
 };
 const mockedMessage = 'mocked-message';
-const mockeMessageObject = {
+const mockedMessageObject = {
+  currentAddress: '0xdeaffeed',
   message: mockedMessage,
+  messageData: 'data',
 };
-const mockeSignatureObject = {
+const mockedSignatureObject = {
   message: mockedMessage,
   signature: 'mocked-signature',
 };
@@ -171,7 +173,7 @@ describe('Metamask` Wallet Module', () => {
        * Deep equal the two state objects
        */
       expect(mockedIsEqual).toHaveBeenCalled();
-      expect(mockedIsEqual).toHaveBeenCalledWith(mockedState, mockedNewState);
+      expect(mockedIsEqual).toHaveBeenCalledWith({}, mockedNewState);
     });
     test('Does not update if something goes wrong', async () => {
       /*
@@ -202,10 +204,6 @@ describe('Metamask` Wallet Module', () => {
        */
       expect(metamaskWallet).toHaveProperty('address');
       /*
-       * Public Key
-       */
-      expect(metamaskWallet).toHaveProperty('publicKey');
-      /*
        * Type and subtyp
        */
       expect(metamaskWallet).toHaveProperty('type', WalletType.Software);
@@ -225,7 +223,7 @@ describe('Metamask` Wallet Module', () => {
     });
     test('Calls the correct method to sign a transaction', async () => {
       const metamaskWallet = new MetaMaskWallet({ address });
-      await metamaskWallet.sign();
+      await metamaskWallet.sign(mockedTransactionObject);
       expect(signTransaction).toHaveBeenCalled();
     });
     test('Validates the input before signing a transaction', async () => {
@@ -238,42 +236,41 @@ describe('Metamask` Wallet Module', () => {
     });
     test('Sign a transaction without a destination address', async () => {
       const metamaskWallet = new MetaMaskWallet({ address });
-      expect(
-        metamaskWallet.sign({
-          value: 'mockedValue',
-        }),
+      await expect(
+        metamaskWallet.sign({ ...mockedTransactionObject, to: undefined }),
       ).resolves.not.toThrow();
     });
     test('Calls the correct method to sign a message', async () => {
       const metamaskWallet = new MetaMaskWallet({ address });
-      await metamaskWallet.signMessage();
+      await metamaskWallet.signMessage(mockedMessageObject);
       expect(signMessage).toHaveBeenCalled();
     });
     test('Validates the input before signing a message', async () => {
       const metamaskWallet = new MetaMaskWallet({ address });
-      await metamaskWallet.signMessage(mockeMessageObject);
+      await metamaskWallet.signMessage(mockedMessageObject);
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
-        firstArgument: mockeMessageObject,
+        firstArgument: mockedMessageObject,
         requiredOr: REQUIRED_PROPS.SIGN_MESSAGE,
       });
     });
     test('Calls the correct method to verify a message', async () => {
       const metamaskWallet = new MetaMaskWallet({ address });
-      await metamaskWallet.verifyMessage();
+      await metamaskWallet.verifyMessage(mockedSignatureObject);
       expect(verifyMessage).toHaveBeenCalled();
     });
     test('Validates the input before verifying a signature', async () => {
       const metamaskWallet = new MetaMaskWallet({ address });
-      await metamaskWallet.verifyMessage(mockeSignatureObject);
+      await metamaskWallet.verifyMessage(mockedSignatureObject);
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
-        firstArgument: mockeSignatureObject,
+        firstArgument: mockedSignatureObject,
         requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
       });
     });
     test('Normalizes the recovery message and makes it a hex String', () => {
-      MetaMaskWallet.recoverPublicKey(address);
+      const metamaskWallet = new MetaMaskWallet({ address });
+      metamaskWallet.recoverPublicKey(address);
       /*
        * Normalizes the hex string
        */
@@ -295,7 +292,8 @@ describe('Metamask` Wallet Module', () => {
       expect(mockedBufferToString).toHaveBeenCalledWith(HEX_HASH_TYPE);
     });
     test('Signs a message (using the UI) to get the signature', () => {
-      MetaMaskWallet.recoverPublicKey(address);
+      const metamaskWallet = new MetaMaskWallet({ address });
+      metamaskWallet.recoverPublicKey(address);
       /*
        * Call the helper method
        */
@@ -303,15 +301,16 @@ describe('Metamask` Wallet Module', () => {
       /*
        * Call's Metamask injected personal sign method
        */
-      expect(anyGlobal.web3.eth.personal.sign).toHaveBeenCalled();
-      expect(anyGlobal.web3.eth.personal.sign).toHaveBeenCalledWith(
+      expect(testGlobal.web3.eth.sign).toHaveBeenCalled();
+      expect(testGlobal.web3.eth.sign).toHaveBeenCalledWith(
         Buffer.from(PUBLICKEY_RECOVERY_MESSAGE).toString('hex'),
         address,
         expect.any(Function),
       );
     });
     test('Validates the message signature returned', () => {
-      MetaMaskWallet.recoverPublicKey(address);
+      const metamaskWallet = new MetaMaskWallet({ address });
+      metamaskWallet.recoverPublicKey(address);
       /*
        * Validates the signature
        */
@@ -319,7 +318,8 @@ describe('Metamask` Wallet Module', () => {
       expect(hexSequenceValidator).toHaveBeenCalledWith(mockedMessageSignature);
     });
     test('Recovers the public key from the signature', () => {
-      MetaMaskWallet.recoverPublicKey(address);
+      const metamaskWallet = new MetaMaskWallet({ address });
+      metamaskWallet.recoverPublicKey(address);
       /*
        * Validates the signature
        */
@@ -330,66 +330,68 @@ describe('Metamask` Wallet Module', () => {
       });
     });
     test('Normalizes the recovered public key before returning', () => {
-      MetaMaskWallet.recoverPublicKey(address);
+      const metamaskWallet = new MetaMaskWallet({ address });
+      metamaskWallet.recoverPublicKey(address);
       /*
        * Validates the signature
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
       expect(hexSequenceNormalizer).toHaveBeenCalledWith(mockedPublicKey);
     });
-    test('Resolves the promise and returns the public key', () => {
-      expect(MetaMaskWallet.recoverPublicKey(address)).resolves.toEqual(
+    test('Resolves the promise and returns the public key', async () => {
+      const metamaskWallet = new MetaMaskWallet({ address });
+      await expect(metamaskWallet.recoverPublicKey(address)).resolves.toEqual(
         mockedPublicKey,
       );
     });
     test('Throws if something goes wrong while signing', async () => {
+      const metamaskWallet = new MetaMaskWallet({ address });
       /*
        * Mock it locally to simulate an error
        */
-      mockedRecoverPublicKeyHelper.mockImplementation(() => {
-        throw new Error();
+      mockedRecoverPublicKeyHelper.mockImplementationOnce(() => {
+        throw new Error('err');
       });
-      expect(MetaMaskWallet.recoverPublicKey(address)).rejects.toThrow();
+      await expect(metamaskWallet.recoverPublicKey(address)).rejects.toThrow(
+        'err',
+      );
     });
     test('Warns if the user cancelled signing the message', async () => {
-      /*
-       * Mock it locally to simulate an error
-       */
-      mockedRecoverPublicKeyHelper.mockImplementation(() => {
-        throw new Error();
-      });
+      const metamaskWallet = new MetaMaskWallet({ address });
       /*
        * Mock it locally to simulate the user cancelling the sign message popup
        */
-      anyGlobal.web3.eth.personal.sign.mockImplementation(
+      testGlobal.web3.eth.sign.mockImplementationOnce(
         (message, currentAddress, callback) =>
           callback(
-            { ...callbackError, message: STD_ERRORS.CANCEL_MSG_SIGN },
+            new Error(STD_ERRORS.CANCEL_MSG_SIGN),
             mockedMessageSignature,
           ),
       );
       /*
        * Mock it locally so we can test the return
        */
-      mockedWarning.mockImplementation(() => STD_ERRORS.CANCEL_MSG_SIGN);
-      const cancelledMessageSign = MetaMaskWallet.recoverPublicKey(address);
+      mockedWarning.mockImplementationOnce(() => STD_ERRORS.CANCEL_MSG_SIGN);
+      const cancelledMessageSign = metamaskWallet.recoverPublicKey(address);
       /*
        * It doesn't throw
        */
-      expect(cancelledMessageSign).resolves.not.toThrow();
+      await expect(cancelledMessageSign).resolves.not.toThrow();
       /*
        * It warns the user
        */
       expect(mockedWarning).toHaveBeenCalled();
-      expect(cancelledMessageSign).resolves.toEqual(STD_ERRORS.CANCEL_MSG_SIGN);
+      await expect(cancelledMessageSign).resolves.toEqual(
+        STD_ERRORS.CANCEL_MSG_SIGN,
+      );
     });
     test('Returns the public key getter by signing a message', async () => {
       const metamaskWallet = new MetaMaskWallet({
         address: 'some weird address',
       });
       triggerUpdateStateEvents(mockedNewState);
-      const publicKey = await metamaskWallet.publicKey;
-      expect(anyGlobal.web3.eth.personal.sign).toHaveBeenCalled();
+      const publicKey = await metamaskWallet.getPublicKey();
+      expect(testGlobal.web3.eth.sign).toHaveBeenCalled();
       expect(publicKey).toEqual(mockedPublicKey);
     });
   });

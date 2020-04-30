@@ -22,12 +22,12 @@ export const getTransaction: getTransactionMethodType = (...args) =>
     (global as any).web3.eth.getTransaction(...args);
 
 /**
- * Sign a message. Is a wrapper for web3.personal.sign
+ * Sign a message. Is a wrapper for web3.eth.sign
  *
  * @method signMessage
  */
 export const signMessage: signMessageMethodType = (...args) =>
-    (global as any).web3.eth.personal.sign(...args);
+    (global as any).web3.eth.sign(...args);
 
 /**
  * Sign transaction. Is a wrapper for web3.eth.signTransaction

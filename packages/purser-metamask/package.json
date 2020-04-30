@@ -1,0 +1,30 @@
+{
+  "name": "@purser/metamask",
+  "version": "3.0.0",
+  "description": "A javascript library to interact with a Metamask based Ethereum wallet",
+  "scripts": {
+    "lint": "eslint . --ext .ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoinColony/purser.git"
+  },
+  "author": "Raul Glogovetan <raul@colony.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JoinColony/purser/issues"
+  },
+  "homepage": "https://github.com/JoinColony/purser",
+  "keywords": [
+    "ethereum",
+    "javascript",
+    "wallet",
+    "colony",
+    "software-wallet",
+    "monorepo",
+    "purser"
+  ],
+  "dependencies": {
+    "lodash.isequal": "^4.5.0"
+  }
+}

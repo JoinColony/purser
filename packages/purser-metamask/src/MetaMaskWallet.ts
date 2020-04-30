@@ -11,15 +11,10 @@ import {
 } from '@purser/core/validators';
 import { hexSequenceNormalizer } from '@purser/core/normalizers';
 
-import {
-  DESCRIPTORS,
-  HEX_HASH_TYPE,
-  REQUIRED_PROPS,
-} from '@purser/core/constants';
+import { HEX_HASH_TYPE, REQUIRED_PROPS } from '@purser/core/constants';
 import {
   WalletType,
   WalletSubType,
-  TransactionObjectType,
   MessageVerificationObjectType,
   TransactionObjectTypeWithAddresses,
 } from '@purser/core/types';
@@ -35,100 +30,28 @@ import {
   staticMethods as staticMethodsMessages,
 } from './messages';
 
-import { MetamaskWalletConstructorArgumentsType } from './types';
-
-const { SETTERS, GETTERS, GENERIC_PROPS, WALLET_PROPS } = DESCRIPTORS;
-
-/*
- * "Private" (internal) variable(s).
- */
-let state: Record<string, any> = {};
-let internalPublicKey: string | void;
+import {
+  MetamaskWalletConstructorArgumentsType,
+  SignMessageObject,
+} from './types';
 
 export default class MetamaskWallet {
+  private state: Record<string, any> = {};
+
+  private internalPublicKey?: string;
+
   address: string;
 
-  type: string;
+  readonly type: WalletType = WalletType.Software;
 
-  subtype: string;
-
-  /*
-   * @TODO Add specific Flow type
-   *
-   * See the core generic wallet for this, since that will implement them.
-   * This will just use the ones declared there.
-   */
-  sign: (...any) => Promise<string>;
-
-  signMessage: (...any) => Promise<string>;
-
-  verifyMessage: (...any) => Promise<boolean>;
+  readonly subtype: WalletSubType = WalletSubType.MetaMask;
 
   constructor({ address }: MetamaskWalletConstructorArgumentsType) {
     /*
      * Validate the address that's coming in from Metamask
      */
     addressValidator(address);
-    Object.defineProperties(this, {
-      /*
-       * The initial address is set when `open()`-ing the wallet, but after that
-       * it's updated via the Metamask state change observer.
-       *
-       * This way, we keep it in sync with the changes from Metamask's UI
-       */
-      address: { value: address, ...SETTERS },
-      type: { value: WalletType.Software, ...GENERIC_PROPS },
-      subtype: { value: WalletSubType.MetaMask, ...GENERIC_PROPS },
-      sign: {
-        value: async (
-          transactionObject: TransactionObjectTypeWithAddresses,
-        ) => {
-          /*
-           * Validate the trasaction's object input
-           */
-          userInputValidator({
-            firstArgument: transactionObject,
-          });
-          return signTransaction({ ...transactionObject, from: this.address });
-        },
-        ...WALLET_PROPS,
-      },
-      signMessage: {
-        value: async (messageObject: any = {}) => {
-          /*
-           * Validate the trasaction's object input
-           */
-          userInputValidator({
-            firstArgument: messageObject,
-            requiredOr: REQUIRED_PROPS.SIGN_MESSAGE,
-          });
-          return signMessage({
-            currentAddress: this.address,
-            message: messageObject.message,
-            messageData: messageObject.messageData,
-          });
-        },
-        ...WALLET_PROPS,
-      },
-      verifyMessage: {
-        value: async (
-          messageVerificationObject: MessageVerificationObjectType,
-        ) => {
-          /*
-           * Validate the trasaction's object input
-           */
-          userInputValidator({
-            firstArgument: messageVerificationObject,
-            requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
-          });
-          return verifyMessage({
-            currentAddress: this.address,
-            ...messageVerificationObject,
-          });
-        },
-        ...WALLET_PROPS,
-      },
-    });
+    this.address = address;
     /*
      * We must check for the Metamask injected in-page proxy every time we
      * try to access it. This is because something can change it from the time
@@ -167,13 +90,13 @@ export default class MetamaskWallet {
                * We only update the values if the state has changed.
                * (We're using lodash here to deep compare the two state objects)
                */
-              if (!isEqual(state, newState)) {
-                state = newState;
+              if (!isEqual(this.state, newState)) {
+                this.state = newState;
                 this.address = newState.selectedAddress;
                 /*
                  * Reset the saved public key, as the address now changed
                  */
-                internalPublicKey = undefined;
+                this.internalPublicKey = undefined;
                 return true;
               }
               return false;
@@ -193,8 +116,7 @@ export default class MetamaskWallet {
   /*
    * Public Key Getter
    */
-  /* eslint-disable-next-line class-methods-use-this */
-  get publicKey(): Promise<string> {
+  getPublicKey(): Promise<string> {
     /*
      * We can't memoize the getter (as we do in most other such getters)
      *
@@ -202,10 +124,53 @@ export default class MetamaskWallet {
      * stale value for the public key, as there is no way (currently) to invalidate
      * this value.
      */
-    if (internalPublicKey) {
-      return Promise.resolve(internalPublicKey);
+    if (this.internalPublicKey) {
+      return Promise.resolve(this.internalPublicKey);
     }
-    return MetamaskWallet.recoverPublicKey(this.address);
+    return this.recoverPublicKey(this.address);
+  }
+
+  async sign(
+    transactionObject: TransactionObjectTypeWithAddresses,
+  ): Promise<string | void> {
+    /*
+     * Validate the trasaction's object input
+     */
+    userInputValidator({
+      firstArgument: transactionObject,
+    });
+    return signTransaction({ ...transactionObject, from: this.address });
+  }
+
+  async signMessage(messageObject: SignMessageObject): Promise<string | void> {
+    /*
+     * Validate the trasaction's object input
+     */
+    userInputValidator({
+      firstArgument: messageObject,
+      requiredOr: REQUIRED_PROPS.SIGN_MESSAGE,
+    });
+    return signMessage({
+      currentAddress: this.address,
+      message: messageObject.message,
+      messageData: messageObject.messageData,
+    });
+  }
+
+  async verifyMessage(
+    messageVerificationObject: MessageVerificationObjectType,
+  ): Promise<boolean> {
+    /*
+     * Validate the trasaction's object input
+     */
+    userInputValidator({
+      firstArgument: messageVerificationObject,
+      requiredAll: REQUIRED_PROPS.VERIFY_MESSAGE,
+    });
+    return verifyMessage({
+      currentAddress: this.address,
+      ...messageVerificationObject,
+    });
   }
 
   /**
@@ -222,7 +187,7 @@ export default class MetamaskWallet {
    *
    * @return {Promise} The recovered public key (for the currently selected addresss)
    */
-  static async recoverPublicKey(currentAddress: string): Promise<string> {
+  async recoverPublicKey(currentAddress: string): Promise<string> {
     /*
      * We must check for the Metamask injected in-page proxy every time we
      * try to access it. This is because something can change it from the time
@@ -234,7 +199,7 @@ export default class MetamaskWallet {
        * This way we could better test it
        */
       () =>
-        new Promise((resolve) => {
+        new Promise((resolve, reject) => {
           /*
            * Sign the message. This will prompt the user via Metamask's UI
            */
@@ -243,10 +208,6 @@ export default class MetamaskWallet {
              * Ensure the hex string has the `0x` prefix
              */
             hexSequenceNormalizer(
-              /*
-               * We could really do with default Flow types for Buffer...
-               */
-              /* $FlowFixMe */
               Buffer.from(PUBLICKEY_RECOVERY_MESSAGE).toString(HEX_HASH_TYPE),
             ),
             currentAddress,
@@ -255,6 +216,17 @@ export default class MetamaskWallet {
              * This way we could better test it
              */
             (error: Error, signature: string) => {
+              if (error) {
+                /*
+                 * Don't throw an Error if the user just cancels signing the message.
+                 * This is normal UX, not an exception
+                 */
+                if (error.message.includes(STD_ERRORS.CANCEL_MSG_SIGN)) {
+                  warning(staticMethodsMessages.cancelMessageSign);
+                  return resolve(STD_ERRORS.CANCEL_MSG_SIGN);
+                }
+                return reject(error);
+              }
               try {
                 /*
                  * Validate that the signature is in the correct format
@@ -273,17 +245,10 @@ export default class MetamaskWallet {
                 /*
                  * Also set the internal public key
                  */
-                internalPublicKey = normalizedPublicKey;
+                this.internalPublicKey = normalizedPublicKey;
                 return resolve(normalizedPublicKey);
               } catch (caughtError) {
-                /*
-                 * Don't throw an Error if the user just cancels signing the message.
-                 * This is normal UX, not an exception
-                 */
-                if (error.message.includes(STD_ERRORS.CANCEL_MSG_SIGN)) {
-                  return warning(staticMethodsMessages.cancelMessageSign);
-                }
-                throw new Error(error.message);
+                return reject(caughtError);
               }
             },
           );
@@ -292,11 +257,3 @@ export default class MetamaskWallet {
     );
   }
 }
-
-/*
- * We need to use `defineProperties` to make props enumerable.
- * When adding them via a `Class` getter/setter it will prevent that by default
- */
-Object.defineProperties(MetamaskWallet.prototype, {
-  publicKey: GETTERS,
-});
