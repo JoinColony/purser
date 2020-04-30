@@ -128,7 +128,7 @@ describe('`Core` Module', () => {
        * Normalizes the value before returning (also adds the `0x` prefix)
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
-      expect(hexSequenceNormalizer).nthCalledWith(
+      expect(hexSequenceNormalizer).toHaveBeenNthCalledWith(
         2,
         Buffer.from(recoveredPublicKey).toString(HEX_HASH_TYPE),
       );

@@ -19,7 +19,7 @@ describe('`Core` Module', () => {
           level: 'high',
         });
       expect(badAssertion).toThrow();
-      expect(badAssertion).toThrowError(errorMessage);
+      expect(badAssertion).toThrow(errorMessage);
     });
     test('Warns if assertion fails and level is set to low', () => {
       const badAssertion = assertTruth({

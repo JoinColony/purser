@@ -59,12 +59,6 @@ describe('`Core` Module', () => {
       expect(console.warn).toHaveBeenCalled();
       expect(console.error).not.toHaveBeenCalled();
     });
-    test("Doesn't log a message when in production", () => {
-      // @ts-ignore
-      constants.ENV = 'production';
-      warning(message);
-      expect(console.warn).not.toHaveBeenCalled();
-    });
     test('Correctly splits out template literals', () => {
       const templateLiterals = ['part', 'part', 'part'];
       warning(

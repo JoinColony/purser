@@ -18,7 +18,7 @@ describe('`Core` Module', () => {
       ).toThrow();
       expect(() =>
         validatorGenerator(badAssertionsArray, genericErrorMessage),
-      ).toThrowError(invalidErrorMessage);
+      ).toThrow(invalidErrorMessage);
     });
     test('Triggers a generic error, if throwing is prevented', () => {
       badAssertionsArray[1].level = 'low';
@@ -27,7 +27,7 @@ describe('`Core` Module', () => {
       ).toThrow();
       expect(() =>
         validatorGenerator(badAssertionsArray, genericErrorMessage),
-      ).toThrowError(genericErrorMessage);
+      ).toThrow(genericErrorMessage);
     });
   });
 });

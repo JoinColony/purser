@@ -88,12 +88,14 @@ describe('`Core` Module', () => {
        * Public Key
        * We have to call it directly since Jest's `toHaveProperty` doesn't play well with getters
        */
-      expect(genericWallet.getPublicKey()).resolves.toEqual(expect.any(String));
+      await expect(genericWallet.getPublicKey()).resolves.toEqual(
+        expect.any(String),
+      );
       /*
        * Derivation Path
        * We have to call it directly since Jest's `toHaveProperty` doesn't play well with getters
        */
-      expect(genericWallet.getDerivationPath()).resolves.toEqual(
+      await expect(genericWallet.getDerivationPath()).resolves.toEqual(
         `${rootDerivationPath}/0`,
       );
       /*
@@ -204,7 +206,7 @@ describe('`Core` Module', () => {
        * Change the default account
        */
       const newAddressIndex = 2;
-      expect(
+      await expect(
         genericWallet.setDefaultAddress(newAddressIndex),
       ).resolves.toBeTruthy();
       /*
@@ -228,7 +230,7 @@ describe('`Core` Module', () => {
        * Set the initial default account to something later down the array index
        */
       const initialAddressIndex = 4;
-      expect(
+      await expect(
         genericWallet.setDefaultAddress(initialAddressIndex),
       ).resolves.toBeTruthy();
       expect(genericWallet).toHaveProperty(
@@ -240,7 +242,7 @@ describe('`Core` Module', () => {
        * To the the initial values
        */
       const defaultAddressIndex = 0;
-      expect(genericWallet.setDefaultAddress()).resolves.toBeTruthy();
+      await expect(genericWallet.setDefaultAddress()).resolves.toBeTruthy();
       /*
        * Now the address should reflec the new index
        */
@@ -258,12 +260,12 @@ describe('`Core` Module', () => {
         ...mockedArguments,
         addressCount: addressCountSingle,
       });
-      expect(genericWallet.setDefaultAddress(2)).rejects.toThrow();
+      await expect(genericWallet.setDefaultAddress(2)).rejects.toThrow();
     });
     test('Has the `otherAddresses` prop if multiple were instantiated', async () => {
       const genericWallet = new GenericWallet(mockedArguments);
       expect(genericWallet).toHaveProperty('otherAddresses');
-      expect(genericWallet.otherAddresses.length).toEqual(addressCount);
+      expect(genericWallet.otherAddresses).toHaveLength(addressCount);
     });
     test('Opens the first 10 wallet addresses by default', () => {
       const genericWallet = new GenericWallet({
@@ -279,7 +281,7 @@ describe('`Core` Module', () => {
        * 10 derived addresses
        */
       expect(genericWallet).toHaveProperty('otherAddresses');
-      expect(genericWallet.otherAddresses.length).toEqual(addressCount);
+      expect(genericWallet.otherAddresses).toHaveLength(addressCount);
     });
     test('Falls back to 1 if address count was set to falsy value', () => {
       const genericWallet = new GenericWallet({

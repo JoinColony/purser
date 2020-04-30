@@ -108,10 +108,10 @@ export interface WalletArgumentsType {
   signMessage?: (data: MessageObjectType) => Promise<string>;
 }
 
-export type MessageVerificationObjectType = {
+export interface MessageVerificationObjectType {
   message: string;
   signature: string;
-};
+}
 
 export interface AddressObject {
   publicKey: string;

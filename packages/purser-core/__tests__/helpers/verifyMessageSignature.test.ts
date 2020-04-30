@@ -56,7 +56,7 @@ describe('`Core` Module', () => {
        * (The first call)
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
-      expect(hexSequenceNormalizer).nthCalledWith(
+      expect(hexSequenceNormalizer).toHaveBeenNthCalledWith(
         1,
         recoveredPublicKey,
         /*
@@ -72,7 +72,7 @@ describe('`Core` Module', () => {
        * (The second call)
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
-      expect(hexSequenceNormalizer).nthCalledWith(
+      expect(hexSequenceNormalizer).toHaveBeenNthCalledWith(
         2,
         publicKey,
         /*
