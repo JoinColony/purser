@@ -1,7 +1,6 @@
 import { Transaction as EthereumTx } from 'ethereumjs-tx';
 
 import { STD_ERRORS } from '../../src/constants';
-import { signTransaction } from '../../src/staticMethods';
 import { staticMethods as messages } from '../../src/messages';
 import { methodCaller } from '../../src/helpers';
 import {
@@ -20,6 +19,8 @@ import {
   getChainDefinition,
   transactionObjectValidator,
 } from '../../../purser-core/src/helpers';
+
+import { signTransaction } from '../../src/staticMethods';
 
 import { jestMocked, testGlobal } from '../../../testutils';
 
@@ -149,7 +150,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
     });
     test('Throws if no argument provided', async () => {
       // @ts-ignore
-      expect(signTransaction()).rejects.toThrow();
+      await expect(signTransaction()).rejects.toThrow();
     });
     test('Validates the `from` address individually', async () => {
       await signTransaction(mockedArgumentsObject);
@@ -245,10 +246,9 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       mockedHexSequenceValidator.mockImplementation(() => {
         throw new Error('hex sequence validator error');
       });
-      expect(signTransaction(mockedArgumentsObject)).rejects.toHaveProperty(
-        'message',
-        'hex sequence validator error',
-      );
+      await expect(
+        signTransaction(mockedArgumentsObject),
+      ).rejects.toHaveProperty('message', 'hex sequence validator error');
     });
     test('Throws if something goes wrong while signing the transaction', async () => {
       /*
@@ -258,10 +258,9 @@ describe('`Metamask` Wallet Module Static Methods', () => {
         (transactionObject, callback) =>
           callback(new Error('generic sendTransaction error')),
       );
-      expect(signTransaction(mockedArgumentsObject)).rejects.toHaveProperty(
-        'message',
-        'generic sendTransaction error',
-      );
+      await expect(
+        signTransaction(mockedArgumentsObject),
+      ).rejects.toHaveProperty('message', 'generic sendTransaction error');
     });
     test('Throws if the user cancelled signing the transaction', async () => {
       /*
@@ -271,10 +270,9 @@ describe('`Metamask` Wallet Module Static Methods', () => {
         (transactionObject, callback) =>
           callback(new Error(STD_ERRORS.CANCEL_TX_SIGN), mockedTransactionHash),
       );
-      expect(signTransaction(mockedArgumentsObject)).rejects.toHaveProperty(
-        'message',
-        messages.cancelTransactionSign,
-      );
+      await expect(
+        signTransaction(mockedArgumentsObject),
+      ).rejects.toHaveProperty('message', messages.cancelTransactionSign);
     });
   });
 });

@@ -6,7 +6,8 @@
     "prettier/@typescript-eslint"
   ],
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "jest",
   ],
   "env": {
     "es2020": true,
@@ -17,6 +18,7 @@
     "no-unused-vars": "off",
     "camelcase": "off",
     "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
     "eslint-comments/disable-enable-pair": ["error", {"allowWholeFile": true}],
     "import/extensions": "off",
     "import/no-unresolved": "off",
@@ -31,6 +33,11 @@
       "env": {
         "jest": true
       },
+      "plugins": ["jest"],
+      "extends": [
+        "plugin:jest/recommended",
+        "plugin:jest/style"
+      ],
       "rules": {
         "max-len": "off",
         "@typescript-eslint/ban-ts-ignore": "off"

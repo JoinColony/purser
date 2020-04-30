@@ -1,11 +1,12 @@
-/* @flow */
-
 import {
   getTransactionMethodType,
   signMessageMethodType,
   signTrasactionMethodType,
   verifyMessageMethodType,
 } from './types';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const anyGlobal = global as any;
 
 /*
  * This is just to provide a nicer function name to the injected metamask
@@ -18,8 +19,7 @@ import {
  * @method getTransaction
  */
 export const getTransaction: getTransactionMethodType = (...args) =>
-
-    (global as any).web3.eth.getTransaction(...args);
+  anyGlobal.web3.eth.getTransaction(...args);
 
 /**
  * Sign a message. Is a wrapper for web3.eth.sign
@@ -27,7 +27,7 @@ export const getTransaction: getTransactionMethodType = (...args) =>
  * @method signMessage
  */
 export const signMessage: signMessageMethodType = (...args) =>
-    (global as any).web3.eth.sign(...args);
+  anyGlobal.web3.eth.sign(...args);
 
 /**
  * Sign transaction. Is a wrapper for web3.eth.signTransaction
@@ -38,7 +38,7 @@ export const signMessage: signMessageMethodType = (...args) =>
  * @method signTransaction
  */
 export const signTransaction: signTrasactionMethodType = (...args) =>
-    (global as any).web3.eth.sendTransaction(...args);
+  anyGlobal.web3.eth.sendTransaction(...args);
 
 /**
  * Verify a signed message. Is a wrapper for web3.personal.ecRecover
@@ -50,4 +50,4 @@ export const signTransaction: signTrasactionMethodType = (...args) =>
  * @method verifyMessage
  */
 export const verifyMessage: verifyMessageMethodType = (...args) =>
-    (global as any).web3.eth.personal.ecRecover(...args);
+  anyGlobal.web3.eth.personal.ecRecover(...args);

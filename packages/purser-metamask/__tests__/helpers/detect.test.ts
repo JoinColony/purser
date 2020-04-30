@@ -10,8 +10,8 @@ describe('Metamask` Wallet Module', () => {
        */
       testGlobal.ethereum = undefined;
       testGlobal.web3 = undefined;
-      expect(detect()).rejects.toThrow();
-      expect(detect()).rejects.toThrowError(new Error(messages.noExtension));
+      await expect(detect()).rejects.toThrow();
+      await expect(detect()).rejects.toThrow(new Error(messages.noExtension));
     });
     test('Checks if extension is unlocked', async () => {
       /*
@@ -22,8 +22,8 @@ describe('Metamask` Wallet Module', () => {
         isUnlocked,
       };
       testGlobal.web3 = undefined;
-      expect(detect()).rejects.toThrow();
-      expect(detect()).rejects.toThrowError(new Error(messages.isLocked));
+      await expect(detect()).rejects.toThrow();
+      await expect(detect()).rejects.toThrow(new Error(messages.isLocked));
     });
     test('Checks if extension is enabled', async () => {
       /*
@@ -39,8 +39,8 @@ describe('Metamask` Wallet Module', () => {
         isEnabled,
       };
       testGlobal.web3 = undefined;
-      expect(detect()).rejects.toThrow();
-      expect(detect()).rejects.toThrowError(new Error(messages.notEnabled));
+      await expect(detect()).rejects.toThrow();
+      await expect(detect()).rejects.toThrow(new Error(messages.notEnabled));
     });
     test('Checks if the proxy has the in-page provider set', async () => {
       /*
@@ -48,12 +48,12 @@ describe('Metamask` Wallet Module', () => {
        */
       testGlobal.ethereum = undefined;
       testGlobal.web3 = {};
-      expect(detect()).rejects.toThrow();
+      await expect(detect()).rejects.toThrow();
       /*
        * Provider set, but empty
        */
       testGlobal.web3 = { currentProvider: {} };
-      expect(detect()).rejects.toThrowError(
+      await expect(detect()).rejects.toThrow(
         new Error(messages.noInpageProvider),
       );
     });
@@ -63,8 +63,8 @@ describe('Metamask` Wallet Module', () => {
        */
       testGlobal.ethereum = undefined;
       testGlobal.web3 = { currentProvider: { publicConfigStore: {} } };
-      expect(detect()).rejects.toThrow();
-      expect(detect()).rejects.toThrowError(
+      await expect(detect()).rejects.toThrow();
+      await expect(detect()).rejects.toThrow(
         new Error(messages.noProviderState),
       );
     });
@@ -76,8 +76,8 @@ describe('Metamask` Wallet Module', () => {
       testGlobal.web3 = {
         currentProvider: { publicConfigStore: { _state: {} } },
       };
-      expect(detect()).rejects.toThrow();
-      expect(detect()).rejects.toThrowError(new Error(messages.notEnabled));
+      await expect(detect()).rejects.toThrow();
+      await expect(detect()).rejects.toThrow(new Error(messages.notEnabled));
     });
     test('Returns true if the extension is enabled', async () => {
       /*
@@ -89,7 +89,7 @@ describe('Metamask` Wallet Module', () => {
         isUnlocked,
         isEnabled,
       };
-      expect(detect()).resolves.not.toThrow();
+      await expect(detect()).resolves.not.toThrow();
       const wasDetected = await detect();
       expect(wasDetected).toBeTruthy();
     });
@@ -105,7 +105,7 @@ describe('Metamask` Wallet Module', () => {
           },
         },
       };
-      expect(detect()).resolves.not.toThrow();
+      await expect(detect()).resolves.not.toThrow();
       const wasDetected = await detect();
       expect(wasDetected).toBeTruthy();
     });

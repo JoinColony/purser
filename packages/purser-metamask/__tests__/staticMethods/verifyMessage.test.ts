@@ -103,7 +103,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
         return true;
       });
       // @ts-ignore
-      expect(verifyMessage()).rejects.toThrow();
+      await expect(verifyMessage()).rejects.toThrow();
     });
     test('Validates the current address individually', async () => {
       await verifyMessage(mockedArgumentsObject);
@@ -168,7 +168,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       addressNormalizer.mockImplementation(() => {
         throw new Error('address normalizer error');
       });
-      expect(verifyMessage(mockedArgumentsObject)).rejects.toHaveProperty(
+      await expect(verifyMessage(mockedArgumentsObject)).rejects.toHaveProperty(
         'message',
         'address normalizer error',
       );
@@ -181,7 +181,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
         (message, signature, callback) =>
           callback(new Error('generic ecRecover error')),
       );
-      expect(verifyMessage(mockedArgumentsObject)).rejects.toHaveProperty(
+      await expect(verifyMessage(mockedArgumentsObject)).rejects.toHaveProperty(
         'message',
         'generic ecRecover error',
       );

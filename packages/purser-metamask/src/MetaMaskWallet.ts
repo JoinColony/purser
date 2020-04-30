@@ -31,12 +31,13 @@ import {
 } from './messages';
 
 import {
+  MetaMaskInpageProvider,
   MetamaskWalletConstructorArgumentsType,
   SignMessageObject,
 } from './types';
 
 export default class MetamaskWallet {
-  private state: Record<string, any> = {};
+  private state;
 
   private internalPublicKey?: string;
 
@@ -76,7 +77,7 @@ export default class MetamaskWallet {
            * @TODO Move into own (non-anonymous) method
            * This way we could better test it
            */
-          (newState: any): boolean => {
+          (newState: MetaMaskInpageProvider): boolean => {
             try {
               /*
                * Validate the state object that's coming in.
@@ -193,7 +194,7 @@ export default class MetamaskWallet {
      * try to access it. This is because something can change it from the time
      * of last detection until now.
      */
-    return methodCaller(
+    return methodCaller<Promise<string>>(
       /*
        * @TODO Move into own (non-anonymous) method
        * This way we could better test it

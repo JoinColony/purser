@@ -1,15 +1,10 @@
 import { accountChangeHook } from '../src/index';
 import { detect as detectHelper, setStateEventObserver } from '../src/helpers';
-import { jestMocked } from '../../testutils';
+import { jestMocked, testGlobal } from '../../testutils';
 
 jest.mock('../src/helpers');
 
-/*
- * Mock the global injected inpage provider
- */
-const anyGlobal: any = global;
-
-anyGlobal.web3 = {
+testGlobal.web3 = {
   currentProvider: {
     publicConfigStore: {
       _events: {
@@ -42,7 +37,7 @@ describe('Metamask` Wallet Module', () => {
       await accountChangeHook(mockedCallback);
       expect(
         /* eslint-disable-next-line no-underscore-dangle */
-        anyGlobal.web3.currentProvider.publicConfigStore._events.update,
+        testGlobal.web3.currentProvider.publicConfigStore._events.update,
       ).toContain(mockedCallback);
     });
     test('Catches if something goes wrong', async () => {
@@ -51,7 +46,7 @@ describe('Metamask` Wallet Module', () => {
        * an error along the way
        */
       mockedSetStateEventObserver.mockRejectedValueOnce(new Error());
-      expect(accountChangeHook(jest.fn())).rejects.toThrow();
+      await expect(accountChangeHook(jest.fn())).rejects.toThrow();
     });
   });
 });

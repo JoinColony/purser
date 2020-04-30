@@ -71,6 +71,7 @@
     "await-transaction-mined": "1.0.12",
     "bip32-path": "0.4.2",
     "bn.js": "5.1.1",
+    "eslint-plugin-jest": "^23.8.2",
     "ethereumjs-common": "1.5.0",
     "ethereumjs-tx": "2.1.2",
     "ethereumjs-util": "6.2.0",

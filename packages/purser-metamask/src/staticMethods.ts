@@ -1,4 +1,4 @@
-import { Transaction as EthereumTx, TransactionOptions } from 'ethereumjs-tx';
+import { Transaction as EthereumTx } from 'ethereumjs-tx';
 import BigNumber from 'bn.js';
 import { awaitTx } from 'await-transaction-mined';
 
@@ -22,11 +22,9 @@ import {
 import { HEX_HASH_TYPE } from '@purser/core/constants';
 
 import {
-  MessageVerificationObjectType,
   TransactionObjectTypeWithAddresses,
   TransactionObjectTypeWithTo,
 } from '@purser/core/types';
-import { throwError } from 'ethers/errors';
 import { methodCaller } from './helpers';
 import {
   getTransaction as getTransactionMethodLink,
@@ -59,6 +57,7 @@ import { SignMessageObject, Web3TransactionType } from './types';
 export const getTransaction = async (
   transactionHash: string,
 ): Promise<Web3TransactionType> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const receiptPromise = awaitTx((global as any).web3, transactionHash, {
     blocksToWait: 1,
   });
@@ -77,7 +76,7 @@ export const signTransactionCallback = (
   chainId: number,
   resolve: (string) => void,
   reject: (Error) => void,
-) => async (error: Error, transactionHash: string) => {
+) => async (error: Error, transactionHash: string): Promise<void> => {
   try {
     if (error) {
       /*
@@ -131,11 +130,8 @@ export const signTransactionCallback = (
         v,
         value: new BigNumber(signedValue),
       },
-      // new class implements TransactionOptions {}
       getChainDefinition(chainId),
     );
-
-    const to: TransactionOptions = {};
 
     const serializedSignedTransaction = signedTransaction
       .serialize()
@@ -218,7 +214,7 @@ export const signTransaction = async (
    * try to access it. This is because something can change it from the time
    * of last detection until now.
    */
-  return methodCaller(
+  return methodCaller<Promise<string>>(
     /*
      * @TODO Move into own (non-anonymous) method
      * This way we could better test it
@@ -257,7 +253,7 @@ export const signTransaction = async (
 export const signMessageCallback = (
   resolve: (string) => void,
   reject: (Error) => void,
-) => (error: Error, messageSignature: string) => {
+) => (error: Error, messageSignature: string): void => {
   try {
     if (error) {
       /*
@@ -312,7 +308,7 @@ export const signMessage = async (
    * try to access it. This is because something can change it from the time
    * of last detection until now.
    */
-  return methodCaller(
+  return methodCaller<Promise<string>>(
     /*
      * @TODO Move into own (non-anonymous) method
      * This way we could better test it
@@ -345,7 +341,7 @@ export const verifyMessageCallback = (
   currentAddress: string,
   resolve: (boolean) => void,
   reject: (Error) => void,
-) => (error: Error, recoveredAddress: string) => {
+) => (error: Error, recoveredAddress: string): void => {
   try {
     if (error) {
       throw new Error(error.message);
@@ -412,7 +408,7 @@ export const verifyMessage = async (obj: {
    * try to access it. This is because something can change it from the time
    * of last detection until now.
    */
-  return methodCaller(
+  return methodCaller<Promise<boolean>>(
     /*
      * @TODO Move into own (non-anonymous) method
      * This way we could better test it

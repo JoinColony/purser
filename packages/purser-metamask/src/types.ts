@@ -1,21 +1,11 @@
 import BigNumber from 'bn.js';
-import { IpcProvider } from 'web3-core';
+// We're importing the type here to make eslint happy (just a dev dependency)
+import type { TransactionConfig } from 'web3-core';
 
-export interface MetamaskInpageProvider extends IpcProvider {
-  enable: () => Promise<Array<string>>;
-  mux: Record<string, any>;
-  // There are surely more events but this is the one we care about
-  on(event: 'accountsChanged', listener: (accounts: string[]) => void);
-  publicConfigStore: {
-    _events: any;
-    _state: any;
-  };
-  rpcEngine: Record<string, any>;
-}
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Web3CallbackType = (error: Error, result: string) => any;
 
-export type Web3TransactionType = {
+export interface Web3TransactionType {
   blockHash: string;
   blockNumber: number;
   from: string;
@@ -30,16 +20,18 @@ export type Web3TransactionType = {
   transactionIndex: number;
   v: string;
   value: string;
-};
+}
 
 // This is surely not an exhaustive representation of the MM state, but it's close
-export interface MetaMaskState {
+export interface MetaMaskInpageProvider {
   selectedAddress: string | null;
   networkVersion: string;
   chainId: string;
+  // There are surely more events but this is the one we care about
+  on(event: 'accountsChanged', listener: (MetaMaskInpageProvider) => void);
   publicConfigStore: {
     _events: {
-      update: Array<(state: MetaMaskState) => void>;
+      update: Array<(state: MetaMaskInpageProvider) => void>;
     };
     _eventsCount: number;
     _maxListeners: number | undefined;
@@ -52,7 +44,7 @@ export interface MetaMaskState {
       chainId: string;
     };
   };
-  enable: (force: boolean) => void;
+  enable: (force?: boolean) => void;
   autoRefreshOnNetworkChange: boolean;
   _metamask: {
     isEnabled: () => boolean;
@@ -61,11 +53,13 @@ export interface MetaMaskState {
   };
 }
 
-export type MetamaskStateEventsObserverType = (state: MetaMaskState) => void;
+export type MetamaskStateEventsObserverType = (
+  state: MetaMaskInpageProvider,
+) => void;
 
-export type MetamaskWalletConstructorArgumentsType = {
+export interface MetamaskWalletConstructorArgumentsType {
   address: string;
-};
+}
 
 export type getTransactionMethodType = (
   transactionHash: string,
@@ -84,7 +78,7 @@ export interface SignMessageObject {
 }
 
 export type signTrasactionMethodType = (
-  transactionObject: Record<string, any>,
+  transactionConfig: TransactionConfig,
   callback: Web3CallbackType,
 ) => void;
 

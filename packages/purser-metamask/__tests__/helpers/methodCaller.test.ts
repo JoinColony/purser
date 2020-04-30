@@ -22,7 +22,7 @@ describe('Metamask` Wallet Module', () => {
       mockDetect.mockImplementation(async () => {
         throw new Error();
       });
-      expect(methodCaller(mockedCallback)).rejects.toThrow();
+      await expect(methodCaller(mockedCallback)).rejects.toThrow();
     });
     test('It has a customized error message for throwing', async () => {
       const mockedErrorMessage = 'Oh no!';
@@ -30,9 +30,9 @@ describe('Metamask` Wallet Module', () => {
       mockDetect.mockImplementation(async () => {
         throw new Error(mockedErrorMessage);
       });
-      expect(
+      await expect(
         methodCaller(mockedCallback, customizedError),
-      ).rejects.toThrowError(`${customizedError} Error: ${mockedErrorMessage}`);
+      ).rejects.toThrow(`${customizedError} Error: ${mockedErrorMessage}`);
     });
   });
 });

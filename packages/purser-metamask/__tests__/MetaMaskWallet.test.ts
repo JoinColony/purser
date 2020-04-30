@@ -17,7 +17,6 @@ import {
   methodCaller,
   getInpageProvider,
   setStateEventObserver,
-  triggerUpdateStateEvents,
 } from '../src/helpers';
 import { validateMetaMaskState } from '../src/validators';
 import {
@@ -26,6 +25,7 @@ import {
   verifyMessage,
 } from '../src/staticMethods';
 import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from '../src/constants';
+import { MetaMaskInpageProvider } from '../src/types';
 
 jest.mock('lodash.isequal');
 jest.mock('../../purser-core/src/validators');
@@ -46,6 +46,12 @@ const mockedBufferFrom = jest.spyOn(Buffer, 'from');
 const mockedBufferToString = jest.spyOn(Buffer.prototype, 'toString');
 
 const mockedMessageSignature = 'mocked-message-signature';
+
+const triggerUpdateStateEvents = (newState: MetaMaskInpageProvider): void =>
+  /* eslint-disable-next-line no-underscore-dangle */
+  testGlobal.web3.currentProvider.publicConfigStore._events.update.map(
+    (callback) => callback(newState),
+  );
 
 /*
  * Mock the injected web3 proxy object
@@ -151,6 +157,7 @@ describe('Metamask` Wallet Module', () => {
       /*
        * We trigger a state update manually;
        */
+      // @ts-ignore
       triggerUpdateStateEvents(mockedState);
       /*
        * Check if the new state is in the correct format
@@ -168,12 +175,13 @@ describe('Metamask` Wallet Module', () => {
       /*
        * We trigger a state update manually;
        */
+      // @ts-ignore
       triggerUpdateStateEvents(mockedNewState);
       /*
        * Deep equal the two state objects
        */
       expect(mockedIsEqual).toHaveBeenCalled();
-      expect(mockedIsEqual).toHaveBeenCalledWith({}, mockedNewState);
+      expect(mockedIsEqual).toHaveBeenCalledWith(undefined, mockedNewState);
     });
     test('Does not update if something goes wrong', async () => {
       /*
@@ -187,6 +195,7 @@ describe('Metamask` Wallet Module', () => {
       /*
        * We trigger a state update manually;
        */
+      // @ts-ignore
       const eventsUpdatesArray = triggerUpdateStateEvents(mockedNewState);
       /*
        * At this point we caught, so this will not be called
@@ -389,6 +398,7 @@ describe('Metamask` Wallet Module', () => {
       const metamaskWallet = new MetaMaskWallet({
         address: 'some weird address',
       });
+      // @ts-ignore
       triggerUpdateStateEvents(mockedNewState);
       const publicKey = await metamaskWallet.getPublicKey();
       expect(testGlobal.web3.eth.sign).toHaveBeenCalled();

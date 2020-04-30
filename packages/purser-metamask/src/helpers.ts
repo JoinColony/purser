@@ -1,10 +1,11 @@
 import { helpers as messages } from './messages';
 
 import {
-  MetamaskInpageProvider,
+  MetaMaskInpageProvider,
   MetamaskStateEventsObserverType,
 } from './types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anyGlobal: any = global;
 /*
  * @TODO Add isModern() helper method to detect the new version of Metamask
@@ -71,8 +72,8 @@ export const detect = async (): Promise<boolean> => {
     if (!anyGlobal.web3.currentProvider.publicConfigStore._state) {
       throw new Error(messages.noProviderState);
     }
-    /* eslint-disable-next-line no-underscore-dangle */
     if (
+      /* eslint-disable-next-line no-underscore-dangle */
       !anyGlobal.web3.currentProvider.publicConfigStore._state.selectedAddress
     ) {
       throw new Error(messages.notEnabled);
@@ -97,10 +98,10 @@ export const detect = async (): Promise<boolean> => {
  *
  * @return {any} It returns the result of the callback execution
  */
-export const methodCaller = async (
-  callback: () => any,
+export const methodCaller = async <T>(
+  callback: () => T,
   errorMessage = '',
-): Promise<any> => {
+): Promise<T> => {
   try {
     await detect();
     return callback();
@@ -118,13 +119,7 @@ export const methodCaller = async (
  *
  * @return {Object} The `MetamaskInpageProvider` object instance
  */
-export const getInpageProvider = (): MetamaskInpageProvider => {
-  /*
-   * We need this little go-around trick to mock just one export of
-   * the module, while leaving the rest of the module intact so we can test it
-   *
-   * See: https://github.com/facebook/jest/issues/936
-   */
+export const getInpageProvider = (): MetaMaskInpageProvider => {
   if (anyGlobal.ethereum) {
     return anyGlobal.ethereum;
   }
@@ -146,7 +141,7 @@ export const setStateEventObserver = (
   const ethereum = getInpageProvider();
   const {
     publicConfigStore: { _events: stateEvents },
-  }: MetamaskInpageProvider = ethereum;
+  }: MetaMaskInpageProvider = ethereum;
 
   if (ethereum.on) {
     ethereum.on('accountsChanged', observer);
@@ -154,13 +149,3 @@ export const setStateEventObserver = (
     stateEvents.update.push(observer);
   }
 };
-
-/*
- * This is only used for testing
- * It's only here to help us trigger a state update
- */
-export const triggerUpdateStateEvents = (newState) =>
-  /* eslint-disable-next-line no-underscore-dangle */
-  anyGlobal.web3.currentProvider.publicConfigStore._events.update.map(
-    (callback) => callback(newState),
-  );

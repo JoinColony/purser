@@ -1,4 +1,6 @@
-import Web3Instance from 'web3';
+// TODO: in the future use a minimal implementation for signing rather than web3:
+// https://github.com/danfinlay/js-eth-personal-sign-examples
+import Web3 from 'web3';
 
 import { warning } from '@purser/core/utils';
 
@@ -29,12 +31,14 @@ export const open = async (): Promise<MetaMaskWallet> => {
      * We're on the Modern Metamask (after EIP-1102)
      * See: https://eips.ethereum.org/EIPS/eip-1102
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const anyGlobal: any = global;
     if (anyGlobal.ethereum) {
       /*
        * Inject the web3 provider
        */
-      anyGlobal.web3 = new Web3Instance(anyGlobal.ethereum);
+      // @TODO let's not do this anymore
+      anyGlobal.web3 = new Web3(anyGlobal.ethereum);
       /*
        * Enable it
        */
@@ -57,12 +61,14 @@ export const open = async (): Promise<MetaMaskWallet> => {
        * @NOTE There's an argument to be made here that it's dangerous to use
        * the `getInpageProvider()` helper before using `detect()`
        */
-      const legacyProvider = getInpageProvider();
+      // @TODO: remove legacy provider at some point
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const legacyProvider = getInpageProvider() as any;
       legacyProvider.enable();
       /*
        * Inject the web3 provider (overwrite the current one)
        */
-      anyGlobal.web3 = new Web3Instance(legacyProvider);
+      anyGlobal.web3 = new Web3(legacyProvider);
     }
     /*
      * Everything functions the same since the Web3 instance is now in place

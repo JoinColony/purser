@@ -24,11 +24,13 @@ export const staticMethods = {
    */
   legacyMode:
     "Metamask is running in legacy mode. While this is still going to work, it will be disabled in the future, and it's recommended you upgrade the extension. See this for more details: https://bit.ly/2QQHXvF",
-  cannotAddHook: "Cannot add an Account Change Hook to the injected Metamask Instance. This should have been caught by the 'detect()' method. Since it didn't it means some API's might have changed."
+  cannotAddHook:
+    "Cannot add an Account Change Hook to the injected Metamask Instance. This should have been caught by the 'detect()' method. Since it didn't it means some API's might have changed.",
 };
 
 export const helpers = {
-  noExtension: "Could not detect the Metamask extension. Ensure that it's enabled",
+  noExtension:
+    "Could not detect the Metamask extension. Ensure that it's enabled",
   isLocked: "Metamask's instance is locked. Please unlock it from the UI",
   notEnabled:
     'The Metmask extension instance has not been enabled on this page. Please use the `open()` method to do so.',
@@ -39,9 +41,9 @@ export const helpers = {
    * After an adequate amount of time has passed
    */
   noInpageProvider:
-     'Could not detect the Metamask in-page provider. Ensure something is not tampering with the web3 Proxy instance',
+    'Could not detect the Metamask in-page provider. Ensure something is not tampering with the web3 Proxy instance',
   noProviderState:
-     "Metamask's in-page provider does not contain the state. Ensure something is not tampering with the web3 Proxy instance",
+    "Metamask's in-page provider does not contain the state. Ensure something is not tampering with the web3 Proxy instance",
 };
 
 export const validators = {
