@@ -14,8 +14,7 @@ import {
 import { PATH, CHAIN_IDS } from '@purser/core/constants';
 import { WalletArgumentsType } from '@purser/core/types';
 
-import SoftwareWallet from './class';
-
+import SoftwareWallet from './SoftwareWallet';
 import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from './defaults';
 import { staticMethods as messages } from './messages';
 
@@ -97,6 +96,8 @@ export const open = async (
        * This needs to be refactored to pass values to the SoftwareWallet
        * class in a less repetitious way
        */
+      // FIXME
+      // @ts-ignore
       const walletArgs: WalletArgumentsType = keystoreWallet;
       walletArgs.keystore = keystore;
       walletArgs.password = password;
@@ -189,8 +190,12 @@ export const create = async (
   try {
     if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
       warning(messages.noEntrophy);
+      // FIXME
+      // @ts-ignore
       basicWallet = EthersWallet.createRandom();
     } else {
+      // FIXME
+      // @ts-ignore
       basicWallet = EthersWallet.createRandom({
         extraEntropy: entropy,
       });

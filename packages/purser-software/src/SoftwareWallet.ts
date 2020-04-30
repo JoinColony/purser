@@ -281,9 +281,8 @@ export default class SoftwareWallet {
     return (async () => {
       const privateKey: string = await this.privateKey;
       const privateKeyBuffer = Buffer.from(privateKey, HEX_HASH_TYPE);
-      const reversedPublicKey: string = privateToPublic(
-        privateKeyBuffer,
-      ).toString(HEX_HASH_TYPE);
+      const publicKeyBuffer = privateToPublic(privateKeyBuffer);
+      const reversedPublicKey: string = publicKeyBuffer.toString(HEX_HASH_TYPE);
       /*
        * Validate the reversed public key
        */

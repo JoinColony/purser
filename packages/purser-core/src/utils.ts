@@ -5,6 +5,8 @@ import ExtendedBN from './ExtendedBigNumber';
 import { ENV } from './constants';
 import { utils as messages } from './messages';
 
+export { privateToPublic } from 'ethereumjs-util';
+
 /**
  * Simple helper to determine if we should output messages to the console
  * based on the environment the modules have been built in
