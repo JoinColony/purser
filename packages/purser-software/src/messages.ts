@@ -6,8 +6,8 @@ export const walletClass = {
 };
 
 export const staticMethods = {
-  noEntrophy:
-    "You did not provide entrophy to help with randomness when generating the wallet. While this can be omitted, it's highly recommended. You could omiy this argument and it will provide it for you automatically",
+  noEntropy:
+    "You did not provide entropy to help with randomness when generating the wallet. While this can be omitted, it's highly recommended. You could omiy this argument and it will provide it for you automatically",
   create:
     'There was an error in creating the wallet, check the arguments you are passing in',
   open:

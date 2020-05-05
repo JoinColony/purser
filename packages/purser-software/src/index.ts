@@ -189,7 +189,7 @@ export const create = async (
   let basicWallet: WalletArgumentsType;
   try {
     if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
-      warning(messages.noEntrophy);
+      warning(messages.noEntropy);
       // FIXME
       // @ts-ignore
       basicWallet = EthersWallet.createRandom();
@@ -224,10 +224,3 @@ export const create = async (
     throw new Error(`${messages.create} Error: ${caughtError.message}`);
   }
 };
-
-const softwareWallet: Record<string, any> = {
-  open,
-  create,
-};
-
-export default softwareWallet;
