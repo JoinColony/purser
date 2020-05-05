@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 import HDKey from 'hdkey';
 import { pubToAddress } from 'ethereumjs-util';
 import { mocked } from 'ts-jest/utils';
@@ -45,11 +46,12 @@ describe('`Core` Module', () => {
   });
   describe('`GenericWallet` class', () => {
     test('Creates a new wallet instance', () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet(mockedArguments);
       expect(genericWallet).toBeInstanceOf(GenericWallet);
     });
     test('Derives the address derivation path from the root path', () => {
-      /* eslint-disable-next-line no-new */
+      // @ts-ignore
       new GenericWallet(mockedArguments);
       expect(HDKey).toHaveBeenCalled();
     });
@@ -59,6 +61,7 @@ describe('`Core` Module', () => {
        * A "trezor"-default derivation path, that ends with a digit.
        * Eg: m/44'/60'/0'/0
        */
+      // @ts-ignore
       const derivationPathWithDigitWallet = new GenericWallet(mockedArguments);
       const derivationPathWithDigit = await derivationPathWithDigitWallet.getDerivationPath();
       expect(derivationPathWithDigit).toEqual(firstDerivationPathIndex);
@@ -66,6 +69,7 @@ describe('`Core` Module', () => {
        * A "ledger"-default derivation path, that ends with a slash.
        * Eg: m/44'/60'/0'/
        */
+      // @ts-ignore
       const derivationPathWithSpliterWallet = new GenericWallet({
         ...mockedArguments,
         rootDerivationPath: `${rootDerivationPath}/`,
@@ -74,11 +78,12 @@ describe('`Core` Module', () => {
       expect(derivationPathWithSplitter).toEqual(firstDerivationPathIndex);
     });
     test('Generates the address(es) from the public key(s)', () => {
-      /* eslint-disable-next-line no-new */
+      // @ts-ignore
       new GenericWallet(mockedArguments);
       expect(pubToAddress).toHaveBeenCalled();
     });
     test('The Wallet Object has the required (correct) props', async () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet(mockedArguments);
       /*
        * Address
@@ -102,21 +107,10 @@ describe('`Core` Module', () => {
        * Chain Id
        */
       expect(genericWallet).toHaveProperty('chainId');
-      /*
-       * `sign()` method (but it's empty -- you're supposed to overwrite it)
-       */
-      expect(genericWallet).toHaveProperty('sign');
-      /*
-       * `signMessage()` method (but it's empty -- you're supposed to overwrite it)
-       */
-      expect(genericWallet).toHaveProperty('signMessage');
-      /*
-       * `verifyMessage()` method (but it's empty -- you're supposed to overwrite it)
-       */
-      expect(genericWallet).toHaveProperty('verifyMessage');
     });
     test('The Wallet Object sets the chain Id correctly', () => {
       const locallyMockedChainId = 222;
+      // @ts-ignore
       const genericWallet = new GenericWallet({
         ...mockedArguments,
         chainId: locallyMockedChainId,
@@ -127,6 +121,7 @@ describe('`Core` Module', () => {
       expect(genericWallet).toHaveProperty('chainId', locallyMockedChainId);
     });
     test('The Wallet Object falls back to the default chainId', () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
@@ -139,7 +134,7 @@ describe('`Core` Module', () => {
       expect(genericWallet).toHaveProperty('chainId', CHAIN_IDS.HOMESTEAD);
     });
     test('Validates values used to instantiate', async () => {
-      /* eslint-disable-next-line no-new */
+      // @ts-ignore
       new GenericWallet({
         ...mockedArguments,
         addressCount: addressCountSingle,
@@ -168,7 +163,7 @@ describe('`Core` Module', () => {
       );
     });
     test('Normalizes values used to instantiate', async () => {
-      /* eslint-disable-next-line no-new */
+      // @ts-ignore
       new GenericWallet(mockedArguments);
       /*
        * Normalizes all addresses that are derived from the public keys
@@ -182,6 +177,7 @@ describe('`Core` Module', () => {
       expect(hexSequenceNormalizer).toHaveBeenCalledTimes(addressCount);
     });
     test('Changes the default address', async () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet(mockedArguments);
       /*
        *  Should have the `setDefaultAddress` internal method set on the instance
@@ -225,6 +221,7 @@ describe('`Core` Module', () => {
       );
     });
     test('Changes the default address with no arguments provided', async () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet(mockedArguments);
       /*
        * Set the initial default account to something later down the array index
@@ -256,6 +253,7 @@ describe('`Core` Module', () => {
      * violate the 80 max-len rule. Wierd
      */
     test('Cannot change the default address (single address opened)', async () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet({
         ...mockedArguments,
         addressCount: addressCountSingle,
@@ -263,11 +261,13 @@ describe('`Core` Module', () => {
       await expect(genericWallet.setDefaultAddress(2)).rejects.toThrow();
     });
     test('Has the `otherAddresses` prop if multiple were instantiated', async () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet(mockedArguments);
       expect(genericWallet).toHaveProperty('otherAddresses');
       expect(genericWallet.otherAddresses).toHaveLength(addressCount);
     });
     test('Opens the first 10 wallet addresses by default', () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet({
         publicKey: rootPublicKey,
         chainCode: rootChainCode,
@@ -284,6 +284,7 @@ describe('`Core` Module', () => {
       expect(genericWallet.otherAddresses).toHaveLength(addressCount);
     });
     test('Falls back to 1 if address count was set to falsy value', () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet({
         ...mockedArguments,
         addressCount: NaN,
@@ -303,6 +304,7 @@ describe('`Core` Module', () => {
       );
     });
     test('`otherAddresses` prop is empty if only one was instantiated', async () => {
+      // @ts-ignore
       const genericWallet = new GenericWallet({
         ...mockedArguments,
         addressCount: addressCountSingle,

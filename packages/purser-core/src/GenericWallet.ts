@@ -17,19 +17,7 @@ import {
   GenericClassArgumentsType,
 } from './types';
 
-/*
- * @TODO Support extra props
- *
- * Support the extra props required for the software wallet (privateKey, mnemonic, etc...)
- * Also, we need to find a way to extend both this and the `ethers` wallet class
- */
-export default class GenericWallet {
-  /*
-   * "Private" (internal) variable(s).
-   *
-   * These are used as return values from getters which don't have an accompanying setter,
-   * but we still want to set them internally.
-   */
+export default abstract class GenericWallet {
   private addressCount: number;
 
   private internalPublicKey: string;
@@ -47,6 +35,12 @@ export default class GenericWallet {
   type: WalletType;
 
   subtype: WalletSubType;
+
+  sign: (TransactionObjectTypeWithTo) => Promise<string>;
+
+  signMessage: (SignMessageData) => Promise<string>;
+
+  verifyMessage: (VerifyMessageData) => Promise<boolean>;
 
   constructor({
     publicKey,
@@ -202,24 +196,5 @@ export default class GenericWallet {
     throw new Error(
       `${messages.addressIndexOutsideRange}: index (${addressIndex}) count (${this.addressCount})`,
     );
-  }
-
-  /*
-   * These are just a placeholder static methods. They should be replaced (or deleted at least)
-   * with methods that actually has some functionality.
-   */
-  // eslint-disable-next-line class-methods-use-this
-  async sign(): Promise<string> {
-    throw new Error('This should be implemented in the subclass');
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  async signMessage(): Promise<string> {
-    throw new Error('This should be implemented in the subclass');
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  async verifyMessage(): Promise<boolean> {
-    throw new Error('This should be implemented in the subclass');
   }
 }
