@@ -1,33 +1,25 @@
-import { hexSequenceNormalizer } from '@colony/purser-core/normalizers';
-import { messageValidator } from '@colony/purser-core/validators';
+import { mocked } from 'ts-jest/utils';
 
-import { signMessage } from '@colony/purser-software/staticMethods';
-import { messageOrDataValidator } from '@colony/purser-core/helpers';
+import { hexSequenceNormalizer } from '../../../purser-core/src/normalizers';
+import { messageValidator } from '../../../purser-core/src/validators';
+import { messageOrDataValidator } from '../../../purser-core/src/helpers';
 
-jest.dontMock('@colony/purser-software/staticMethods');
+import { signMessage } from '../../src/staticMethods';
 
-jest.mock('@colony/purser-core/validators');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/helpers', () =>
-  require('@mocks/purser-core/helpers'),
-);
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers'),
-);
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils'),
-);
+jest.mock('../../../purser-core/src/validators');
+jest.mock('../../../purser-core/src/helpers');
+jest.mock('../../../purser-core/src/normalizers');
+jest.mock('../../../purser-core/src/utils');
+
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
+const mockedMessageValidator = mocked(messageValidator);
 
 /*
  * These values are not correct. Do not use the as reference.
  * If the validators wouldn't be mocked, they wouldn't pass.
  */
 const mockedMessageSignature = 'mocked-signed-transaction';
-const mockedInjectedCallback = jest.fn(transactionObject => {
+const mockedInjectedCallback = jest.fn((transactionObject) => {
   if (!transactionObject) {
     throw new Error();
   }
@@ -36,13 +28,14 @@ const mockedInjectedCallback = jest.fn(transactionObject => {
 const mockedMessage = 'mocked-message';
 const mockedArgumentsObject = {
   message: mockedMessage,
+  messageData: 'foo',
   callback: mockedInjectedCallback,
 };
 describe('`Software` Wallet Module', () => {
   afterEach(() => {
     mockedInjectedCallback.mockClear();
-    hexSequenceNormalizer.mockClear();
-    messageValidator.mockClear();
+    mockedHexSequenceNormalizer.mockClear();
+    mockedMessageValidator.mockClear();
   });
   describe('`signMessage()` static method', () => {
     test('Calls the injected callback', async () => {
@@ -70,7 +63,8 @@ describe('`Software` Wallet Module', () => {
       );
     });
     test('Throws if something goes wrong', async () => {
-      expect(signMessage()).rejects.toThrow();
+      // @ts-ignore
+      await expect(signMessage()).rejects.toThrow();
     });
   });
 });

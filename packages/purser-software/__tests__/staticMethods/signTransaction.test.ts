@@ -1,44 +1,34 @@
 import { bigNumberify } from 'ethers/utils';
+import { mocked } from 'ts-jest/utils';
 
-import { transactionObjectValidator } from '@colony/purser-core/helpers';
+import { transactionObjectValidator } from '../../../purser-core/src/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '@colony/purser-core/normalizers';
+} from '../../../purser-core/src/normalizers';
 
-import { signTransaction } from '@colony/purser-software/staticMethods';
-
-jest.dontMock('@colony/purser-software/staticMethods');
+import { signTransaction } from '../../src/staticMethods';
 
 jest.mock('ethers/utils');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/helpers', () =>
-  require('@mocks/purser-core/helpers'),
-);
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers'),
-);
+jest.mock('../../../purser-core/src/helpers');
+jest.mock('../../../purser-core/src/normalizers');
 
 /*
  * These values are not correct. Do not use the as reference.
  * If the validators wouldn't be mocked, they wouldn't pass.
  */
 const mockedSignedTransaction = 'mocked-signed-transaction';
-const mockedInjectedCallback = jest.fn(transactionObject => {
+const mockedInjectedCallback = jest.fn((transactionObject) => {
   if (!transactionObject) {
     throw new Error();
   }
   return mockedSignedTransaction;
 });
-const chainId = 'mocked-chain-id';
+const chainId = 1337;
 const inputData = 'mocked-data';
 const gasLimit = 'mocked-gas-limit';
 const gasPrice = 'mocked-gas-price';
-const nonce = 'mocked-nonce';
+const nonce = 1;
 const to = 'mocked-destination-address';
 const value = 'mocked-transaction-value';
 const mockedTransactionObject = {
@@ -57,10 +47,10 @@ const mockedArgumentsObject = {
 describe('`Software` Wallet Module', () => {
   afterEach(() => {
     mockedInjectedCallback.mockClear();
-    transactionObjectValidator.mockClear();
-    addressNormalizer.mockClear();
-    hexSequenceNormalizer.mockClear();
-    bigNumberify.mockClear();
+    mocked(transactionObjectValidator).mockClear();
+    mocked(addressNormalizer).mockClear();
+    mocked(hexSequenceNormalizer).mockClear();
+    mocked(bigNumberify).mockClear();
   });
   describe('`signTransaction()` static method', () => {
     test('Calls the injected callback', async () => {
@@ -125,10 +115,11 @@ describe('`Software` Wallet Module', () => {
       expect(bigNumberify).toHaveBeenCalledWith(value);
     });
     test('Throws if something goes wrong', async () => {
-      expect(signTransaction()).rejects.toThrow();
+      // @ts-ignore
+      await expect(signTransaction()).rejects.toThrow();
     });
     test("Can be called with no 'to' prop", async () => {
-      expect(
+      await expect(
         signTransaction({
           gasPrice,
           gasLimit,
@@ -136,7 +127,7 @@ describe('`Software` Wallet Module', () => {
           nonce,
           value,
           inputData,
-          callback: () => {},
+          callback: () => 'foo',
         }),
       ).resolves.not.toThrow();
       /*

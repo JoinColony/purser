@@ -120,15 +120,15 @@ export const signMessage = async ({
   callback,
 }: {
   message: string;
-  messageData: any;
-  callback: (toSign: any) => string;
+  messageData: string | Uint8Array;
+  callback: (toSign: string | Uint8Array) => string;
 }): Promise<string> => {
   /*
    * Validate input value
    */
   const toSign = messageOrDataValidator({ message, messageData });
   try {
-    const messageSignature: string = await callback(toSign);
+    const messageSignature = await callback(toSign);
     /*
      * Normalize the message signature
      */

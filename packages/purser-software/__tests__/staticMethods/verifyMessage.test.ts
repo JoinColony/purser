@@ -1,43 +1,35 @@
 import { verifyMessage as verifyEthersMessage } from 'ethers/utils';
+import { mocked } from 'ts-jest/utils';
 
-import { messageVerificationObjectValidator } from '@colony/purser-core/helpers';
-import { addressValidator } from '@colony/purser-core/validators';
+import { messageVerificationObjectValidator } from '../../../purser-core/src/helpers';
+import { addressValidator } from '../../../purser-core/src/validators';
 
-import { verifyMessage } from '@colony/purser-software/staticMethods';
-
-jest.dontMock('@colony/purser-software/staticMethods');
+import { verifyMessage } from '../../src/staticMethods';
 
 jest.mock('ethers/utils');
-jest.mock('@colony/purser-core/validators');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/helpers', () =>
-  require('@mocks/purser-core/helpers'),
-);
-jest.mock('@colony/purser-core/normalizers', () =>
-  require('@mocks/purser-core/normalizers'),
-);
+jest.mock('../../../purser-core/src/helpers');
+jest.mock('../../../purser-core/src/validators');
+jest.mock('../../../purser-core/src/normalizers');
 
 /*
  * These values are not correct. Do not use the as reference.
  * If the validators wouldn't be mocked, they wouldn't pass.
  */
+const address = '0xacab';
 const message = 'mocked-message';
 const signature = 'mocked-signature';
 const mockedAddress = 'mocked-address';
 const mockedRecoveredAddress = 'mocked-recovered-address';
 const mockedArgumentsObject = {
+  address,
   message,
   signature,
 };
 describe('`Software` Wallet Module', () => {
   afterEach(() => {
-    messageVerificationObjectValidator.mockClear();
-    addressValidator.mockClear();
-    verifyEthersMessage.mockClear();
+    mocked(messageVerificationObjectValidator).mockClear();
+    mocked(addressValidator).mockClear();
+    mocked(verifyEthersMessage).mockClear();
   });
   describe('`verifyMessage()` static method', () => {
     test('Calls the correct EthersWallet static method', async () => {
@@ -73,7 +65,8 @@ describe('`Software` Wallet Module', () => {
       expect(validMessage).toBeTruthy();
     });
     test('Throws if something goes wrong', async () => {
-      expect(verifyMessage()).rejects.toThrow();
+      // @ts-ignore
+      await expect(verifyMessage()).rejects.toThrow();
     });
   });
 });
