@@ -15,7 +15,7 @@ import { PATH, CHAIN_IDS } from '@purser/core/constants';
 import { WalletArgumentsType } from '@purser/core/types';
 
 import SoftwareWallet from './SoftwareWallet';
-import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from './defaults';
+import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from './constants';
 import { staticMethods as messages } from './messages';
 
 /**

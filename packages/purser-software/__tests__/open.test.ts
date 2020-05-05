@@ -1,37 +1,27 @@
-import { Wallet as EthersWalletClass } from 'ethers/wallet';
+import { Wallet as EthersWallet } from 'ethers/wallet';
 import { isValidMnemonic, fromMnemonic } from 'ethers/utils/hdnode';
 import { isSecretStorageWallet } from 'ethers/utils/json-wallet';
+import { mocked } from 'ts-jest/utils';
 
-import { userInputValidator } from '@colony/purser-core/helpers';
+import { userInputValidator } from '../../purser-core/src/helpers';
+import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from '../src/constants';
 
-import SoftwareWalletClass from '@colony/purser-software/class';
-import softwareWallet from '@colony/purser-software';
-
-import {
-  /*
-   * Prettier again suggests a fix that would break eslint's max line lenght rule.
-   * So we have to trick it again with a comment :)
-   */
-  REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE,
-} from '@colony/purser-software/defaults';
-
-jest.dontMock('@colony/purser-software/index');
+import SoftwareWallet from '../src/SoftwareWallet';
+import { open } from '../src';
 
 jest.mock('ethers/wallet');
 jest.mock('ethers/utils/hdnode');
 jest.mock('ethers/utils/json-wallet');
-jest.mock('@colony/purser-software/class');
-/*
- * @TODO Fix manual mocks
- * This is needed since Jest won't see our manual mocks (because of our custom monorepo structure)
- * and will replace them with automatic ones
- */
-jest.mock('@colony/purser-core/helpers', () =>
-  require('@mocks/purser-core/helpers'),
-);
-jest.mock('@colony/purser-core/utils', () =>
-  require('@mocks/purser-core/utils'),
-);
+jest.mock('../src/SoftwareWallet');
+jest.mock('../../purser-core/src/helpers');
+jest.mock('../../purser-core/src/utils');
+
+const MockedSoftwareWallet = mocked(SoftwareWallet);
+const MockedEthersWallet = mocked(EthersWallet);
+const mockedFromMnemonic = mocked(fromMnemonic);
+const mockedIsValidMnemonic = mocked(isValidMnemonic);
+const mockedIsSecretStorageWallet = mocked(isSecretStorageWallet);
+const mockedUserInputValidator = mocked(userInputValidator);
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -47,34 +37,34 @@ const mockedArgumentsObject = {
 
 describe('`Software` Wallet Module', () => {
   afterEach(() => {
-    SoftwareWalletClass.mockClear();
-    EthersWalletClass.mockClear();
-    fromMnemonic.mockClear();
-    isValidMnemonic.mockClear();
-    EthersWalletClass.fromEncryptedJson.mockClear();
-    isSecretStorageWallet.mockClear();
-    userInputValidator.mockClear();
+    MockedSoftwareWallet.mockClear();
+    MockedEthersWallet.mockClear();
+    mockedFromMnemonic.mockClear();
+    mockedIsValidMnemonic.mockClear();
+    MockedEthersWallet.fromEncryptedJson.mockClear();
+    mockedIsSecretStorageWallet.mockClear();
+    mockedUserInputValidator.mockClear();
   });
   describe('`open()` static method', () => {
     test('Open a wallet with a private key', async () => {
-      await softwareWallet.open({ privateKey });
+      await open({ privateKey });
       /*
        * Creates a Ethers Wallet instance
        */
-      expect(EthersWalletClass).toHaveBeenCalled();
-      expect(EthersWalletClass).toHaveBeenCalledWith(privateKey);
+      expect(EthersWallet).toHaveBeenCalled();
+      expect(EthersWallet).toHaveBeenCalledWith(privateKey);
       /*
        * Uses that instance to create a new software wallet
        */
-      expect(SoftwareWalletClass).toHaveBeenCalled();
-      expect(SoftwareWalletClass).toHaveBeenCalledWith(
+      expect(SoftwareWallet).toHaveBeenCalled();
+      expect(SoftwareWallet).toHaveBeenCalledWith(
         expect.objectContaining({
           privateKey,
         }),
       );
     });
     test('Open a wallet with a mnemonic', async () => {
-      await softwareWallet.open({ mnemonic });
+      await open({ mnemonic });
       /*
        * Extract the private key from the mnemonic
        */
@@ -83,13 +73,13 @@ describe('`Software` Wallet Module', () => {
       /*
        * Uses the extracted private key to create a Ethers Wallet instance
        */
-      expect(EthersWalletClass).toHaveBeenCalled();
-      expect(EthersWalletClass).toHaveBeenCalledWith(privateKey);
+      expect(EthersWallet).toHaveBeenCalled();
+      expect(EthersWallet).toHaveBeenCalledWith(privateKey);
       /*
        * Uses that instance to create a new software wallet
        */
-      expect(SoftwareWalletClass).toHaveBeenCalled();
-      expect(SoftwareWalletClass).toHaveBeenCalledWith(
+      expect(SoftwareWallet).toHaveBeenCalled();
+      expect(SoftwareWallet).toHaveBeenCalledWith(
         expect.objectContaining({
           privateKey,
           originalMnemonic: mnemonic,
@@ -97,7 +87,7 @@ describe('`Software` Wallet Module', () => {
       );
     });
     test('Checks if the mnemonic is valid', async () => {
-      await softwareWallet.open({ mnemonic });
+      await open({ mnemonic });
       /*
        * Checks if the passed mnemonic is valid
        */
@@ -105,20 +95,20 @@ describe('`Software` Wallet Module', () => {
       expect(isValidMnemonic).toHaveBeenCalledWith(mnemonic);
     });
     test('Open a wallet with a keystore', async () => {
-      await softwareWallet.open({ keystore, password });
+      await open({ keystore, password });
       /*
        * Create a new wallet instance from the (now decrypted) keystore
        */
-      expect(EthersWalletClass.fromEncryptedJson).toHaveBeenCalled();
-      expect(EthersWalletClass.fromEncryptedJson).toHaveBeenCalledWith(
+      expect(EthersWallet.fromEncryptedJson).toHaveBeenCalled();
+      expect(EthersWallet.fromEncryptedJson).toHaveBeenCalledWith(
         keystore,
         password,
       );
       /*
        * Uses that instance to create a new software wallet
        */
-      expect(SoftwareWalletClass).toHaveBeenCalled();
-      expect(SoftwareWalletClass).toHaveBeenCalledWith(
+      expect(SoftwareWallet).toHaveBeenCalled();
+      expect(SoftwareWallet).toHaveBeenCalledWith(
         expect.objectContaining({
           privateKey,
           keystore,
@@ -127,7 +117,7 @@ describe('`Software` Wallet Module', () => {
       );
     });
     test('Checks if the keystore is valid', async () => {
-      await softwareWallet.open({ keystore, password });
+      await open({ keystore, password });
       /*
        * Checks if the passed keystore is valid
        */
@@ -135,7 +125,7 @@ describe('`Software` Wallet Module', () => {
       expect(isSecretStorageWallet).toHaveBeenCalledWith(keystore);
     });
     test("Validate the user's input", async () => {
-      await softwareWallet.open(mockedArgumentsObject);
+      await open(mockedArgumentsObject);
       expect(userInputValidator).toHaveBeenCalled();
       expect(userInputValidator).toHaveBeenCalledWith({
         firstArgument: mockedArgumentsObject,
@@ -143,8 +133,8 @@ describe('`Software` Wallet Module', () => {
       });
     });
     test('Throws if no valid method of opening is provided', async () => {
-      expect(softwareWallet.open()).rejects.toThrow();
-      expect(SoftwareWalletClass).not.toHaveBeenCalled();
+      await expect(open()).rejects.toThrow();
+      expect(SoftwareWallet).not.toHaveBeenCalled();
     });
   });
 });
