@@ -1,20 +1,19 @@
 import Web3 from 'web3';
+import { mocked } from 'ts-jest/utils';
 
 import { warning } from '../../purser-core/src/utils';
 import { open } from '../src/index';
 import MetaMaskWallet from '../src/MetaMaskWallet';
 import { methodCaller, getInpageProvider } from '../src/helpers';
-import { jestMocked, testGlobal } from '../../testutils';
+import { testGlobal } from '../../testutils';
 
 jest.mock('../src/MetaMaskWallet');
 jest.mock('web3');
 jest.mock('../src/helpers');
 jest.mock('../../purser-core/src/utils');
 
-// jestMocked doesn't work here, as the constructor is an overloaded function
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const MockedWeb3 = (Web3 as unknown) as jest.Mock<any>;
-const mockedWarning = jestMocked(warning);
+const MockedWeb3 = mocked(Web3);
+const mockedWarning = mocked(warning);
 
 /*
  * Mocked values

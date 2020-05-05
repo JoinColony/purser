@@ -64,20 +64,5 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^25.3.1",
     "typescript": "^3.8.3"
-  },
-  "dependencies": {
-    "@ledgerhq/hw-app-eth": "5.11.0",
-    "@ledgerhq/hw-transport-u2f": "5.11.0",
-    "await-transaction-mined": "1.0.12",
-    "bip32-path": "0.4.2",
-    "bn.js": "5.1.1",
-    "eslint-plugin-jest": "^23.8.2",
-    "ethereumjs-common": "1.5.0",
-    "ethereumjs-tx": "2.1.2",
-    "ethereumjs-util": "6.2.0",
-    "ethers": "4.0.46",
-    "hdkey": "1.1.1",
-    "lodash.isequal": "4.5.0",
-    "web3": "1.2.7-rc.0"
   }
 }

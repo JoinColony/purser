@@ -1,6 +1,7 @@
+import { mocked } from 'ts-jest/utils';
 import isEqual from 'lodash.isequal';
 
-import { jestMocked, testGlobal } from '../../testutils';
+import { testGlobal } from '../../testutils';
 
 import { warning } from '../../purser-core/src/utils';
 import { hexSequenceNormalizer } from '../../purser-core/src/normalizers';
@@ -36,12 +37,12 @@ jest.mock('../src/staticMethods');
 jest.mock('../src/helpers');
 jest.mock('../src/validators');
 
-const mockedIsEqual = jestMocked(isEqual);
-const mockedValidateMetaMaskState = jestMocked(validateMetaMaskState);
-const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
-const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
-const mockedRecoverPublicKeyHelper = jestMocked(recoverPublicKeyHelper);
-const mockedWarning = jestMocked(warning);
+const mockedIsEqual = mocked(isEqual);
+const mockedValidateMetaMaskState = mocked(validateMetaMaskState);
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
+const mockedHexSequenceValidator = mocked(hexSequenceValidator);
+const mockedRecoverPublicKeyHelper = mocked(recoverPublicKeyHelper);
+const mockedWarning = mocked(warning);
 const mockedBufferFrom = jest.spyOn(Buffer, 'from');
 const mockedBufferToString = jest.spyOn(Buffer.prototype, 'toString');
 

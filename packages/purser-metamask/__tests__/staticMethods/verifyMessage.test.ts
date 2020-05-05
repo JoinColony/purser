@@ -1,3 +1,4 @@
+import { mocked } from 'ts-jest/utils';
 import { messageVerificationObjectValidator } from '../../../purser-core/src/helpers';
 
 import { methodCaller } from '../../src/helpers';
@@ -11,7 +12,7 @@ import {
 } from '../../../purser-core/src/validators';
 import { verifyMessage } from '../../src/staticMethods';
 
-import { jestMocked, testGlobal } from '../../../testutils';
+import { testGlobal } from '../../../testutils';
 
 jest.mock('../../../purser-core/src/validators');
 jest.mock('../../../purser-core/src/helpers');
@@ -46,11 +47,11 @@ const mockedArgumentsObject = {
   currentAddress: mockedCurrentAddress,
 };
 
-const mockedMethodCaller = jestMocked(methodCaller);
-const mockedAddressValidator = jestMocked(addressValidator);
-const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
-const mockedAddressNormalizer = jestMocked(addressNormalizer);
-const mockedMessageVerificationObjectValidator = jestMocked(
+const mockedMethodCaller = mocked(methodCaller);
+const mockedAddressValidator = mocked(addressValidator);
+const mockedHexSequenceValidator = mocked(hexSequenceValidator);
+const mockedAddressNormalizer = mocked(addressNormalizer);
+const mockedMessageVerificationObjectValidator = mocked(
   messageVerificationObjectValidator,
 );
 

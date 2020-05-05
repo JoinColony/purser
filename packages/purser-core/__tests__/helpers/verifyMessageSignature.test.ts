@@ -1,4 +1,4 @@
-import { jestMocked } from '../../../testutils';
+import { mocked } from 'ts-jest/utils';
 
 import * as helpers from '../../src/helpers';
 import { hexSequenceNormalizer } from '../../src/normalizers';
@@ -11,8 +11,8 @@ jest.mock('../../src/validators');
 jest.mock('../../src/utils');
 jest.mock('../../src/normalizers');
 
-const mockedWarning = jestMocked(warning);
-const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
+const mockedWarning = mocked(warning);
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
 
 /*
  * These values are not correct. Do not use the as reference.

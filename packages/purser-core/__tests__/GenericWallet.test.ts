@@ -1,7 +1,7 @@
 import HDKey from 'hdkey';
 import { pubToAddress } from 'ethereumjs-util';
+import { mocked } from 'ts-jest/utils';
 
-import { jestMocked } from '../../testutils';
 import { GenericWallet } from '../src';
 import {
   safeIntegerValidator,
@@ -15,9 +15,9 @@ jest.mock('hdkey');
 jest.mock('../src/validators');
 jest.mock('../src/normalizers');
 
-const mockedAddressNormalizer = jestMocked(addressNormalizer);
-const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
-const mockedPubToAddress = jestMocked(pubToAddress);
+const mockedAddressNormalizer = mocked(addressNormalizer);
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
+const mockedPubToAddress = mocked(pubToAddress);
 
 /*
  * Common values

@@ -1,6 +1,8 @@
+import { mocked } from 'ts-jest/utils';
+
 import { accountChangeHook } from '../src/index';
 import { detect as detectHelper, setStateEventObserver } from '../src/helpers';
-import { jestMocked, testGlobal } from '../../testutils';
+import { testGlobal } from '../../testutils';
 
 jest.mock('../src/helpers');
 
@@ -15,7 +17,7 @@ testGlobal.web3 = {
 };
 
 const mockedCallback = jest.fn((state) => state);
-const mockedSetStateEventObserver = jestMocked(setStateEventObserver);
+const mockedSetStateEventObserver = mocked(setStateEventObserver);
 
 describe('Metamask` Wallet Module', () => {
   describe('`accountChangeHook()` static method', () => {
@@ -45,6 +47,7 @@ describe('Metamask` Wallet Module', () => {
        * We're re-mocking the helpers just for this test so we can simulate
        * an error along the way
        */
+      // @ts-ignore
       mockedSetStateEventObserver.mockRejectedValueOnce(new Error());
       await expect(accountChangeHook(jest.fn())).rejects.toThrow();
     });

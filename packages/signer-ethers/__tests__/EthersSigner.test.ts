@@ -1,14 +1,14 @@
 import { Signer } from 'ethers';
 import { BaseProvider } from 'ethers/providers';
+import { mocked } from 'ts-jest/utils';
 
 import { userInputValidator } from '../../purser-core/src/helpers';
-import { jestMocked } from '../../testutils';
 
 import EthersSigner from '../src/EthersSigner';
 
 jest.mock('../../purser-core/src/helpers');
 
-const mockedUserInputValidator = jestMocked(userInputValidator);
+const mockedUserInputValidator = mocked(userInputValidator);
 const { bigNumberify } = jest.requireActual('ethers/utils');
 
 describe('Automock', () => {

@@ -1,11 +1,11 @@
-import { jestMocked } from '../../../testutils';
+import { mocked } from 'ts-jest/utils';
 
 import { userInputValidator } from '../../src/helpers';
 import { warning } from '../../src/utils';
 
 jest.mock('../../src/utils');
 
-const mockedWarning = jestMocked(warning);
+const mockedWarning = mocked(warning);
 
 /*
  * These values are not correct. Do not use the as reference.

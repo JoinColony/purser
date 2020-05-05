@@ -1,4 +1,4 @@
-import { jestMocked } from '../../../testutils';
+import { mocked } from 'ts-jest/utils';
 
 import { warning } from '../../src/utils';
 import * as constants from '../../src/constants';
@@ -9,8 +9,8 @@ global.console = {
   error: jest.fn(),
 };
 
-const mockWarn = jestMocked(console.warn);
-const mockError = jestMocked(console.error);
+const mockWarn = mocked(console.warn);
+const mockError = mocked(console.error);
 
 const message = 'This is a test message';
 

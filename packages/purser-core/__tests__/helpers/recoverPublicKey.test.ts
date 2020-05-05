@@ -1,6 +1,6 @@
 import { hashPersonalMessage, ecrecover } from 'ethereumjs-util';
+import { mocked } from 'ts-jest/utils';
 
-import { jestMocked } from '../../../testutils';
 import { recoverPublicKey } from '../../src/helpers';
 import {
   hexSequenceNormalizer,
@@ -31,11 +31,11 @@ const signatureObject = {
  */
 jest.spyOn(global.Buffer, 'from');
 jest.spyOn(global.Buffer, 'alloc');
-const mockedBufferFrom = jestMocked(global.Buffer.from);
-const mockedBufferAlloc = jestMocked(global.Buffer.alloc);
-const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
-const mockedRecoveryParamNormalizer = jestMocked(recoveryParamNormalizer);
-const mockedEcrecover = jestMocked(ecrecover);
+const mockedBufferFrom = mocked(global.Buffer.from);
+const mockedBufferAlloc = mocked(global.Buffer.alloc);
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
+const mockedRecoveryParamNormalizer = mocked(recoveryParamNormalizer);
+const mockedEcrecover = mocked(ecrecover);
 
 describe('`Core` Module', () => {
   describe('`recoverPublicKey()` helper', () => {

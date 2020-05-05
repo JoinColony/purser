@@ -1,3 +1,4 @@
+import { mocked } from 'ts-jest/utils';
 import { Transaction as EthereumTx } from 'ethereumjs-tx';
 
 import { STD_ERRORS } from '../../src/constants';
@@ -22,7 +23,7 @@ import {
 
 import { signTransaction } from '../../src/staticMethods';
 
-import { jestMocked, testGlobal } from '../../../testutils';
+import { testGlobal } from '../../../testutils';
 
 jest.mock('ethereumjs-tx');
 jest.mock('../../../purser-core/src/validators');
@@ -49,15 +50,15 @@ const mockedRawSignedTransaction = {
   value: '0',
 };
 
-const mockedMethodCaller = jestMocked(methodCaller);
-const mockedTranactionObjectValidator = jestMocked(transactionObjectValidator);
-const mockedAddressValidator = jestMocked(addressValidator);
-const mockedSafeIntegerValidator = jestMocked(safeIntegerValidator);
-const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
-const mockedGetChainDefinition = jestMocked(getChainDefinition);
-const mockedWarning = jestMocked(warning);
-const mockedAddressNormalizer = jestMocked(addressNormalizer);
-const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
+const mockedMethodCaller = mocked(methodCaller);
+const mockedTranactionObjectValidator = mocked(transactionObjectValidator);
+const mockedAddressValidator = mocked(addressValidator);
+const mockedSafeIntegerValidator = mocked(safeIntegerValidator);
+const mockedHexSequenceValidator = mocked(hexSequenceValidator);
+const mockedGetChainDefinition = mocked(getChainDefinition);
+const mockedWarning = mocked(warning);
+const mockedAddressNormalizer = mocked(addressNormalizer);
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
 
 testGlobal.web3 = {
   eth: {

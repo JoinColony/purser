@@ -1,4 +1,4 @@
-import { jestMocked } from '../../../testutils';
+import { mocked } from 'ts-jest/utils';
 
 import { messageVerificationObjectValidator } from '../../src/helpers';
 import { hexSequenceValidator, messageValidator } from '../../src/validators';
@@ -7,9 +7,9 @@ import { hexSequenceNormalizer } from '../../src/normalizers';
 jest.mock('../../src/validators');
 jest.mock('../../src/normalizers');
 
-const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
-const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
-const mockedMessageValidator = jestMocked(messageValidator);
+const mockedHexSequenceValidator = mocked(hexSequenceValidator);
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
+const mockedMessageValidator = mocked(messageValidator);
 /*
  * These values are not correct. Do not use the as reference.
  * If the validators wouldn't be mocked, they wouldn't pass.

@@ -1,3 +1,4 @@
+import { mocked } from 'ts-jest/utils';
 import { warning } from '../../../purser-core/src/utils';
 import { hexSequenceNormalizer } from '../../../purser-core/src/normalizers';
 import {
@@ -13,7 +14,7 @@ import { methodCaller } from '../../src/helpers';
 
 import { STD_ERRORS } from '../../src/constants';
 
-import { jestMocked, testGlobal } from '../../../testutils';
+import { testGlobal } from '../../../testutils';
 
 jest.mock('../../../purser-core/src/validators');
 jest.mock('../../../purser-core/src/helpers');
@@ -46,12 +47,12 @@ const mockedArgumentsObject = {
 };
 
 const mockedBufferFrom = jest.spyOn(Buffer, 'from');
-const mockedMethodCaller = jestMocked(methodCaller);
-const mockedAddressValidator = jestMocked(addressValidator);
-const mockedMessageValidator = jestMocked(messageValidator);
-const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
-const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
-const mockedWarning = jestMocked(warning);
+const mockedMethodCaller = mocked(methodCaller);
+const mockedAddressValidator = mocked(addressValidator);
+const mockedMessageValidator = mocked(messageValidator);
+const mockedHexSequenceValidator = mocked(hexSequenceValidator);
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
+const mockedWarning = mocked(warning);
 
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {

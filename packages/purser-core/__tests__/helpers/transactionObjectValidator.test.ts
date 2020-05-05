@@ -1,4 +1,4 @@
-import { jestMocked } from '../../../testutils';
+import { mocked } from 'ts-jest/utils';
 
 import { transactionObjectValidator } from '../../src/helpers';
 import {
@@ -13,11 +13,11 @@ import { TRANSACTION } from '../../src/constants';
 jest.mock('../../src/validators');
 jest.mock('../../src/utils');
 
-const mockedBigNumberValidator = jestMocked(bigNumberValidator);
-const mockedSafeIntegerValidator = jestMocked(safeIntegerValidator);
-const mockedAddressValidator = jestMocked(addressValidator);
-const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
-const mockedBigNumber = jestMocked(bigNumber);
+const mockedBigNumberValidator = mocked(bigNumberValidator);
+const mockedSafeIntegerValidator = mocked(safeIntegerValidator);
+const mockedAddressValidator = mocked(addressValidator);
+const mockedHexSequenceValidator = mocked(hexSequenceValidator);
+const mockedBigNumber = mocked(bigNumber);
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -98,6 +98,7 @@ describe('`Core` Module', () => {
       expect(validatedTransactionObject).toHaveProperty('inputData');
     });
     test('Has defaults for all object values (except for `to`)', async () => {
+      // @ts-ignore
       mockedBigNumber.mockImplementation((number) => number);
       const validatedTransactionObject = transactionObjectValidator();
       expect(validatedTransactionObject).toHaveProperty(

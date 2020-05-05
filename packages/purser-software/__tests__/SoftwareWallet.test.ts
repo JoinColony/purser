@@ -1,7 +1,6 @@
 import { privateToPublic } from 'ethereumjs-util';
 import { encrypt } from 'ethers/utils/secret-storage';
-
-import { jestMocked } from '../../testutils';
+import { mocked } from 'ts-jest/utils';
 
 import { userInputValidator } from '../../purser-core/src/helpers';
 import { warning } from '../../purser-core/src/utils';
@@ -65,16 +64,16 @@ const mockedSignatureObject = {
   signature: mockedSignature,
 };
 
-const mockedAddressValidator = jestMocked(addressValidator);
-const mockedHexSequenceValidator = jestMocked(hexSequenceValidator);
-const mockedPrivateToPublic = jestMocked(privateToPublic);
-const mockedHexSequenceNormalizer = jestMocked(hexSequenceNormalizer);
-const mockedWarning = jestMocked(warning);
-const mockedEncrypt = jestMocked(encrypt);
-const mockedSignTransaction = jestMocked(signTransaction);
-const mockedUserInputValidator = jestMocked(userInputValidator);
-const mockedSignMessage = jestMocked(signMessage);
-const mockedVerifyMessage = jestMocked(verifyMessage);
+const mockedAddressValidator = mocked(addressValidator);
+const mockedHexSequenceValidator = mocked(hexSequenceValidator);
+const mockedPrivateToPublic = mocked(privateToPublic);
+const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
+const mockedWarning = mocked(warning);
+const mockedEncrypt = mocked(encrypt);
+const mockedSignTransaction = mocked(signTransaction);
+const mockedUserInputValidator = mocked(userInputValidator);
+const mockedSignMessage = mocked(signMessage);
+const mockedVerifyMessage = mocked(verifyMessage);
 
 describe('`Software` Wallet Module', () => {
   afterEach(() => {
