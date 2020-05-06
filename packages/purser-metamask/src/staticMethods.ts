@@ -1,30 +1,25 @@
 import { Transaction as EthereumTx } from 'ethereumjs-tx';
 import BigNumber from 'bn.js';
 import { awaitTx } from 'await-transaction-mined';
-
-import { warning } from '@purser/core/utils';
-import {
-  hexSequenceValidator,
-  addressValidator,
-  safeIntegerValidator,
-} from '@purser/core/validators';
 import {
   addressNormalizer,
-  hexSequenceNormalizer,
-} from '@purser/core/normalizers';
-import {
-  transactionObjectValidator,
-  messageVerificationObjectValidator,
-  messageOrDataValidator,
+  addressValidator,
   getChainDefinition,
-} from '@purser/core/helpers';
+  HEX_HASH_TYPE,
+  hexSequenceNormalizer,
+  hexSequenceValidator,
+  messageOrDataValidator,
+  messageVerificationObjectValidator,
+  safeIntegerValidator,
+  transactionObjectValidator,
+  warning,
+} from '@purser/core';
 
-import { HEX_HASH_TYPE } from '@purser/core/constants';
-
-import {
+import type {
   TransactionObjectTypeWithAddresses,
   TransactionObjectTypeWithTo,
-} from '@purser/core/types';
+} from '@purser/core';
+
 import { methodCaller } from './helpers';
 import {
   getTransaction as getTransactionMethodLink,

@@ -2,9 +2,9 @@ import {
   SignMessageData,
   TransactionObjectTypeWithAddresses,
   VerifyMessageData,
-  WalletType,
-  WalletSubType,
 } from './types';
+
+import { WalletType, WalletSubType } from './constants';
 
 export default interface PurserWallet {
   address: string;

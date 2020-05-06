@@ -64,7 +64,7 @@ describe('`Software` Wallet Module', () => {
     });
     test('Throws if something goes wrong', async () => {
       // @ts-ignore
-      await expect(signMessage()).rejects.toThrow();
+      expect(() => signMessage()).toThrow();
     });
   });
 });

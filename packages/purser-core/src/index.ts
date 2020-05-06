@@ -1,9 +1,36 @@
-export * as helpers from './helpers';
-export * as validators from './validators';
-export * as normalizers from './normalizers';
-export * as constants from './constants';
-export * as messages from './messages';
-export * as types from './types';
-export * as utils from './utils';
+export {
+  derivationPathSerializer,
+  getChainDefinition,
+  messageVerificationObjectValidator,
+  messageOrDataValidator,
+  recoverPublicKey,
+  transactionObjectValidator,
+  userInputValidator,
+} from './helpers';
+export {
+  addressValidator,
+  hexSequenceValidator,
+  safeIntegerValidator,
+} from './validators';
+export { addressNormalizer, hexSequenceNormalizer } from './normalizers';
+export {
+  CHAIN_IDS,
+  HEX_HASH_TYPE,
+  PATH,
+  REQUIRED_PROPS,
+  WalletType,
+  WalletSubType,
+} from './constants';
+// export * as messages from './messages';
+export { getRandomValues, objectToErrorString, warning } from './utils';
 export { default as GenericWallet } from './GenericWallet';
-export { default as PurserWallet } from './PurserWallet';
+
+export type {
+  SignMessageData,
+  TransactionObjectTypeWithCallback,
+  TransactionObjectTypeWithTo,
+  TransactionObjectTypeWithAddresses,
+  VerifyMessageData,
+  WalletArgumentsType,
+} from './types';
+export type { default as PurserWallet } from './PurserWallet';

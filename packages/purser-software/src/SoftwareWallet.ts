@@ -1,27 +1,25 @@
 import { Wallet } from 'ethers';
 import { encrypt } from 'ethers/utils/secret-storage';
 import { privateToPublic } from 'ethereumjs-util';
-
-import { PurserWallet } from '@purser/core';
-import {
-  derivationPathSerializer,
-  userInputValidator,
-} from '@purser/core/helpers';
-import { hexSequenceNormalizer } from '@purser/core/normalizers';
 import {
   addressValidator,
+  derivationPathSerializer,
+  hexSequenceNormalizer,
   hexSequenceValidator,
-} from '@purser/core/validators';
+  userInputValidator,
+  HEX_HASH_TYPE,
+  PATH,
+  REQUIRED_PROPS,
+  WalletType,
+  WalletSubType,
+} from '@purser/core';
 
-import { PATH, HEX_HASH_TYPE, REQUIRED_PROPS } from '@purser/core/constants';
-
-import {
+import type {
+  PurserWallet,
   SignMessageData,
   TransactionObjectTypeWithAddresses,
   VerifyMessageData,
-  WalletType,
-  WalletSubType,
-} from '@purser/core/types';
+} from '@purser/core';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { walletClass } from './messages';

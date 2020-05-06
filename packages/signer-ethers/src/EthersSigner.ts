@@ -6,8 +6,7 @@ import {
   TransactionResponse,
 } from 'ethers/providers';
 
-import { userInputValidator } from '@purser/core/helpers';
-import { PurserWallet } from '@purser/core';
+import { userInputValidator, PurserWallet } from '@purser/core';
 
 interface PurserSignerConstructorArguments {
   purserWallet: PurserWallet;

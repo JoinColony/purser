@@ -10,8 +10,12 @@ import {
   recoverPublicKey as recoverPublicKeyHelper,
   userInputValidator,
 } from '../../purser-core/src/helpers';
-import { WalletType, WalletSubType } from '../../purser-core/src/types';
-import { HEX_HASH_TYPE, REQUIRED_PROPS } from '../../purser-core/src/constants';
+import {
+  HEX_HASH_TYPE,
+  REQUIRED_PROPS,
+  WalletType,
+  WalletSubType,
+} from '../../purser-core/src/constants';
 
 import MetaMaskWallet from '../src/MetaMaskWallet';
 import {

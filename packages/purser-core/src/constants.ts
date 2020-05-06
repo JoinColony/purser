@@ -166,3 +166,23 @@ export const REQUIRED_PROPS = {
   SIGN_MESSAGE: ['message', 'messageData'],
   VERIFY_MESSAGE: ['message', 'signature'],
 };
+
+/*
+ * Main wallet types
+ */
+export enum WalletType {
+  Software = 'software',
+  Hardware = 'hardware',
+  Generic = 'generic',
+}
+
+/*
+ * Wallet subtypes
+ */
+export enum WalletSubType {
+  Generic = 'generic',
+  Ethers = 'ethers',
+  Trezor = 'trezor',
+  Ledger = 'ledger',
+  MetaMask = 'metamask',
+}

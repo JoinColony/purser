@@ -3,7 +3,7 @@ import { BaseProvider } from 'ethers/providers';
 import { mocked } from 'ts-jest/utils';
 
 import { userInputValidator } from '../../purser-core/src/helpers';
-import { WalletType, WalletSubType } from '../../purser-core/src/types';
+import { WalletType, WalletSubType } from '../../purser-core/src/constants';
 
 import EthersSigner from '../src/EthersSigner';
 

@@ -1,24 +1,23 @@
 import isEqual from 'lodash.isequal';
 
-import { PurserWallet } from '@purser/core';
-import { warning } from '@purser/core/utils';
-import {
-  recoverPublicKey as recoverPublicKeyHelper,
-  userInputValidator,
-} from '@purser/core/helpers';
 import {
   addressValidator,
+  HEX_HASH_TYPE,
+  hexSequenceNormalizer,
   hexSequenceValidator,
-} from '@purser/core/validators';
-import { hexSequenceNormalizer } from '@purser/core/normalizers';
-
-import { HEX_HASH_TYPE, REQUIRED_PROPS } from '@purser/core/constants';
-import {
+  recoverPublicKey as recoverPublicKeyHelper,
+  REQUIRED_PROPS,
+  userInputValidator,
   WalletType,
   WalletSubType,
+  warning,
+} from '@purser/core';
+
+import type {
+  PurserWallet,
   VerifyMessageData,
   TransactionObjectTypeWithAddresses,
-} from '@purser/core/types';
+} from '@purser/core';
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { methodCaller, setStateEventObserver } from './helpers';

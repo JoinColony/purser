@@ -19,8 +19,11 @@ import {
   verifyMessage,
 } from '../../purser-software/src/staticMethods';
 
-import { REQUIRED_PROPS } from '../../purser-core/src/constants';
-import { WalletType, WalletSubType } from '../../purser-core/src/types';
+import {
+  REQUIRED_PROPS,
+  WalletType,
+  WalletSubType,
+} from '../../purser-core/src/constants';
 import { walletClass } from '../src/messages';
 
 jest.mock('ethereumjs-util');

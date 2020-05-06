@@ -10,15 +10,19 @@ import {
 import { addressNormalizer, hexSequenceNormalizer } from './normalizers';
 
 import { genericClass as messages } from './messages';
-import { HEX_HASH_TYPE, SPLITTER, CHAIN_IDS } from './constants';
+import {
+  HEX_HASH_TYPE,
+  SPLITTER,
+  CHAIN_IDS,
+  WalletType,
+  WalletSubType,
+} from './constants';
 import {
   AddressObject,
   GenericClassArgumentsType,
   SignMessageData,
   TransactionObjectTypeWithAddresses,
   VerifyMessageData,
-  WalletType,
-  WalletSubType,
 } from './types';
 
 export default abstract class GenericWallet implements PurserWallet {

@@ -4,21 +4,20 @@ import {
 } from 'ethers/utils';
 
 import {
-  transactionObjectValidator,
+  addressNormalizer,
+  addressValidator,
+  hexSequenceNormalizer,
   messageVerificationObjectValidator,
   messageOrDataValidator,
-} from '@purser/core/helpers';
-import {
-  addressNormalizer,
-  hexSequenceNormalizer,
-} from '@purser/core/normalizers';
-import { addressValidator } from '@purser/core/validators';
-import { objectToErrorString } from '@purser/core/utils';
-import {
+  objectToErrorString,
+  transactionObjectValidator,
+} from '@purser/core';
+
+import type {
   TransactionObjectTypeWithCallback,
   TransactionObjectTypeWithTo,
   VerifyMessageData,
-} from '@purser/core/types';
+} from '@purser/core';
 
 import { staticMethods as messages } from './messages';
 

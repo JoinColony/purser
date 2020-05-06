@@ -1,23 +1,3 @@
-/*
- * Main wallet types
- */
-export enum WalletType {
-  Software = 'software',
-  Hardware = 'hardware',
-  Generic = 'generic',
-}
-
-/*
- * Wallet subtypes
- */
-export enum WalletSubType {
-  Generic = 'generic',
-  Ethers = 'ethers',
-  Trezor = 'trezor',
-  Ledger = 'ledger',
-  MetaMask = 'metamask',
-}
-
 export interface DerivationPathDefaultType {
   HEADER_KEY: string;
   PURPOSE: number;

@@ -1,21 +1,16 @@
 {
   "name": "purser",
   "private": true,
-  "version": "2.5.1",
+  "version": "3.0.0",
   "description": "Interact with Ethereum wallets easily",
   "scripts": {
-    "build": "node scripts/build-all-modules.js",
-    "update-modules": "node scripts/update-all-packages-json.js",
-    "populate-modules": "node scripts/populate-all-modules.js",
-    "release-modules": "sh scripts/publish-to-npm.sh",
-    "flow": "flow",
-    "lint:fix": "eslint modules/**/*.js --fix",
-    "test": "cross-env NODE_ENV=test jest",
-    "test:watch": "cross-env NODE_ENV=test jest --watchAll --verbose",
-    "test:coverage": "cross-env NODE_ENV=test jest --coverage",
-    "test:ci": "cross-env NODE_ENV=test jest --ci --bail --verbose=true --maxWorkers 2",
+    "build": "lerna run build",
+    "test": "npm run lint && npm run typecheck && jest",
     "lint": "lerna run lint",
-    "typecheck": "tsc --noEmit"
+    "lint:fix": "lerna run lint -- -- --fix",
+    "publish": "lerna publish",
+    "typecheck": "tsc --noEmit",
+    "prepublish": "npm test && npm run build"
   },
   "repository": {
     "type": "git",

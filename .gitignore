@@ -57,9 +57,8 @@ typings/
 .env
 
 # Build folder
-dist
 lib
-es
+lib-esm
 
 # CI JUnit Reporst
 reports

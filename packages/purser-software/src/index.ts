@@ -3,16 +3,15 @@ import { isValidMnemonic, fromMnemonic } from 'ethers/utils/hdnode';
 import { isSecretStorageWallet } from 'ethers/utils/json-wallet';
 
 import {
+  CHAIN_IDS,
   derivationPathSerializer,
-  userInputValidator,
-} from '@purser/core/helpers';
-import {
-  objectToErrorString,
   getRandomValues,
+  objectToErrorString,
+  PATH,
+  userInputValidator,
   warning,
-} from '@purser/core/utils';
-import { PATH, CHAIN_IDS } from '@purser/core/constants';
-import { WalletArgumentsType } from '@purser/core/types';
+  WalletArgumentsType,
+} from '@purser/core';
 
 import SoftwareWallet from './SoftwareWallet';
 import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from './constants';

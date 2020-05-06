@@ -2,7 +2,7 @@
 // https://github.com/danfinlay/js-eth-personal-sign-examples
 import Web3 from 'web3';
 
-import { warning } from '@purser/core/utils';
+import { warning } from '@purser/core';
 
 import MetaMaskWallet from './MetaMaskWallet';
 import {

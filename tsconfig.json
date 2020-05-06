@@ -1,21 +1,9 @@
 {
+  "extends": "./tsconfig.build.json",
   "compilerOptions": {
-    "lib": ["es2018", "dom"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "strictNullChecks": false,
-    "strictPropertyInitialization": false,
-    "target": "ES2019",
-    "outDir": "./dist",
-    "esModuleInterop": true,
     "baseUrl": "./packages",
     "paths": {
-      "@purser/core": ["purser-core/src"],
-      "@purser/core/*": ["purser-core/src/*"]
-    },
-    "types": ["jest"]
-  },
-  "exclude": [
-      "./node_modules"
-  ]
+      "@purser/core": ["purser-core/src"]
+    }
+  }
 }

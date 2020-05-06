@@ -1,39 +1,53 @@
 {
-  "name": "@purser/metamask",
-  "version": "3.0.0",
-  "description": "A javascript library to interact with a Metamask based Ethereum wallet",
-  "scripts": {
-    "lint": "eslint . --ext .ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/JoinColony/purser.git"
-  },
-  "author": "Raul Glogovetan <raul@colony.io>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/JoinColony/purser/issues"
-  },
-  "homepage": "https://github.com/JoinColony/purser",
-  "keywords": [
-    "ethereum",
-    "javascript",
-    "wallet",
-    "colony",
-    "software-wallet",
-    "monorepo",
-    "purser"
-  ],
-  "dependencies": {
-    "await-transaction-mined": "^1.0.12",
-    "lodash.isequal": "^4.5.0",
-    "web3": "^1.2.7"
-  },
-  "peerDependencies": {
-    "bn.js": "^5.1.1",
-    "ethereumjs-tx": "^2.1.2"
-  },
-  "devDependencies": {
-    "web3-core": "^1.2.7"
-  }
+    "name": "@purser/metamask",
+    "version": "2.4.1",
+    "description": "A javascript library to interact with a Metamask based Ethereum wallet",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "module": "lib-esm/index.js",
+    "scripts": {
+        "lint": "eslint . --ext .ts",
+        "test": "echo \"Error: run tests from root\" && exit 1",
+        "build": "npm run clean && npm run compile && npm run compile-esm",
+        "clean": "rimraf ./lib && rimraf ./lib-esm",
+        "compile": "tsc -p tsconfig.build.json",
+        "compile-esm": "tsc -p tsconfig.build.json -m es6 --outDir lib-esm"
+    },
+    "author": "Raul Glogovetan <raul@colony.io>",
+    "contributors": [
+        "Christian Maniewski <chris@colony.io>"
+    ],
+    "homepage": "https://github.com/JoinColony/purser",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/JoinColony/purser.git"
+    },
+    "bugs": {
+        "url": "https://github.com/JoinColony/purser/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "ethereum",
+        "javascript",
+        "wallet",
+        "colony",
+        "metamask",
+        "monorepo",
+        "purser"
+    ],
+    "dependencies": {
+        "@purser/core": "^2.2.1",
+        "await-transaction-mined": "^1.0.12",
+        "lodash.isequal": "^4.5.0",
+        "web3": "^1.2.7"
+    },
+    "peerDependencies": {
+        "bn.js": "^5.1.1",
+        "ethereumjs-tx": "^2.1.2"
+    },
+    "devDependencies": {
+        "web3-core": "^1.2.7"
+    }
 }
