@@ -7,10 +7,10 @@ import {
 } from 'ethers/providers';
 
 import { userInputValidator } from '@purser/core/helpers';
-import { WalletArgumentsType } from '@purser/core/types';
+import { PurserWallet } from '@purser/core';
 
 interface PurserSignerConstructorArguments {
-  purserWallet: WalletArgumentsType;
+  purserWallet: PurserWallet;
   provider: Provider;
 }
 
@@ -34,7 +34,7 @@ interface PurserSignerConstructorArguments {
  * @return {EthersSigner} A new instance of the class containing the expected props
  */
 export default class EthersSigner extends Signer {
-  private purserWallet: WalletArgumentsType;
+  private purserWallet: PurserWallet;
 
   provider: Provider;
 

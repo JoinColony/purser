@@ -3,6 +3,7 @@ import { BaseProvider } from 'ethers/providers';
 import { mocked } from 'ts-jest/utils';
 
 import { userInputValidator } from '../../purser-core/src/helpers';
+import { WalletType, WalletSubType } from '../../purser-core/src/types';
 
 import EthersSigner from '../src/EthersSigner';
 
@@ -11,19 +12,18 @@ jest.mock('../../purser-core/src/helpers');
 const mockedUserInputValidator = mocked(userInputValidator);
 const { bigNumberify } = jest.requireActual('ethers/utils');
 
-describe('Automock', () => {
-  it("shouldn't do it", () => {
-    expect(() => bigNumberify(5)).not.toThrow();
-  });
-});
-
 /*
  * Common values
  */
 const mockedPurserWalletInstance = {
-  address: '0x0',
+  address: '0xacab',
+  chainId: 1,
+  type: WalletType.Software,
+  subtype: WalletSubType.Ethers,
+  getPublicKey: jest.fn(),
   signMessage: jest.fn(),
   sign: jest.fn(),
+  verifyMessage: jest.fn(),
 };
 const mockedProvider = new BaseProvider(null);
 const mockedArguments = {

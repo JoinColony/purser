@@ -1,5 +1,3 @@
-/* @flow */
-
 /*
  * Prop names used to validate user input against
  */

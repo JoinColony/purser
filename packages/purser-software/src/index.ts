@@ -41,7 +41,6 @@ import { staticMethods as messages } from './messages';
  * the line an error is thrown.
  */
 
-// FIXME We need custom arguments for this!!!
 export const open = async (
   argumentObject: WalletArgumentsType = {},
 ): Promise<SoftwareWallet | void> => {
