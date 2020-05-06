@@ -1,6 +1,6 @@
 {
     "name": "@purser/signer-ethers",
-    "version": "0.1.0",
+    "version": "1.0.0-alpha.0",
     "description": "A signer to use purser with ethers.js",
     "license": "MIT",
     "main": "lib/index.js",
@@ -14,7 +14,9 @@
         "compile-esm": "tsc -p tsconfig.build.json -m es6 --outDir lib-esm"
     },
     "author": "Raul Glogovetan <raul@colony.io>",
-    "contributors": ["Christian Maniewski <chris@colony.io>"],
+    "contributors": [
+        "Christian Maniewski <chris@colony.io>"
+    ],
     "homepage": "https://github.com/JoinColony/purser",
     "repository": {
         "type": "git",
@@ -33,7 +35,7 @@
         "signer"
     ],
     "dependencies": {
-      "@purser/core": "^2.2.1"
+        "@purser/core": "^3.0.0-alpha.0"
     },
     "peerDependencies": {
         "ethers": "^4.0.47"

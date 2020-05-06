@@ -1,6 +1,6 @@
 {
     "name": "@purser/software",
-    "version": "1.2.7",
+    "version": "2.0.0-alpha.0",
     "description": "A javascript library to interact with a software Ethereum wallet, based on the ethers.js library",
     "license": "MIT",
     "main": "lib/index.js",
@@ -14,7 +14,9 @@
         "compile-esm": "tsc -p tsconfig.build.json -m es6 --outDir lib-esm"
     },
     "author": "Raul Glogovetan <raul@colony.io>",
-    "contributors": ["Christian Maniewski <chris@colony.io>"],
+    "contributors": [
+        "Christian Maniewski <chris@colony.io>"
+    ],
     "homepage": "https://github.com/JoinColony/purser",
     "repository": {
         "type": "git",
@@ -36,7 +38,7 @@
         "purser"
     ],
     "dependencies": {
-        "@purser/core": "^2.2.1",
+        "@purser/core": "^3.0.0-alpha.0",
         "ethers": "^4.0.47"
     },
     "peerDependencies": {
