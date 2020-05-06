@@ -1,6 +1,7 @@
 import { pubToAddress } from 'ethereumjs-util';
 import HDKey from 'hdkey';
 
+import PurserWallet from './PurserWallet';
 import {
   safeIntegerValidator,
   hexSequenceValidator,
@@ -12,12 +13,15 @@ import { genericClass as messages } from './messages';
 import { HEX_HASH_TYPE, SPLITTER, CHAIN_IDS } from './constants';
 import {
   AddressObject,
+  GenericClassArgumentsType,
+  SignMessageData,
+  TransactionObjectTypeWithAddresses,
+  VerifyMessageData,
   WalletType,
   WalletSubType,
-  GenericClassArgumentsType,
 } from './types';
 
-export default abstract class GenericWallet {
+export default abstract class GenericWallet implements PurserWallet {
   private addressCount: number;
 
   private internalPublicKey: string;
@@ -32,15 +36,15 @@ export default abstract class GenericWallet {
 
   readonly chainId: number;
 
-  type: WalletType;
+  readonly type: WalletType;
 
-  subtype: WalletSubType;
+  readonly subtype: WalletSubType;
 
-  sign: (TransactionObjectTypeWithTo) => Promise<string>;
+  sign: (txData: TransactionObjectTypeWithAddresses) => Promise<string>;
 
-  signMessage: (SignMessageData) => Promise<string>;
+  signMessage: (data: SignMessageData) => Promise<string>;
 
-  verifyMessage: (VerifyMessageData) => Promise<boolean>;
+  verifyMessage: (data: VerifyMessageData) => Promise<boolean>;
 
   constructor({
     publicKey,

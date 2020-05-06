@@ -17,6 +17,7 @@ import { objectToErrorString } from '@purser/core/utils';
 import {
   TransactionObjectTypeWithCallback,
   TransactionObjectTypeWithTo,
+  VerifyMessageData,
 } from '@purser/core/types';
 
 import { staticMethods as messages } from './messages';
@@ -153,11 +154,9 @@ export const signMessage = async ({
  *
  * @return {Promise<boolean>} A boolean to indicate if the message/signature pair are valid (wrapped inside a `Promise`)
  */
-export const verifyMessage = async (signatureMessage: {
-  address: string;
-  message: string;
-  signature: string;
-}): Promise<boolean> => {
+export const verifyMessage = async (
+  signatureMessage: VerifyMessageData & { address: string },
+): Promise<boolean> => {
   const { address } = signatureMessage;
 
   /*

@@ -73,6 +73,12 @@ export interface SignMessageData {
   messageData: string | Uint8Array;
 }
 
+export interface VerifyMessageData {
+  // address: string;
+  message: string;
+  signature: string;
+}
+
 export interface WalletObjectType {
   address: string;
   otherAddresses?: Array<string>;
@@ -90,6 +96,7 @@ export interface MessageObjectType {
   message: string;
 }
 
+// FIXME this is super weird, let's see how this is used
 export interface WalletArgumentsType {
   address?: string;
   /*
@@ -98,7 +105,6 @@ export interface WalletArgumentsType {
   addressCount?: number;
   privateKey?: string;
   mnemonic?: string;
-  originalMnemonic?: string;
   path?: string;
   keystore?: string;
   entropy?: Uint8Array;
@@ -106,11 +112,6 @@ export interface WalletArgumentsType {
   chainId?: number;
   sign?: (transaction: TransactionObjectType) => Promise<string>;
   signMessage?: (data: MessageObjectType) => Promise<string>;
-}
-
-export interface MessageVerificationObjectType {
-  message: string;
-  signature: string;
 }
 
 export interface AddressObject {

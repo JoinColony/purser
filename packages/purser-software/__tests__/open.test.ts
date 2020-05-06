@@ -27,9 +27,10 @@ const mockedUserInputValidator = mocked(userInputValidator);
  * These values are not correct. Do not use the as reference.
  * If the validators wouldn't be mocked, they wouldn't pass.
  */
+const address = '0xacab';
 const privateKey = 'mocked-private-key';
 const password = 'mocked-password';
-const mnemonic = 'mocked-mnemonic';
+const mnemonic = 'all cows are beautiful';
 const keystore = 'mocked-keystore';
 const mockedArgumentsObject = {
   privateKey,
@@ -61,6 +62,7 @@ describe('`Software` Wallet Module', () => {
         expect.objectContaining({
           privateKey,
         }),
+        { chainId: 1 },
       );
     });
     test('Open a wallet with a mnemonic', async () => {
@@ -82,8 +84,9 @@ describe('`Software` Wallet Module', () => {
       expect(SoftwareWallet).toHaveBeenCalledWith(
         expect.objectContaining({
           privateKey,
-          originalMnemonic: mnemonic,
+          mnemonic,
         }),
+        { chainId: 1 },
       );
     });
     test('Checks if the mnemonic is valid', async () => {
@@ -110,10 +113,10 @@ describe('`Software` Wallet Module', () => {
       expect(SoftwareWallet).toHaveBeenCalled();
       expect(SoftwareWallet).toHaveBeenCalledWith(
         expect.objectContaining({
+          address,
           privateKey,
-          keystore,
-          password,
         }),
+        { chainId: 1 },
       );
     });
     test('Checks if the keystore is valid', async () => {

@@ -1,5 +1,6 @@
 import isEqual from 'lodash.isequal';
 
+import { PurserWallet } from '@purser/core';
 import { warning } from '@purser/core/utils';
 import {
   recoverPublicKey as recoverPublicKeyHelper,
@@ -15,7 +16,7 @@ import { HEX_HASH_TYPE, REQUIRED_PROPS } from '@purser/core/constants';
 import {
   WalletType,
   WalletSubType,
-  MessageVerificationObjectType,
+  VerifyMessageData,
   TransactionObjectTypeWithAddresses,
 } from '@purser/core/types';
 
@@ -36,12 +37,14 @@ import {
   SignMessageObject,
 } from './types';
 
-export default class MetamaskWallet {
+export default class MetamaskWallet implements PurserWallet {
   private state;
 
-  private internalPublicKey?: string;
+  private internalPublicKey: string;
 
   address: string;
+
+  chainId: number;
 
   readonly type: WalletType = WalletType.Software;
 
@@ -133,7 +136,7 @@ export default class MetamaskWallet {
 
   async sign(
     transactionObject: TransactionObjectTypeWithAddresses,
-  ): Promise<string | void> {
+  ): Promise<string> {
     /*
      * Validate the trasaction's object input
      */
@@ -143,7 +146,7 @@ export default class MetamaskWallet {
     return signTransaction({ ...transactionObject, from: this.address });
   }
 
-  async signMessage(messageObject: SignMessageObject): Promise<string | void> {
+  async signMessage(messageObject: SignMessageObject): Promise<string> {
     /*
      * Validate the trasaction's object input
      */
@@ -159,7 +162,7 @@ export default class MetamaskWallet {
   }
 
   async verifyMessage(
-    messageVerificationObject: MessageVerificationObjectType,
+    messageVerificationObject: VerifyMessageData,
   ): Promise<boolean> {
     /*
      * Validate the trasaction's object input

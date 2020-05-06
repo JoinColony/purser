@@ -102,6 +102,7 @@ const mockedMessageObject = {
   messageData: 'data',
 };
 const mockedSignatureObject = {
+  address: '0xacab',
   message: mockedMessage,
   signature: 'mocked-signature',
 };

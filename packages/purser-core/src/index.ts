@@ -6,3 +6,4 @@ export * as messages from './messages';
 export * as types from './types';
 export * as utils from './utils';
 export { default as GenericWallet } from './GenericWallet';
+export { default as PurserWallet } from './PurserWallet';

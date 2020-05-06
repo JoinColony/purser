@@ -171,7 +171,7 @@ export const signTransactionCallback = (
  */
 export const signTransaction = async (
   obj: TransactionObjectTypeWithAddresses,
-): Promise<string | void> => {
+): Promise<string> => {
   const transactionObject: TransactionObjectTypeWithTo = {
     chainId: obj.chainId,
     gasPrice: obj.gasPrice,
@@ -295,7 +295,7 @@ export const signMessageCallback = (
  */
 export const signMessage = async (
   messageObject: SignMessageObject,
-): Promise<string | void> => {
+): Promise<string> => {
   if (messageObject === null || typeof messageObject !== 'object') {
     throw new Error(messages.signMessageArgumentMissing);
   }

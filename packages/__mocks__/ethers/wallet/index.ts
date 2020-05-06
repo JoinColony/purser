@@ -6,7 +6,11 @@ export const Wallet: jest.Mock<any, any> & {
     throw new Error();
   }
   return {
+    address: '0xacab',
+    mnemonic: 'all cows are beautiful',
     privateKey,
+    sign: jest.fn(),
+    signMessage: jest.fn(),
   };
 });
 
@@ -14,8 +18,8 @@ Wallet.createRandom = jest.fn(() => ({ privateKey: 'mocked-private-key' }));
 
 Wallet.fromEncryptedJson = jest.fn(() => ({
   privateKey: 'mocked-private-key',
-  address: 'mocked-address',
-  mnemonic: 'mocked-mnemonic',
+  address: '0xacab',
+  mnemonic: 'all cows are beautiful',
 }));
 
 export default Wallet;

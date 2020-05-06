@@ -55,6 +55,7 @@ describe('`Software` Wallet Module', () => {
         expect.objectContaining({
           privateKey,
         }),
+        { chainId: 1 },
       );
     });
     test("Validate the user's input", async () => {
@@ -78,16 +79,6 @@ describe('`Software` Wallet Module', () => {
        * But warns the user that this is not ideal
        */
       expect(warning).toHaveBeenCalled();
-    });
-    test('Sets the encryption password if provided', async () => {
-      await create({ password });
-      expect(SoftwareWallet).toHaveBeenCalled();
-      expect(SoftwareWallet).toHaveBeenCalledWith(
-        expect.objectContaining({
-          privateKey,
-          password,
-        }),
-      );
     });
     test('Throws if something goes wrong', async () => {
       /*

@@ -26,11 +26,6 @@ import { staticMethods as messages } from './messages';
  * and create a new SoftwareWallet instance using whichever key is available.
  * (the on passed in or the one extracted from the mnemonic).
  *
- * @TODO Reduce code repetition
- *
- * With some clever refactoring we might be able to only call the SoftwareWallet
- * constructor a single time for all three methods of opening the wallet
- *
  * @method open
  *
  * @param {string} password Optional password used to generate an encrypted keystore
@@ -45,6 +40,8 @@ import { staticMethods as messages } from './messages';
  * @return {WalletType} A new wallet object (or undefined) if somehwere along
  * the line an error is thrown.
  */
+
+// FIXME We need custom arguments for this!!!
 export const open = async (
   argumentObject: WalletArgumentsType = {},
 ): Promise<SoftwareWallet | void> => {
@@ -76,34 +73,11 @@ export const open = async (
      * @TODO Detect if existing but not valid keystore, and warn the user
      */
     if (keystore && isSecretStorageWallet(keystore) && password) {
-      const keystoreWallet: EthersWallet =
-        /*
-         * Prettier suggests changes that would always result in eslint
-         * breaking. This must be one of the edge cases of prettier.
-         *
-         * Nevertheless, by inserting this comment, it works :)
-         */
-        await EthersWallet.fromEncryptedJson(keystore, password);
-      /*
-       * Set the keystore and password props on the instance object.
-       *
-       * So that we can make use of them inside the SoftwareWallet
-       * constructor, as the Ethers Wallet instance object will
-       * be passed down.
-       *
-       * @TODO Better passing of values
-       *
-       * This needs to be refactored to pass values to the SoftwareWallet
-       * class in a less repetitious way
-       */
-      // FIXME
-      // @ts-ignore
-      const walletArgs: WalletArgumentsType = keystoreWallet;
-      walletArgs.keystore = keystore;
-      walletArgs.password = password;
-      walletArgs.chainId = chainId;
-
-      return new SoftwareWallet(walletArgs);
+      const keystoreWallet = await EthersWallet.fromEncryptedJson(
+        keystore,
+        password,
+      );
+      return new SoftwareWallet(keystoreWallet, { chainId });
     }
     /*
      * @TODO Detect if existing but not valid mnemonic, and warn the user
@@ -119,35 +93,10 @@ export const open = async (
       privateKey || extractedPrivateKey,
     );
 
-    const walletArguments: WalletArgumentsType = {};
-    walletArguments.privateKey = privateKeyWallet.privateKey;
-    walletArguments.address = privateKeyWallet.address;
-
-    walletArguments.privateKey = privateKey || extractedPrivateKey;
-    /*
-     * Set the mnemonic and password props on the instance object.
-     *
-     * So that we can make use of them inside the SoftwareWallet
-     * constructor, as the Ethers Wallet instance object will
-     * be passed down.
-     *
-     * @TODO Better passing of values
-     *
-     * This needs to be refactored to pass values to the SoftwareWallet
-     * class in a less repetitious way
-     */
-    walletArguments.password = password;
-    walletArguments.chainId = chainId;
-    /*
-     * @NOTE mnemonic prop was renamed due to naming conflict with getter-only
-     * ethers prop
-     */
-    walletArguments.originalMnemonic = mnemonic;
-    return new SoftwareWallet(walletArguments);
+    return new SoftwareWallet(privateKeyWallet, { chainId });
   } catch (caughtError) {
     throw new Error(
       `${messages.open} ${objectToErrorString({
-        password,
         privateKey,
         mnemonic,
         keystore,
@@ -182,44 +131,20 @@ export const create = async (
     firstArgument: argumentObject,
   });
   const {
-    password,
     entropy = getRandomValues(new Uint8Array(65536)),
     chainId = CHAIN_IDS.HOMESTEAD,
   } = argumentObject;
-  let basicWallet: WalletArgumentsType;
+  let basicWallet: EthersWallet;
   try {
     if (!entropy || (entropy && !(entropy instanceof Uint8Array))) {
       warning(messages.noEntropy);
-      // FIXME
-      // @ts-ignore
       basicWallet = EthersWallet.createRandom();
     } else {
-      // FIXME
-      // @ts-ignore
       basicWallet = EthersWallet.createRandom({
         extraEntropy: entropy,
       });
     }
-    /*
-     * Set the password prop on the instance object.
-     *
-     * So that we can make use of them inside the SoftwareWallet
-     * constructor, as the Ethers Wallet instance object will
-     * be passed down.
-     *
-     * @TODO Better passing of values
-     *
-     * This needs to be refactored to pass values to the SoftwareWallet
-     * class in a less repetitious way
-     */
-    basicWallet.password = password;
-    basicWallet.chainId = chainId;
-    /*
-     * @NOTE mnemonic prop was renamed due to naming conflict with getter-only
-     * ethers prop
-     */
-    basicWallet.originalMnemonic = basicWallet.mnemonic;
-    return new SoftwareWallet(basicWallet);
+    return new SoftwareWallet(basicWallet, { chainId });
   } catch (caughtError) {
     throw new Error(`${messages.create} Error: ${caughtError.message}`);
   }

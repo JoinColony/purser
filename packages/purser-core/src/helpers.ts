@@ -25,7 +25,7 @@ import {
 
 import {
   DerivationPathObjectType,
-  MessageVerificationObjectType,
+  VerifyMessageData,
   TransactionObjectTypeWithTo,
 } from './types';
 
@@ -92,7 +92,7 @@ export const derivationPathSerializer = ({
 export const recoverPublicKey = ({
   message,
   signature,
-}: MessageVerificationObjectType): string => {
+}: VerifyMessageData): string => {
   const signatureBuffer = Buffer.from(
     hexSequenceNormalizer(signature.toLowerCase(), false),
     HEX_HASH_TYPE,
@@ -290,7 +290,7 @@ export const messageVerificationObjectValidator = ({
    */
   message,
   signature,
-}: MessageVerificationObjectType): MessageVerificationObjectType => {
+}: VerifyMessageData): VerifyMessageData => {
   /*
    * Check if the messages is in the correct format
    */
