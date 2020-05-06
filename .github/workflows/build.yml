@@ -38,6 +38,9 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
+    - name: Bootstrap Monorepo
+      run: npm run bootstrap
+
     - name: Check Types
       run: npm test
 
