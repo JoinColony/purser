@@ -1,6 +1,6 @@
 {
     "name": "@purser/software",
-    "version": "2.0.0-alpha.0",
+    "version": "2.0.0-alpha.1",
     "description": "A javascript library to interact with a software Ethereum wallet, based on the ethers.js library",
     "license": "MIT",
     "main": "lib/index.js",
