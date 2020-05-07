@@ -1,8 +1,8 @@
-// TODO: in the future use a minimal implementation for signing rather than web3:
+// @TODO: in the future use a minimal implementation for signing rather than web3:
 // https://github.com/danfinlay/js-eth-personal-sign-examples
 import Web3 from 'web3';
 
-import { warning } from '@purser/core';
+import { warning, PurserWallet } from '@purser/core';
 
 import MetaMaskWallet from './MetaMaskWallet';
 import {
@@ -12,9 +12,17 @@ import {
   setStateEventObserver,
 } from './helpers';
 
-import { staticMethods as messages } from './messages';
+import { staticMethods } from './messages';
 
-import { MetamaskStateEventsObserverType } from './types';
+import {
+  MetamaskStateEventsObserverType,
+  MetaMaskInpageProvider,
+} from './types';
+
+// Export some helpful types and utils
+export type { MetaMaskInpageProvider, MetaMaskWallet, PurserWallet };
+
+export const messages = staticMethods;
 
 /**
  * Open the Metamask Wallet instance

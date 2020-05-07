@@ -8,6 +8,7 @@ import {
   getRandomValues,
   objectToErrorString,
   PATH,
+  PurserWallet,
   userInputValidator,
   warning,
   WalletArgumentsType,
@@ -16,6 +17,8 @@ import {
 import SoftwareWallet from './SoftwareWallet';
 import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from './constants';
 import { staticMethods as messages } from './messages';
+
+export type { PurserWallet };
 
 /**
  * Open an existing wallet
