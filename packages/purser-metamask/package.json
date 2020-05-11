@@ -38,16 +38,17 @@
         "purser"
     ],
     "dependencies": {
-        "@purser/core": "^3.0.0-alpha.0",
         "await-transaction-mined": "^1.0.12",
         "lodash.isequal": "^4.5.0",
         "web3": "^1.2.7"
     },
     "peerDependencies": {
         "bn.js": "^5.1.1",
-        "ethereumjs-tx": "^2.1.2"
+        "ethereumjs-tx": "^2.1.2",
+        "@purser/core": "^3.0.0-alpha.0"
     },
     "devDependencies": {
-        "web3-core": "^1.2.7"
+        "web3-core": "^1.2.7",
+        "@purser/core": "^3.0.0-alpha.0"
     }
 }
