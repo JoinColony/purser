@@ -112,7 +112,7 @@ export default abstract class GenericWallet implements PurserWallet {
         return {
           publicKey: addressObjectPublicKey,
           derivationPath: addressObjectDerivationPath,
-          address: addressNormalizer(addressFromPublicKey),
+          address: addressNormalizer(addressFromPublicKey.toString('hex')),
         };
       },
     );

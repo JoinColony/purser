@@ -97,10 +97,11 @@ const stringPrefixNormalizer = (
  *
  * @return {string} The normalized string
  */
-export const addressNormalizer = stringPrefixNormalizer.bind(
-  null,
-  MATCH.ADDRESS,
-);
+
+export const addressNormalizer = (
+  rawAddress: string,
+  prefix?: boolean,
+): string => stringPrefixNormalizer(MATCH.ADDRESS, rawAddress, prefix);
 
 /**
  * Normalize a hex string sequence.

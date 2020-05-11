@@ -166,7 +166,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       /*
        * Mock it locally to simulate an error for the verify callback
        */
-      addressNormalizer.mockImplementation(() => {
+      mockedAddressNormalizer.mockImplementation(() => {
         throw new Error('address normalizer error');
       });
       await expect(verifyMessage(mockedArgumentsObject)).rejects.toHaveProperty(
