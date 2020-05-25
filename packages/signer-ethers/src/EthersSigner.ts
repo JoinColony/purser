@@ -1,17 +1,35 @@
 import { Signer } from 'ethers';
-import { bigNumberify } from 'ethers/utils';
+import { BigNumber, BigNumberish, bigNumberify } from 'ethers/utils';
 import {
   Provider,
   TransactionRequest,
   TransactionResponse,
 } from 'ethers/providers';
 
-import { userInputValidator, PurserWallet } from '@purser/core';
+import {
+  bigNumber,
+  userInputValidator,
+  PurserWallet,
+  WalletSubType,
+} from '@purser/core';
 
 interface PurserSignerConstructorArguments {
   purserWallet: PurserWallet;
   provider: Provider;
 }
+
+const transformData = (data: BigNumberish): string => {
+  if (typeof data == 'string') {
+    return data;
+  }
+  if (typeof data == 'number') {
+    return data.toString(16);
+  }
+  if (data instanceof BigNumber) {
+    return data.toHexString();
+  }
+  return Buffer.from(data).toString('hex');
+};
 
 /**
  * Create a new instance of an Abstract Signer
@@ -47,6 +65,32 @@ export default class EthersSigner extends Signer {
     this.provider = provider;
   }
 
+  private async getChainId(): Promise<number> {
+    const network = await this.provider.getNetwork();
+    return network.chainId;
+  }
+
+  private async getGasPrice(): Promise<BigNumber> {
+    return this.provider.getGasPrice();
+  }
+
+  private async getGasLimit(tx: TransactionRequest): Promise<BigNumber> {
+    const providerGasLimit = await this.provider.estimateGas({
+      // We need to properly send `from`, so that `msg.sender` will have the correct value when estimating
+      ...tx,
+      from: this.purserWallet.address,
+    });
+    // If no gas limit is provided, we need to get the estimate and multiply it by 1.2 (an amount that will prevent the transaction from failing)
+    return providerGasLimit.mul(bigNumberify(12)).div(bigNumberify(10));
+  }
+
+  private async getNonce(): Promise<number> {
+    // MetaMask logs a warning if the nonce is already set, so only set the
+    // nonce for other wallet types.
+    if (this.purserWallet.subtype === WalletSubType.MetaMask) return undefined;
+    return this.provider.getTransactionCount(this.purserWallet.address);
+  }
+
   async getAddress(): Promise<string> {
     return this.purserWallet.address;
   }
@@ -55,48 +99,59 @@ export default class EthersSigner extends Signer {
     return this.purserWallet.signMessage({ message });
   }
 
-  async sendTransaction({
-    chainId,
-    gasPrice,
-    gasLimit,
-    nonce,
-    value,
-    data,
-  }: TransactionRequest): Promise<TransactionResponse> {
-    const resolvedChainId = await chainId;
-    const resolvedGasPrice = await gasPrice;
-    const resolvedGasLimit = await gasLimit;
-    const resolvedNonce = await nonce;
-    const resolvedValue = await value;
-    const resolvedData = await data;
+  async sendTransaction(tx: TransactionRequest): Promise<TransactionResponse> {
+    const { chainId, data, gasPrice, gasLimit, nonce, to, value } = tx;
 
-    if (
-      !resolvedChainId ||
-      !resolvedData ||
-      !resolvedGasPrice ||
-      !resolvedGasLimit ||
-      !resolvedNonce ||
-      !resolvedValue
-    ) {
-      throw new Error(
-        // eslint-disable-next-line max-len
-        'Transaction is missing one of these values: chainId, gasPrice, gasLimit, nonce, value, data',
-      );
-    }
+    // All of these could be promises, so we await them.
+    const ethersChainId = await chainId;
+    const ethersData = await data;
+    const ethersGasPrice = await gasPrice;
+    const ethersGasLimit = await gasLimit;
+    const ethersNonce = await nonce;
+    const ethersTo = await to;
+    const ethersValue = await value;
+
+    const purserChainId = ethersChainId || (await this.getChainId());
+    const purserGasPrice = ethersGasPrice || (await this.getGasPrice());
+    const purserGasLimit = ethersGasLimit || (await this.getGasLimit(tx));
+    const purserNonce = ethersNonce
+      ? bigNumberify(ethersNonce).toNumber()
+      : await this.getNonce();
+    const purserData = transformData(ethersData);
 
     const purserTxRequest = {
-      chainId: resolvedChainId,
-      gasPrice: resolvedGasPrice.toString(),
-      gasLimit: resolvedGasLimit.toString(),
-      nonce: bigNumberify(resolvedNonce).toNumber(),
-      value: resolvedValue.toString(),
-      inputData:
-        typeof resolvedData == 'string'
-          ? resolvedData
-          : Buffer.from(resolvedData).toString('hex'),
+      chainId: purserChainId,
+      // We convert these values to purser BNs (yeah we should really standardize)
+      gasPrice: bigNumber(purserGasPrice.toString()),
+      gasLimit: bigNumber(purserGasLimit.toString()),
+      nonce: purserNonce,
+      value: ethersValue ? bigNumber(ethersValue.toString()) : undefined,
+      inputData: purserData,
+      to: ethersTo,
     };
 
-    const signedTransaction = this.purserWallet.sign(purserTxRequest);
-    return this.provider.sendTransaction(signedTransaction);
+    const signedTransaction = await this.purserWallet.sign(purserTxRequest);
+
+    let txHash: string;
+    if (this.purserWallet.subtype === WalletSubType.MetaMask) {
+      // if metamask, tx has already been sent
+      // @TODO get tx hash
+      // const parsedSignedTx = new EthereumTx(signedTx);
+      // txHash = hexSequenceNormalizer(parsedSignedTx.hash().toString('hex'));
+    } else {
+      // otherwise we still need to send it
+      const sentTx = await this.provider.sendTransaction(signedTransaction);
+      txHash = sentTx.hash;
+    }
+
+    // We need to wait for transaction to be mined but ganache will mine the
+    // transaction too quickly causing us to wait indefinitely, therefore, we
+    // need to try getting the transaction and then, if that fails, we need to
+    // try getting the transaction using `waitForTransaction`.
+    const transaction = await this.provider.getTransaction(txHash);
+    if (!transaction) {
+      await this.provider.waitForTransaction(txHash);
+    }
+    return this.provider.getTransaction(txHash);
   }
 }
