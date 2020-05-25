@@ -91,9 +91,6 @@ describe('`Core` Module', () => {
       });
     });
     test('Calls the correct provider method to send a tansaction', async () => {
-      jest
-        .spyOn(mockedProvider, 'sendTransaction')
-        .mockImplementationOnce(jest.fn());
       const ethersTxRequest = {
         nonce: bigNumberify(1),
         gasLimit: bigNumberify(2),
