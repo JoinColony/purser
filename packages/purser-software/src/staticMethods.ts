@@ -15,7 +15,6 @@ import {
 
 import type {
   TransactionObjectTypeWithCallback,
-  TransactionObjectTypeWithTo,
   VerifyMessageData,
 } from '@purser/core';
 
@@ -39,19 +38,10 @@ import { staticMethods as messages } from './messages';
  *
  * @return {Promise<string>} the hex signature string
  */
-export const signTransaction = async (
-  obj: TransactionObjectTypeWithCallback,
-): Promise<string> => {
-  const transactionObject: TransactionObjectTypeWithTo = {
-    chainId: obj.chainId,
-    gasPrice: obj.gasPrice,
-    gasLimit: obj.gasLimit,
-    nonce: obj.nonce,
-    value: obj.value,
-    inputData: obj.inputData,
-    to: obj.to,
-  };
-
+export const signTransaction = async ({
+  callback,
+  ...tx
+}: TransactionObjectTypeWithCallback): Promise<string> => {
   const {
     gasPrice,
     gasLimit,
@@ -60,9 +50,9 @@ export const signTransaction = async (
     to,
     value,
     inputData,
-  } = transactionObjectValidator(transactionObject);
+  } = transactionObjectValidator(tx);
   try {
-    const signedTransaction: string = await obj.callback({
+    const signedTransaction: string = await callback({
       /*
        * Ethers needs it's own "proprietary" version of bignumber to work.
        */

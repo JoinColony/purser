@@ -26,11 +26,11 @@ const mockedBigNumber = mocked(bigNumber);
 const derivationPath = 'mocked-derivation-path';
 const chainId = 1337;
 const inputData = 'mocked-data';
-const gasLimit = 'mocked-gas-limit';
-const gasPrice = 'mocked-gas-price';
+const gasLimit = bigNumber(33);
+const gasPrice = bigNumber(44);
 const nonce = 7;
 const to = 'mocked-destination-address';
-const value = 'mocked-transaction-value';
+const value = bigNumber(55);
 const mockedTransactionObject = {
   derivationPath,
   gasPrice,
@@ -98,15 +98,13 @@ describe('`Core` Module', () => {
       expect(validatedTransactionObject).toHaveProperty('inputData');
     });
     test('Has defaults for all object values (except for `to`)', async () => {
+      // mockedBigNumber.mockImplementation((number) => bigNumber);
       // @ts-ignore
-      mockedBigNumber.mockImplementation((number) => number);
-      const validatedTransactionObject = transactionObjectValidator();
-      expect(validatedTransactionObject).toHaveProperty(
-        'gasPrice',
+      const validatedTransactionObject = transactionObjectValidator({});
+      expect(validatedTransactionObject.gasPrice.toString()).toEqual(
         TRANSACTION.GAS_PRICE,
       );
-      expect(validatedTransactionObject).toHaveProperty(
-        'gasLimit',
+      expect(validatedTransactionObject.gasLimit.toString()).toEqual(
         TRANSACTION.GAS_LIMIT,
       );
       expect(validatedTransactionObject).toHaveProperty(
@@ -117,8 +115,7 @@ describe('`Core` Module', () => {
         'nonce',
         TRANSACTION.NONCE,
       );
-      expect(validatedTransactionObject).toHaveProperty(
-        'value',
+      expect(validatedTransactionObject.value.toString()).toEqual(
         TRANSACTION.VALUE,
       );
       expect(validatedTransactionObject).toHaveProperty(

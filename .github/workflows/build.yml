@@ -41,7 +41,7 @@ jobs:
     - name: Bootstrap Monorepo
       run: npm run bootstrap
 
-    - name: Check Types
+    - name: Run tests
       run: npm test
 
     - name: Build

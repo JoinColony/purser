@@ -1,3 +1,5 @@
+import ExtendedBN from './ExtendedBigNumber';
+
 export interface DerivationPathDefaultType {
   HEADER_KEY: string;
   PURPOSE: number;
@@ -27,10 +29,10 @@ export interface GenericClassArgumentsType {
 
 export interface TransactionObjectType {
   chainId: number;
-  gasPrice: string;
-  gasLimit: string;
+  gasPrice: ExtendedBN;
+  gasLimit: ExtendedBN;
   nonce: number;
-  value: string;
+  value: ExtendedBN;
   inputData: string;
 }
 

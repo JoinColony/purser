@@ -207,25 +207,15 @@ export const verifyMessageSignature = ({
  * @return {TransactionObjectType} The validated transaction object containing the exact passed in values
  */
 
-export const transactionObjectValidator = (
-  {
-    gasPrice = bigNumber(TRANSACTION.GAS_PRICE).toString(),
-    gasLimit = bigNumber(TRANSACTION.GAS_LIMIT).toString(),
-    chainId = TRANSACTION.CHAIN_ID,
-    nonce = TRANSACTION.NONCE,
-    to,
-    value = bigNumber(TRANSACTION.VALUE).toString(),
-    inputData = TRANSACTION.INPUT_DATA,
-  }: TransactionObjectTypeWithTo = {
-    gasPrice: bigNumber(TRANSACTION.GAS_PRICE).toString(),
-    gasLimit: bigNumber(TRANSACTION.GAS_LIMIT).toString(),
-    chainId: TRANSACTION.CHAIN_ID,
-    nonce: TRANSACTION.NONCE,
-    to: undefined,
-    value: bigNumber(TRANSACTION.VALUE).toString(),
-    inputData: TRANSACTION.INPUT_DATA,
-  },
-): TransactionObjectTypeWithTo => {
+export const transactionObjectValidator = ({
+  chainId = TRANSACTION.CHAIN_ID,
+  gasPrice = bigNumber(TRANSACTION.GAS_PRICE),
+  gasLimit = bigNumber(TRANSACTION.GAS_LIMIT),
+  nonce = TRANSACTION.NONCE,
+  to,
+  value = bigNumber(TRANSACTION.VALUE),
+  inputData = TRANSACTION.INPUT_DATA,
+}: TransactionObjectTypeWithTo): TransactionObjectTypeWithTo => {
   /*
    * Check that the gas price is a big number
    */

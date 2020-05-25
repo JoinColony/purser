@@ -15,7 +15,7 @@ import {
 } from '../../../purser-core/src/validators';
 import { SIGNATURE } from '../../../purser-core/src/constants';
 
-import { warning } from '../../../purser-core/src/utils';
+import { bigNumber, warning } from '../../../purser-core/src/utils';
 import {
   getChainDefinition,
   transactionObjectValidator,
@@ -76,11 +76,11 @@ testGlobal.web3 = {
  */
 const mockedAddress = 'mocked-address';
 const inputData = 'mocked-data';
-const gasLimit = 'mocked-gas-limit';
-const gasPrice = 'mocked-gas-price';
+const gasLimit = bigNumber(22);
+const gasPrice = bigNumber(33);
 const nonce = 42;
 const to = 'mocked-destination-address';
-const value = 'mocked-transaction-value';
+const value = bigNumber(5);
 const mockedTransactionObject = {
   gasPrice,
   gasLimit,
@@ -116,11 +116,11 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       expect(testGlobal.web3.eth.sendTransaction).toHaveBeenCalledWith(
         expect.objectContaining({
           from: mockedAddress,
-          gasPrice,
-          gas: gasLimit,
+          gasPrice: gasPrice.toString(),
+          gas: gasLimit.toString(),
           data: inputData,
           to,
-          value,
+          value: value.toString(),
         }),
         expect.any(Function),
       );

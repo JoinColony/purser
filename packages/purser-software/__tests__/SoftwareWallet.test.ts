@@ -5,7 +5,7 @@ import type { MaybeMockedDeep } from 'ts-jest/dist/util/testing';
 import { Wallet } from 'ethers/wallet';
 
 import { userInputValidator } from '../../purser-core/src/helpers';
-import { warning } from '../../purser-core/src/utils';
+import { bigNumber, warning } from '../../purser-core/src/utils';
 import {
   addressValidator,
   hexSequenceValidator,
@@ -52,10 +52,10 @@ const mockedSignature = 'mocked-signature';
 const mockedTransactionObject = {
   to: 'mocked-address',
   nonce: 1,
-  value: 'mocked-transaction-value',
+  value: bigNumber(33),
   chainId,
-  gasLimit: '1',
-  gasPrice: '1',
+  gasLimit: bigNumber(44),
+  gasPrice: bigNumber(55),
   inputData: '1',
 };
 const mockedMessageObject = {

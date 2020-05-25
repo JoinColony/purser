@@ -3,7 +3,7 @@ import isEqual from 'lodash.isequal';
 
 import { testGlobal } from '../../testutils';
 
-import { warning } from '../../purser-core/src/utils';
+import { bigNumber, warning } from '../../purser-core/src/utils';
 import { hexSequenceNormalizer } from '../../purser-core/src/normalizers';
 import { hexSequenceValidator } from '../../purser-core/src/validators';
 import {
@@ -92,10 +92,10 @@ const mockedNewState = {
 };
 const mockedTransactionObject = {
   to: 'mocked-destination-address',
-  value: 'mockedValue',
+  value: bigNumber(33),
   chainId: 1,
-  gasPrice: '1',
-  gasLimit: '1',
+  gasPrice: bigNumber(44),
+  gasLimit: bigNumber(45),
   nonce: 1,
   inputData: '1',
 };

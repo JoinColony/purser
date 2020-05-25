@@ -21,8 +21,12 @@ export {
   WalletType,
   WalletSubType,
 } from './constants';
-// export * as messages from './messages';
-export { getRandomValues, objectToErrorString, warning } from './utils';
+export {
+  bigNumber,
+  getRandomValues,
+  objectToErrorString,
+  warning,
+} from './utils';
 export { default as GenericWallet } from './GenericWallet';
 
 export type {

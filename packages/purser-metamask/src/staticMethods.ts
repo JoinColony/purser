@@ -15,10 +15,7 @@ import {
   warning,
 } from '@purser/core';
 
-import type {
-  TransactionObjectTypeWithAddresses,
-  TransactionObjectTypeWithTo,
-} from '@purser/core';
+import type { TransactionObjectTypeWithAddresses } from '@purser/core';
 
 import { methodCaller } from './helpers';
 import {
@@ -113,6 +110,7 @@ export const signTransactionCallback = (
      * RLP encode (to hex string) with ethereumjs-tx, prefix with
      * `0x` and return. Convert to BN all the numbers-as-strings.
      */
+
     const signedTransaction = new EthereumTx(
       {
         data: signedData,
@@ -164,19 +162,10 @@ export const signTransactionCallback = (
  *
  * @return {Promise<string>} the hex signature string
  */
-export const signTransaction = async (
-  obj: TransactionObjectTypeWithAddresses,
-): Promise<string> => {
-  const transactionObject: TransactionObjectTypeWithTo = {
-    chainId: obj.chainId,
-    gasPrice: obj.gasPrice,
-    gasLimit: obj.gasLimit,
-    nonce: obj.nonce,
-    value: obj.value,
-    inputData: obj.inputData,
-    to: obj.to,
-  };
-  const manualNonce = transactionObject.nonce;
+export const signTransaction = async ({
+  from,
+  ...tx
+}: TransactionObjectTypeWithAddresses): Promise<string> => {
   const {
     chainId,
     gasPrice,
@@ -185,8 +174,7 @@ export const signTransaction = async (
     value,
     inputData,
     nonce,
-  } = transactionObjectValidator(transactionObject);
-  const { from } = obj;
+  } = transactionObjectValidator(tx);
 
   addressValidator(from);
   /*
@@ -199,8 +187,8 @@ export const signTransaction = async (
    * We also notify (in dev mode) the user about not setting the nonce.
    */
 
-  if (manualNonce) {
-    safeIntegerValidator(manualNonce);
+  if (tx.nonce) {
+    safeIntegerValidator(tx.nonce);
     warning(messages.dontSetNonce);
   }
 

@@ -1,12 +1,14 @@
 import { Signer } from 'ethers';
-import { BaseProvider } from 'ethers/providers';
+import { BaseProvider } from 'ethers/providers/base-provider';
 import { mocked } from 'ts-jest/utils';
 
+import { bigNumber } from '../../purser-core/src/utils';
 import { userInputValidator } from '../../purser-core/src/helpers';
 import { WalletType, WalletSubType } from '../../purser-core/src/constants';
 
 import EthersSigner from '../src/EthersSigner';
 
+jest.mock('ethers/providers/base-provider');
 jest.mock('../../purser-core/src/helpers');
 
 const mockedUserInputValidator = mocked(userInputValidator);
@@ -104,11 +106,12 @@ describe('`Core` Module', () => {
       await signer.sendTransaction(ethersTxRequest);
       expect(mockedPurserWalletInstance.sign).toHaveBeenCalledWith({
         chainId: 1337,
-        gasLimit: '2',
-        gasPrice: '3',
+        gasLimit: bigNumber(2),
+        gasPrice: bigNumber(3),
         inputData: 'somedata',
         nonce: 1,
-        value: '4',
+        to: undefined,
+        value: bigNumber(4),
       });
       expect(mockedProvider.sendTransaction).toHaveBeenCalled();
     });

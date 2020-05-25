@@ -1,6 +1,7 @@
 import { bigNumberify } from 'ethers/utils';
 import { mocked } from 'ts-jest/utils';
 
+import { bigNumber } from '../../../purser-core/src/utils';
 import { transactionObjectValidator } from '../../../purser-core/src/helpers';
 import {
   addressNormalizer,
@@ -26,18 +27,18 @@ const mockedInjectedCallback = jest.fn((transactionObject) => {
 });
 const chainId = 1337;
 const inputData = 'mocked-data';
-const gasLimit = 'mocked-gas-limit';
-const gasPrice = 'mocked-gas-price';
+const gasLimit = '22';
+const gasPrice = '33';
 const nonce = 1;
 const to = 'mocked-destination-address';
-const value = 'mocked-transaction-value';
+const value = '1337';
 const mockedTransactionObject = {
-  gasPrice,
-  gasLimit,
+  gasPrice: bigNumber(gasPrice),
+  gasLimit: bigNumber(gasLimit),
   chainId,
   nonce,
   to,
-  value,
+  value: bigNumber(value),
   inputData,
 };
 const mockedArgumentsObject = {
@@ -119,14 +120,11 @@ describe('`Software` Wallet Module', () => {
       await expect(signTransaction()).rejects.toThrow();
     });
     test("Can be called with no 'to' prop", async () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { to: _, ...txWithouTo } = mockedTransactionObject;
       await expect(
         signTransaction({
-          gasPrice,
-          gasLimit,
-          chainId,
-          nonce,
-          value,
-          inputData,
+          ...txWithouTo,
           callback: () => 'foo',
         }),
       ).resolves.not.toThrow();
