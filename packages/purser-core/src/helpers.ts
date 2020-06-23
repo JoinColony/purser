@@ -1,6 +1,5 @@
 import { hashPersonalMessage, ecrecover } from 'ethereumjs-util';
 import Common from 'ethereumjs-common';
-import { TransactionOptions } from 'ethereumjs-tx';
 
 import {
   safeIntegerValidator,
@@ -27,6 +26,7 @@ import {
   DerivationPathObjectType,
   VerifyMessageData,
   TransactionObjectTypeWithTo,
+  TransactionOptions,
 } from './types';
 
 /**
@@ -414,7 +414,7 @@ export const messageOrDataValidator = ({
  * definitions for a given chain (e.g. the chain ID, network ID, hardforks).
  *
  * Given a chain ID, this function returns a chain definition in the format
- * expected by `ethereumjs-tx`.
+ * expected by `ethereumjs-common`.
  *
  * @param {number} chainId The given chain ID (as defined in EIP-155)
  * @return {Object} The common chain definition

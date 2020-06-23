@@ -1,3 +1,5 @@
+import Common from 'ethereumjs-common';
+
 import ExtendedBN from './ExtendedBigNumber';
 
 export interface DerivationPathDefaultType {
@@ -38,7 +40,7 @@ export interface TransactionObjectType {
 
 export interface TransactionObjectTypeWithCallback
   extends TransactionObjectTypeWithTo {
-  callback: (object) => string;
+  callback: (tx: object) => Promise<string>;
 }
 
 export interface TransactionObjectTypeWithTo extends TransactionObjectType {
@@ -96,4 +98,10 @@ export interface AddressObject {
   publicKey: string;
   derivationPath: string;
   address: string;
+}
+
+export interface TransactionOptions {
+  common?: Common;
+  chain?: number | string;
+  hardfork?: string;
 }

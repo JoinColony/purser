@@ -58,28 +58,6 @@ export const detect = async (): Promise<boolean> => {
      */
     return true;
   }
-  /*
-   * Legacy Metamask Version
-   */
-  if (!anyGlobal.ethereum && anyGlobal.web3) {
-    if (
-      !anyGlobal.web3.currentProvider ||
-      !anyGlobal.web3.currentProvider.publicConfigStore
-    ) {
-      throw new Error(messages.noInpageProvider);
-    }
-    /* eslint-disable-next-line no-underscore-dangle */
-    if (!anyGlobal.web3.currentProvider.publicConfigStore._state) {
-      throw new Error(messages.noProviderState);
-    }
-    if (
-      /* eslint-disable-next-line no-underscore-dangle */
-      !anyGlobal.web3.currentProvider.publicConfigStore._state.selectedAddress
-    ) {
-      throw new Error(messages.notEnabled);
-    }
-    return true;
-  }
   throw new Error(messages.noExtension);
 };
 
@@ -89,6 +67,11 @@ export const detect = async (): Promise<boolean> => {
  *
  * This is basically a wrapper, so that we can cut down on code repetition, since
  * this pattern repeats itself every time we try to access the in-page proxy.
+ *
+ *
+ * We must check for the Metamask injected in-page proxy every time we
+ * try to access it. This is because something can change it from the time
+ * of last detection until now.
  *
  * @method methodCaller
  *
@@ -113,20 +96,6 @@ export const methodCaller = async <T>(
 };
 
 /**
- * If the Metamask injected instance is available, get the in-page provider
- *
- * @method getInpageProvider
- *
- * @return {Object} The `MetamaskInpageProvider` object instance
- */
-export const getInpageProvider = (): MetaMaskInpageProvider => {
-  if (anyGlobal.ethereum) {
-    return anyGlobal.ethereum;
-  }
-  return anyGlobal.web3.currentProvider;
-};
-
-/**
  * Add a new observer method to Metamask's state update events
  *
  * @method setStateEventObserver
@@ -138,7 +107,7 @@ export const getInpageProvider = (): MetaMaskInpageProvider => {
 export const setStateEventObserver = (
   observer: MetamaskStateEventsObserverType,
 ): void => {
-  const ethereum = getInpageProvider();
+  const { ethereum } = anyGlobal;
   const {
     publicConfigStore: { _events: stateEvents },
   }: MetaMaskInpageProvider = ethereum;

@@ -1,4 +1,6 @@
 import { mocked } from 'ts-jest/utils';
+import { Web3Provider } from 'ethers/providers/web3-provider';
+
 import { warning } from '../../../purser-core/src/utils';
 import { hexSequenceNormalizer } from '../../../purser-core/src/normalizers';
 import {
@@ -14,25 +16,13 @@ import { methodCaller } from '../../src/helpers';
 
 import { STD_ERRORS } from '../../src/constants';
 
-import { testGlobal } from '../../../testutils';
-
 jest.mock('../../../purser-core/src/validators');
 jest.mock('../../../purser-core/src/helpers');
 jest.mock('../../../purser-core/src/normalizers');
 jest.mock('../../../purser-core/src/utils');
 jest.mock('../../src/helpers');
 
-/*
- * Mock the injected web3 proxy object
- */
-const mockedMessageSignature = 'mocked-message-signature';
-testGlobal.web3 = {
-  eth: {
-    sign: jest.fn((message, address, callback) =>
-      callback(undefined, mockedMessageSignature),
-    ),
-  },
-};
+const mockedProvider = new Web3Provider(null);
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -56,7 +46,6 @@ const mockedWarning = mocked(warning);
 
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
-    testGlobal.web3.eth.sign.mockClear();
     mockedBufferFrom.mockClear();
     mockedMethodCaller.mockClear();
     mockedAddressValidator.mockClear();
@@ -67,16 +56,12 @@ describe('`Metamask` Wallet Module Static Methods', () => {
   });
   describe('`signMessage()` static method', () => {
     test('Calls the correct metamask injected method', async () => {
-      await signMessage(mockedArgumentsObject);
-      expect(testGlobal.web3.eth.sign).toHaveBeenCalled();
-      expect(testGlobal.web3.eth.sign).toHaveBeenCalledWith(
-        Buffer.from(mockedMessage).toString('hex'),
-        mockedAddress,
-        expect.any(Function),
-      );
+      const mockedSigner = mocked(mockedProvider.getSigner());
+      await signMessage(mockedProvider, mockedArgumentsObject);
+      expect(mockedSigner.signMessage).toHaveBeenCalledWith(mockedMessage);
     });
     test('Detects if the injected proxy is avaialable', async () => {
-      await signMessage(mockedArgumentsObject);
+      await signMessage(mockedProvider, mockedArgumentsObject);
       expect(methodCaller).toHaveBeenCalled();
     });
     test('Throws if no argument provided', async () => {
@@ -97,7 +82,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       await expect(signMessage()).rejects.toThrow();
     });
     test('Validates the `currentAddress` individually', async () => {
-      await signMessage(mockedArgumentsObject);
+      await signMessage(mockedProvider, mockedArgumentsObject);
       /*
        * Calls the validation helper with the correct values
        */
@@ -105,7 +90,7 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       expect(addressValidator).toHaveBeenCalledWith(mockedAddress);
     });
     test('Validates the `message` string individually', async () => {
-      await signMessage(mockedArgumentsObject);
+      await signMessage(mockedProvider, mockedArgumentsObject);
       /*
        * Calls the validation helper with the correct values
        */
@@ -117,77 +102,59 @@ describe('`Metamask` Wallet Module Static Methods', () => {
       );
     });
     test('Normalizes the message before sending it to Metamask', async () => {
-      await signMessage(mockedArgumentsObject);
+      await signMessage(mockedProvider, mockedArgumentsObject);
       /*
        * Calls the validation helper with the correct values
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(
-        Buffer.from(mockedMessage).toString('hex'),
-      );
+      expect(hexSequenceNormalizer).toHaveBeenCalledWith('0xccccc');
     });
     test('Validates the returned message signature', async () => {
-      await signMessage(mockedArgumentsObject);
+      await signMessage(mockedProvider, mockedArgumentsObject);
       /*
        * Calls the validation helper with the correct values
        */
       expect(hexSequenceValidator).toHaveBeenCalled();
-      expect(hexSequenceValidator).toHaveBeenCalledWith(mockedMessageSignature);
+      expect(hexSequenceValidator).toHaveBeenCalledWith('0xccccc');
     });
     test('Normalizes the message signature before returning', async () => {
-      await signMessage(mockedArgumentsObject);
+      await signMessage(mockedProvider, mockedArgumentsObject);
       /*
        * Calls the validation helper with the correct values
        */
       expect(hexSequenceNormalizer).toHaveBeenCalled();
-      expect(hexSequenceNormalizer).toHaveBeenCalledWith(
-        mockedMessageSignature,
-      );
+      expect(hexSequenceNormalizer).toHaveBeenCalledWith('0xccccc');
     });
     test('Returns the message signature', async () => {
-      const messageSignature = await signMessage(mockedArgumentsObject);
-      expect(messageSignature).toEqual(mockedMessageSignature);
-    });
-    test('Throws if something goes wrong while signing', async () => {
-      /*
-       * Mock it locally to simulate an error in the sign callback
-       */
-      mockedHexSequenceValidator.mockImplementation(() => {
-        throw new Error('hex sequence validator error');
-      });
-      await expect(signMessage(mockedArgumentsObject)).rejects.toHaveProperty(
-        'message',
-        'hex sequence validator error',
+      const messageSignature = await signMessage(
+        mockedProvider,
+        mockedArgumentsObject,
       );
+      expect(messageSignature).toEqual('0xccccc');
     });
     test('Throws if something goes wrong while signing the message', async () => {
       /*
-       * Mock web3's `sign` method locally to simulate a generic error while signing
+       * Mock ethers' `sendTransaction` method locally to simulate a generic error while signing
        */
-      testGlobal.web3.eth.sign.mockImplementation(
-        (message, address, callback) =>
-          callback(new Error('generic sign error')),
-      );
-      await expect(signMessage(mockedArgumentsObject)).rejects.toHaveProperty(
-        'message',
-        'generic sign error',
-      );
+      const mockedSigner = mocked(mockedProvider.getSigner());
+      mockedSigner.signMessage.mockImplementationOnce(() => {
+        throw new Error('generic sign error');
+      });
+      await expect(
+        signMessage(mockedProvider, mockedArgumentsObject),
+      ).rejects.toHaveProperty('message', 'generic sign error');
     });
     test('Throws if the user cancelled signing the message', async () => {
       /*
-       * Mock web3's `sign` method locally to simulate the user cancelling signing
+       * Mock ethers' `sendTransaction` method locally to simulate cancelling signing
        */
-      testGlobal.web3.eth.sign.mockImplementation(
-        (message, address, callback) =>
-          callback(
-            new Error(STD_ERRORS.CANCEL_MSG_SIGN),
-            mockedMessageSignature,
-          ),
-      );
-      await expect(signMessage(mockedArgumentsObject)).rejects.toHaveProperty(
-        'message',
-        messages.cancelMessageSign,
-      );
+      const mockedSigner = mocked(mockedProvider.getSigner());
+      mockedSigner.signMessage.mockImplementationOnce(() => {
+        throw new Error(STD_ERRORS.CANCEL_MSG_SIGN);
+      });
+      await expect(
+        signMessage(mockedProvider, mockedArgumentsObject),
+      ).rejects.toHaveProperty('message', messages.cancelMessageSign);
     });
   });
 });

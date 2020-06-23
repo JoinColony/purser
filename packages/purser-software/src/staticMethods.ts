@@ -72,7 +72,7 @@ export const signTransaction = async ({
        * Only send (and normalize) the destination address if one was
        * provided in the initial transaction object.
        */
-      ...(to ? { to: addressNormalizer(to) } : {}),
+      to: to ? addressNormalizer(to) : undefined,
     });
     return hexSequenceNormalizer(signedTransaction);
   } catch (caughtError) {

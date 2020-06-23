@@ -9,7 +9,6 @@ describe('Metamask` Wallet Module', () => {
        * No ethereum object
        */
       testGlobal.ethereum = undefined;
-      testGlobal.web3 = undefined;
       await expect(detect()).rejects.toThrow();
       await expect(detect()).rejects.toThrow(new Error(messages.noExtension));
     });
@@ -21,7 +20,6 @@ describe('Metamask` Wallet Module', () => {
       testGlobal.ethereum = {
         isUnlocked,
       };
-      testGlobal.web3 = undefined;
       await expect(detect()).rejects.toThrow();
       await expect(detect()).rejects.toThrow(new Error(messages.isLocked));
     });
@@ -38,46 +36,12 @@ describe('Metamask` Wallet Module', () => {
         isUnlocked,
         isEnabled,
       };
-      testGlobal.web3 = undefined;
       await expect(detect()).rejects.toThrow();
       await expect(detect()).rejects.toThrow(new Error(messages.notEnabled));
     });
     test('Checks if the proxy has the in-page provider set', async () => {
-      /*
-       * Global proxy, but no provider
-       */
       testGlobal.ethereum = undefined;
-      testGlobal.web3 = {};
-      await expect(detect()).rejects.toThrow();
-      /*
-       * Provider set, but empty
-       */
-      testGlobal.web3 = { currentProvider: {} };
-      await expect(detect()).rejects.toThrow(
-        new Error(messages.noInpageProvider),
-      );
-    });
-    test('Checks if the provider has internal state', async () => {
-      /*
-       * Provider available, but no state
-       */
-      testGlobal.ethereum = undefined;
-      testGlobal.web3 = { currentProvider: { publicConfigStore: {} } };
-      await expect(detect()).rejects.toThrow();
-      await expect(detect()).rejects.toThrow(
-        new Error(messages.noProviderState),
-      );
-    });
-    test('Checks if the provider (legacy) is enabled', async () => {
-      /*
-       * State available, but no enabled
-       */
-      testGlobal.ethereum = undefined;
-      testGlobal.web3 = {
-        currentProvider: { publicConfigStore: { _state: {} } },
-      };
-      await expect(detect()).rejects.toThrow();
-      await expect(detect()).rejects.toThrow(new Error(messages.notEnabled));
+      await expect(detect()).rejects.toThrow(new Error(messages.noExtension));
     });
     test('Returns true if the extension is enabled', async () => {
       /*
@@ -97,12 +61,9 @@ describe('Metamask` Wallet Module', () => {
       /*
        * State available, and we have an address
        */
-      testGlobal.ethereum = undefined;
-      testGlobal.web3 = {
-        currentProvider: {
-          publicConfigStore: {
-            _state: { selectedAddress: 'mocked-selected-address' },
-          },
+      testGlobal.ethereum = {
+        publicConfigStore: {
+          _state: { selectedAddress: 'mocked-selected-address' },
         },
       };
       await expect(detect()).resolves.not.toThrow();

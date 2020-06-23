@@ -19,7 +19,7 @@ jest.mock('../../../purser-core/src/normalizers');
  * If the validators wouldn't be mocked, they wouldn't pass.
  */
 const mockedSignedTransaction = 'mocked-signed-transaction';
-const mockedInjectedCallback = jest.fn((transactionObject) => {
+const mockedInjectedCallback = jest.fn(async (transactionObject) => {
   if (!transactionObject) {
     throw new Error();
   }
@@ -125,7 +125,7 @@ describe('`Software` Wallet Module', () => {
       await expect(
         signTransaction({
           ...txWithouTo,
-          callback: () => 'foo',
+          callback: () => Promise.resolve('foo'),
         }),
       ).resolves.not.toThrow();
       /*

@@ -1,4 +1,5 @@
 import { mocked } from 'ts-jest/utils';
+import * as utils from 'ethers/utils';
 import { messageVerificationObjectValidator } from '../../../purser-core/src/helpers';
 
 import { methodCaller } from '../../src/helpers';
@@ -12,27 +13,11 @@ import {
 } from '../../../purser-core/src/validators';
 import { verifyMessage } from '../../src/staticMethods';
 
-import { testGlobal } from '../../../testutils';
-
 jest.mock('../../../purser-core/src/validators');
 jest.mock('../../../purser-core/src/helpers');
 jest.mock('../../../purser-core/src/normalizers');
 jest.mock('../../../purser-core/src/utils');
 jest.mock('../../src/helpers');
-
-/*
- * Mock the injected web3 proxy object
- */
-const mockedRecoveredAddress = 'mocked-message-signature';
-testGlobal.web3 = {
-  eth: {
-    personal: {
-      ecRecover: jest.fn((message, signature, callback) =>
-        callback(undefined, mockedRecoveredAddress),
-      ),
-    },
-  },
-};
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -57,7 +42,6 @@ const mockedMessageVerificationObjectValidator = mocked(
 
 describe('`Metamask` Wallet Module Static Methods', () => {
   afterEach(() => {
-    testGlobal.web3.eth.personal.ecRecover.mockClear();
     mockedMethodCaller.mockClear();
     mockedMessageVerificationObjectValidator.mockClear();
     mockedAddressValidator.mockClear();
@@ -65,18 +49,11 @@ describe('`Metamask` Wallet Module Static Methods', () => {
     mockedAddressNormalizer.mockClear();
   });
   describe('`verifyMessage()` static method', () => {
-    test('Calls the correct metamask injected method', async () => {
+    test('Calls the ethers method', async () => {
+      const spy = jest.spyOn(utils, 'verifyMessage');
       await verifyMessage(mockedArgumentsObject);
-      expect(testGlobal.web3.eth.personal.ecRecover).toHaveBeenCalled();
-      expect(testGlobal.web3.eth.personal.ecRecover).toHaveBeenCalledWith(
-        mockedMessage,
-        mockedSignature,
-        expect.any(Function),
-      );
-    });
-    test('Detects if the injected proxy is avaialable', async () => {
-      await verifyMessage(mockedArgumentsObject);
-      expect(methodCaller).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith(mockedMessage, mockedSignature);
     });
     test('Validates the message signature object', async () => {
       await verifyMessage(mockedArgumentsObject);
@@ -128,7 +105,10 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        * Calls the validation helper with the correct values
        */
       expect(addressValidator).toHaveBeenCalled();
-      expect(addressValidator).toHaveBeenCalledWith(mockedRecoveredAddress);
+      expect(addressNormalizer).toHaveBeenCalledWith(mockedCurrentAddress);
+      expect(addressNormalizer).toHaveBeenCalledWith(
+        'mocked-recovered-address',
+      );
     });
     test('Normalizes both the current and recovered addresses', async () => {
       await verifyMessage(mockedArgumentsObject);
@@ -136,18 +116,19 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        * Calls the validation helper with the correct values
        */
       expect(addressNormalizer).toHaveBeenCalled();
+      expect(addressNormalizer).toHaveBeenCalledWith(
+        'mocked-recovered-address',
+      );
       expect(addressNormalizer).toHaveBeenCalledWith(mockedCurrentAddress);
-      expect(addressNormalizer).toHaveBeenCalledWith(mockedRecoveredAddress);
     });
     test('Compares the two addresses and returns', async () => {
       /*
        * Mock the implementation locally to return the same mocked address
        * as the current one
        */
-      testGlobal.web3.eth.personal.ecRecover.mockImplementationOnce(
-        (message, signature, callback) =>
-          callback(undefined, mockedCurrentAddress),
-      );
+      jest
+        .spyOn(utils, 'verifyMessage')
+        .mockImplementationOnce(() => mockedCurrentAddress);
       const validSignature = await verifyMessage(mockedArgumentsObject);
       expect(validSignature).toBeTruthy();
 
@@ -155,10 +136,9 @@ describe('`Metamask` Wallet Module Static Methods', () => {
        * Mock the implementation locally to return the a different mocked address
        * to the current one
        */
-      testGlobal.web3.eth.personal.ecRecover.mockImplementationOnce(
-        (message, signature, callback) =>
-          callback(undefined, 'another-address'),
-      );
+      jest
+        .spyOn(utils, 'verifyMessage')
+        .mockImplementationOnce(() => 'another-address');
       const invalidSignature = await verifyMessage(mockedArgumentsObject);
       expect(invalidSignature).toBeFalsy();
     });
@@ -176,12 +156,11 @@ describe('`Metamask` Wallet Module Static Methods', () => {
     });
     test('Throws if something goes wrong while recovering', async () => {
       /*
-       * Mock web3's `ecRecover` method locally to simulate a generic error while recovering
+       * Mock eterhs' `verifyMessage` method locally to simulate a generic error while recovering
        */
-      testGlobal.web3.eth.personal.ecRecover.mockImplementationOnce(
-        (message, signature, callback) =>
-          callback(new Error('generic ecRecover error')),
-      );
+      jest.spyOn(utils, 'verifyMessage').mockImplementationOnce(() => {
+        throw new Error('generic ecRecover error');
+      });
       await expect(verifyMessage(mockedArgumentsObject)).rejects.toHaveProperty(
         'message',
         'generic ecRecover error',

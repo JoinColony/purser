@@ -6,13 +6,12 @@ import { testGlobal } from '../../testutils';
 
 jest.mock('../src/helpers');
 
-testGlobal.web3 = {
-  currentProvider: {
-    publicConfigStore: {
-      _events: {
-        update: [],
-      },
-    },
+testGlobal.ethereum = {
+  on: jest.fn(),
+  enable: jest.fn(),
+  publicConfigStore: {
+    _state: { selectedAddress: '0xcabcab' },
+    _events: { update: [] },
   },
 };
 
@@ -39,7 +38,7 @@ describe('Metamask` Wallet Module', () => {
       await accountChangeHook(mockedCallback);
       expect(
         /* eslint-disable-next-line no-underscore-dangle */
-        testGlobal.web3.currentProvider.publicConfigStore._events.update,
+        testGlobal.ethereum.publicConfigStore._events.update,
       ).toContain(mockedCallback);
     });
     test('Catches if something goes wrong', async () => {

@@ -134,10 +134,8 @@ export default class EthersSigner extends Signer {
 
     let txHash: string;
     if (this.purserWallet.subtype === WalletSubType.MetaMask) {
-      // if metamask, tx has already been sent
-      // @TODO get tx hash
-      // const parsedSignedTx = new EthereumTx(signedTx);
-      // txHash = hexSequenceNormalizer(parsedSignedTx.hash().toString('hex'));
+      // if metamask, tx has already been sent and the signedTransaction _IS_ the hash
+      txHash = signedTransaction;
     } else {
       // otherwise we still need to send it
       const sentTx = await this.provider.sendTransaction(signedTransaction);

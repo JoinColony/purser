@@ -1,13 +1,8 @@
-// @TODO: in the future use a minimal implementation for signing rather than web3:
-// https://github.com/danfinlay/js-eth-personal-sign-examples
-import Web3 from 'web3';
-
-import { warning, PurserWallet } from '@purser/core';
+import { PurserWallet } from '@purser/core';
 
 import MetaMaskWallet from './MetaMaskWallet';
 import {
   methodCaller,
-  getInpageProvider,
   detect as detectHelper,
   setStateEventObserver,
 } from './helpers';
@@ -36,56 +31,17 @@ export const open = async (): Promise<MetaMaskWallet> => {
   let addressAfterEnable: string;
   try {
     /*
-     * We're on the Modern Metamask (after EIP-1102)
      * See: https://eips.ethereum.org/EIPS/eip-1102
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const anyGlobal: any = global;
     if (anyGlobal.ethereum) {
-      /*
-       * Inject the web3 provider
-       */
-      // @TODO let's not do this anymore
-      anyGlobal.web3 = new Web3(anyGlobal.ethereum);
-      /*
-       * Enable it
-       */
       [addressAfterEnable] = await anyGlobal.ethereum.enable();
     }
-    /*
-     * We're on the legacy version of Metamask
-     */
-    if (!anyGlobal.ethereum && anyGlobal.web3) {
-      /*
-       * Warn the user about legacy mode
-       *
-       * @TODO Remove legacy metmask version messages
-       * After an adequate amount of time has passed
-       */
-      warning(messages.legacyMode);
-      /*
-       * Enable it
-       *
-       * @NOTE There's an argument to be made here that it's dangerous to use
-       * the `getInpageProvider()` helper before using `detect()`
-       */
-      // @TODO: remove legacy provider at some point
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const legacyProvider = getInpageProvider() as any;
-      legacyProvider.enable();
-      /*
-       * Inject the web3 provider (overwrite the current one)
-       */
-      anyGlobal.web3 = new Web3(legacyProvider);
-    }
-    /*
-     * Everything functions the same since the Web3 instance is now in place
-     * (Granted, it's now using the 1.x.x version)
-     */
     return methodCaller(() => {
       const {
         publicConfigStore: { _state: state },
-      } = getInpageProvider();
+      } = anyGlobal.ethereum;
       return new MetaMaskWallet({
         /*
          * The EIP-1102 mode uses the address we got after enabling (and getting
