@@ -12,7 +12,7 @@ describe('Metamask` Wallet Module', () => {
        */
       global.web3 = {
         currentProvider: {
-          publicConfigStore: {
+          _publicConfigStore: {
             _events: {
               update: [],
             },
@@ -36,7 +36,7 @@ describe('Metamask` Wallet Module', () => {
        * Also reset the state event updates array
        */
       const {
-        publicConfigStore: { _events: stateEvents },
+        _publicConfigStore: { _events: stateEvents },
       } = helpers.default.getInpageProvider();
       stateEvents.update = [];
     });
@@ -46,7 +46,7 @@ describe('Metamask` Wallet Module', () => {
     });
     test('Adds the observer callback to the state events Array', async () => {
       const {
-        publicConfigStore: { _events: stateEvents },
+        _publicConfigStore: { _events: stateEvents },
       } = helpers.default.getInpageProvider();
       expect(stateEvents.update).toHaveLength(0);
       setStateEventObserver(() => {});

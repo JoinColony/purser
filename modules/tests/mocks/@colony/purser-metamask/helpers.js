@@ -6,7 +6,7 @@ export const getInpageProvider = jest.fn(() => global.web3.currentProvider);
 
 export const setStateEventObserver = jest.fn(callback => {
   /* eslint-disable-next-line no-underscore-dangle */
-  global.web3.currentProvider.publicConfigStore._events.update.push(callback);
+  global.web3.currentProvider._publicConfigStore._events.update.push(callback);
 });
 
 /*
@@ -15,6 +15,6 @@ export const setStateEventObserver = jest.fn(callback => {
  */
 export const triggerUpdateStateEvents = newState =>
   /* eslint-disable-next-line no-underscore-dangle */
-  global.web3.currentProvider.publicConfigStore._events.update.map(callback =>
+  global.web3.currentProvider._publicConfigStore._events.update.map(callback =>
     callback(newState),
   );

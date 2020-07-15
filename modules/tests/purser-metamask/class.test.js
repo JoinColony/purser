@@ -73,7 +73,7 @@ global.web3 = {
     },
   },
   currentProvider: {
-    publicConfigStore: {
+    _publicConfigStore: {
       _events: {
         update: [],
       },
@@ -127,7 +127,7 @@ describe('Metamask` Wallet Module', () => {
        */
       const mockedMetamaskProvider = getInpageProvider();
       /* eslint-disable-next-line no-underscore-dangle */
-      mockedMetamaskProvider.publicConfigStore._events.update = [];
+      mockedMetamaskProvider._publicConfigStore._events.update = [];
       isEqual.mockClear();
       validateMetamaskState.mockClear();
       hexSequenceNormalizer.mockClear();
@@ -162,7 +162,7 @@ describe('Metamask` Wallet Module', () => {
       expect(setStateEventObserver).toHaveBeenCalled();
       expect(
         /* eslint-disable-next-line no-underscore-dangle */
-        mockedMetamaskProvider.publicConfigStore._events.update,
+        mockedMetamaskProvider._publicConfigStore._events.update,
       ).toHaveLength(1);
     });
     test('Validates the newly changed state', async () => {

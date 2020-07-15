@@ -20,7 +20,7 @@ jest.mock('@colony/purser-metamask/helpers', () =>
  */
 global.web3 = {
   currentProvider: {
-    publicConfigStore: {
+    _publicConfigStore: {
       _events: {
         update: [],
       },
@@ -50,7 +50,7 @@ describe('Metamask` Wallet Module', () => {
       await metamaskWallet.accountChangeHook(mockedCallback);
       expect(
         /* eslint-disable-next-line no-underscore-dangle */
-        global.web3.currentProvider.publicConfigStore._events.update,
+        global.web3.currentProvider._publicConfigStore._events.update,
       ).toContain(mockedCallback);
     });
     test('Catches if something goes wrong', async () => {

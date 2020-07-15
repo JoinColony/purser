@@ -64,7 +64,7 @@ describe('Metamask` Wallet Module', () => {
        * Provider available, but no state
        */
       global.ethereum = undefined;
-      global.web3 = { currentProvider: { publicConfigStore: {} } };
+      global.web3 = { currentProvider: { _publicConfigStore: {} } };
       expect(detect()).rejects.toThrow();
       expect(detect()).rejects.toThrowError(
         new Error(messages.noProviderState),
@@ -75,7 +75,7 @@ describe('Metamask` Wallet Module', () => {
        * State available, but no enabled
        */
       global.ethereum = undefined;
-      global.web3 = { currentProvider: { publicConfigStore: { _state: {} } } };
+      global.web3 = { currentProvider: { _publicConfigStore: { _state: {} } } };
       expect(detect()).rejects.toThrow();
       expect(detect()).rejects.toThrowError(new Error(messages.notEnabled));
     });
@@ -100,7 +100,7 @@ describe('Metamask` Wallet Module', () => {
       global.ethereum = undefined;
       global.web3 = {
         currentProvider: {
-          publicConfigStore: {
+          _publicConfigStore: {
             _state: { selectedAddress: 'mocked-selected-address' },
           },
         },

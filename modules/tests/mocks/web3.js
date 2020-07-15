@@ -9,7 +9,7 @@ const mockedEvents = {
 
 const inPageProvider = {
   currentProvider: {
-    publicConfigStore: {
+    _publicConfigStore: {
       _events: mockedEvents,
       _state: mockedState,
     },
