@@ -1,4 +1,3 @@
-import isEqual from 'lodash.isequal';
 import {
   addressValidator,
   HEX_HASH_TYPE,
@@ -23,7 +22,6 @@ import type {
 
 import { signTransaction, signMessage, verifyMessage } from './staticMethods';
 import { methodCaller, setStateEventObserver } from './helpers';
-import { validateMetaMaskState } from './validators';
 
 import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from './constants';
 import {
@@ -32,14 +30,11 @@ import {
 } from './messages';
 
 import {
-  MetaMaskInpageProvider,
   MetamaskWalletConstructorArgumentsType,
   SignMessageObject,
 } from './types';
 
 export default class MetamaskWallet implements PurserWallet {
-  private state: MetaMaskInpageProvider;
-
   private internalPublicKey: string;
 
   private mmProvider: Web3Provider;
@@ -76,26 +71,11 @@ export default class MetamaskWallet implements PurserWallet {
        * value if that changes in the UI
        */
       () =>
-        setStateEventObserver((newState: MetaMaskInpageProvider): boolean => {
+        setStateEventObserver((accounts: string[]): boolean => {
           try {
-            /*
-             * Validate the state object that's coming in.
-             * It should have all the props needed for us to work with.
-             *
-             * If they aren't there, it means that either Metamask is locked,
-             * or somebody tampered with them.
-             */
-            validateMetaMaskState(newState);
-            /*
-             * We only update the values if the state has changed.
-             * (We're using lodash here to deep compare the two state objects)
-             */
-            if (!isEqual(this.state, newState)) {
-              this.state = newState;
-              this.address = newState.selectedAddress;
-              /*
-               * Reset the saved public key, as the address now changed
-               */
+            const [newAddress] = accounts;
+            if (this.address !== newAddress) {
+              this.address = newAddress;
               this.internalPublicKey = undefined;
               return true;
             }

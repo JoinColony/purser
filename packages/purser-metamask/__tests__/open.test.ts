@@ -22,7 +22,7 @@ describe('Metamask` Wallet Module', () => {
   beforeEach(() => {
     testGlobal.ethereum = {
       enable: mockedEnableMethod,
-      publicConfigStore: { _state: { selectedAddress: '0xcabcab' } },
+      on: jest.fn(),
     };
   });
   afterEach(() => {

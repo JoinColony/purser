@@ -9,13 +9,10 @@ import {
 
 import { staticMethods } from './messages';
 
-import {
-  MetamaskStateEventsObserverType,
-  MetaMaskInpageProvider,
-} from './types';
+import { AccountsChangedCallback } from './types';
 
 // Export some helpful types and utils
-export type { MetaMaskInpageProvider, MetaMaskWallet, PurserWallet };
+export type { MetaMaskWallet, PurserWallet };
 
 export const messages = staticMethods;
 
@@ -39,16 +36,12 @@ export const open = async (): Promise<MetaMaskWallet> => {
       [addressAfterEnable] = await anyGlobal.ethereum.enable();
     }
     return methodCaller(() => {
-      const {
-        publicConfigStore: { _state: state },
-      } = anyGlobal.ethereum;
       return new MetaMaskWallet({
         /*
          * The EIP-1102 mode uses the address we got after enabling (and getting
-         * the users's permission), while the legacy mode get the address from
-         * the state
+         * the users's permission)
          */
-        address: addressAfterEnable || state.selectedAddress,
+        address: addressAfterEnable,
       });
     }, messages.metamaskNotAvailable);
   } catch (caughtError) {
@@ -87,7 +80,7 @@ export const detect = async (): Promise<boolean> => detectHelper();
  * @return {Promise<void>} Does not return noting
  */
 export const accountChangeHook = async (
-  callback: MetamaskStateEventsObserverType,
+  callback: AccountsChangedCallback,
 ): Promise<void> => {
   /*
    * If detect fails, it will throw, with a message explaining the problem

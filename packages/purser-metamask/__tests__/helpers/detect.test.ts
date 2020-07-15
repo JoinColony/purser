@@ -57,18 +57,5 @@ describe('Metamask` Wallet Module', () => {
       const wasDetected = await detect();
       expect(wasDetected).toBeTruthy();
     });
-    test('Returns true if we can get to the address', async () => {
-      /*
-       * State available, and we have an address
-       */
-      testGlobal.ethereum = {
-        publicConfigStore: {
-          _state: { selectedAddress: 'mocked-selected-address' },
-        },
-      };
-      await expect(detect()).resolves.not.toThrow();
-      const wasDetected = await detect();
-      expect(wasDetected).toBeTruthy();
-    });
   });
 });

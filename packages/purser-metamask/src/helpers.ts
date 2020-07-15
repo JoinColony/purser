@@ -1,9 +1,6 @@
 import { helpers as messages } from './messages';
 
-import {
-  MetaMaskInpageProvider,
-  MetamaskStateEventsObserverType,
-} from './types';
+import { AccountsChangedCallback } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anyGlobal: any = global;
@@ -105,16 +102,8 @@ export const methodCaller = async <T>(
  * @return {number} the length of the state events update array
  */
 export const setStateEventObserver = (
-  observer: MetamaskStateEventsObserverType,
+  callback: AccountsChangedCallback,
 ): void => {
   const { ethereum } = anyGlobal;
-  const {
-    publicConfigStore: { _events: stateEvents },
-  }: MetaMaskInpageProvider = ethereum;
-
-  if (ethereum.on) {
-    ethereum.on('accountsChanged', observer);
-  } else {
-    stateEvents.update.push(observer);
-  }
+  ethereum.on('accountsChanged', callback);
 };

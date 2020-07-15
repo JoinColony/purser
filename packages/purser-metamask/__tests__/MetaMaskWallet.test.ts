@@ -1,7 +1,4 @@
 import { mocked } from 'ts-jest/utils';
-import isEqual from 'lodash.isequal';
-
-import { testGlobal } from '../../testutils';
 
 import { bigNumber, warning } from '../../purser-core/src/utils';
 import { hexSequenceNormalizer } from '../../purser-core/src/normalizers';
@@ -19,16 +16,13 @@ import {
 
 import MetaMaskWallet from '../src/MetaMaskWallet';
 import { methodCaller } from '../src/helpers';
-import { validateMetaMaskState } from '../src/validators';
 import {
   signTransaction,
   signMessage,
   verifyMessage,
 } from '../src/staticMethods';
 import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from '../src/constants';
-import { MetaMaskInpageProvider } from '../src/types';
 
-jest.mock('lodash.isequal');
 jest.mock('ethers/providers');
 jest.mock('../../purser-core/src/validators');
 jest.mock('../../purser-core/src/helpers');
@@ -36,35 +30,14 @@ jest.mock('../../purser-core/src/normalizers');
 jest.mock('../../purser-core/src/utils');
 jest.mock('../src/staticMethods');
 jest.mock('../src/helpers');
-jest.mock('../src/validators');
 
-const mockedIsEqual = mocked(isEqual);
-const mockedValidateMetaMaskState = mocked(validateMetaMaskState);
 const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
 const mockedHexSequenceValidator = mocked(hexSequenceValidator);
 const mockedRecoverPublicKeyHelper = mocked(recoverPublicKeyHelper);
 const mockedWarning = mocked(warning);
 const mockedBufferFrom = jest.spyOn(Buffer, 'from');
 const mockedBufferToString = jest.spyOn(Buffer.prototype, 'toString');
-
 const mockedMessageSignature = 'mocked-message-signature';
-
-const triggerUpdateStateEvents = (newState: MetaMaskInpageProvider): void =>
-  /* eslint-disable-next-line no-underscore-dangle */
-  testGlobal.ethereum.publicConfigStore._events.update.map((callback) =>
-    callback(newState),
-  );
-
-/*
- * Mock the injected web3 proxy object
- */
-testGlobal.ethereum = {
-  publicConfigStore: {
-    _events: {
-      update: [],
-    },
-  },
-};
 
 /*
  * These values are not correct. Do not use the as reference.
@@ -72,14 +45,6 @@ testGlobal.ethereum = {
  */
 const mockedPublicKey = 'recovered-mocked-public-key';
 const address = 'mocked-address';
-const mockedState = {
-  selectedAddress: address,
-  networkVersion: 'mocked-selected-chain-id',
-};
-const mockedNewState = {
-  ...mockedState,
-  selectedAddress: 'new-mocked-address',
-};
 const mockedTransactionObject = {
   to: 'mocked-destination-address',
   value: bigNumber(33),
@@ -100,20 +65,10 @@ const mockedSignatureObject = {
   message: mockedMessage,
   signature: 'mocked-signature',
 };
-const mockedMetamaskProvider = {
-  publicConfigStore: { _events: { update: [] } },
-};
 
 describe('Metamask` Wallet Module', () => {
   describe('`MetamaskWallet` class', () => {
     afterEach(() => {
-      /*
-       * Reset the events update array after each test
-       */
-      /* eslint-disable-next-line no-underscore-dangle */
-      mockedMetamaskProvider.publicConfigStore._events.update = [];
-      mockedIsEqual.mockClear();
-      mockedValidateMetaMaskState.mockClear();
       mockedHexSequenceNormalizer.mockClear();
       mockedHexSequenceValidator.mockClear();
       mockedRecoverPublicKeyHelper.mockClear();
@@ -135,61 +90,6 @@ describe('Metamask` Wallet Module', () => {
        * Call the helper method
        */
       expect(methodCaller).toHaveBeenCalled();
-    });
-    test('Validates the newly changed state', async () => {
-      /* eslint-disable-next-line no-new */
-      new MetaMaskWallet({ address });
-      /*
-       * We trigger a state update manually;
-       */
-      // @ts-ignore
-      triggerUpdateStateEvents(mockedState);
-      /*
-       * Check if the new state is in the correct format
-       */
-      expect(mockedValidateMetaMaskState).toHaveBeenCalled();
-      expect(mockedValidateMetaMaskState).toHaveBeenCalledWith(mockedState);
-    });
-    test('Deep inspects the state to check for differences', async () => {
-      /*
-       * Mock it locally so it pretends that the states match
-       */
-      mockedIsEqual.mockImplementation(() => true);
-      /* eslint-disable-next-line no-new */
-      new MetaMaskWallet({ address });
-      /*
-       * We trigger a state update manually;
-       */
-      // @ts-ignore
-      triggerUpdateStateEvents(mockedNewState);
-      /*
-       * Deep equal the two state objects
-       */
-      expect(mockedIsEqual).toHaveBeenCalled();
-      expect(mockedIsEqual).toHaveBeenCalledWith(undefined, mockedNewState);
-    });
-    test('Does not update if something goes wrong', async () => {
-      /*
-       * Locally mocked
-       */
-      mockedValidateMetaMaskState.mockImplementation(() => {
-        throw new Error();
-      });
-      /* eslint-disable-next-line no-new */
-      new MetaMaskWallet({ address });
-      /*
-       * We trigger a state update manually;
-       */
-      // @ts-ignore
-      const eventsUpdatesArray = triggerUpdateStateEvents(mockedNewState);
-      /*
-       * At this point we caught, so this will not be called
-       */
-      expect(mockedIsEqual).not.toHaveBeenCalled();
-      /*
-       * It returns from the try-catch block
-       */
-      expect(eventsUpdatesArray[0]).toBeFalsy();
     });
     test('The Wallet Instance has the required (correct) props', () => {
       const metamaskWallet = new MetaMaskWallet({ address });
@@ -367,8 +267,6 @@ describe('Metamask` Wallet Module', () => {
       const metamaskWallet = new MetaMaskWallet({
         address: 'some weird address',
       });
-      // @ts-ignore
-      triggerUpdateStateEvents(mockedNewState);
       const publicKey = await metamaskWallet.getPublicKey();
       expect(publicKey).toEqual(mockedPublicKey);
     });

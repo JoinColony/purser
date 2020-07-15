@@ -8,11 +8,6 @@ describe('Metamask` Wallet Module', () => {
     beforeAll(() => {
       testGlobal.ethereum = {
         on: jest.fn(),
-        publicConfigStore: {
-          _events: {
-            update: [],
-          },
-        },
       };
     });
     test('Utilises the new method of listening for events if available', async () => {

@@ -9,13 +9,8 @@ jest.mock('../src/helpers');
 testGlobal.ethereum = {
   on: jest.fn(),
   enable: jest.fn(),
-  publicConfigStore: {
-    _state: { selectedAddress: '0xcabcab' },
-    _events: { update: [] },
-  },
 };
 
-const mockedCallback = jest.fn((state) => state);
 const mockedSetStateEventObserver = mocked(setStateEventObserver);
 
 describe('Metamask` Wallet Module', () => {
@@ -33,13 +28,6 @@ describe('Metamask` Wallet Module', () => {
        * Calls the `detect()` helper
        */
       expect(detectHelper).toHaveBeenCalled();
-    });
-    test('Adds a callback to the state observer', async () => {
-      await accountChangeHook(mockedCallback);
-      expect(
-        /* eslint-disable-next-line no-underscore-dangle */
-        testGlobal.ethereum.publicConfigStore._events.update,
-      ).toContain(mockedCallback);
     });
     test('Catches if something goes wrong', async () => {
       /*
