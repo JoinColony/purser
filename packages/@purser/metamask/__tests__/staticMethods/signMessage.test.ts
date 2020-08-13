@@ -1,14 +1,14 @@
 import { mocked } from 'ts-jest/utils';
 import { Web3Provider } from 'ethers/providers/web3-provider';
 
-import { warning } from '../../../purser-core/src/utils';
-import { hexSequenceNormalizer } from '../../../purser-core/src/normalizers';
+import { warning } from '../../../core/src/utils';
+import { hexSequenceNormalizer } from '../../../core/src/normalizers';
 import {
   addressValidator,
   messageValidator,
   hexSequenceValidator,
-} from '../../../purser-core/src/validators';
-import { messageOrDataValidator } from '../../../purser-core/src/helpers';
+} from '../../../core/src/validators';
+import { messageOrDataValidator } from '../../../core/src/helpers';
 
 import { signMessage } from '../../src/staticMethods';
 import { staticMethods as messages } from '../../src/messages';
@@ -16,10 +16,10 @@ import { methodCaller } from '../../src/helpers';
 
 import { STD_ERRORS } from '../../src/constants';
 
-jest.mock('../../../purser-core/src/validators');
-jest.mock('../../../purser-core/src/helpers');
-jest.mock('../../../purser-core/src/normalizers');
-jest.mock('../../../purser-core/src/utils');
+jest.mock('../../../core/src/validators');
+jest.mock('../../../core/src/helpers');
+jest.mock('../../../core/src/normalizers');
+jest.mock('../../../core/src/utils');
 jest.mock('../../src/helpers');
 
 const mockedProvider = new Web3Provider(null);

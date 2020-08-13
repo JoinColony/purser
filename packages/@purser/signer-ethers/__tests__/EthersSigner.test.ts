@@ -2,14 +2,14 @@ import { Signer } from 'ethers';
 import { BaseProvider } from 'ethers/providers/base-provider';
 import { mocked } from 'ts-jest/utils';
 
-import { bigNumber } from '../../purser-core/src/utils';
-import { userInputValidator } from '../../purser-core/src/helpers';
-import { WalletType, WalletSubType } from '../../purser-core/src/constants';
+import { bigNumber } from '../../core/src/utils';
+import { userInputValidator } from '../../core/src/helpers';
+import { WalletType, WalletSubType } from '../../core/src/constants';
 
 import EthersSigner from '../src/EthersSigner';
 
 jest.mock('ethers/providers/base-provider');
-jest.mock('../../purser-core/src/helpers');
+jest.mock('../../core/src/helpers');
 
 const mockedUserInputValidator = mocked(userInputValidator);
 const { bigNumberify } = jest.requireActual('ethers/utils');

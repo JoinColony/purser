@@ -1,15 +1,15 @@
 import { mocked } from 'ts-jest/utils';
 
-import { hexSequenceNormalizer } from '../../../purser-core/src/normalizers';
-import { messageValidator } from '../../../purser-core/src/validators';
-import { messageOrDataValidator } from '../../../purser-core/src/helpers';
+import { hexSequenceNormalizer } from '../../../core/src/normalizers';
+import { messageValidator } from '../../../core/src/validators';
+import { messageOrDataValidator } from '../../../core/src/helpers';
 
 import { signMessage } from '../../src/staticMethods';
 
-jest.mock('../../../purser-core/src/validators');
-jest.mock('../../../purser-core/src/helpers');
-jest.mock('../../../purser-core/src/normalizers');
-jest.mock('../../../purser-core/src/utils');
+jest.mock('../../../core/src/validators');
+jest.mock('../../../core/src/helpers');
+jest.mock('../../../core/src/normalizers');
+jest.mock('../../../core/src/utils');
 
 const mockedHexSequenceNormalizer = mocked(hexSequenceNormalizer);
 const mockedMessageValidator = mocked(messageValidator);

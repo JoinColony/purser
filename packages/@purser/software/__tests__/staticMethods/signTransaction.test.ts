@@ -1,18 +1,18 @@
 import { bigNumberify } from 'ethers/utils';
 import { mocked } from 'ts-jest/utils';
 
-import { bigNumber } from '../../../purser-core/src/utils';
-import { transactionObjectValidator } from '../../../purser-core/src/helpers';
+import { bigNumber } from '../../../core/src/utils';
+import { transactionObjectValidator } from '../../../core/src/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../purser-core/src/normalizers';
+} from '../../../core/src/normalizers';
 
 import { signTransaction } from '../../src/staticMethods';
 
 jest.mock('ethers/utils');
-jest.mock('../../../purser-core/src/helpers');
-jest.mock('../../../purser-core/src/normalizers');
+jest.mock('../../../core/src/helpers');
+jest.mock('../../../core/src/normalizers');
 
 /*
  * These values are not correct. Do not use the as reference.

@@ -1,6 +1,6 @@
 import { mocked } from 'ts-jest/utils';
 
-import { warning } from '../../purser-core/src/utils';
+import { warning } from '../../core/src/utils';
 import { open } from '../src/index';
 import MetaMaskWallet from '../src/MetaMaskWallet';
 import { methodCaller } from '../src/helpers';
@@ -8,7 +8,7 @@ import { testGlobal } from '../../testutils';
 
 jest.mock('../src/MetaMaskWallet');
 jest.mock('../src/helpers');
-jest.mock('../../purser-core/src/utils');
+jest.mock('../../core/src/utils');
 
 const mockedWarning = mocked(warning);
 

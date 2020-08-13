@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
-    "baseUrl": "./packages",
+    "baseUrl": "./packages/@purser",
     "paths": {
-      "@purser/core": ["purser-core/src"]
+      "@purser/core": ["core/src"]
     }
   }
 }

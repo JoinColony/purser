@@ -1,18 +1,18 @@
 import { mocked } from 'ts-jest/utils';
 
-import { bigNumber, warning } from '../../purser-core/src/utils';
-import { hexSequenceNormalizer } from '../../purser-core/src/normalizers';
-import { hexSequenceValidator } from '../../purser-core/src/validators';
+import { bigNumber, warning } from '../../core/src/utils';
+import { hexSequenceNormalizer } from '../../core/src/normalizers';
+import { hexSequenceValidator } from '../../core/src/validators';
 import {
   recoverPublicKey as recoverPublicKeyHelper,
   userInputValidator,
-} from '../../purser-core/src/helpers';
+} from '../../core/src/helpers';
 import {
   HEX_HASH_TYPE,
   REQUIRED_PROPS,
   WalletType,
   WalletSubType,
-} from '../../purser-core/src/constants';
+} from '../../core/src/constants';
 
 import MetaMaskWallet from '../src/MetaMaskWallet';
 import { methodCaller } from '../src/helpers';
@@ -24,10 +24,10 @@ import {
 import { PUBLICKEY_RECOVERY_MESSAGE, STD_ERRORS } from '../src/constants';
 
 jest.mock('ethers/providers');
-jest.mock('../../purser-core/src/validators');
-jest.mock('../../purser-core/src/helpers');
-jest.mock('../../purser-core/src/normalizers');
-jest.mock('../../purser-core/src/utils');
+jest.mock('../../core/src/validators');
+jest.mock('../../core/src/helpers');
+jest.mock('../../core/src/normalizers');
+jest.mock('../../core/src/utils');
 jest.mock('../src/staticMethods');
 jest.mock('../src/helpers');
 

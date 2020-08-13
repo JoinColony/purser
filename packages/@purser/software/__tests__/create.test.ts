@@ -1,16 +1,16 @@
 import { Wallet as EthersWallet } from 'ethers/wallet';
 import { mocked } from 'ts-jest/utils';
 
-import { getRandomValues, warning } from '../../purser-core/src/utils';
-import { userInputValidator } from '../../purser-core/src/helpers';
+import { getRandomValues, warning } from '../../core/src/utils';
+import { userInputValidator } from '../../core/src/helpers';
 
 import SoftwareWallet from '../src/SoftwareWallet';
 import { create } from '../src';
 
 jest.mock('ethers/wallet');
 jest.mock('../src/SoftwareWallet');
-jest.mock('../../purser-core/src/helpers');
-jest.mock('../../purser-core/src/utils');
+jest.mock('../../core/src/helpers');
+jest.mock('../../core/src/utils');
 
 const MockedSoftwareWallet = mocked(SoftwareWallet);
 const MockedEthersWallet = mocked(EthersWallet);

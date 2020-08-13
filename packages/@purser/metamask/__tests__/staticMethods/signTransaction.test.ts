@@ -8,25 +8,25 @@ import { methodCaller } from '../../src/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../purser-core/src/normalizers';
+} from '../../../core/src/normalizers';
 import {
   addressValidator,
   safeIntegerValidator,
   hexSequenceValidator,
-} from '../../../purser-core/src/validators';
+} from '../../../core/src/validators';
 
-import { warning } from '../../../purser-core/src/utils';
+import { warning } from '../../../core/src/utils';
 import {
   getChainDefinition,
   transactionObjectValidator,
-} from '../../../purser-core/src/helpers';
+} from '../../../core/src/helpers';
 
 import { signTransaction } from '../../src/staticMethods';
 
-jest.mock('../../../purser-core/src/validators');
-jest.mock('../../../purser-core/src/helpers');
-jest.mock('../../../purser-core/src/normalizers');
-jest.mock('../../../purser-core/src/utils');
+jest.mock('../../../core/src/validators');
+jest.mock('../../../core/src/helpers');
+jest.mock('../../../core/src/normalizers');
+jest.mock('../../../core/src/utils');
 jest.mock('../../src/helpers');
 
 const chainId = 5;

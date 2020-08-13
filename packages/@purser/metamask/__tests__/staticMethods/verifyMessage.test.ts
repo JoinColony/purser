@@ -1,22 +1,22 @@
 import { mocked } from 'ts-jest/utils';
 import * as utils from 'ethers/utils';
-import { messageVerificationObjectValidator } from '../../../purser-core/src/helpers';
+import { messageVerificationObjectValidator } from '../../../core/src/helpers';
 
 import { methodCaller } from '../../src/helpers';
 import {
   addressNormalizer,
   hexSequenceNormalizer,
-} from '../../../purser-core/src/normalizers';
+} from '../../../core/src/normalizers';
 import {
   addressValidator,
   hexSequenceValidator,
-} from '../../../purser-core/src/validators';
+} from '../../../core/src/validators';
 import { verifyMessage } from '../../src/staticMethods';
 
-jest.mock('../../../purser-core/src/validators');
-jest.mock('../../../purser-core/src/helpers');
-jest.mock('../../../purser-core/src/normalizers');
-jest.mock('../../../purser-core/src/utils');
+jest.mock('../../../core/src/validators');
+jest.mock('../../../core/src/helpers');
+jest.mock('../../../core/src/normalizers');
+jest.mock('../../../core/src/utils');
 jest.mock('../../src/helpers');
 
 /*

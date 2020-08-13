@@ -4,7 +4,7 @@ module.exports = {
   rules: {
     'import/no-extraneous-dependencies': [
       'error',
-      { packageDir: [resolve(__dirname, '../..'), resolve(__dirname)] },
+      { packageDir: [resolve(__dirname, '../../..'), resolve(__dirname)] },
     ],
   },
 };

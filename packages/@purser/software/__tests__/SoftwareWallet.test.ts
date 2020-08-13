@@ -4,36 +4,36 @@ import { mocked } from 'ts-jest/utils';
 import type { MaybeMockedDeep } from 'ts-jest/dist/util/testing';
 import { Wallet } from 'ethers/wallet';
 
-import { userInputValidator } from '../../purser-core/src/helpers';
-import { bigNumber, warning } from '../../purser-core/src/utils';
+import { userInputValidator } from '../../core/src/helpers';
+import { bigNumber, warning } from '../../core/src/utils';
 import {
   addressValidator,
   hexSequenceValidator,
-} from '../../purser-core/src/validators';
-import { hexSequenceNormalizer } from '../../purser-core/src/normalizers';
+} from '../../core/src/validators';
+import { hexSequenceNormalizer } from '../../core/src/normalizers';
 
-import SoftwareWallet from '../../purser-software/src/SoftwareWallet';
+import SoftwareWallet from '../../software/src/SoftwareWallet';
 import {
   signTransaction,
   signMessage,
   verifyMessage,
-} from '../../purser-software/src/staticMethods';
+} from '../../software/src/staticMethods';
 
 import {
   REQUIRED_PROPS,
   WalletType,
   WalletSubType,
-} from '../../purser-core/src/constants';
+} from '../../core/src/constants';
 import { walletClass } from '../src/messages';
 
 jest.mock('ethereumjs-util');
 jest.mock('ethers/utils');
 jest.mock('ethers/wallet');
-jest.mock('../../purser-core/src/validators');
-jest.mock('../../purser-software/src/staticMethods');
-jest.mock('../../purser-core/src/helpers');
-jest.mock('../../purser-core/src/normalizers');
-jest.mock('../../purser-core/src/utils');
+jest.mock('../../core/src/validators');
+jest.mock('../../software/src/staticMethods');
+jest.mock('../../core/src/helpers');
+jest.mock('../../core/src/normalizers');
+jest.mock('../../core/src/utils');
 
 /*
  * These values are not correct. Do not use the as reference.

@@ -3,7 +3,7 @@ import { isValidMnemonic, fromMnemonic } from 'ethers/utils/hdnode';
 import { isSecretStorageWallet } from 'ethers/utils/json-wallet';
 import { mocked } from 'ts-jest/utils';
 
-import { userInputValidator } from '../../purser-core/src/helpers';
+import { userInputValidator } from '../../core/src/helpers';
 import { REQUIRED_PROPS as REQUIRED_PROPS_SOFTWARE } from '../src/constants';
 
 import SoftwareWallet from '../src/SoftwareWallet';
@@ -13,8 +13,8 @@ jest.mock('ethers/wallet');
 jest.mock('ethers/utils/hdnode');
 jest.mock('ethers/utils/json-wallet');
 jest.mock('../src/SoftwareWallet');
-jest.mock('../../purser-core/src/helpers');
-jest.mock('../../purser-core/src/utils');
+jest.mock('../../core/src/helpers');
+jest.mock('../../core/src/utils');
 
 const MockedSoftwareWallet = mocked(SoftwareWallet);
 const MockedEthersWallet = mocked(EthersWallet);

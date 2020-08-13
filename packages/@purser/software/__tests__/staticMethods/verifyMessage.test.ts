@@ -1,15 +1,15 @@
 import { verifyMessage as verifyEthersMessage } from 'ethers/utils';
 import { mocked } from 'ts-jest/utils';
 
-import { messageVerificationObjectValidator } from '../../../purser-core/src/helpers';
-import { addressValidator } from '../../../purser-core/src/validators';
+import { messageVerificationObjectValidator } from '../../../core/src/helpers';
+import { addressValidator } from '../../../core/src/validators';
 
 import { verifyMessage } from '../../src/staticMethods';
 
 jest.mock('ethers/utils');
-jest.mock('../../../purser-core/src/helpers');
-jest.mock('../../../purser-core/src/validators');
-jest.mock('../../../purser-core/src/normalizers');
+jest.mock('../../../core/src/helpers');
+jest.mock('../../../core/src/validators');
+jest.mock('../../../core/src/normalizers');
 
 /*
  * These values are not correct. Do not use the as reference.
