@@ -34,6 +34,7 @@
   ],
   "devDependencies": {
     "@colony/eslint-config-colony": "8.0.1",
+    "@strictsoftware/typedoc-plugin-monorepo": "^0.3.1",
     "@types/bn.js": "^4.11.6",
     "@types/jest": "^25.2.1",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
@@ -60,6 +61,7 @@
     "prettier": "2.0.5",
     "rimraf": "^3.0.2",
     "ts-jest": "^25.3.1",
+    "typedoc": "^0.17.0-3",
     "typescript": "^3.8.3"
   },
   "dependencies": {}

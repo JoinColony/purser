@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="purser_color.svg" width="600" />
+  <img src="media/purser_color.svg" width="600" />
 </div>
 
 ## Purser
