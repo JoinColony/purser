@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.19]
+        node-version: [12.16.3]
 
     steps:
     - uses: actions/checkout@v2
@@ -38,14 +38,11 @@ jobs:
     - name: Install Dependencies
       run: npm install
 
-    - name: Check Types
-      run: npm run flow
+    - name: Bootstrap Monorepo
+      run: npm run bootstrap
 
-    - name: Lint Code
-      run: npm run lint
-
-    - name: Test
-      run: npm run test:ci
+    - name: Run tests
+      run: npm test
 
     - name: Build
       run: npm run build

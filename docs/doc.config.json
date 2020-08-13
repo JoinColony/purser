@@ -1,6 +1,0 @@
-{
-    "logo": "img/purser_color.svg",
-    "logoSmall": "img/logomark_purser_green.svg",
-    "sectionOrder": ["Docs", "Interface", "Modules"],
-    "description": "A JavaScript library that simplifies interaction with Ethereum wallets."
-}

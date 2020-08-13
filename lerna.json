@@ -1,0 +1,6 @@
+{
+  "packages": [
+    "packages/@purser/*"
+  ],
+  "version": "independent"
+}

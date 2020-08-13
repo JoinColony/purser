@@ -1,0 +1,49 @@
+{
+    "name": "@purser/core",
+    "version": "3.0.0-alpha.2",
+    "description": "Purser core module",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "module": "lib-esm/index.js",
+    "scripts": {
+        "lint": "eslint . --ext .ts",
+        "test": "echo \"Error: run tests from root\" && exit 1",
+        "build": "npm run clean && npm run compile && npm run compile-esm",
+        "clean": "rimraf ./lib && rimraf ./lib-esm",
+        "compile": "tsc -p tsconfig.build.json",
+        "compile-esm": "tsc -p tsconfig.build.json -m es6 --outDir lib-esm"
+    },
+    "author": "Raul Glogovetan <raul@colony.io>",
+    "contributors": [
+        "Christian Maniewski <chris@colony.io>"
+    ],
+    "homepage": "https://github.com/JoinColony/purser",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/JoinColony/purser.git"
+    },
+    "bugs": {
+        "url": "https://github.com/JoinColony/purser/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "ethereum",
+        "javascript",
+        "wallet",
+        "colony",
+        "software-wallet",
+        "monorepo",
+        "purser"
+    ],
+    "dependencies": {
+        "bn.js": "^5.1.1",
+        "ethereumjs-common": "^1.5.0",
+        "ethereumjs-util": "^6.2.0",
+        "hdkey": "^1.1.2"
+    },
+    "devDependencies": {
+        "ethers": "^4.0.47"
+    }
+}

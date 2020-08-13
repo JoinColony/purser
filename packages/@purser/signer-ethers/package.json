@@ -1,0 +1,45 @@
+{
+    "name": "@purser/signer-ethers",
+    "version": "1.0.0-alpha.2",
+    "description": "A signer to use purser with ethers.js",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "module": "lib-esm/index.js",
+    "scripts": {
+        "lint": "eslint . --ext .ts",
+        "test": "echo \"Error: run tests from root\" && exit 1",
+        "build": "npm run clean && npm run compile && npm run compile-esm",
+        "clean": "rimraf ./lib && rimraf ./lib-esm",
+        "compile": "tsc -p tsconfig.build.json",
+        "compile-esm": "tsc -p tsconfig.build.json -m es6 --outDir lib-esm"
+    },
+    "author": "Raul Glogovetan <raul@colony.io>",
+    "contributors": [
+        "Christian Maniewski <chris@colony.io>"
+    ],
+    "homepage": "https://github.com/JoinColony/purser",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/JoinColony/purser.git"
+    },
+    "bugs": {
+        "url": "https://github.com/JoinColony/purser/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "ethers",
+        "ethereum",
+        "wallet",
+        "signer"
+    ],
+    "peerDependencies": {
+        "@purser/core": "^3.0.0-alpha.0",
+        "ethers": "^4.0.47"
+    },
+    "devDependencies": {
+        "@purser/core": "^3.0.0-alpha.2",
+        "ethers": "^4.0.47"
+    }
+}

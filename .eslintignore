@@ -1,8 +1,0 @@
-!modules/node_modules/@colony
-scripts
-flow-typed
-jest.config.js
-webpack.config.js
-babel.config.js
-lib
-es

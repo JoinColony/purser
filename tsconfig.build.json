@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "lib": ["es2018", "dom"],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "strictNullChecks": false,
+        "strictPropertyInitialization": false,
+        "target": "ES2015",
+        "esModuleInterop": true,
+        "types": ["jest"],
+        "sourceMap": true,
+        "declaration": true
+    },
+    "exclude": [
+        "node_modules",
+        "**/__mocks__",
+        "**/lib",
+        "**/lib-esm"
+    ]
+}

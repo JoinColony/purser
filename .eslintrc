@@ -1,29 +1,51 @@
 {
+  "parser": "@typescript-eslint/parser",
   "extends": [
+    "plugin:@typescript-eslint/recommended",
     "@colony/eslint-config-colony",
-    "prettier/flowtype"
+    "prettier/@typescript-eslint"
   ],
   "plugins": [
-    "flowtype",
-    "prettier"
+    "@typescript-eslint",
+    "jest",
   ],
-  "parser": "babel-eslint",
   "env": {
-    "browser": true,
-    "commonjs": true,
-    "es6": true
+    "es2020": true,
+    "node": true,
+    "browser": true
   },
+  ignorePatterns: [
+    "*.d.ts"
+  ],
   "rules": {
-    "array-bracket-newline": ["warn", "consistent"],
-    "no-console": ["warn", { "allow": ["warn", "error"]}],
-    "no-irregular-whitespace": ["error", { "skipRegExps": true }],
+    "no-unused-vars": "off",
+    "camelcase": "off",
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
     "eslint-comments/disable-enable-pair": ["error", {"allowWholeFile": true}],
-    "flowtype/define-flow-type": "warn",
-    "import/no-extraneous-dependencies": "off",
-    "prettier/prettier": ["error", {
-      "parser": "flow",
-      "singleQuote": true,
-      "trailingComma": "all"
-    }]
-  }
+    "import/extensions": "off",
+    "import/no-unresolved": "off",
+    "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.ts"]}]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/__tests__/**/*.ts",
+        "**/__mocks__/**/*.ts"
+      ],
+      "env": {
+        "jest": true
+      },
+      "plugins": ["jest"],
+      "extends": [
+        "plugin:jest/recommended",
+        "plugin:jest/style"
+      ],
+      "rules": {
+        "max-len": "off",
+        "@typescript-eslint/ban-ts-ignore": "off"
+      }
+    }
+  ]
 }

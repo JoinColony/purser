@@ -1,0 +1,8 @@
+{
+  "name": "purser",
+  "readme": "README.md",
+  "out": "docs",
+  "mode": "library",
+  "external-modulemap": ".*packages\/(@purser\/[^\/]+)\/.*",
+  "media": "./media"
+}
