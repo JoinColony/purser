@@ -1,17 +1,17 @@
-## [@colony/](https://www.npmjs.com/org/colony)purser-software
+## [@purser/software](https://www.npmjs.com/package/@purser/software)
 
 A `javascript` library to interact with a software Ethereum wallet, based on the [ethers.js](https://github.com/ethers-io/ethers.js/) library.
 
-It extracts all the complexity from setting up, maintaining and interacting with it, while providing you with a [predictable interface](https://docs.colony.io/purser/interface-common-wallet-interface/).
+It extracts all the complexity from setting up, maintaining and interacting with it, while providing you with a predictable interface.
 
 ### Installation
 ```js
-yarn add @colony/purser-software
+npm install ethers @purser/core @purser/software
 ```
 
 ### Quick Usage
 ```js
-import { open } from '@colony/purser-software'
+import { open } from '@purser/software'
 
 const wallet = await open({ mnemonic: '...' });
 
@@ -20,7 +20,7 @@ console.log(wallet); // { address: '...', privateKey: '...', publicKey: '...' }
 
 ### Documentation
 
-You can find more in-depth description for this module's API in the [purser docs](https://docs.colony.io/purser/modules-@colonypurser-software/).
+You can find more in-depth description for this module's API in the [purser docs](https://joincolony.github.io/purser/modules/_purser_software.html).
 
 ### Contributing
 

@@ -1,17 +1,19 @@
-## [@colony/](https://www.npmjs.com/org/colony)purser-core
+## [@purser/core](https://www.npmjs.com/package/@purser/core)
 
 A collection of `helpers`, `utils`, `validators` and `normalizers` to assist the individual [purser](https://github.com/JoinColony/purser) modules.
 
 Unless you want something specific found in this module, it doesn't need to be manually required as each module already makes use of it internally.
 
 ### Installation
-```js
-yarn add @colony/purser-core
+```shell
+npm install @purser/core
 ```
+
+(Usually you won't install this package just on its own. It's meant to be an accompanying peer-dependency to the other @purser modules)
 
 ### Quick Usage
 ```js
-import { bigNumber } from '@colony/purser-core/utils'
+import { bigNumber } from '@purser/core/utils'
 
 const value = bigNumber('0.00000001').toWei();
 
@@ -20,7 +22,7 @@ console.log(value); // { negative: 0, words: Array(4), length: 4, red: null }
 
 ### Documentation
 
-You can find more in-depth description for this module's API in the [purser docs](https://docs.colony.io/purser/modules-@colonypurser-core/).
+You can find more in-depth description for this module's API in the [purser docs](https://joincolony.github.io/purser/modules/_purser_core.html).
 
 ### Contributing
 
@@ -30,4 +32,4 @@ Please read our [Contributing Guidelines](https://github.com/JoinColony/purser/b
 
 ### License
 
-The `purser-core` library along with the whole purser monorepo are [MIT licensed](https://github.com/JoinColony/purser/blob/master/LICENSE).
+The `@purser/core` library along with the whole purser monorepo are [MIT licensed](https://github.com/JoinColony/purser/blob/master/LICENSE).
