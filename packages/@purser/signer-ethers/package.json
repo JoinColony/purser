@@ -1,6 +1,6 @@
 {
     "name": "@purser/signer-ethers",
-    "version": "1.0.0-alpha.2",
+    "version": "1.0.0",
     "description": "A signer to use purser with ethers.js",
     "license": "MIT",
     "main": "lib/index.js",
@@ -35,7 +35,7 @@
         "signer"
     ],
     "dependencies": {
-        "@purser/core": "^3.0.0-alpha.2"
+        "@purser/core": "^3.0.0"
     },
     "peerDependencies": {
         "ethers": "^4.0.47"
