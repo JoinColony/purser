@@ -12,7 +12,7 @@ npm install @purser/core
 (Usually you won't install this package just on its own. It's meant to be an accompanying peer-dependency to the other @purser modules)
 
 ### Quick Usage
-```js
+```typescript
 import { bigNumber } from '@purser/core/utils'
 
 const value = bigNumber('0.00000001').toWei();

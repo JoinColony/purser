@@ -5,12 +5,12 @@ A `javascript` library to interact with a software Ethereum wallet, based on the
 It extracts all the complexity from setting up, maintaining and interacting with it, while providing you with a predictable interface.
 
 ### Installation
-```js
+```shell
 npm install ethers @purser/core @purser/software
 ```
 
 ### Quick Usage
-```js
+```typescript
 import { open } from '@purser/software'
 
 const wallet = await open({ mnemonic: '...' });

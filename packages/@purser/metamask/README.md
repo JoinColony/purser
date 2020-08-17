@@ -8,7 +8,7 @@ npm install ethers @purser/core @purser/metamask
 ```
 
 ### Quick Usage
-```js
+```typescript
 import { open } from '@purser/metamask'
 
 const wallet = await open();

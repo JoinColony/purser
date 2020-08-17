@@ -24,7 +24,7 @@ To use the **software wallet** (based on the [ethers wallet](https://github.com/
 
 #### Installation
 
-```
+```shell
 npm install @purser/software
 ```
 
@@ -32,7 +32,7 @@ npm install @purser/software
 
 Create a new wallet
 
-```js
+```typescript
 import { create } from '@purser/software'
 
 const wallet = await create();
@@ -42,7 +42,7 @@ console.log(wallet); // { address: '...', privateKey: '...', publicKey: '...' }
 
 or open an existing one (based on the mnemnonic)
 
-```js
+```typescript
 import { open } from '@purser/software'
 
 const wallet = await open({ mnemonic: '...' });
@@ -60,6 +60,7 @@ Purser is a monorepo consisting of a collection of Ethereum wallet libraries:
 - [`@purser/core`](https://github.com/JoinColony/purser/blob/master/packages/@purser/core): A collection of `helpers`, `utils`, `validators` and `normalizers` to assist the individual purser modules.
 - [`@purser/metamask`](https://github.com/JoinColony/purser/blob/master/packages/@purser/metamask): A `javascript` library to interact with the a [Metamask](https://metamask.io/) based Ethereum wallet.
 - [`@purser/software`](https://github.com/JoinColony/purser/blob/master/packages/@purser/software): A `javascript` library to interact with a software Ethereum wallet, based on the [ethers.js](https://github.com/ethers-io/ethers.js/) library.
+- [`@purser/signer-ethers`](https://github.com/JoinColony/purser/blob/master/packages/@purser/signer-ethers): An implementation of an [ethers](https://github.com/ethers-io/ethers.js/) signer to use with any of the purser compatible wallets.
 
 ### The future
 
