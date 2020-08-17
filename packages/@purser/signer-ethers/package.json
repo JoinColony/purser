@@ -34,12 +34,13 @@
         "wallet",
         "signer"
     ],
+    "dependencies": {
+        "@purser/core": "^3.0.0-alpha.2"
+    },
     "peerDependencies": {
-        "@purser/core": "^3.0.0-alpha.0",
         "ethers": "^4.0.47"
     },
     "devDependencies": {
-        "@purser/core": "^3.0.0-alpha.2",
         "ethers": "^4.0.47"
     }
 }

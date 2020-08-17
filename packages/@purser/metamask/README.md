@@ -4,7 +4,7 @@ A `javascript` library to interact with the a [Metamask](https://metamask.io/) b
 
 ### Installation
 ```shell
-npm install ethers @purser/core @purser/metamask
+npm install ethers @purser/metamask
 ```
 
 ### Quick Usage

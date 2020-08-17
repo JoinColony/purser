@@ -38,14 +38,13 @@
         "purser"
     ],
     "dependencies": {
+        "@purser/core": "^3.0.0-alpha.2",
         "ethers": "^4.0.47"
     },
     "peerDependencies": {
-        "@purser/core": "^3.0.0-alpha.0",
         "ethereumjs-util": "^6.2.0"
     },
     "devDependencies": {
-        "@purser/core": "^3.0.0-alpha.2",
         "ethereumjs-util": "^6.2.0"
     }
 }

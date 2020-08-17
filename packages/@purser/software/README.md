@@ -6,7 +6,7 @@ It extracts all the complexity from setting up, maintaining and interacting with
 
 ### Installation
 ```shell
-npm install ethers @purser/core @purser/software
+npm install ethers @purser/software
 ```
 
 ### Quick Usage

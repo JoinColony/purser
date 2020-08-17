@@ -5,7 +5,7 @@ This package allows you to use any purser wallet as an [ethers.js signer](https:
 ### Installation
 
 ```shell
-npm install ethers @purser/core @purser/signer-ethers
+npm install ethers @purser/signer-ethers
 ```
 
 ### Quick Usage (using a MetaMask purser wallet)
