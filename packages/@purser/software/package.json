@@ -45,6 +45,6 @@
         "ethereumjs-util": "^6.2.0"
     },
     "devDependencies": {
-        "ethereumjs-util": "^6.2.0"
+        "ethereumjs-util": "6.2.0"
     }
 }
