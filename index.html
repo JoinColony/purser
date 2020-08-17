@@ -84,55 +84,34 @@
 				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
 					<h4>Installation</h4>
 				</a>
-				<pre><code><span class="hljs-built_in">npm</span> install @colony/purser-software</code></pre>
+				<pre><code><span class="hljs-built_in">npm</span> install @purser/software</code></pre>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h4>Usage</h4>
 				</a>
 				<p>Create a new wallet</p>
-				<pre><code class="language-js"><span class="hljs-keyword">import</span> { create } <span class="hljs-keyword">from</span> <span class="hljs-string">'@colony/purser-software'</span>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { create } <span class="hljs-keyword">from</span> <span class="hljs-string">'@purser/software'</span>
 
 <span class="hljs-keyword">const</span> wallet = <span class="hljs-keyword">await</span> create();
 
 <span class="hljs-built_in">console</span>.log(wallet); <span class="hljs-comment">// { address: '...', privateKey: '...', publicKey: '...' }</span></code></pre>
 				<p>or open an existing one (based on the mnemnonic)</p>
-				<pre><code class="language-js"><span class="hljs-keyword">import</span> { open } <span class="hljs-keyword">from</span> <span class="hljs-string">'@colony/purser-software'</span>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { open } <span class="hljs-keyword">from</span> <span class="hljs-string">'@purser/software'</span>
 
 <span class="hljs-keyword">const</span> wallet = <span class="hljs-keyword">await</span> open({ <span class="hljs-attr">mnemonic</span>: <span class="hljs-string">'...'</span> });
 
 <span class="hljs-built_in">console</span>.log(wallet); <span class="hljs-comment">// { address: '...', privateKey: '...', publicKey: '...' }</span></code></pre>
-				<a href="#quickstart-hardware-wallet" id="quickstart-hardware-wallet" style="color: inherit; text-decoration: none;">
-					<h3>Quickstart (hardware wallet)</h3>
-				</a>
-				<p>For <strong>hardware wallets</strong> (let&#39;s use trezor in this example) do:</p>
-				<a href="#installation-1" id="installation-1" style="color: inherit; text-decoration: none;">
-					<h4>Installation</h4>
-				</a>
-				<pre><code><span class="hljs-built_in">npm</span> install @colony/purser-trezor</code></pre>
-				<a href="#usage-1" id="usage-1" style="color: inherit; text-decoration: none;">
-					<h4>Usage</h4>
-				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">import</span> { open } <span class="hljs-keyword">from</span> <span class="hljs-string">'@colony/purser-trezor'</span>
-
-<span class="hljs-keyword">const</span> wallet = <span class="hljs-keyword">await</span> open();
-
-<span class="hljs-built_in">console</span>.log(wallet); <span class="hljs-comment">// { address: '...', otherAddrresses: [...], publicKey: '...' }</span>
-
-wallet.setDefaultAddress(<span class="hljs-number">2</span>); <span class="hljs-comment">// Sets the current address to the third address in the list of `otherAddresses`</span>
-</code></pre>
 				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
 					<h3>Documentation</h3>
 				</a>
-				<p>Please see the <a href="https://docs.colony.io/purser/docs-overview">documentation</a> with detailed examples and explanations.</p>
+				<p>Please see the <a href="https://joincolony.github.io/purser/">documentation</a> with detailed examples and explanations.</p>
 				<a href="#packages" id="packages" style="color: inherit; text-decoration: none;">
 					<h3>Packages</h3>
 				</a>
 				<p>Purser is a monorepo consisting of a collection of Ethereum wallet libraries:</p>
 				<ul>
-					<li><a href="https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-core"><code>purser-core</code></a>: A collection of <code>helpers</code>, <code>utils</code>, <code>validators</code> and <code>normalizers</code> to assist the individual purser modules.</li>
-					<li><a href="https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-ledger"><code>purser-ledger</code></a>: A <code>javascript</code> library to interact with a <a href="https://www.ledger.com/">Ledger</a> based Ethereum wallet.</li>
-					<li><a href="https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-metamask"><code>purser-metamask</code></a>: A <code>javascript</code> library to interact with the a <a href="https://metamask.io/">Metamask</a> based Ethereum wallet.</li>
-					<li><a href="https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-software"><code>purser-software</code></a>: A <code>javascript</code> library to interact with a software Ethereum wallet, based on the <a href="https://github.com/ethers-io/ethers.js/">ethers.js</a> library.</li>
-					<li><a href="https://github.com/JoinColony/purser/blob/master/modules/node_modules/@colony/purser-trezor"><code>purser-trezor</code></a>: A <code>javascript</code> library to interact with a <a href="https://trezor.io/">Trezor</a> based Ethereum wallet.</li>
+					<li><a href="https://github.com/JoinColony/purser/blob/master/packages/@purser/core"><code>@purser/core</code></a>: A collection of <code>helpers</code>, <code>utils</code>, <code>validators</code> and <code>normalizers</code> to assist the individual purser modules.</li>
+					<li><a href="https://github.com/JoinColony/purser/blob/master/packages/@purser/metamask"><code>@purser/metamask</code></a>: A <code>javascript</code> library to interact with the a <a href="https://metamask.io/">Metamask</a> based Ethereum wallet.</li>
+					<li><a href="https://github.com/JoinColony/purser/blob/master/packages/@purser/software"><code>@purser/software</code></a>: A <code>javascript</code> library to interact with a software Ethereum wallet, based on the <a href="https://github.com/ethers-io/ethers.js/">ethers.js</a> library.</li>
 				</ul>
 				<a href="#the-future" id="the-future" style="color: inherit; text-decoration: none;">
 					<h3>The future</h3>

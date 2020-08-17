@@ -69,17 +69,40 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<a href="#pursersigner-ethers" id="pursersigner-ethers" style="color: inherit; text-decoration: none;">
-						<h1><code>@purser/signer-ethers</code></h1>
+						<h2><a href="https://www.npmjs.com/package/@purser/signer-ethers">@purser/signer-ethers</a></h2>
 					</a>
-					<blockquote>
-						<p>TODO: description</p>
-					</blockquote>
-					<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
-						<h2>Usage</h2>
+					<p>This package allows you to use any purser wallet as an <a href="https://docs.ethers.io/v4/api-wallet.html#signer">ethers.js signer</a>.</p>
+					<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
+						<h3>Installation</h3>
 					</a>
-					<pre><code><span class="hljs-keyword">const</span> signerEthers = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@purser/signer-ethers'</span>);
+					<pre><code class="language-shell">npm install ethers @purser/core @purser/signer-ethers</code></pre>
+					<a href="#quick-usage-using-a-metamask-purser-wallet" id="quick-usage-using-a-metamask-purser-wallet" style="color: inherit; text-decoration: none;">
+						<h3>Quick Usage (using a MetaMask purser wallet)</h3>
+					</a>
+					<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { getDefaultProvider } <span class="hljs-keyword">from</span> <span class="hljs-string">"ethers"</span>;
+<span class="hljs-keyword">import</span> { create } <span class="hljs-keyword">from</span> <span class="hljs-string">"@purser/metamask"</span>;
+<span class="hljs-keyword">import</span> { EthersSigner } <span class="hljs-keyword">from</span> <span class="hljs-string">"@purser/signer-ethers"</span>;
 
-<span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> DEMONSTRATE API</span></code></pre>
+<span class="hljs-keyword">const</span> provider = getDefaultProvider(<span class="hljs-string">"ropsten"</span>);
+
+<span class="hljs-keyword">const</span> initSigner = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> wallet = <span class="hljs-keyword">await</span> create();
+  <span class="hljs-keyword">const</span> signer = <span class="hljs-keyword">new</span> EthersSigner({ purserWallet: wallet, provider });
+};</code></pre>
+					<p>You can then use the signer to <a href="https://docs.ethers.io/v4/api-contract.html#connecting-to-a-contract">connect to Ethereum contracts with ethers</a>.</p>
+					<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+						<h3>Documentation</h3>
+					</a>
+					<p>You can find more in-depth description for this module&#39;s API in the <a href="https://joincolony.github.io/purser/modules/_purser_signer_ethers.html">purser docs</a>.</p>
+					<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
+						<h3>Contributing</h3>
+					</a>
+					<p>This package is part of the <a href="https://github.com/JoinColony/purser">purser monorepo</a> package.</p>
+					<p>Please read our <a href="https://github.com/JoinColony/purser/blob/master/.github/CONTRIBUTING.md">Contributing Guidelines</a> for how to get started.</p>
+					<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+						<h3>License</h3>
+					</a>
+					<p>The <code>@purser/core</code> library along with the whole purser monorepo are <a href="https://github.com/JoinColony/purser/blob/master/LICENSE">MIT licensed</a>.</p>
 				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
