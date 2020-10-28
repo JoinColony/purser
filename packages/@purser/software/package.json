@@ -39,7 +39,7 @@
     ],
     "dependencies": {
         "@purser/core": "^3.0.0",
-        "ethers": "^4.0.47"
+        "ethers": "^5.0.0"
     },
     "peerDependencies": {
         "ethereumjs-util": "^6.2.0"
