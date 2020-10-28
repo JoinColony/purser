@@ -58,7 +58,7 @@
         "jest": "25.1.0",
         "jest-sandbox": "1.1.2",
         "lerna": "^3.20.2",
-        "lint-staged": "10.0.8",
+        "lint-staged": "10.5.0",
         "prettier": "2.0.5",
         "rimraf": "^3.0.2",
         "ts-jest": "^25.3.1",
