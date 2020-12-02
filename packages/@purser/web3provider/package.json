@@ -1,0 +1,46 @@
+{
+    "name": "@purser/web3provider",
+    "version": "1.0.0",
+    "description": "Purser wallet that wraps any Web3 compatible provider",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "module": "lib-esm/index.js",
+    "scripts": {
+        "lint": "eslint . --ext .ts",
+        "test": "echo \"Error: run tests from root\" && exit 1",
+        "build": "npm run clean && npm run compile && npm run compile-esm",
+        "clean": "rimraf ./lib && rimraf ./lib-esm",
+        "compile": "tsc -p tsconfig.build.json",
+        "compile-esm": "tsc -p tsconfig.build.json -m es6 --outDir lib-esm"
+    },
+    "author": "Christian Maniewski <chris@colony.io>",
+    "homepage": "https://github.com/JoinColony/purser",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/JoinColony/purser.git"
+    },
+    "bugs": {
+        "url": "https://github.com/JoinColony/purser/issues"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "ethereum",
+        "javascript",
+        "wallet",
+        "colony",
+        "software-wallet",
+        "monorepo",
+        "purser"
+    ],
+    "dependencies": {
+        "@purser/core": "^3.0.0"
+    },
+    "peerDependencies": {
+        "ethereumjs-util": "^6.2.0"
+    },
+    "devDependencies": {
+        "ethereumjs-util": "^6.2.0"
+    }
+}
