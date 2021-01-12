@@ -146,21 +146,24 @@ export default class EthersSigner extends Signer {
     // transaction too quickly causing us to wait indefinitely, therefore, we
     // need to try getting the transaction and then, if that fails, we need to
     // try getting the transaction using `waitForTransaction`.
-    let transaction = await this.provider.getTransaction(txHash);
+    const transaction = await this.provider.getTransaction(txHash);
     if (!transaction) {
       await this.provider.waitForTransaction(txHash);
     }
 
-    return poll(async() => {
-      const response = await this.provider.getTransaction(txHash);
-      // If this request goes wrong, it returns null. But poll specifically
-      // retries on undefined...
-      if (response == null) {
-        return undefined;
-      }
-      return response;
-    }, {
-      timeout: 60000 // One minute
-    });
+    return poll(
+      async () => {
+        const response = await this.provider.getTransaction(txHash);
+        // If this request goes wrong, it returns null. But poll specifically
+        // retries on undefined...
+        if (response == null) {
+          return undefined;
+        }
+        return response;
+      },
+      {
+        timeout: 60000, // One minute
+      },
+    );
   }
 }
