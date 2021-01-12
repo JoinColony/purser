@@ -146,10 +146,13 @@ export default class EthersSigner extends Signer {
     // transaction too quickly causing us to wait indefinitely, therefore, we
     // need to try getting the transaction and then, if that fails, we need to
     // try getting the transaction using `waitForTransaction`.
-    const transaction = await this.provider.getTransaction(txHash);
+    let transaction = await this.provider.getTransaction(txHash);
     if (!transaction) {
       await this.provider.waitForTransaction(txHash);
     }
-    return this.provider.getTransaction(txHash);
+    while (!transaction) {
+      transaction = await this.provider.getTransaction(txHash);
+    }
+    return transaction;
   }
 }
