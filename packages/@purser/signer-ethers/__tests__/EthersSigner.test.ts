@@ -1,4 +1,5 @@
 import { Signer } from 'ethers';
+import { poll } from 'ethers/utils';
 import { BaseProvider } from 'ethers/providers/base-provider';
 import { mocked } from 'ts-jest/utils';
 
@@ -111,6 +112,7 @@ describe('`Core` Module', () => {
         value: bigNumber(4),
       });
       expect(mockedProvider.sendTransaction).toHaveBeenCalled();
+      expect(poll).toHaveBeenCalled();
     });
   });
 });
