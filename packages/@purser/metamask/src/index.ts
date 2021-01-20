@@ -79,7 +79,6 @@ export const detect = async (): Promise<boolean> => detectHelper();
  * @method accountChangeHook
  *
  * @param {Function} callback Function to add the state events update array
- * It receives the state object as an only argument
  *
  * @return {Promise<void>} Does not return noting
  */
@@ -94,6 +93,40 @@ export const accountChangeHook = async (
   detectHelper();
   try {
     return setStateEventObserver(callback);
+  } catch (error) {
+    /*
+     * If this throws/catches here it means something very weird is going on.
+     * `detect()` should catch anything that're directly related to Metamask's functionality,
+     * but if that passes and we have to catch it here, it means some underlying APIs
+     * might have changed, and this will be very hard to debug
+     */
+    throw new Error(messages.cannotAddHook);
+  }
+};
+
+/**
+ * Hook into Metamask's state events observers array to be able to act on account
+ * changes from the UI
+ *
+ * It's a wrapper around the `setStateEventObserver()` helper method
+ *
+ * @method chainChangeHook
+ *
+ * @param {Function} callback Function to add the state events update array
+ *
+ * @return {Promise<void>} Does not return noting
+ */
+export const chainChangeHook = async (
+  callback: AccountsChangedCallback,
+): Promise<void> => {
+  /*
+   * If detect fails, it will throw, with a message explaining the problem
+   * (Most likely Metamask will be locked, so we won't be able to get to
+   * the state observer via the in-page provider)
+   */
+  detectHelper();
+  try {
+    return setStateEventObserver(callback, 'chainChanged');
   } catch (error) {
     /*
      * If this throws/catches here it means something very weird is going on.
