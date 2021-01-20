@@ -62,6 +62,24 @@ Purser is a monorepo consisting of a collection of Ethereum wallet libraries:
 - [`@purser/software`](https://github.com/JoinColony/purser/blob/master/packages/@purser/software): A `javascript` library to interact with a software Ethereum wallet, based on the [ethers.js](https://github.com/ethers-io/ethers.js/) library.
 - [`@purser/signer-ethers`](https://github.com/JoinColony/purser/blob/master/packages/@purser/signer-ethers): An implementation of an [ethers](https://github.com/ethers-io/ethers.js/) signer to use with any of the purser compatible wallets.
 
+### To build and release
+
+In the root directory:
+
+```
+npm i
+npm run bootstrap
+npm run build
+npm run publish
+```
+
+To clean detritus and reset the repository:
+
+```
+./node_modules/.bin/lerna clean
+npm run bootstrap
+```
+
 ### The future
 
 We plan to add support more hardware wallets and other features that will make wallet interactions even easier. Stay tuned!

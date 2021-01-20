@@ -1,5 +1,5 @@
 import { Signer } from 'ethers';
-import { BigNumber, BigNumberish, bigNumberify } from 'ethers/utils';
+import { BigNumber, BigNumberish, bigNumberify, poll } from 'ethers/utils';
 import {
   Provider,
   TransactionRequest,
@@ -150,6 +150,20 @@ export default class EthersSigner extends Signer {
     if (!transaction) {
       await this.provider.waitForTransaction(txHash);
     }
-    return this.provider.getTransaction(txHash);
+
+    return poll(
+      async () => {
+        const response = await this.provider.getTransaction(txHash);
+        // If this request goes wrong, it returns null. But poll specifically
+        // retries on undefined...
+        if (response == null) {
+          return undefined;
+        }
+        return response;
+      },
+      {
+        timeout: 60000, // One minute
+      },
+    );
   }
 }
