@@ -16,13 +16,12 @@ const mockedWarning = mocked(warning);
  * Mocked values
  */
 const mockedAddress = 'mocked-address';
-const mockedEnableMethod = jest.fn(() => [mockedAddress]);
+const mockedEnableMethod = jest.fn(async () => [mockedAddress]);
 
 describe('Metamask` Wallet Module', () => {
   beforeEach(() => {
     testGlobal.ethereum = {
-      enable: mockedEnableMethod,
-      on: jest.fn(),
+      request: mockedEnableMethod,
     };
   });
   afterEach(() => {
@@ -30,7 +29,7 @@ describe('Metamask` Wallet Module', () => {
     mockedEnableMethod.mockClear();
   });
   describe('`open()` static method', () => {
-    test('Start in EIP-1102 mode', async () => {
+    test('Request accounts', async () => {
       await open();
       /*
        * Enabled the account

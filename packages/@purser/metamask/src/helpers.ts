@@ -1,6 +1,6 @@
 import { helpers as messages } from './messages';
 
-import { AccountsChangedCallback } from './types';
+import { AccountsChangedCallback, ObservableEvents } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anyGlobal: any = global;
@@ -20,39 +20,37 @@ export const detect = async (): Promise<boolean> => {
    * Modern Metamask Version
    */
   if (anyGlobal.ethereum) {
+    const { ethereum } = anyGlobal;
     /*
-     * @NOTE This is a temporary failsafe check, since Metmask is running an
-     * intermediate version which, while it contains most of the `ethereum`
-     * global object, it doesn't contain this helper method
-     *
-     * @TODO Remove legacy metmask object availability check
-     * After an adequate amount of time has passed
+     * Check that the provider is connected to the chain
      */
-    if (
-      anyGlobal.ethereum.isUnlocked &&
-      !(await anyGlobal.ethereum.isUnlocked())
-    ) {
+    if (!ethereum.isConnected()) {
+      throw new Error(messages.noProvider);
+    }
+    /*
+     * Check if the account is unlocked
+     *
+     * @NOTE we just assume the required methods exist on the metamask provider
+     * otherwise we'll get right back to "support legacy metamask hell"
+     */
+    // eslint-disable-next-line no-underscore-dangle
+    if (!(await ethereum._metamask.isUnlocked())) {
       throw new Error(messages.isLocked);
     }
     /*
-     * @NOTE This is a temporary failsafe check, since Metmask is running an
-     * intermediate version which, while it contains most of the `ethereum`
-     * global object, it doesn't contain this helper method
-     *
-     * @TODO Remove legacy metmask object availability check
-     * After an adequate amount of time has passed
+     * If we don't have the `eth_accounts` permissions it means that we don't have
+     * account access
      */
+    const permissions = await ethereum.request({
+      method: 'wallet_getPermissions',
+    });
     if (
-      anyGlobal.ethereum.isEnabled &&
-      !(await anyGlobal.ethereum.isEnabled())
+      !permissions.length ||
+      !permissions[0] ||
+      permissions[0].parentCapability !== 'eth_accounts'
     ) {
-      throw new Error(messages.notEnabled);
+      throw new Error(messages.notConnected);
     }
-    /*
-     * @NOTE If the `isUnlocked` and the `isEnabled` methods are not available
-     * it means we are running the pre-release version of Metamask, just prior
-     * to the EIP-1102 update, so we just ignore those checks
-     */
     return true;
   }
   throw new Error(messages.noExtension);
@@ -103,7 +101,8 @@ export const methodCaller = async <T>(
  */
 export const setStateEventObserver = (
   callback: AccountsChangedCallback,
+  observableEvent: ObservableEvents = 'accountsChanged',
 ): void => {
   const { ethereum } = anyGlobal;
-  ethereum.on('accountsChanged', callback);
+  ethereum.on(observableEvent, callback);
 };
