@@ -1,6 +1,6 @@
 import { helpers as messages } from './messages';
 
-import { AccountsChangedCallback } from './types';
+import { AccountsChangedCallback, ObservableEvents } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anyGlobal: any = global;
@@ -101,7 +101,8 @@ export const methodCaller = async <T>(
  */
 export const setStateEventObserver = (
   callback: AccountsChangedCallback,
+  observableEvent: ObservableEvents = 'accountsChanged',
 ): void => {
   const { ethereum } = anyGlobal;
-  ethereum.on('accountsChanged', callback);
+  ethereum.on(observableEvent, callback);
 };

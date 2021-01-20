@@ -9,3 +9,10 @@ export interface SignMessageObject {
   message: string;
   messageData: string | Uint8Array;
 }
+
+export type ObservableEvents =
+  | 'accountsChanged'
+  | 'chainChanged'
+  | 'connect'
+  | 'disconnect'
+  | 'message';
