@@ -26,6 +26,7 @@ export const messages = staticMethods;
  */
 export const open = async (): Promise<MetaMaskWallet> => {
   let addressAfterEnable: string;
+  detectHelper();
   try {
     /*
      * See: https://eips.ethereum.org/EIPS/eip-1102
@@ -33,7 +34,10 @@ export const open = async (): Promise<MetaMaskWallet> => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const anyGlobal: any = global;
     if (anyGlobal.ethereum) {
-      [addressAfterEnable] = await anyGlobal.ethereum.enable();
+      const { ethereum } = anyGlobal;
+      [addressAfterEnable] = await ethereum.request({
+        method: 'eth_requestAccounts',
+      });
     }
     return methodCaller(() => {
       return new MetaMaskWallet({

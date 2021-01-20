@@ -20,10 +20,7 @@ export const detect = async (): Promise<boolean> => {
    * Modern Metamask Version
    */
   if (anyGlobal.ethereum) {
-    const {
-      ethereum: { _metamask, request },
-      ethereum,
-    } = anyGlobal;
+    const { ethereum } = anyGlobal;
     /*
      * Check that the provider is connected to the chain
      */
@@ -36,14 +33,17 @@ export const detect = async (): Promise<boolean> => {
      * @NOTE we just assume the required methods exist on the metamask provider
      * otherwise we'll get right back to "support legacy metamask hell"
      */
-    if (!(await _metamask.isUnlocked())) {
+    // eslint-disable-next-line no-underscore-dangle
+    if (!(await ethereum._metamask.isUnlocked())) {
       throw new Error(messages.isLocked);
     }
     /*
      * If we don't have the `eth_accounts` permissions it means that we don't have
      * account access
      */
-    const permissions = await request({ method: 'wallet_getPermissions' });
+    const permissions = await ethereum.request({
+      method: 'wallet_getPermissions',
+    });
     if (
       !permissions.length ||
       !permissions[0] ||
