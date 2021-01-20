@@ -32,8 +32,9 @@ export const helpers = {
   noExtension:
     "Could not detect the Metamask extension. Ensure that it's enabled",
   isLocked: "Metamask's instance is locked. Please unlock it from the UI",
-  notEnabled:
-    'The Metmask extension instance has not been enabled on this page. Please use the `open()` method to do so.',
+  notConnected:
+    'The Metmask account is not connected to the current domain. Please manually connected from the extension itself',
+  noProvider: 'The Metmask provider is not connected to the chain.',
   /*
    * Legacy Metamask Version
    *
