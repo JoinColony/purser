@@ -41,6 +41,6 @@
         "ethers": "^4.0.47"
     },
     "devDependencies": {
-        "ethers": "^4.0.47"
+        "ethers": "4.0.47"
     }
 }
