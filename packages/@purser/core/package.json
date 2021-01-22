@@ -41,7 +41,7 @@
         "bn.js": "^5.1.1",
         "ethereumjs-common": "^1.5.0",
         "ethereumjs-util": "^6.2.0",
-        "hdkey": "^1.1.2"
+        "hdkey": "^2.0.0"
     },
     "devDependencies": {
         "ethers": "^4.0.47"
