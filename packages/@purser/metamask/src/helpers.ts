@@ -1,12 +1,48 @@
 import { helpers as messages } from './messages';
 
-import { AccountsChangedCallback, ObservableEvents } from './types';
+import {
+  AccountsChangedCallback,
+  ObservableEvents,
+  MetamaskEthereumGlobal,
+  EthereumRequestMethods,
+} from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const anyGlobal: any = global;
-/*
- * @TODO Add isModern() helper method to detect the new version of Metamask
+
+/**
+ * Manually detect Metamaks's Lock State
+ *
+ * We need to do this check manually isnce we can't always rely on metmask `isUnlocked` experimental
+ * method:
+ * https://docs.metamask.io/guide/ethereum-provider.html#experimental-api
+ * It will not refresh it's state after a wallet unlock, only after a page refresh
+ *
+ * To make this work we also check the accounts that metamask gives us. If it's locked
+ * it will just give us back an empty array which we can inferr from that wallet is locked
+ *
+ * @method isExtensionLocked
+ *
+ * @param {MetamaskEthereumGlobal} ethereum The global Ethereum provider injected by Metamask
+ *
+ * @returns {boolean} state of the lock on the metamask wallet
  */
+const isExtensionLocked = async (
+  ethereum: MetamaskEthereumGlobal,
+): Promise<boolean> => {
+  try {
+    // eslint-disable-next-line no-underscore-dangle
+    if (await ethereum._metamask.isUnlocked()) {
+      return true;
+    }
+    const accounts: Array<string> = await ethereum.request({
+      method: EthereumRequestMethods.Accounts,
+    });
+    return !!accounts?.length;
+  } catch (error) {
+    return false;
+  }
+};
 
 /**
  * Detect the Metmask Extensaion
@@ -20,7 +56,7 @@ export const detect = async (): Promise<boolean> => {
    * Modern Metamask Version
    */
   if (anyGlobal.ethereum) {
-    const { ethereum } = anyGlobal;
+    const { ethereum }: { ethereum: MetamaskEthereumGlobal } = anyGlobal;
     /*
      * Check that the provider is connected to the chain
      */
@@ -29,20 +65,18 @@ export const detect = async (): Promise<boolean> => {
     }
     /*
      * Check if the account is unlocked
-     *
-     * @NOTE we just assume the required methods exist on the metamask provider
-     * otherwise we'll get right back to "support legacy metamask hell"
      */
-    // eslint-disable-next-line no-underscore-dangle
-    if (!(await ethereum._metamask.isUnlocked())) {
+    if (!(await isExtensionLocked(ethereum))) {
       throw new Error(messages.isLocked);
     }
     /*
      * If we don't have the `eth_accounts` permissions it means that we don't have
      * account access
      */
-    const permissions = await ethereum.request({
-      method: 'wallet_getPermissions',
+    const permissions: Array<{
+      parentCapability?: string;
+    }> = await ethereum.request({
+      method: EthereumRequestMethods.WalletPermissions,
     });
     if (
       !permissions.length ||
