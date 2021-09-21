@@ -45,6 +45,7 @@
         "ethers": "^4.0.47"
     },
     "devDependencies": {
+        "@types/node": "^16.9.4",
         "ethers": "^4.0.47"
     }
 }
