@@ -28,7 +28,7 @@ const transformData = (data: BigNumberish): string => {
   if (data instanceof BigNumber) {
     return data.toHexString();
   }
-  return Buffer.from(data).toString('hex');
+  return Buffer.from(data as Array<number>).toString('hex');
 };
 
 /**

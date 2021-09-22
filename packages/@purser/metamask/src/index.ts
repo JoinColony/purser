@@ -9,7 +9,7 @@ import {
 
 import { staticMethods } from './messages';
 
-import { AccountsChangedCallback } from './types';
+import { AccountsChangedCallback, EthereumRequestMethods } from './types';
 
 // Export some helpful types and utils
 export type { MetaMaskWallet, PurserWallet };
@@ -36,7 +36,7 @@ export const open = async (): Promise<MetaMaskWallet> => {
     if (anyGlobal.ethereum) {
       const { ethereum } = anyGlobal;
       [addressAfterEnable] = await ethereum.request({
-        method: 'eth_requestAccounts',
+        method: EthereumRequestMethods.RequestAccounts,
       });
     }
     return methodCaller(() => {
