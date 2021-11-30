@@ -8,6 +8,7 @@ import {
   MetamaskEthereumGlobal,
   EthereumRequestMethods,
   EthereumChain,
+  TokenOptions,
 } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -183,5 +184,22 @@ export const addChain = async (chainDetails: EthereumChain): Promise<void> => {
         blockExplorerUrls,
       },
     ],
+  });
+};
+
+export const addToken = async (token: TokenOptions): Promise<void> => {
+  const { ethereum } = anyGlobal;
+  const { address, symbol, decimals = 18, image } = token;
+  return ethereum.request({
+    method: EthereumRequestMethods.AddToken,
+    params: {
+      type: 'ERC20',
+      options: {
+        address,
+        symbol,
+        decimals,
+        image,
+      },
+    },
   });
 };

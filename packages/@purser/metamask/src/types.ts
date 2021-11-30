@@ -38,6 +38,18 @@ export interface EthereumChain {
   blockExplorerUrls?: string[];
 }
 
+export interface TokenOptions {
+  address: string;
+  symbol?: string; // 2-6 characters long (possibly, Metamask's docs are vague)
+  decimals?: number;
+  image?: string;
+}
+
+export interface Token {
+  type: 'ERC20'; // Metamask only supports this currently
+  options: TokenOptions;
+}
+
 export interface MetamaskEthereumGlobal {
   isConnected: () => boolean;
   request<R>(args: EthereumRequestArguments): Promise<R>;
@@ -58,4 +70,5 @@ export enum EthereumRequestMethods {
   WalletPermissions = 'wallet_getPermissions',
   SwitchChain = 'wallet_switchEthereumChain',
   AddNewChain = 'wallet_addEthereumChain',
+  AddToken = 'wallet_watchAsset',
 }
