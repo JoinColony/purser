@@ -1,7 +1,7 @@
 {
     "name": "purser",
     "private": true,
-    "version": "3.1.0",
+    "version": "3.2.0",
     "description": "Interact with Ethereum wallets easily",
     "scripts": {
         "bootstrap": "lerna bootstrap",
