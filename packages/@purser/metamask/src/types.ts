@@ -24,6 +24,20 @@ interface EthereumRequestArguments {
   params?: unknown[] | object;
 }
 
+export interface EthereumNativeToken {
+  name: string;
+  symbol: string; // 2-6 characters long
+  decimals?: number;
+}
+
+export interface EthereumChain {
+  chainId: number;
+  chainName: string;
+  nativeCurrency: EthereumNativeToken;
+  rpcUrls: string[];
+  blockExplorerUrls?: string[];
+}
+
 export interface MetamaskEthereumGlobal {
   isConnected: () => boolean;
   request<R>(args: EthereumRequestArguments): Promise<R>;

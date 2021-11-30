@@ -7,6 +7,7 @@ import {
   ObservableEvents,
   MetamaskEthereumGlobal,
   EthereumRequestMethods,
+  EthereumChain,
 } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -152,5 +153,35 @@ export const switchChain = async (chainId: number): Promise<void> => {
      * which is not something Metamask likes as a chain Id
      */
     params: [{ chainId: hexStripZeros(hexlify(chainId)) }],
+  });
+};
+
+export const addChain = async (chainDetails: EthereumChain): Promise<void> => {
+  const { ethereum } = anyGlobal;
+  const {
+    chainId,
+    chainName,
+    nativeCurrency = {},
+    rpcUrls,
+    blockExplorerUrls,
+  } = chainDetails;
+  return ethereum.request({
+    method: EthereumRequestMethods.AddNewChain,
+    params: [
+      {
+        /*
+         * @NOTE Need to also strip zeros since `hexlify` returns a signed hex string
+         * which is not something Metamask likes as a chain Id
+         */
+        chainId: hexStripZeros(hexlify(chainId)),
+        chainName,
+        nativeCurrency: {
+          decimals: 18,
+          ...nativeCurrency,
+        },
+        rpcUrls,
+        blockExplorerUrls,
+      },
+    ],
   });
 };
