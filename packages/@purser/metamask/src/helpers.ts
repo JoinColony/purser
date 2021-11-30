@@ -1,3 +1,5 @@
+import { hexlify, hexStripZeros } from 'ethers/utils';
+
 import { helpers as messages } from './messages';
 
 import {
@@ -139,4 +141,16 @@ export const setStateEventObserver = (
 ): void => {
   const { ethereum } = anyGlobal;
   ethereum.on(observableEvent, callback);
+};
+
+export const switchChain = async (chainId: number): Promise<void> => {
+  const { ethereum } = anyGlobal;
+  return ethereum.request({
+    method: EthereumRequestMethods.SwitchChain,
+    /*
+     * @NOTE Need to also strip zeros since `hexlify` returns a signed hex string
+     * which is not something Metamask likes as a chain Id
+     */
+    params: [{ chainId: hexStripZeros(hexlify(chainId)) }],
+  });
 };

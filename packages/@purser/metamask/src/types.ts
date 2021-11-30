@@ -42,4 +42,6 @@ export enum EthereumRequestMethods {
   Accounts = 'eth_accounts',
   RequestAccounts = 'eth_requestAccounts',
   WalletPermissions = 'wallet_getPermissions',
+  SwitchChain = 'wallet_switchEthereumChain',
+  AddNewChain = 'wallet_addEthereumChain',
 }
