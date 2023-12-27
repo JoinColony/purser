@@ -111,10 +111,6 @@ describe('`Core` Module', () => {
         'chainId',
         TRANSACTION.CHAIN_ID,
       );
-      expect(validatedTransactionObject).toHaveProperty(
-        'nonce',
-        TRANSACTION.NONCE,
-      );
       expect(validatedTransactionObject.value.toString()).toEqual(
         TRANSACTION.VALUE,
       );
@@ -163,6 +159,40 @@ describe('`Core` Module', () => {
        */
       expect(addressValidator).not.toHaveBeenCalled();
       expect(addressValidator).not.toHaveBeenCalledWith(to);
+    });
+    test('Validates nonce, only if one was provided', async () => {
+      transactionObjectValidator({
+        gasPrice,
+        gasLimit,
+        chainId,
+        value,
+        inputData,
+      });
+      /*
+       * Validates gas price and gas limit
+       */
+      expect(bigNumberValidator).toHaveBeenCalled();
+      expect(bigNumberValidator).toHaveBeenCalledWith(gasPrice);
+      expect(bigNumberValidator).toHaveBeenCalledWith(gasLimit);
+      /*
+       * Validates the chain Id
+       */
+      expect(safeIntegerValidator).toHaveBeenCalled();
+      expect(safeIntegerValidator).toHaveBeenCalledWith(chainId);
+      /*
+       * Validates the transaction value
+       */
+      expect(bigNumberValidator).toHaveBeenCalled();
+      expect(bigNumberValidator).toHaveBeenCalledWith(value);
+      /*
+       * Validates the transaction input data
+       */
+      expect(hexSequenceValidator).toHaveBeenCalled();
+      expect(hexSequenceValidator).toHaveBeenCalledWith(inputData);
+      /*
+       * Doesn't validates the nonce, since it wasn't provided
+       */
+      expect(safeIntegerValidator).not.toHaveBeenCalledWith(nonce);
     });
   });
 });

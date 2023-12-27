@@ -33,7 +33,7 @@ export interface TransactionObjectType {
   chainId: number;
   gasPrice: ExtendedBN;
   gasLimit: ExtendedBN;
-  nonce: number;
+  nonce?: number;
   value: ExtendedBN;
   inputData: string;
 }

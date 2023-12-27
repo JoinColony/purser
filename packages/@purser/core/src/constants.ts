@@ -101,7 +101,6 @@ export const TRANSACTION = {
   CHAIN_ID: 1,
   GAS_PRICE: '9000000000', // 9 Gwei
   GAS_LIMIT: '21000',
-  NONCE: 0,
   VALUE: '0',
   INPUT_DATA: '',
 };

@@ -211,7 +211,7 @@ export const transactionObjectValidator = ({
   chainId = TRANSACTION.CHAIN_ID,
   gasPrice = bigNumber(TRANSACTION.GAS_PRICE),
   gasLimit = bigNumber(TRANSACTION.GAS_LIMIT),
-  nonce = TRANSACTION.NONCE,
+  nonce,
   to,
   value = bigNumber(TRANSACTION.VALUE),
   inputData = TRANSACTION.INPUT_DATA,
@@ -228,10 +228,13 @@ export const transactionObjectValidator = ({
    * Check if the chain id value is valid (a positive, safe integer)
    */
   safeIntegerValidator(chainId);
-  /*
-   * Check if the nonce value is valid (a positive, safe integer)
-   */
-  safeIntegerValidator(nonce);
+  if (nonce) {
+    /*
+     * Only check if the nonce value is valid (a positive, safe integer),
+     * if one was provided in the initial transaction object
+     */
+    safeIntegerValidator(nonce);
+  }
   /*
    * Only check if the address (`to` prop) is in the correct
    * format, if one was provided in the initial transaction object
