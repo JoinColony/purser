@@ -1,6 +1,6 @@
 {
     "name": "@purser/metamask",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "description": "A javascript library to interact with a Metamask based Ethereum wallet",
     "license": "MIT",
     "main": "lib/index.js",
@@ -38,7 +38,7 @@
         "purser"
     ],
     "dependencies": {
-        "@purser/core": "^3.0.0"
+        "@purser/core": "^3.0.1"
     },
     "peerDependencies": {
         "bn.js": "^5.1.1",
